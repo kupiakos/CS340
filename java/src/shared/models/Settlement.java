@@ -13,7 +13,7 @@ public class Settlement {
     private String owner;
     @SerializedName("location")
     @Expose
-    private EdgeLocation location;
+    private shared.locations.EdgeLocation location;
 
     /**
      * No args constructor for use in serialization
@@ -25,7 +25,7 @@ public class Settlement {
      * @param location
      * @param owner
      */
-    public Settlement(String owner, EdgeLocation location) {
+    public Settlement(String owner, shared.locations.EdgeLocation location) {
         this.owner = owner;
         this.location = location;
     }
@@ -52,18 +52,18 @@ public class Settlement {
     /**
      * @return The location
      */
-    public EdgeLocation getLocation() {
+    public shared.locations.EdgeLocation getLocation() {
         return location;
     }
 
     /**
      * @param location The location
      */
-    public void setLocation(EdgeLocation location) {
+    public void setLocation(shared.locations.EdgeLocation location) {
         this.location = location;
     }
 
-    public Settlement withLocation(EdgeLocation location) {
+    public Settlement withLocation(shared.locations.EdgeLocation location) {
         this.location = location;
         return this;
     }

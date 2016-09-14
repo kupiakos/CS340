@@ -13,7 +13,7 @@ public class Port {
     private String resource;
     @SerializedName("location")
     @Expose
-    private HexLocation location;
+    private shared.locations.HexLocation location;
     @SerializedName("direction")
     @Expose
     private String direction;
@@ -33,7 +33,7 @@ public class Port {
      * @param direction
      * @param resource
      */
-    public Port(String resource, HexLocation location, String direction, String ratio) {
+    public Port(String resource, shared.locations.HexLocation location, String direction, String ratio) {
         this.resource = resource;
         this.location = location;
         this.direction = direction;
@@ -62,18 +62,18 @@ public class Port {
     /**
      * @return The location
      */
-    public HexLocation getLocation() {
+    public shared.locations.HexLocation getLocation() {
         return location;
     }
 
     /**
      * @param location The location
      */
-    public void setLocation(HexLocation location) {
+    public void setLocation(shared.locations.HexLocation location) {
         this.location = location;
     }
 
-    public Port withLocation(HexLocation location) {
+    public Port withLocation(shared.locations.HexLocation location) {
         this.location = location;
         return this;
     }

@@ -1,9 +1,9 @@
 package shared.models;
 
+import javax.annotation.Generated;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import javax.annotation.Generated;
 
 @Generated("org.jsonschema2pojo")
 public class Road {
@@ -13,7 +13,7 @@ public class Road {
     private String owner;
     @SerializedName("location")
     @Expose
-    private EdgeLocation location;
+    private shared.locations.EdgeLocation location;
 
     /**
      * No args constructor for use in serialization
@@ -25,7 +25,7 @@ public class Road {
      * @param location
      * @param owner
      */
-    public Road(String owner, EdgeLocation location) {
+    public Road(String owner, shared.locations.EdgeLocation location) {
         this.owner = owner;
         this.location = location;
     }
@@ -52,18 +52,18 @@ public class Road {
     /**
      * @return The location
      */
-    public EdgeLocation getLocation() {
+    public shared.locations.EdgeLocation getLocation() {
         return location;
     }
 
     /**
      * @param location The location
      */
-    public void setLocation(EdgeLocation location) {
+    public void setLocation(shared.locations.EdgeLocation location) {
         this.location = location;
     }
 
-    public Road withLocation(EdgeLocation location) {
+    public Road withLocation(shared.locations.EdgeLocation location) {
         this.location = location;
         return this;
     }

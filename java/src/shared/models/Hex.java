@@ -10,7 +10,7 @@ public class Hex {
 
     @SerializedName("location")
     @Expose
-    private HexLocation location;
+    private shared.locations.HexLocation location;
     @SerializedName("resource")
     @Expose
     private String resource;
@@ -29,7 +29,7 @@ public class Hex {
      * @param resource
      * @param number
      */
-    public Hex(HexLocation location, String resource, String number) {
+    public Hex(shared.locations.HexLocation location, String resource, String number) {
         this.location = location;
         this.resource = resource;
         this.number = number;
@@ -38,18 +38,18 @@ public class Hex {
     /**
      * @return The location
      */
-    public HexLocation getLocation() {
+    public shared.locations.HexLocation getLocation() {
         return location;
     }
 
     /**
      * @param location The location
      */
-    public void setLocation(HexLocation location) {
+    public void setLocation(shared.locations.HexLocation location) {
         this.location = location;
     }
 
-    public Hex withLocation(HexLocation location) {
+    public Hex withLocation(shared.locations.HexLocation location) {
         this.location = location;
         return this;
     }
