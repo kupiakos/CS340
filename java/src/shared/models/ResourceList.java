@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
 
 @Generated("org.jsonschema2pojo")
-public class Bank {
+public class ResourceList {
 
     @SerializedName("brick")
     @Expose
@@ -27,7 +27,7 @@ public class Bank {
     /**
      * No args constructor for use in serialization
      */
-    public Bank() {
+    public ResourceList() {
     }
 
     /**
@@ -37,7 +37,7 @@ public class Bank {
      * @param sheep
      * @param ore
      */
-    public Bank(String brick, String ore, String sheep, String wheat, String wood) {
+    public ResourceList(String brick, String ore, String sheep, String wheat, String wood) {
         this.brick = brick;
         this.ore = ore;
         this.sheep = sheep;
@@ -59,7 +59,7 @@ public class Bank {
         this.brick = brick;
     }
 
-    public Bank withBrick(String brick) {
+    public ResourceList withBrick(String brick) {
         this.brick = brick;
         return this;
     }
@@ -78,7 +78,7 @@ public class Bank {
         this.ore = ore;
     }
 
-    public Bank withOre(String ore) {
+    public ResourceList withOre(String ore) {
         this.ore = ore;
         return this;
     }
@@ -97,7 +97,7 @@ public class Bank {
         this.sheep = sheep;
     }
 
-    public Bank withSheep(String sheep) {
+    public ResourceList withSheep(String sheep) {
         this.sheep = sheep;
         return this;
     }
@@ -116,7 +116,7 @@ public class Bank {
         this.wheat = wheat;
     }
 
-    public Bank withWheat(String wheat) {
+    public ResourceList withWheat(String wheat) {
         this.wheat = wheat;
         return this;
     }
@@ -135,7 +135,7 @@ public class Bank {
         this.wood = wood;
     }
 
-    public Bank withWood(String wood) {
+    public ResourceList withWood(String wood) {
         this.wood = wood;
         return this;
     }

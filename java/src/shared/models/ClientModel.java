@@ -12,7 +12,7 @@ public class ClientModel {
 
     @SerializedName("bank")
     @Expose
-    private Bank bank;
+    private ResourceList bank;
     @SerializedName("chat")
     @Expose
     private Chat chat;
@@ -55,7 +55,7 @@ public class ClientModel {
      * @param log
      * @param version
      */
-    public ClientModel(Bank bank, Chat chat, Log log, Map map, List<Player> players, TradeOffer tradeOffer, TurnTracker turnTracker, String version, String winner) {
+    public ClientModel(ResourceList bank, Chat chat, Log log, Map map, List<Player> players, TradeOffer tradeOffer, TurnTracker turnTracker, String version, String winner) {
         this.bank = bank;
         this.chat = chat;
         this.log = log;
@@ -70,18 +70,18 @@ public class ClientModel {
     /**
      * @return The bank
      */
-    public Bank getBank() {
+    public ResourceList getBank() {
         return bank;
     }
 
     /**
      * @param bank The bank
      */
-    public void setBank(Bank bank) {
+    public void setBank(ResourceList bank) {
         this.bank = bank;
     }
 
-    public ClientModel withBank(Bank bank) {
+    public ClientModel withBank(ResourceList bank) {
         this.bank = bank;
         return this;
     }
