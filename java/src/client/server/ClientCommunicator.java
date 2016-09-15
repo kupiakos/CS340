@@ -5,4 +5,6 @@ package client.server;
  * Works with ServerProxy class to communicate with internet server using Java HTTP requests.
  */
 public class ClientCommunicator {
+
+    
 }
