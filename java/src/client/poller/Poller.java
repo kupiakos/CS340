@@ -1,5 +1,9 @@
 package client.poller;
 
+import client.session.SessionManager;
+import jdk.nashorn.api.scripting.JSObject;
+import shared.models.ClientModel;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -17,6 +21,10 @@ public class Poller {
      * Timer to run poller
      */
     private Timer mTimer;
+    /**
+     * Game model on clients side for version
+     */
+    private ClientModel clientModel;
 
 
     /**
@@ -28,10 +36,18 @@ public class Poller {
         ActionListener poll = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
+                // Grab a session manager
+                SessionManager sm = SessionManager.getInstance();
                 // Get our version number
+                String version = sm.getClientModel().getVersion();
                 // Call the server with the number
+                JSObject response = sm.getServer().getModel(version);
                 // If new model
+                //TODO :: Actually fix this to the real meathod calls
+                if (response != null){
                     // Update ours
+                    sm.setmClientModel((ClientModel) response);
+                }
             }
         };
 
@@ -42,7 +58,7 @@ public class Poller {
     /**
      * Starts the mTimer, which starts up the polling
      */
-    public void startTimer(){
+    public void startPoller(){
         mTimer.start();
     }
 
@@ -53,5 +69,14 @@ public class Poller {
     public void stopPoller() {
         mTimer.stop();
     }
+
+    /**
+     * Adds the game model we will use, so we have access to the version
+     * @param cm a clientModel
+     */
+    public void setClientModel(ClientModel cm) {
+        clientModel = cm;
+    }
+
 
 }
