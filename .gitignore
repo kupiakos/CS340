@@ -9,6 +9,10 @@ java/build/*
 .idea/vcs.xml
 .idea/jsLibraryMappings.xml
 .idea/*
+cs340.properties
+cs340.xml
+java/dist/
+java/module_phase_1.xml
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
