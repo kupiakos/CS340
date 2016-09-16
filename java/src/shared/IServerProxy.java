@@ -1,5 +1,6 @@
 package shared;
 
+import jdk.nashorn.api.scripting.JSObject;
 import shared.definitions.ResourceType;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
@@ -117,4 +118,5 @@ public interface IServerProxy {
      */
     boolean useMonument();
 
+    JSObject getModel(String version);
 }
