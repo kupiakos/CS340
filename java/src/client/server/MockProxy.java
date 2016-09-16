@@ -52,7 +52,7 @@ public class MockProxy implements IServerProxy{
     }
 
     @Override
-    public Gson gameState(int version) {
+    public ClientModel gameState(int version) {
         return null;
     }
 
@@ -167,7 +167,7 @@ public class MockProxy implements IServerProxy{
     }
 
     @Override
-    public boolean useMonument() {
+    public boolean useMonument(Monument monumentObject) {
         return false;
     }
 }

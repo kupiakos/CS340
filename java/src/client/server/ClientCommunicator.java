@@ -9,7 +9,19 @@ import java.net.MalformedURLException;
  * Created by elijahgk on 9/12/2016.
  * ClientCommunicator receives calls from ServerProxy and submits those calls as HTTP requests to the Catan Server.
  */
-public class ClientCommunicator {
+class ClientCommunicator {
+
+    private static ClientCommunicator SINGLETON = null;
+
+    private ClientCommunicator(){}
+
+    public static ClientCommunicator getSingleton(){
+        if(SINGLETON==null){
+            SINGLETON = new ClientCommunicator();
+            return SINGLETON;
+        }
+        return SINGLETON;
+    }
 
     /**
      * Method that will communicate with the server and serialize the return information into GSON.

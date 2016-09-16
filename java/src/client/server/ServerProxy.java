@@ -15,7 +15,17 @@ import shared.models.*;
  */
 public class ServerProxy implements IServerProxy {
 
-    public ServerProxy(){}
+    private static ServerProxy SINGLETON = null;
+
+    private ServerProxy(){}
+
+    public static ServerProxy getSingleton(){
+        if(SINGLETON==null){
+            SINGLETON = new ServerProxy();
+            return SINGLETON;
+        }
+        return SINGLETON;
+    }
 
     @Override
     public boolean login(Credentials credentialsObject) {
@@ -53,7 +63,7 @@ public class ServerProxy implements IServerProxy {
     }
 
     @Override
-    public Gson gameState(int version) {
+    public ClientModel gameState(int version) {
         return null;
     }
 
@@ -168,7 +178,7 @@ public class ServerProxy implements IServerProxy {
     }
 
     @Override
-    public boolean useMonument() {
+    public boolean useMonument(Monument monumentObject) {
         return false;
     }
 }
