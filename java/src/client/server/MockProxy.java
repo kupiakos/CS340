@@ -1,18 +1,103 @@
 package client.server;
 
+import com.google.gson.Gson;
 import shared.IServerProxy;
 import shared.definitions.ResourceType;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
 import shared.locations.VertexLocation;
+import shared.models.*;
 
 /**
  * Created by elijahgk on 9/12/2016.
  * This class is used for testing purposes by hard coding results for Catan Server API requests.
  */
 public class MockProxy implements IServerProxy{
+
+    public MockProxy(){}
+
     @Override
-    public boolean discardCards() {
+    public boolean login(Credentials credentialsObject) {
+        return false;
+    }
+
+    @Override
+    public boolean register(Credentials credentialsObject) {
+        return false;
+    }
+
+    @Override
+    public Gson listOfGames() {
+        return null;
+    }
+
+    @Override
+    public boolean createGame(CreateGameRequest createGameObject) {
+        return false;
+    }
+
+    @Override
+    public boolean joinGames(JoinGameRequest joinGameObject) {
+        return false;
+    }
+
+    @Override
+    public boolean saveGame(SaveGameRequest saveGameObject) {
+        return false;
+    }
+
+    @Override
+    public boolean loadGame(LoadGameRequest loadGameObject) {
+        return false;
+    }
+
+    @Override
+    public Gson gameState(int version) {
+        return null;
+    }
+
+    @Override
+    public boolean resetGame() {
+        return false;
+    }
+
+    @Override
+    public boolean getCommandsGame() {
+        return false;
+    }
+
+    @Override
+    public boolean postCommandsGame() {
+        return false;
+    }
+
+    @Override
+    public void listAI() {
+
+    }
+
+    @Override
+    public boolean addAI(AddAIRequest addAIObject) {
+        return false;
+    }
+
+    @Override
+    public boolean changeLogLevel(ChangeLogLevelRequest changeLogLevelObject) {
+        return false;
+    }
+
+    @Override
+    public String sendChat(SendChat sendChatObject) {
+        return null;
+    }
+
+    @Override
+    public boolean acceptTrade(AcceptTrade acceptTradeObject) {
+        return false;
+    }
+
+    @Override
+    public boolean discardCards(DiscardCards discardCardsObject) {
         return false;
     }
 
@@ -22,32 +107,32 @@ public class MockProxy implements IServerProxy{
     }
 
     @Override
-    public boolean buildRoad(boolean free, EdgeLocation roadLocation) {
+    public boolean buildRoad(BuildRoad buildRoadObject) {
         return false;
     }
 
     @Override
-    public boolean buildSettlement(boolean free, VertexLocation settlementLocation) {
+    public boolean buildSettlement(BuildSettlement buildSettlementObject) {
         return false;
     }
 
     @Override
-    public boolean buildCity(VertexLocation cityLocation) {
+    public boolean buildCity(BuildCity buildCityObject) {
         return false;
     }
 
     @Override
-    public boolean offerTrade() {
+    public boolean offerTrade(OfferTrade offerTradeObject) {
         return false;
     }
 
     @Override
-    public boolean maritimeTrade(int ratio, ResourceType inputResource, ResourceType outputResource) {
+    public boolean maritimeTrade(MaritimeTrade maritimeTradeObject) {
         return false;
     }
 
     @Override
-    public boolean robPlayer(HexLocation newLocation) {
+    public boolean robPlayer(RobPlayer robPlayerObject) {
         return false;
     }
 
@@ -62,22 +147,22 @@ public class MockProxy implements IServerProxy{
     }
 
     @Override
-    public boolean useSoldier(HexLocation newLocation) {
+    public boolean useSoldier(Soldier soldierObject) {
         return false;
     }
 
     @Override
-    public boolean useYearOfPlenty(ResourceType Resource1, ResourceType Resource2) {
+    public boolean useYearOfPlenty(YearOfPlenty yearOfPlentyObject) {
         return false;
     }
 
     @Override
-    public boolean useRoadBuildinng(EdgeLocation edge1, EdgeLocation edge2) {
+    public boolean useRoadBuilding(RoadBuilding roadBuildingObject) {
         return false;
     }
 
     @Override
-    public boolean useMonopoly(ResourceType resourceType) {
+    public boolean useMonopoly(Monopoly monopolyObject) {
         return false;
     }
 
