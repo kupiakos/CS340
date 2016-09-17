@@ -1,14 +1,13 @@
 package shared;
 
 import com.google.gson.Gson;
-import shared.definitions.ResourceType;
-import shared.locations.EdgeLocation;
-import shared.locations.HexLocation;
-import shared.locations.VertexLocation;
-import shared.models.*;
+import shared.models.game.AddAIRequest;
+import shared.models.game.ClientModel;
+import shared.models.games.*;
+import shared.models.moves.*;
+import shared.models.user.Credentials;
+import shared.models.util.ChangeLogLevelRequest;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +15,7 @@ import java.util.List;
  * Interface to be implemented in ServerProxy and MockProxy classes.
  * Implements the Catan Server API commands.
  */
-public interface IServerProxy{
+public interface IServer {
 
 //Non-Move APIs
     /**
@@ -42,10 +41,9 @@ public interface IServerProxy{
      * Method returns info about all of the current games on the server
      * @pre None
      * @post If the operation succeeds,  1. The server returns an HTTP 200 success response.  2. The body contains a JSON array containing a list of objects that contain information about the server’s games    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
-     * @return JSON array containing a list of objects with the server's games if true; else false
+     * @return The list of {@link Game} objects that are running on the server.
      */
-    Gson listOfGames();
-    //TODO Change type for listOfGames
+    List<Game> listOfGames();
 
     /**
      * Creates a new game on the server
@@ -88,13 +86,13 @@ public interface IServerProxy{
     boolean loadGame(LoadGameRequest loadGameObject);
 
     /**
-     * Returns the current state of the game in JSON format
+     * Returns the current state of the game
      * @param version If needed, a version number is needed in the URL; null is valid
      * @pre caller is logged in and joined a game and, if specified, the version number is included as the “version” query parameter in the request URL, and its value is a valid integer.
      * @post If the operation succeeds,  1. The server returns an HTTP 200 success response.  2. The response body contains JSON data  a. The full client model JSON is returned if the caller does not provide a version number, or the provide version number does not match the version on the server  b. “true” (true in double quotes) is returned if the caller provided a version number, and the version number matched the version number on the server    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
-     * @return true if file has been loaded; false if not
+     * @return The current game state, or null if one does not exist
      */
-    Gson gameState(int version);
+    ClientModel gameState(int version);
 
     /**
      * Clears the command history of the current game (not the players)
@@ -153,7 +151,7 @@ public interface IServerProxy{
      * @post Chat contains your message at the end
      * @return The message that the player wants to send
      */
-    String sendChat(SendChat sendChatObject);
+    String sendChat(SendChatAction sendChatObject);
 
     /**
      * Method considers if player has accepted the offer and then swaps specified resources if true
@@ -162,14 +160,14 @@ public interface IServerProxy{
      * @post  If you accepted, you and the player who offered swap the specified resources, If you declined no resources are exchanged, The trade offer is removed
      * @return True if resources is traded; false if not
      */
-    boolean acceptTrade(AcceptTrade acceptTradeObject);
+    boolean acceptTrade(AcceptTradeAction acceptTradeObject);
 
     /**
      * Method that discards cards from a players hand.
      * @param discardCardsObject The information that needs to be added to the body of the HTTP request.
      * @return True if cards were discarded; false otherwise.
      */
-    boolean discardCards(DiscardCards discardCardsObject);
+    boolean discardCards(DiscardCardsAction discardCardsObject);
 
     /**
      * Rolls dice.
@@ -187,7 +185,7 @@ public interface IServerProxy{
      * @param buildRoadObject The information that needs to be added to the body of the HTTP request.
      * @return True if road was built; false otherwise.
      */
-    boolean buildRoad(BuildRoad buildRoadObject);
+    boolean buildRoad(BuildRoadAction buildRoadObject);
 
     /**
      * Builds a settlement on game map if player is able
@@ -196,7 +194,7 @@ public interface IServerProxy{
      * @param buildSettlementObject The information that needs to be added to the body of the HTTP request.
      * @return True if settlement was built; false otherwise
      */
-    boolean buildSettlement(BuildSettlement buildSettlementObject);
+    boolean buildSettlement(BuildSettlementAction buildSettlementObject);
 
     /**
      * Builds a city on game map if player is able
@@ -205,7 +203,7 @@ public interface IServerProxy{
      * @param buildCityObject The information that needs to be added to the body of the HTTP request.
      * @return True if city was built; false otherwise
      */
-    boolean buildCity(BuildCity buildCityObject);
+    boolean buildCity(BuildCityAction buildCityObject);
 
     /**
      * Offers cards to trade with other players.  If successful, offer is sent to other player
@@ -214,7 +212,7 @@ public interface IServerProxy{
      * @param offerTradeObject The information that needs to be added to the body of the HTTP request.
      * @return True is offer was sent; false otherwise
      */
-    boolean offerTrade(OfferTrade offerTradeObject);
+    boolean offerTrade(OfferTradeAction offerTradeObject);
 
     /**
      * Trades in your resources for resources offered by harbor.
@@ -223,7 +221,7 @@ public interface IServerProxy{
      * @param maritimeTradeObject The information that needs to be added to the body of the HTTP request.
      * @return True if trade was successful, false otherwise.
      */
-    boolean maritimeTrade(MaritimeTrade maritimeTradeObject);
+    boolean maritimeTrade(MaritimeTradeAction maritimeTradeObject);
 
     /**
      * Player gets to move robber to new location and target another player to rob
@@ -232,7 +230,7 @@ public interface IServerProxy{
      * @param robPlayerObject The information that needs to be added to the body of the HTTP request.
      * @return True if robber was moved and player robbed; false otherwise.
      */
-    boolean robPlayer(RobPlayer robPlayerObject);
+    boolean robPlayer(RobPlayerAction robPlayerObject);
 
     /**
      * This method ends your turn and moves the game to the next player.
@@ -240,7 +238,7 @@ public interface IServerProxy{
      * @pre None
      * @post The cards in the newDevHand have been transferred to the oldDevHand
      */
-    void finishTurn();
+    void finishTurn(FinishMoveAction finishMoveObject);
 
     /**
      * Buys a development card from the deck if any are left and if you have enough resources.
@@ -248,7 +246,7 @@ public interface IServerProxy{
      * @post Player has a new dev card in 1) oldDevHand if monument; in newDevHand otherwise.
      * @return  True if card was added to hand; false otherwise.
      */
-    boolean buyDevCard();
+    boolean buyDevCard(BuyDevCardAction buyDevCardObject);
 
     /**
      * Player gets to move robber to new location and target another player to rob
@@ -257,7 +255,7 @@ public interface IServerProxy{
      * @param soldierObject The information that needs to be added to the body of the HTTP request.
      * @return True if knight card was used; false otherwise.
      */
-    boolean useSoldier(Soldier soldierObject);
+    boolean useSoldier(SoldierAction soldierObject);
 
     /**
      * Play the year of plenty card to gain two resources of your choice.
@@ -266,7 +264,7 @@ public interface IServerProxy{
      * @param yearOfPlentyObject The information that needs to be added to the body of the HTTP request.
      * @return True if resources were given to player; false otherwise
      */
-    boolean useYearOfPlenty(YearOfPlenty yearOfPlentyObject);
+    boolean useYearOfPlenty(YearofPlentyAction yearOfPlentyObject);
 
     /**
      * Play the road building card to build two new roads, if available
@@ -275,7 +273,7 @@ public interface IServerProxy{
      * @param roadBuildingObject The information that needs to be added to the body of the HTTP request.
      * @return True if roads were built; false otherwise.
      */
-    boolean useRoadBuilding(RoadBuilding roadBuildingObject);
+    boolean useRoadBuilding(RoadBuildingAction roadBuildingObject);
 
     /**
      * Play the monopoly card to take all of one type of resource from all other players
@@ -284,7 +282,7 @@ public interface IServerProxy{
      * @param monopolyObject The information that needs to be added to the body of the HTTP request.
      * @return  True if resource was given to you; false otherwise.
      */
-    boolean useMonopoly(Monopoly monopolyObject);
+    boolean useMonopoly(MonopolyAction monopolyObject);
 
     /**
      * Play your monument cards to gain victory point and win the game.
@@ -292,6 +290,6 @@ public interface IServerProxy{
      * @post You gain victory point(s).
      * @return True if victory point was gained; false otherwise.
      */
-    boolean useMonument();
+    boolean useMonument(MonumentAction monumentObject);
 
 }

@@ -1,9 +1,8 @@
 package client.session;
 
 import client.poller.Poller;
-import client.server.ServerProxy;
-import shared.IServerProxy;
-import shared.models.ClientModel;
+import shared.IServer;
+import shared.models.game.ClientModel;
 
 import java.util.Observable;
 
@@ -26,7 +25,7 @@ public class SessionManager extends Observable {
     /**
      * The server that may be a fake one or a real one
      */
-    IServerProxy mServer;
+    IServer mServer;
 
 
 
@@ -70,7 +69,7 @@ public class SessionManager extends Observable {
      * Grabs a "server" for us so we can talk with the real server
      * @return a server we can use
      */
-    public IServerProxy getServer() {
+    public IServer getServer() {
         return mServer;
     }
 
