@@ -6,6 +6,7 @@ java/build/*
 .idea/tasks.xml
 .idea/dictionaries
 .idea/vcs.xml
+.idea/misc.xml
 .idea/jsLibraryMappings.xml
 cs340.properties
 cs340.xml
