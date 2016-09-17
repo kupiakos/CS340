@@ -1,8 +1,22 @@
 package shared.definitions;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum DevCardType
 {
-	
-	SOLDIER, YEAR_OF_PLENTY, MONOPOLY, ROAD_BUILD, MONUMENT
+	@SerializedName("Soldier")
+	SOLDIER,
+
+    @SerializedName("Year_Of_Plenty")
+	YEAR_OF_PLENTY,
+
+    @SerializedName("Monopoly")
+	MONOPOLY,
+
+    @SerializedName("Road_Building")
+	ROAD_BUILD,
+
+    @SerializedName("Monument")
+	MONUMENT
 }
 
