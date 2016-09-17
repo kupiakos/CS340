@@ -12,7 +12,7 @@ public class MonopolyAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final DevCardType type = DevCardType.MONOPOLY;
+    private final DevCardType TYPE = DevCardType.MONOPOLY;
 
     @SerializedName("playerIndex")
     @Expose
@@ -33,7 +33,7 @@ public class MonopolyAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param playerIndex Who's playing this dev card
       * @param resource The resource
      */
@@ -45,7 +45,7 @@ public class MonopolyAction {
     /**
      * @return The type
      */
-    public final DevCardType getType() { return type; }
+    public final DevCardType getType() { return TYPE; }
 
     /**
      * @return Who's playing this dev card
@@ -79,7 +79,7 @@ public class MonopolyAction {
     @Override
     public String toString() {
         return "MonopolyAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", playerIndex=" + playerIndex +
             ", resource=" + resource +
             "]";
@@ -95,7 +95,7 @@ public class MonopolyAction {
 
     public boolean equals(MonopolyAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             playerIndex == other.playerIndex &&
             resource == other.resource
         );

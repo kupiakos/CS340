@@ -12,7 +12,7 @@ public class RoadBuildingAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final DevCardType type = DevCardType.ROAD_BUILD;
+    private final DevCardType TYPE = DevCardType.ROAD_BUILD;
 
     @SerializedName("spot2")
     @Expose
@@ -37,7 +37,7 @@ public class RoadBuildingAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param spot2 The spot2
       * @param spot1 The spot1
       * @param playerIndex Who's placing the roads
@@ -51,7 +51,7 @@ public class RoadBuildingAction {
     /**
      * @return The type
      */
-    public final DevCardType getType() { return type; }
+    public final DevCardType getType() { return TYPE; }
 
     /**
      * @return The spot2
@@ -99,7 +99,7 @@ public class RoadBuildingAction {
     @Override
     public String toString() {
         return "RoadBuildingAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", spot2=" + spot2 +
             ", spot1=" + spot1 +
             ", playerIndex=" + playerIndex +
@@ -116,7 +116,7 @@ public class RoadBuildingAction {
 
     public boolean equals(RoadBuildingAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             spot2 == other.spot2 &&
             spot1 == other.spot1 &&
             playerIndex == other.playerIndex

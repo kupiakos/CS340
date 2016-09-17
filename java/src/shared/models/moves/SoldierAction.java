@@ -12,7 +12,7 @@ public class SoldierAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final DevCardType type = DevCardType.SOLDIER;
+    private final DevCardType TYPE = DevCardType.SOLDIER;
 
     @SerializedName("location")
     @Expose
@@ -37,7 +37,7 @@ public class SoldierAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param location the new location of the robber
       * @param playerIndex Who's playing this dev card
       * @param victimIndex The index of the player to rob
@@ -51,7 +51,7 @@ public class SoldierAction {
     /**
      * @return The type
      */
-    public final DevCardType getType() { return type; }
+    public final DevCardType getType() { return TYPE; }
 
     /**
      * @return the new location of the robber
@@ -99,7 +99,7 @@ public class SoldierAction {
     @Override
     public String toString() {
         return "SoldierAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", location=" + location +
             ", playerIndex=" + playerIndex +
             ", victimIndex=" + victimIndex +
@@ -116,7 +116,7 @@ public class SoldierAction {
 
     public boolean equals(SoldierAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             location == other.location &&
             playerIndex == other.playerIndex &&
             victimIndex == other.victimIndex

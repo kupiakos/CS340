@@ -11,7 +11,7 @@ public class BuildCityAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String type = "BuildCity";
+    private final String TYPE = "BuildCity";
 
     @SerializedName("vertexLocation")
     @Expose
@@ -32,7 +32,7 @@ public class BuildCityAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param vertexLocation The vertexLocation
       * @param playerIndex Who's placing the city
      */
@@ -44,7 +44,7 @@ public class BuildCityAction {
     /**
      * @return The type
      */
-    public final String getType() { return type; }
+    public final String getType() { return TYPE; }
 
     /**
      * @return The vertexLocation
@@ -78,7 +78,7 @@ public class BuildCityAction {
     @Override
     public String toString() {
         return "BuildCityAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", vertexLocation=" + vertexLocation +
             ", playerIndex=" + playerIndex +
             "]";
@@ -94,7 +94,7 @@ public class BuildCityAction {
 
     public boolean equals(BuildCityAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             vertexLocation == other.vertexLocation &&
             playerIndex == other.playerIndex
         );

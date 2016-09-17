@@ -12,7 +12,7 @@ public class YearofPlentyAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final DevCardType type = DevCardType.YEAR_OF_PLENTY;
+    private final DevCardType TYPE = DevCardType.YEAR_OF_PLENTY;
 
     @SerializedName("resource1")
     @Expose
@@ -37,7 +37,7 @@ public class YearofPlentyAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param resource1 The resource1
       * @param playerIndex Who's playing this dev card
       * @param resource2 The resource2
@@ -51,7 +51,7 @@ public class YearofPlentyAction {
     /**
      * @return The type
      */
-    public final DevCardType getType() { return type; }
+    public final DevCardType getType() { return TYPE; }
 
     /**
      * @return The resource1
@@ -99,7 +99,7 @@ public class YearofPlentyAction {
     @Override
     public String toString() {
         return "YearofPlentyAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", resource1=" + resource1 +
             ", playerIndex=" + playerIndex +
             ", resource2=" + resource2 +
@@ -116,7 +116,7 @@ public class YearofPlentyAction {
 
     public boolean equals(YearofPlentyAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             resource1 == other.resource1 &&
             playerIndex == other.playerIndex &&
             resource2 == other.resource2

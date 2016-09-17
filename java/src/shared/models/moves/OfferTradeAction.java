@@ -10,7 +10,7 @@ public class OfferTradeAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String type = "OfferTrade";
+    private final String TYPE = "OfferTrade";
 
     @SerializedName("receiver")
     @Expose
@@ -35,7 +35,7 @@ public class OfferTradeAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param receiver Who you're offering the trade to (0-3)
       * @param offer What you get (+) and what you give (-)
       * @param playerIndex Who's sending the offer
@@ -49,7 +49,7 @@ public class OfferTradeAction {
     /**
      * @return The type
      */
-    public final String getType() { return type; }
+    public final String getType() { return TYPE; }
 
     /**
      * @return Who you're offering the trade to (0-3)
@@ -97,7 +97,7 @@ public class OfferTradeAction {
     @Override
     public String toString() {
         return "OfferTradeAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", receiver=" + receiver +
             ", offer=" + offer +
             ", playerIndex=" + playerIndex +
@@ -114,7 +114,7 @@ public class OfferTradeAction {
 
     public boolean equals(OfferTradeAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             receiver == other.receiver &&
             offer == other.offer &&
             playerIndex == other.playerIndex

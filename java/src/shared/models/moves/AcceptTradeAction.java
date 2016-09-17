@@ -10,7 +10,7 @@ public class AcceptTradeAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String type = "AcceptTrade";
+    private final String TYPE = "AcceptTrade";
 
     @SerializedName("willAccept")
     @Expose
@@ -31,7 +31,7 @@ public class AcceptTradeAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param willAccept Whether you accept the trade or not
       * @param playerIndex Who's accepting / rejecting this trade
      */
@@ -43,7 +43,7 @@ public class AcceptTradeAction {
     /**
      * @return The type
      */
-    public final String getType() { return type; }
+    public final String getType() { return TYPE; }
 
     /**
      * @return Whether you accept the trade or not
@@ -77,7 +77,7 @@ public class AcceptTradeAction {
     @Override
     public String toString() {
         return "AcceptTradeAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", willAccept=" + willAccept +
             ", playerIndex=" + playerIndex +
             "]";
@@ -93,7 +93,7 @@ public class AcceptTradeAction {
 
     public boolean equals(AcceptTradeAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             willAccept == other.willAccept &&
             playerIndex == other.playerIndex
         );

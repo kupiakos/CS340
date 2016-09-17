@@ -11,7 +11,7 @@ public class RobPlayerAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String type = "RobPlayer";
+    private final String TYPE = "RobPlayer";
 
     @SerializedName("location")
     @Expose
@@ -36,7 +36,7 @@ public class RobPlayerAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param location the new location of the robber
       * @param playerIndex Who's doing the robbing
       * @param victimIndex The order index of the player to rob
@@ -50,7 +50,7 @@ public class RobPlayerAction {
     /**
      * @return The type
      */
-    public final String getType() { return type; }
+    public final String getType() { return TYPE; }
 
     /**
      * @return the new location of the robber
@@ -98,7 +98,7 @@ public class RobPlayerAction {
     @Override
     public String toString() {
         return "RobPlayerAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", location=" + location +
             ", playerIndex=" + playerIndex +
             ", victimIndex=" + victimIndex +
@@ -115,7 +115,7 @@ public class RobPlayerAction {
 
     public boolean equals(RobPlayerAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             location == other.location &&
             playerIndex == other.playerIndex &&
             victimIndex == other.victimIndex

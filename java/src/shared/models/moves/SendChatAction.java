@@ -10,7 +10,7 @@ public class SendChatAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String type = "SendChat";
+    private final String TYPE = "SendChat";
 
     @SerializedName("content")
     @Expose
@@ -31,7 +31,7 @@ public class SendChatAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param content The content
       * @param playerIndex Who's sending this chat message
      */
@@ -43,7 +43,7 @@ public class SendChatAction {
     /**
      * @return The type
      */
-    public final String getType() { return type; }
+    public final String getType() { return TYPE; }
 
     /**
      * @return The content
@@ -77,7 +77,7 @@ public class SendChatAction {
     @Override
     public String toString() {
         return "SendChatAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", content=" + content +
             ", playerIndex=" + playerIndex +
             "]";
@@ -93,7 +93,7 @@ public class SendChatAction {
 
     public boolean equals(SendChatAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             content == other.content &&
             playerIndex == other.playerIndex
         );

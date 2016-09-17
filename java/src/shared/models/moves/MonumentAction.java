@@ -11,7 +11,7 @@ public class MonumentAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final DevCardType type = DevCardType.MONUMENT;
+    private final DevCardType TYPE = DevCardType.MONUMENT;
 
     @SerializedName("playerIndex")
     @Expose
@@ -28,7 +28,7 @@ public class MonumentAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param playerIndex Who's playing this dev card
      */
     public MonumentAction(PlayerIndex playerIndex) {
@@ -38,7 +38,7 @@ public class MonumentAction {
     /**
      * @return The type
      */
-    public final DevCardType getType() { return type; }
+    public final DevCardType getType() { return TYPE; }
 
     /**
      * @return Who's playing this dev card
@@ -58,7 +58,7 @@ public class MonumentAction {
     @Override
     public String toString() {
         return "MonumentAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", playerIndex=" + playerIndex +
             "]";
     }
@@ -73,7 +73,7 @@ public class MonumentAction {
 
     public boolean equals(MonumentAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             playerIndex == other.playerIndex
         );
     }

@@ -10,7 +10,7 @@ public class DiscardCardsAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String type = "DiscardCards";
+    private final String TYPE = "DiscardCards";
 
     @SerializedName("discardedCards")
     @Expose
@@ -31,7 +31,7 @@ public class DiscardCardsAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param discardedCards The discardedCards
       * @param playerIndex Who's discarding
      */
@@ -43,7 +43,7 @@ public class DiscardCardsAction {
     /**
      * @return The type
      */
-    public final String getType() { return type; }
+    public final String getType() { return TYPE; }
 
     /**
      * @return The discardedCards
@@ -77,7 +77,7 @@ public class DiscardCardsAction {
     @Override
     public String toString() {
         return "DiscardCardsAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", discardedCards=" + discardedCards +
             ", playerIndex=" + playerIndex +
             "]";
@@ -93,7 +93,7 @@ public class DiscardCardsAction {
 
     public boolean equals(DiscardCardsAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             discardedCards == other.discardedCards &&
             playerIndex == other.playerIndex
         );

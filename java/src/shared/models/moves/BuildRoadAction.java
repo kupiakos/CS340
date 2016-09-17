@@ -15,7 +15,7 @@ public class BuildRoadAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String type = "BuildRoad";
+    private final String TYPE = "BuildRoad";
 
     @SerializedName("roadLocation")
     @Expose
@@ -37,7 +37,7 @@ public class BuildRoadAction {
 
     /**
       * @param free Whether this is placed for free (setup)
-      * @param type The type
+      * @param TYPE The type
       * @param roadLocation The roadLocation
       * @param playerIndex Who's placing the road
      */
@@ -64,7 +64,7 @@ public class BuildRoadAction {
     /**
      * @return The type
      */
-    public final String getType() { return type; }
+    public final String getType() { return TYPE; }
 
     /**
      * @return The roadLocation
@@ -99,7 +99,7 @@ public class BuildRoadAction {
     public String toString() {
         return "BuildRoadAction [" +
             "free=" + free +
-            ", type=" + type +
+            ", type=" + TYPE +
             ", roadLocation=" + roadLocation +
             ", playerIndex=" + playerIndex +
             "]";
@@ -116,7 +116,7 @@ public class BuildRoadAction {
     public boolean equals(BuildRoadAction other) {
         return (
             free == other.free &&
-            type == other.type &&
+            TYPE == other.TYPE &&
             roadLocation == other.roadLocation &&
             playerIndex == other.playerIndex
         );

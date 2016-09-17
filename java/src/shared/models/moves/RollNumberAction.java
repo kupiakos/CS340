@@ -14,7 +14,7 @@ public class RollNumberAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String type = "RollNumber";
+    private final String TYPE = "RollNumber";
 
     @SerializedName("playerIndex")
     @Expose
@@ -32,7 +32,7 @@ public class RollNumberAction {
 
     /**
       * @param number what number was rolled (2-12)
-      * @param type The type
+      * @param TYPE The type
       * @param playerIndex Who's sending this command (0-3)
      */
     public RollNumberAction(int number, PlayerIndex playerIndex) {
@@ -57,7 +57,7 @@ public class RollNumberAction {
     /**
      * @return The type
      */
-    public final String getType() { return type; }
+    public final String getType() { return TYPE; }
 
     /**
      * @return Who's sending this command (0-3)
@@ -78,7 +78,7 @@ public class RollNumberAction {
     public String toString() {
         return "RollNumberAction [" +
             "number=" + number +
-            ", type=" + type +
+            ", type=" + TYPE +
             ", playerIndex=" + playerIndex +
             "]";
     }
@@ -94,7 +94,7 @@ public class RollNumberAction {
     public boolean equals(RollNumberAction other) {
         return (
             number == other.number &&
-            type == other.type &&
+            TYPE == other.TYPE &&
             playerIndex == other.playerIndex
         );
     }

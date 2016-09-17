@@ -10,7 +10,7 @@ public class FinishMoveAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String type = "FinishTurn";
+    private final String TYPE = "FinishTurn";
 
     @SerializedName("playerIndex")
     @Expose
@@ -27,7 +27,7 @@ public class FinishMoveAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param playerIndex Who's sending this command (0-3)
      */
     public FinishMoveAction(PlayerIndex playerIndex) {
@@ -37,7 +37,7 @@ public class FinishMoveAction {
     /**
      * @return The type
      */
-    public final String getType() { return type; }
+    public final String getType() { return TYPE; }
 
     /**
      * @return Who's sending this command (0-3)
@@ -57,7 +57,7 @@ public class FinishMoveAction {
     @Override
     public String toString() {
         return "FinishMoveAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", playerIndex=" + playerIndex +
             "]";
     }
@@ -72,7 +72,7 @@ public class FinishMoveAction {
 
     public boolean equals(FinishMoveAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             playerIndex == other.playerIndex
         );
     }

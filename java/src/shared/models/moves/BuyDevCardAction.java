@@ -10,7 +10,7 @@ public class BuyDevCardAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String type = "BuyDevCard";
+    private final String TYPE = "BuyDevCard";
 
     @SerializedName("playerIndex")
     @Expose
@@ -27,7 +27,7 @@ public class BuyDevCardAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param playerIndex Who's playing this dev card
      */
     public BuyDevCardAction(PlayerIndex playerIndex) {
@@ -37,7 +37,7 @@ public class BuyDevCardAction {
     /**
      * @return The type
      */
-    public final String getType() { return type; }
+    public final String getType() { return TYPE; }
 
     /**
      * @return Who's playing this dev card
@@ -57,7 +57,7 @@ public class BuyDevCardAction {
     @Override
     public String toString() {
         return "BuyDevCardAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", playerIndex=" + playerIndex +
             "]";
     }
@@ -72,7 +72,7 @@ public class BuyDevCardAction {
 
     public boolean equals(BuyDevCardAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             playerIndex == other.playerIndex
         );
     }

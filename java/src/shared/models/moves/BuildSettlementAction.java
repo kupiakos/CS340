@@ -11,7 +11,7 @@ public class BuildSettlementAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String type = "BuildSettlement";
+    private final String TYPE = "BuildSettlement";
 
     @SerializedName("free")
     @Expose
@@ -36,7 +36,7 @@ public class BuildSettlementAction {
     }
 
     /**
-      * @param type The type
+      * @param TYPE The type
       * @param free Whether this is placed for free (setup)
       * @param vertexLocation The vertexLocation
       * @param playerIndex Who's placing the settlement
@@ -50,7 +50,7 @@ public class BuildSettlementAction {
     /**
      * @return The type
      */
-    public final String getType() { return type; }
+    public final String getType() { return TYPE; }
 
     /**
      * @return Whether this is placed for free (setup)
@@ -98,7 +98,7 @@ public class BuildSettlementAction {
     @Override
     public String toString() {
         return "BuildSettlementAction [" +
-            "type=" + type +
+            "type=" + TYPE +
             ", free=" + free +
             ", vertexLocation=" + vertexLocation +
             ", playerIndex=" + playerIndex +
@@ -115,7 +115,7 @@ public class BuildSettlementAction {
 
     public boolean equals(BuildSettlementAction other) {
         return (
-            type == other.type &&
+            TYPE == other.TYPE &&
             free == other.free &&
             vertexLocation == other.vertexLocation &&
             playerIndex == other.playerIndex
