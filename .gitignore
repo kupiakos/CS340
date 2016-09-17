@@ -1,6 +1,5 @@
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
-# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544
-java/Phase 1.iml
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 java/build/*
 # User-specific stuff:
 .idea/workspace.xml
@@ -8,11 +7,9 @@ java/build/*
 .idea/dictionaries
 .idea/vcs.xml
 .idea/jsLibraryMappings.xml
-.idea/*
 cs340.properties
 cs340.xml
 java/dist/
-java/module_phase_1.xml
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
