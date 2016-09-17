@@ -125,15 +125,22 @@ public class ClientModel {
         return this;
     }
     /**
-     * @return The map
+     * Gets the current {@link Map} of the game.
+     * @return the current {@link Map} of the game
      */
     public Map getMap() { return map; }
 
     /**
-     * @param map The map
+     * Sets the {@link Map} of the game.
+     * @param map the current {@link Map} of the game
      */
     public void setMap(Map map) { this.map = map; }
 
+    /**
+     * Sets the {@link Map} of the game.
+     * @param map the current {@link Map} of the game
+     * @return the current {@link Map} of the game
+     */
     public ClientModel withMap(Map map) {
         setMap(map);
         return this;
@@ -167,12 +174,14 @@ public class ClientModel {
         return this;
     }
     /**
-     * @return The players
+     * Gets the {@link Player}s of the game
+     * @return The {@link Player}s currently playing this game
      */
     public List<Player> getPlayers() { return players; }
 
     /**
-     * @param players The players
+     * Sets the {@link Player}s of the game
+     * @param players The {@link Player}s currently playing this game
      */
     public void setPlayers(List<Player> players) { this.players = players; }
 
