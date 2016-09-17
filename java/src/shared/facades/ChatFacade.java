@@ -1,4 +1,4 @@
-package shared.facade;
+package shared.facades;
 
 public class ChatFacade {
 

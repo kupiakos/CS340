@@ -1,4 +1,4 @@
-package shared.facade;
+package shared.facades;
 
 import client.data.PlayerInfo;
 
