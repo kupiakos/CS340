@@ -1,34 +1,38 @@
 package shared.facades;
 
 import client.data.PlayerInfo;
+import shared.definitions.PlayerIndex;
+import shared.models.game.Player;
 
 import java.util.List;
 
 public class TurnFacade {
 
     /**
-     * Will check to see if the current player can end their turn
-     * @return
+     * Will check to see if the current {@link Player} can end their turn.
+     * @param player Which player to check
+     * @return Whether the turn could be ended
      */
-    public static boolean canEndTurn() {
+    public boolean canEndTurn(Player player) {
         return false;
     }
 
     /**
-     * checks to see if they can end turn, then will end their turn
+     * Checks to see if a {@link Player} can end turn, then ends their turn.
      */
-    public static void finishTurn() {
-        if (canEndTurn()) {
-
-        }
+    public static void endTurn(Player player) {
+//        if (canEndTurn(player)) {
+//
+//        }
     }
 
     /**
      * Asks the game if it is the playerID's turn
      *
-     * @param playerID The ID of the player asking
+     * @param player The ID of the player asking
+     * @return True if it is that @
      */
-    private boolean myTurn(int playerID) {
+    private boolean isPlayersTurn(PlayerIndex player) {
         return false;
     }
 
