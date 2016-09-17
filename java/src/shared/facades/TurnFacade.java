@@ -1,7 +1,6 @@
 package shared.facades;
 
-import client.data.PlayerInfo;
-import shared.definitions.PlayerIndex;
+import shared.definitions.TurnStatus;
 import shared.models.game.Player;
 
 import java.util.List;
@@ -10,8 +9,8 @@ public class TurnFacade {
 
     /**
      * Will check to see if the current {@link Player} can end their turn.
-     * @param player Which player to check
-     * @return Whether the turn could be ended
+     * @param player which {@link Player} to check
+     * @return whether the turn could be ended
      */
     public boolean canEndTurn(Player player) {
         return false;
@@ -27,29 +26,29 @@ public class TurnFacade {
     }
 
     /**
-     * Asks the game if it is the playerID's turn
+     * Asks the game if it is a specific {@link Player}'s turn.
      *
-     * @param player The ID of the player asking
-     * @return True if it is that @
+     * @param player the {@link Player} to check against
+     * @return true if it is that {@link Player}'s turn
      */
-    private boolean isPlayersTurn(PlayerIndex player) {
+    private boolean isPlayersTurn(Player player) {
         return false;
     }
 
     /**
      * Lets you check if you can trade, build, buy etc.
      *
-     * @return The current phase of the turn
+     * @return the current {@link TurnStatus} of the turn
      */
-    public String getPhase() {
-        return null;
+    public TurnStatus getPhase() {
+        return TurnStatus.FIRST_ROUND;
     }
 
     /**
-     * Lets you see all the players including yourself
-     * @return list of playerInfs
+     * Returns all {@link Player}s of the current game.
+     * @return a list of {@link Player}s, from 2-4
      */
-    public List<PlayerInfo> getPlayers() {
+    public List<Player> getPlayers() {
         return null;
     }
 }
