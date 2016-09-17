@@ -1,17 +1,10 @@
-package client.facade;
+package shared.facade;
 
 import client.data.PlayerInfo;
-import client.session.SessionManager;
-import shared.models.Player;
-import shared.models.TurnTracker;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by audakel on 9/16/16.
- */
-public class Turn {
+public class TurnFacade {
 
     /**
      * Will check to see if the current player can end their turn
