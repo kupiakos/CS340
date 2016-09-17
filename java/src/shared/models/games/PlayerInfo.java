@@ -9,7 +9,7 @@ import shared.definitions.CatanColor;
  * A stub for player representation
  */
 @Generated("net.kupiakos")
-public class Player {
+public class PlayerInfo {
 
     @SerializedName("color")
     @Expose
@@ -30,7 +30,7 @@ public class Player {
     /**
      * No args constructor for use in serialization
      */
-    public Player() {
+    public PlayerInfo() {
     }
 
     /**
@@ -38,7 +38,7 @@ public class Player {
       * @param name The name
       * @param id The id
      */
-    public Player(CatanColor color, String name, int id) {
+    public PlayerInfo(CatanColor color, String name, int id) {
             this.color = color;
             this.name = name;
             this.id = id;
@@ -54,7 +54,7 @@ public class Player {
      */
     public void setColor(CatanColor color) { this.color = color; }
 
-    public Player withColor(CatanColor color) {
+    public PlayerInfo withColor(CatanColor color) {
         setColor(color);
         return this;
     }
@@ -68,7 +68,7 @@ public class Player {
      */
     public void setName(String name) { this.name = name; }
 
-    public Player withName(String name) {
+    public PlayerInfo withName(String name) {
         setName(name);
         return this;
     }
@@ -82,14 +82,14 @@ public class Player {
      */
     public void setId(int id) { this.id = id; }
 
-    public Player withId(int id) {
+    public PlayerInfo withId(int id) {
         setId(id);
         return this;
     }
 
     @Override
     public String toString() {
-        return "Player [" +
+        return "PlayerInfo [" +
             "color=" + color +
             ", name=" + name +
             ", id=" + id +
@@ -98,13 +98,13 @@ public class Player {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof Player) {
-            return equals((Player)other);
+        if (other instanceof PlayerInfo) {
+            return equals((PlayerInfo)other);
         }
         return false;
     }
 
-    public boolean equals(Player other) {
+    public boolean equals(PlayerInfo other) {
         return (
             color == other.color &&
             name == other.name &&

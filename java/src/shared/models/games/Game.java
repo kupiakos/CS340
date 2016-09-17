@@ -14,7 +14,7 @@ public class Game {
 
     @SerializedName("players")
     @Expose
-    private List<Player> players = new ArrayList<Player>();
+    private List<PlayerInfo> players = new ArrayList<PlayerInfo>();
 
     @SerializedName("title")
     @Expose
@@ -39,7 +39,7 @@ public class Game {
       * @param title The title
       * @param id The id
      */
-    public Game(List<Player> players, String title, int id) {
+    public Game(List<PlayerInfo> players, String title, int id) {
             this.players = players;
             this.title = title;
             this.id = id;
@@ -48,14 +48,14 @@ public class Game {
     /**
      * @return The players
      */
-    public List<Player> getPlayers() { return players; }
+    public List<PlayerInfo> getPlayers() { return players; }
 
     /**
      * @param players The players
      */
-    public void setPlayers(List<Player> players) { this.players = players; }
+    public void setPlayers(List<PlayerInfo> players) { this.players = players; }
 
-    public Game withPlayers(List<Player> players) {
+    public Game withPlayers(List<PlayerInfo> players) {
         setPlayers(players);
         return this;
     }
