@@ -12,6 +12,8 @@ public class TurnFacade {
     /**
      * Create a new {@code TurnFacade} and set its model.
      *
+     * @pre {@code model} is a valid {@link ClientModel}.
+     * @post This is a valid object.
      * @param model the model to set
      */
     public TurnFacade(ClientModel model) {
@@ -35,7 +37,7 @@ public class TurnFacade {
      * Sets the current {@link ClientModel}
      *
      * @param model the {@link ClientModel} to set
-     * @pre The given model is not null
+     * @pre {@code model} is a valid {@link ClientModel}.
      * @post This will set its current model
      */
     public void setModel(ClientModel model) {
@@ -46,19 +48,21 @@ public class TurnFacade {
      * Will check to see if the current {@link Player} can end their turn.
      *
      * @param player which {@link Player} to check
-     * @return whether the turn could be ended
      * @pre @{code player} belongs to the current {@link ClientModel}.
+     * @post None.
+     * @return whether the turn could be ended
      */
     public boolean canEndTurn(Player player) {
         return false;
     }
 
     /**
-     * Asks the game if it is a specific {@link Player}'s turn.
+     * Returns whether it is a specific {@link Player}'s turn.
      *
      * @param player the {@link Player} to check against
-     * @return true if it is that {@link Player}'s turn
      * @pre @{code player} belongs to the current {@link ClientModel}.
+     * @post None.
+     * @return true if it is that {@link Player}'s turn
      */
     private boolean isPlayersTurn(Player player) {
         return false;
@@ -67,8 +71,9 @@ public class TurnFacade {
     /**
      * Lets you check if you can trade, build, buy etc.
      *
-     * @return the current {@link TurnStatus} of the game's turn
      * @pre A model is currently set, and it is a valid game.
+     * @post None.
+     * @return the current {@link TurnStatus} of the game
      */
     public TurnStatus getPhase() {
         return TurnStatus.FIRST_ROUND;
@@ -77,8 +82,9 @@ public class TurnFacade {
     /**
      * Returns all {@link Player}s of the current game.
      *
-     * @return a list of {@link Player}s, from 2-4
      * @pre A model is currently set.
+     * @post None.
+     * @return a list of {@link Player}s, from 2-4
      */
     public List<Player> getPlayers() {
         return null;
