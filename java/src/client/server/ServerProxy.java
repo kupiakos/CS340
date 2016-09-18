@@ -26,10 +26,10 @@ public class ServerProxy implements IServer {
      * @return true if user is logged in; false otherwise
      * @pre username and password are not null
      * @post If the passed­in (username, password) pair is valid,  1. The server returns an HTTP 200 success response 
-     * @post with “Success” in the body.  2. The HTTP response headers set the catan.user cookie to contain the identity
-     * @post  of the  logged­in player.  The cookie uses ”Path=/”, and its value contains a url­encoded JSON object of 
-     * @post the following form: { “name”: STRING, “password”: STRING, “playerID”: INTEGER }.  
-     * @post For  example, { “name”: “Rick”, “password”: “secret”, “playerID”: 14 }.   
+     * @post with "Success" in the body.  2. The HTTP response headers set the catan.user cookie to contain the identity
+     * @post  of the  logged­in player.  The cookie uses "Path=/", and its value contains a url­encoded JSON object of 
+     * @post the following form: { "name": STRING, "password": STRING, "playerID": INTEGER }.  
+     * @post For  example, { "name": "Rick", "password": "secret", "playerID": 14 }.   
      * @post If the passed­in (username, password) pair is not valid, or the operation fails for any other  reason, 
      * @post 1. The server returns an HTTP 400 error response, and the body contains an error  message.
      */
@@ -47,11 +47,11 @@ public class ServerProxy implements IServer {
      * @pre username is not null, password is not null, The specified username is not already in use.
      * @post If there is no existing user with the specified username, 
      * @post 1. A new user account has been created with the specified username and password. 
-     * @post 2. The server returns an HTTP 200 success response with “Success” in the body. 
+     * @post 2. The server returns an HTTP 200 success response with "Success" in the body. 
      * @post 3. The HTTP response headers set the catan.user cookie to contain the identity of the  logged­in player.  
-     * @post The cookie uses ”Path=/”, and its value contains a url­encoded JSON object of  the following form: 
-     * @post { “name”: STRING, “password”: STRING, “playerID”: INTEGER }.  
-     * @post For  example, { “name”: “Rick”, “password”: “secret”, “playerID”: 14 }. 
+     * @post The cookie uses "Path=/", and its value contains a url­encoded JSON object of  the following form: 
+     * @post { "name": STRING, "password": STRING, "playerID": INTEGER }.  
+     * @post For  example, { "name": "Rick", "password": "secret", "playerID": 14 }. 
      * @post If there is already an existing user with the specified name, or the operation fails for any other 
      * @post reason,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      */
@@ -103,11 +103,11 @@ public class ServerProxy implements IServer {
      * @pre 2. The player may join the game because   2.a They are already in the game, OR  2.b There is space in the 
      * @pre game to add a new player  3. The specified game ID is valid 
      * @pre 4. The specified color is valid (red, green, blue, yellow, puce, brown, white, purple, orange)
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with “Success” in the body. 
+     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with "Success" in the body. 
      * @post 2. The player is in the game with the specified color (i.e. calls to /games/list method will 
-     * @post show the player in the game with the chosen color). 3. The server response includes the “Set­cookie” 
+     * @post show the player in the game with the chosen color). 3. The server response includes the "Set­cookie" 
      * @post response header setting the catan.game  HTTP cookie    If the operation fails, 
-     * @post1. The server returns an HTTP 400 error response, and the body contains an error  message.
+     * @post  The server returns an HTTP 400 error response, and the body contains an error  message.
      */
     @Override
     public boolean joinGames(JoinGameRequest joinGameObject) {
@@ -120,7 +120,7 @@ public class ServerProxy implements IServer {
      * @param saveGameObject The information that needs to be added to the body of the HTTP request.
      * @return True if the game was saved to a file in the server's directory; false otherwise
      * @pre gameID and file_name are valid
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with “Success” in the body. 
+     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with "Success" in the body. 
      * @post 2. The current state of the specified game (including its ID) has been saved to the  specified file name 
      * @post in the server’s saves/ directory    If the operation fails,  1. The server returns an HTTP 400 error 
      * @post response, and the body contains an error message.
@@ -136,7 +136,7 @@ public class ServerProxy implements IServer {
      * @param loadGameObject The information that needs to be added to the body of the HTTP request.
      * @return True if game is loaded into the server; false otherwise
      * @pre a previously saved game file with the specified name exists in the server's saves/directory
-     * @post If the operation succeeds, 1. The server returns an HTTP 200 success response with “Success” in the body. 
+     * @post If the operation succeeds, 1. The server returns an HTTP 200 success response with "Success" in the body. 
      * @post 2. The game in the specified file has been loaded into the server and its state restored  (including its ID).   
      * @post If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      */
@@ -150,12 +150,12 @@ public class ServerProxy implements IServer {
      *
      * @param version If needed, a version number is needed in the URL; null is valid
      * @return true if file has been loaded; false if not
-     * @pre caller is logged in and joined a game and, if specified, the version number is included as the “version” 
+     * @pre caller is logged in and joined a game and, if specified, the version number is included as the "version" 
      * @pre query parameter in the request URL, and its value is a valid integer.
      * @post If the operation succeeds,  1. The server returns an HTTP 200 success response. 
      * @post 2. The response body contains JSON data  a. The full client model JSON is returned if the caller does not 
      * @post provide a version number, or the provide version number does not match the version on the server 
-     * @post b. “true” (true in double quotes) is returned if the caller provided a version number, and the version 
+     * @post b. "true" (true in double quotes) is returned if the caller provided a version number, and the version 
      * @post number matched the version number on the server    If the operation fails,  1. The server returns an 
      * @post HTTP 400 error response, and the body contains an error message.
      */
@@ -228,7 +228,7 @@ public class ServerProxy implements IServer {
      * @param addAIObject The information that needs to be added to the body of the HTTP request.
      * @return true if a new AI is added to the current game; false if not
      * @pre caller is logged in and joined a game, there is space for another player, and AIType is valid
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with “Success” in the body. 
+     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with "Success" in the body. 
      * @post 2. A new AI player of the specified type has been added to the current game.  
      * @post The server  selected a name and color for the player.    If the operation fails, 
      * @post 1. The server returns an HTTP 400 error response, and the body contains an error message.
@@ -244,7 +244,7 @@ public class ServerProxy implements IServer {
      * @param changeLogLevelObject The information that needs to be added to the body of the HTTP request.
      * @return True if logging level is changed; false if it is the same
      * @pre LogLevel is a valid logging level
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with “Success” in the body. 
+     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with "Success" in the body. 
      * @post 2. The Server is using the specified logging level    If the operation fails, 
      * @post 1. The server returns an HTTP 400 error response, and the body contains an error message.
      */

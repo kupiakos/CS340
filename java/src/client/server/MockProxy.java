@@ -26,7 +26,7 @@ public class MockProxy implements IServer{
      * @pre username and password are not null
      * @post If the passed­in (username, password) pair is valid, 
      * @post 2. The HTTP response headers set the catan.user cookie to contain the identity of the  logged­in player.  
-     * @post The cookie uses ”Path=/”, and its value contains a url­encoded JSON object of  the following form: { “name”: STRING, “password”: STRING, “playerID”: INTEGER }.   
+     * @post The cookie uses "Path=/", and its value contains a url­encoded JSON object of  the following form: { "name": STRING, "password": STRING, "playerID": INTEGER }.   
      */
     @Override
     public boolean login(Credentials credentialsObject) {
@@ -40,7 +40,7 @@ public class MockProxy implements IServer{
      * @param credentialsObject The information that needs to be added to the body of the HTTP request.
      * @return True if the username and password are registered; else false
      * @pre username is not null, password is not null, The specified username is not already in use.
-     * @post If there is no existing user with the specified username,  A new user account has been created with the specified username and password. The HTTP response headers set the catan.user cookie to contain the identity of the  logged­in player.  The cookie uses ”Path=/”, and its value contains a url­encoded JSON object of  the following form: { “name”: STRING, “password”: STRING, “playerID”: INTEGER }.
+     * @post If there is no existing user with the specified username,  A new user account has been created with the specified username and password. The HTTP response headers set the catan.user cookie to contain the identity of the  logged­in player.  The cookie uses "Path=/", and its value contains a url­encoded JSON object of  the following form: { "name": STRING, "password": STRING, "playerID": INTEGER }.
      */
     @Override
     public boolean register(Credentials credentialsObject) {
@@ -85,7 +85,7 @@ public class MockProxy implements IServer{
      * @pre 2. The player may join the game because   2.a They are already in the game, OR 
      * @pre 2.b There is space in the game to add a new player  3. The specified game ID is valid 
      * @pre 4. The specified color is valid (red, green, blue, yellow, puce, brown, white, purple, orange)
-     * @post The player is in the game with the specified color. The server response includes the “Set­cookie” response header setting the catan.game HTTP cookie.
+     * @post The player is in the game with the specified color. The server response includes the "Set­cookie" response header setting the catan.game HTTP cookie.
      */
     @Override
     public boolean joinGames(JoinGameRequest joinGameObject) {
@@ -123,7 +123,7 @@ public class MockProxy implements IServer{
      *
      * @param version If needed, a version number is needed in the URL; null is valid
      * @return The new ClientModel.  Null if their is no new client model.
-     * @pre caller is logged in and joined a game and, if specified, the version number is included as the “version” 
+     * @pre caller is logged in and joined a game and, if specified, the version number is included as the "version" 
      * @pre query parameter in the request URL, and its value is a valid integer.
      * @post None
      */
