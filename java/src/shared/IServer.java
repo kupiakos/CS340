@@ -19,8 +19,8 @@ public interface IServer {
     /**
      * Method checks if the login credentials are valid
      * @param credentialsObject The information that needs to be added to the body of the HTTP request. Contains the username and password of the player.
-     * @pre username and password are not null
-     * @post If the passed­in (username, password) pair is valid,  1. The server returns an HTTP 200 success response with “Success” in the body.  2. The HTTP response headers set the catan.user cookie to contain the identity of the  logged­in player.  The cookie uses ”Path=/”, and its value contains a url­encoded JSON object of  the following form: { “name”: STRING, “password”: STRING, “playerID”: INTEGER }.  For  example, { “name”: “Rick”, “password”: “secret”, “playerID”: 14 }.    If the passed­in (username, password) pair is not valid, or the operation fails for any other  reason,  1. The server returns an HTTP 400 error response, and the body contains an error  message.
+     * @pre  username and password are not null
+     * @post If the passed­in (username, password) pair is valid,  1. The server returns an HTTP 200 success response with "Success" in the body.  2. The HTTP response headers set the catan.user cookie to contain the identity of the  logged­in player.  The cookie uses "Path=/", and its value contains a url­encoded JSON object of  the following form: { "name": STRING, "password": STRING, "playerID": INTEGER }.  For  example, { "name": "Rick", "password": "secret", "playerID": 14 }.    If the passed­in (username, password) pair is not valid, or the operation fails for any other  reason,  1. The server returns an HTTP 400 error response, and the body contains an error  message.
      * @return true if user is logged in; false otherwise
      */
     boolean login(Credentials credentialsObject);
@@ -30,7 +30,7 @@ public interface IServer {
      *  catan.user HTTP cookie
      * @param credentialsObject The information that needs to be added to the body of the HTTP request.  Contains the username and password of the player.
      * @pre username is not null, password is not null, The specified username is not already in use.
-     * @post If there is no existing user with the specified username,  1. A new user account has been created with the specified username and password.  2. The server returns an HTTP 200 success response with “Success” in the body.  3. The HTTP response headers set the catan.user cookie to contain the identity of the  logged­in player.  The cookie uses ”Path=/”, and its value contains a url­encoded JSON object of  the following form: { “name”: STRING, “password”: STRING, “playerID”: INTEGER }.  For  example, { “name”: “Rick”, “password”: “secret”, “playerID”: 14 }.  If there is already an existing user with the specified name, or the operation fails for any other  reason,  1. The server returns an HTTP 400 error response, and the body contains an error message.
+     * @post If there is no existing user with the specified username,  1. A new user account has been created with the specified username and password.  2. The server returns an HTTP 200 success response with "Success" in the body.  3. The HTTP response headers set the catan.user cookie to contain the identity of the  logged­in player.  The cookie uses "Path=/", and its value contains a url­encoded JSON object of  the following form: { "name": STRING, "password": STRING, "playerID": INTEGER }.  For  example, { "name": "Rick", "password": "secret", "playerID": 14 }.  If there is already an existing user with the specified name, or the operation fails for any other  reason,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      * @return True if the username and password are registered; else false
      */
     boolean register(Credentials credentialsObject);
@@ -56,7 +56,7 @@ public interface IServer {
      * Adds a player to a specific game and sets their catan.game cookie
      * @param joinGameObject The information that needs to be added to the body of the HTTP request.
      * @pre 1. The user has previously logged in to the server (i.e., they have a valid catan.user HTTP  cookie).   2. The player may join the game because   2.a They are already in the game, OR  2.b There is space in the game to add a new player  3. The specified game ID is valid  4. The specified color is valid (red, green, blue, yellow, puce, brown, white, purple, orange)
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with “Success” in the body.  2. The player is in the game with the specified color (i.e. calls to /games/list method will  show the player in the game with the chosen color). 3. The server response includes the “Set­cookie” response header setting the catan.game  HTTP cookie    If the operation fails, 
+     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with "Success" in the body.  2. The player is in the game with the specified color (i.e. calls to /games/list method will  show the player in the game with the chosen color). 3. The server response includes the "Set­cookie" response header setting the catan.game  HTTP cookie    If the operation fails, 
     1. The server returns an HTTP 400 error response, and the body contains an error  message.
      * @return true if player is added with chosen color and the server response includes the set cookie response
     false if else
@@ -69,7 +69,7 @@ public interface IServer {
      * For testing and debugging.  Save a game with a bug report for others to fix
      * @param saveGameObject The information that needs to be added to the body of the HTTP request.
      * @pre gameID and file_name are valid
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with “Success” in the body.  2. The current state of the specified game (including its ID) has been saved to the  specified file name in the server’s saves/ directory    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
+     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with "Success" in the body.  2. The current state of the specified game (including its ID) has been saved to the  specified file name in the server’s saves/ directory    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      * @return True if the game was saved to a file in the server's directory; false otherwise
      */
     boolean saveGame(SaveGameRequest saveGameObject);
@@ -78,7 +78,7 @@ public interface IServer {
      * For testing and debugging.  Loads a game that was saved with a bug report for fixing purposes
      * @param loadGameObject The information that needs to be added to the body of the HTTP request. This includes the file name
      * @pre a previously saved game file with the specified name exists in the server's saves/directory
-     * @post If the operation succeeds, 1. The server returns an HTTP 200 success response with “Success” in the body.  2. The game in the specified file has been loaded into the server and its state restored  (including its ID).    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
+     * @post If the operation succeeds, 1. The server returns an HTTP 200 success response with "Success" in the body.  2. The game in the specified file has been loaded into the server and its state restored  (including its ID).    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      * @return True if game is loaded into the server; false otherwise
      */
     boolean loadGame(LoadGameRequest loadGameObject);
@@ -86,8 +86,8 @@ public interface IServer {
     /**
      * Returns the current state of the game
      * @param version If needed, a version number is needed in the URL; null is valid
-     * @pre caller is logged in and joined a game and, if specified, the version number is included as the “version” query parameter in the request URL, and its value is a valid integer.
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response.  2. The response body contains JSON data  a. The full client model JSON is returned if the caller does not provide a version number, or the provide version number does not match the version on the server  b. “true” (true in double quotes) is returned if the caller provided a version number, and the version number matched the version number on the server    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
+     * @pre caller is logged in and joined a game and, if specified, the version number is included as the "version" query parameter in the request URL, and its value is a valid integer.
+     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response.  2. The response body contains JSON data  a. The full client model JSON is returned if the caller does not provide a version number, or the provide version number does not match the version on the server  b. "true" (true in double quotes) is returned if the caller provided a version number, and the version number matched the version number on the server    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      * @return The current game state, or null if one does not exist
      */
     ClientModel gameState(int version);
@@ -127,7 +127,7 @@ public interface IServer {
      * Adds an AI player to the current game. You must login and join a game before calling this method
      * @param addAIObject The information that needs to be added to the body of the HTTP request.  This contains an AI type
      * @pre caller is logged in and joined a game, there is space for another player, and AIType is valid
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with “Success” in the body.  2. A new AI player of the specified type has been added to the current game.  The server  selected a name and color for the player.    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
+     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with "Success" in the body.  2. A new AI player of the specified type has been added to the current game.  The server  selected a name and color for the player.    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      * @return true if a new AI is added to the current game; false if not
      */
     boolean addAI(AddAIRequest addAIObject);
@@ -136,7 +136,7 @@ public interface IServer {
      * Sets the server's logging level
      * @param changeLogLevelObject The information that needs to be added to the body of the HTTP request.  This includes a valid logging value
      * @pre LogLevel is a valid logging level
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with “Success” in the body.  2. The Server is using the specified logging level    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
+     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with "Success" in the body.  2. The Server is using the specified logging level    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      * @return True if logging level is changed; false if it is the same
      */
     boolean changeLogLevel(ChangeLogLevelRequest changeLogLevelObject);

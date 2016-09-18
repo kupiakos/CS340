@@ -19,7 +19,7 @@ public class MapFacade {
      * @param edge  The {@link EdgeLocation} that is being queried.
      * @return  True if the {@link EdgeLocation}  has not been built upon; false otherwise.
      */
-    boolean isEdgeEmpty(EdgeLocation edge){
+    public boolean isEdgeEmpty(EdgeLocation edge){
         return false;
     }
 
@@ -28,7 +28,7 @@ public class MapFacade {
      * @param vertex  The {@link VertexLocation} that is being queried.
      * @return True if the{@link EdgeLocation} has not been built upon; false otherwise.
      */
-    boolean isVertexEmpty(VertexLocation vertex){
+    public boolean isVertexEmpty(VertexLocation vertex){
         return false;
     }
 
@@ -38,7 +38,7 @@ public class MapFacade {
      * @param player  The {@link Player} whose road is being checked for.
      * @return  True if the {@link Player} has a road built on the specified {@link EdgeLocation}.
      */
-    boolean hasRoad(EdgeLocation edge, Player player){
+    public boolean hasRoad(EdgeLocation edge, Player player){
         return false;
     }
 
@@ -48,7 +48,7 @@ public class MapFacade {
      * @param player  The {@link Player} whose settlement is being checked for.
      * @return  True if the {@link Player} has a settlement built on the specified {@link VertexLocation}.
      */
-    boolean hasSettlement(VertexLocation vertex, Player player){
+    public boolean hasSettlement(VertexLocation vertex, Player player){
         return false;
     }
 
@@ -58,7 +58,7 @@ public class MapFacade {
      * @param player  The {@link Player} whose city is being checked for.
      * @return  True if the {@link Player} has a city built on the specified {@link VertexLocation}.
      */
-    boolean hasCity(VertexLocation vertex, Player player){
+    public boolean hasCity(VertexLocation vertex, Player player){
         return false;
     }
 
@@ -67,7 +67,7 @@ public class MapFacade {
      * @param hex  The {@link HexLocation} being queried.
      * @return True if the robber is currently on the specified {@link HexLocation}; false otherwise.
      */
-    boolean hasRobber(HexLocation hex){
+    public boolean hasRobber(HexLocation hex){
         return false;
     }
 
@@ -77,7 +77,7 @@ public class MapFacade {
      * @param player The {@link Player} for whom we are looking for owned roads/buildings adjacent to the {@link EdgeLocation}.
      * @return True if the {@link Player} owns a road/building adjacent to the specified {@link EdgeLocation}.
      */
-    boolean isConnectedEdge(EdgeLocation edge, Player player){
+    public boolean isConnectedEdge(EdgeLocation edge, Player player){
         return false;
     }
 
@@ -87,7 +87,7 @@ public class MapFacade {
      * @param player The {@link Player} for whom we are looking for owned roads adjacent to the {@link VertexLocation}.
      * @return True if the {@link Player} owns a road adjacent to the specified {@link VertexLocation}.
      */
-    boolean isConnectedVertex(VertexLocation vertex, Player player){
+    public boolean isConnectedVertex(VertexLocation vertex, Player player){
         return false;
     }
 
@@ -96,7 +96,7 @@ public class MapFacade {
      * @param hex The {@link HexLocation} that is being queried.
      * @return  The {@link HexType} produced at the specified {@link HexLocation}.
      */
-    HexType getHexType(HexLocation hex){
+    public HexType getHexType(HexLocation hex){
         return null;
     }
 
