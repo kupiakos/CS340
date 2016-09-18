@@ -1,13 +1,11 @@
 package shared;
 
-import com.google.gson.Gson;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.games.*;
 import shared.models.moves.*;
 import shared.models.user.Credentials;
 import shared.models.util.ChangeLogLevelRequest;
-
 import java.util.List;
 
 /**
@@ -20,7 +18,7 @@ public interface IServer {
 //Non-Move APIs
     /**
      * Method checks if the login credentials are valid
-     * @param credentialsObject The information that needs to be added to the body of the HTTP request.
+     * @param credentialsObject The information that needs to be added to the body of the HTTP request. Contains the username and password of the player.
      * @pre username and password are not null
      * @post If the passed­in (username, password) pair is valid,  1. The server returns an HTTP 200 success response with “Success” in the body.  2. The HTTP response headers set the catan.user cookie to contain the identity of the  logged­in player.  The cookie uses ”Path=/”, and its value contains a url­encoded JSON object of  the following form: { “name”: STRING, “password”: STRING, “playerID”: INTEGER }.  For  example, { “name”: “Rick”, “password”: “secret”, “playerID”: 14 }.    If the passed­in (username, password) pair is not valid, or the operation fails for any other  reason,  1. The server returns an HTTP 400 error response, and the body contains an error  message.
      * @return true if user is logged in; false otherwise
@@ -30,7 +28,7 @@ public interface IServer {
     /**
      * Method register a new user if the user name is not used, logs the caller in to the server, and sets their
      *  catan.user HTTP cookie
-     * @param credentialsObject The information that needs to be added to the body of the HTTP request.
+     * @param credentialsObject The information that needs to be added to the body of the HTTP request.  Contains the username and password of the player.
      * @pre username is not null, password is not null, The specified username is not already in use.
      * @post If there is no existing user with the specified username,  1. A new user account has been created with the specified username and password.  2. The server returns an HTTP 200 success response with “Success” in the body.  3. The HTTP response headers set the catan.user cookie to contain the identity of the  logged­in player.  The cookie uses ”Path=/”, and its value contains a url­encoded JSON object of  the following form: { “name”: STRING, “password”: STRING, “playerID”: INTEGER }.  For  example, { “name”: “Rick”, “password”: “secret”, “playerID”: 14 }.  If there is already an existing user with the specified name, or the operation fails for any other  reason,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      * @return True if the username and password are registered; else false
@@ -78,7 +76,7 @@ public interface IServer {
 
     /**
      * For testing and debugging.  Loads a game that was saved with a bug report for fixing purposes
-     * @param loadGameObject The information that needs to be added to the body of the HTTP request.
+     * @param loadGameObject The information that needs to be added to the body of the HTTP request. This includes the file name
      * @pre a previously saved game file with the specified name exists in the server's saves/directory
      * @post If the operation succeeds, 1. The server returns an HTTP 200 success response with “Success” in the body.  2. The game in the specified file has been loaded into the server and its state restored  (including its ID).    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      * @return True if game is loaded into the server; false otherwise
@@ -127,7 +125,7 @@ public interface IServer {
 
     /**
      * Adds an AI player to the current game. You must login and join a game before calling this method
-     * @param addAIObject The information that needs to be added to the body of the HTTP request.
+     * @param addAIObject The information that needs to be added to the body of the HTTP request.  This contains an AI type
      * @pre caller is logged in and joined a game, there is space for another player, and AIType is valid
      * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with “Success” in the body.  2. A new AI player of the specified type has been added to the current game.  The server  selected a name and color for the player.    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      * @return true if a new AI is added to the current game; false if not
@@ -136,7 +134,7 @@ public interface IServer {
 
     /**
      * Sets the server's logging level
-     * @param changeLogLevelObject The information that needs to be added to the body of the HTTP request.
+     * @param changeLogLevelObject The information that needs to be added to the body of the HTTP request.  This includes a valid logging value
      * @pre LogLevel is a valid logging level
      * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with “Success” in the body.  2. The Server is using the specified logging level    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      * @return True if logging level is changed; false if it is the same
@@ -146,7 +144,7 @@ public interface IServer {
 //Move APIs (Assumed pre-condition for all Move APIs are caller is logged in and joined a game)
     /**
      * Sends a chat message to the other players anytime
-     * @param sendChatObject The information that needs to be added to the body of the HTTP request.
+     * @param sendChatObject The information that needs to be added to the body of the HTTP request.  This contains a type, the player index, and the content of the chat
      * @pre None
      * @post Chat contains your message at the end
      * @return The message that the player wants to send
@@ -155,7 +153,7 @@ public interface IServer {
 
     /**
      * Method considers if player has accepted the offer and then swaps specified resources if true
-     * @param acceptTradeObject The information that needs to be added to the body of the HTTP request.
+     * @param acceptTradeObject The information that needs to be added to the body of the HTTP request.  This includes the player index and whether they are accepting or not
      * @pre offered a domestic trade and, to accept the trade, you have the required resources
      * @post  If you accepted, you and the player who offered swap the specified resources, If you declined no resources are exchanged, The trade offer is removed
      * @return True if resources is traded; false if not
@@ -164,7 +162,7 @@ public interface IServer {
 
     /**
      * Method that discards cards from a players hand.
-     * @param discardCardsObject The information that needs to be added to the body of the HTTP request.
+     * @param discardCardsObject The information that needs to be added to the body of the HTTP request.  This includes the player index and the cards they are discarding.
      * @return True if cards were discarded; false otherwise.
      */
     boolean discardCards(DiscardCardsAction discardCardsObject);
@@ -182,7 +180,7 @@ public interface IServer {
      * @pre The location is open, is connected to a road owned by the player, and is not on the water.
      * @pre In addition, you must have the required resources if it is not free.  If in setup round, must be placed by a settlement owned by the player with no adjacent road
      * @post  If !free, lose the required resources.  The road is now on the map in the correct location.  And longest road has been applied, if applicable.
-     * @param buildRoadObject The information that needs to be added to the body of the HTTP request.
+     * @param buildRoadObject The information that needs to be added to the body of the HTTP request.  This includes a valid location, player index, and whether it is free
      * @return True if road was built; false otherwise.
      */
     boolean buildRoad(BuildRoadAction buildRoadObject);
@@ -191,7 +189,7 @@ public interface IServer {
      * Builds a settlement on game map if player is able
      * @pre Location is open.  Location is not on water.  Location is connected to player's road (unless in setup).  Have resources (if !free). Not next to adjacent settlement.
      * @post  Lose required resources (if !free).  The settlement has been placed on specified location.
-     * @param buildSettlementObject The information that needs to be added to the body of the HTTP request.
+     * @param buildSettlementObject The information that needs to be added to the body of the HTTP request.  This includes a valid location, player index, and whether the settlement is free
      * @return True if settlement was built; false otherwise
      */
     boolean buildSettlement(BuildSettlementAction buildSettlementObject);
@@ -200,7 +198,7 @@ public interface IServer {
      * Builds a city on game map if player is able
      * @pre There is currently a settlement belonging to the player where the city is to be built.  Player has required resources.
      * @post  Lose required resources.  City is placed on specified location.  Player receives 1 settlement back.
-     * @param buildCityObject The information that needs to be added to the body of the HTTP request.
+     * @param buildCityObject The information that needs to be added to the body of the HTTP request.  This includes a valid location and player index.
      * @return True if city was built; false otherwise
      */
     boolean buildCity(BuildCityAction buildCityObject);
@@ -209,7 +207,7 @@ public interface IServer {
      * Offers cards to trade with other players.  If successful, offer is sent to other player
      * @pre Player has the resources they are offering.
      * @post  The trade is offered to the other player (stored in server model)
-     * @param offerTradeObject The information that needs to be added to the body of the HTTP request.
+     * @param offerTradeObject The information that needs to be added to the body of the HTTP request.  This includes the player index, the resources being offered, and the index of the receiving player
      * @return True is offer was sent; false otherwise
      */
     boolean offerTrade(OfferTradeAction offerTradeObject);
@@ -218,7 +216,7 @@ public interface IServer {
      * Trades in your resources for resources offered by harbor.
      * @pre Player has resources they are trading in.  For ratios less than 4, you have the correct port for the trade.
      * @post The trade has been executed (resources offered by player are now in bank,  requiested resources are received by player).
-     * @param maritimeTradeObject The information that needs to be added to the body of the HTTP request.
+     * @param maritimeTradeObject The information that needs to be added to the body of the HTTP request.  This includes th eplayer index, and , optionally, the ratio, input resource and output resource.
      * @return True if trade was successful, false otherwise.
      */
     boolean maritimeTrade(MaritimeTradeAction maritimeTradeObject);
@@ -227,7 +225,7 @@ public interface IServer {
      * Player gets to move robber to new location and target another player to rob
      * @pre The robber is not being kept in the same location.  If a player is being robbed, then that player has resources.
      * @post The robber is in the new specified location.  The play being robbed (if any) has given robbing player 1 random resource.
-     * @param robPlayerObject The information that needs to be added to the body of the HTTP request.
+     * @param robPlayerObject The information that needs to be added to the body of the HTTP request.  This includes the player index, the vitim index and the new location of the robber.
      * @return True if robber was moved and player robbed; false otherwise.
      */
     boolean robPlayer(RobPlayerAction robPlayerObject);
@@ -252,7 +250,7 @@ public interface IServer {
      * Player gets to move robber to new location and target another player to rob
      * @pre The robber is not being kept in same location.  The player being robbed (if any) has resource cards.
      * @post Robber is moved.  Player being robbed (if any) has given player a resource card at random. Largest army is transferred (if applicable).  Cannot play other dev cards this turn.
-     * @param soldierObject The information that needs to be added to the body of the HTTP request.
+     * @param soldierObject The information that needs to be added to the body of the HTTP request.  This includes the player index, the vitim index and the new location of the robber.
      * @return True if knight card was used; false otherwise.
      */
     boolean useSoldier(SoldierAction soldierObject);
@@ -261,7 +259,7 @@ public interface IServer {
      * Play the year of plenty card to gain two resources of your choice.
      * @pre The two specified resources are in the bank.
      * @post Player has gained two specified resources.
-     * @param yearOfPlentyObject The information that needs to be added to the body of the HTTP request.
+     * @param yearOfPlentyObject The information that needs to be added to the body of the HTTP request.  This includes the player index and the two specified resources.
      * @return True if resources were given to player; false otherwise
      */
     boolean useYearOfPlenty(YearofPlentyAction yearOfPlentyObject);
@@ -270,7 +268,7 @@ public interface IServer {
      * Play the road building card to build two new roads, if available
      * @pre First road location is connected to one of player's other roads.  Second location is connected as well (can be connected to first road).  Neither road is on water.  Player has two unused roads.
      * @post Play has two fewer unused roads.  Roads are placed at specified location.  Longest road is transferred (if applicable).
-     * @param roadBuildingObject The information that needs to be added to the body of the HTTP request.
+     * @param roadBuildingObject The information that needs to be added to the body of the HTTP request.  This includes the player index and the two edge locations to place the road.
      * @return True if roads were built; false otherwise.
      */
     boolean useRoadBuilding(RoadBuildingAction roadBuildingObject);
@@ -279,7 +277,7 @@ public interface IServer {
      * Play the monopoly card to take all of one type of resource from all other players
      * @pre None
      * @post All other players have given you all of their resource cards of one specified type.
-     * @param monopolyObject The information that needs to be added to the body of the HTTP request.
+     * @param monopolyObject The information that needs to be added to the body of the HTTP request.  This includes the player index and the resource type.
      * @return  True if resource was given to you; false otherwise.
      */
     boolean useMonopoly(MonopolyAction monopolyObject);
@@ -288,6 +286,7 @@ public interface IServer {
      * Play your monument cards to gain victory point and win the game.
      * @pre Player will win after having played all of their monument cards.
      * @post You gain victory point(s).
+     * @param monumentObject The information to be included in the HTTP request.  This includes the player index.
      * @return True if victory point was gained; false otherwise.
      */
     boolean useMonument(MonumentAction monumentObject);
