@@ -1,5 +1,6 @@
-package client.session;
+package client.game;
 
+import client.facade.FacadeManager;
 import client.poller.Poller;
 import shared.IServer;
 import shared.models.game.ClientModel;
@@ -9,11 +10,11 @@ import java.util.Observable;
 /**
  * Created by audakel on 9/15/16.
  */
-public class SessionManager extends Observable {
+public class GameManager extends Observable {
     /**
      * Setting up the singleton for all to use
      */
-    private static SessionManager mInstance;
+    private static GameManager mInstance;
     /**
      * The mPoller that the game will use
      */
@@ -25,18 +26,39 @@ public class SessionManager extends Observable {
     /**
      * The server that may be a fake one or a real one
      */
-    IServer mServer;
-
+    private IServer mServer;
+    /**
+     * Handel to a facade for the current game, allows for use on both client and server - with n games.
+     */
+    private FacadeManager mFacadeManager;
 
 
     /**
-     * Lets you grab the session, allows communications to all the parts of the game
+     * Init stuff for the game manager as needed
+     */
+    private GameManager(){
+
+    }
+
+
+    /**
+     * Lets you grab the game, allows communications to all the parts of the game
      * @return
      */
-    public static SessionManager getInstance() {
-        if (mInstance == null) mInstance = new SessionManager();
+    public static GameManager getGame() {
+        if (mInstance == null) mInstance = new GameManager();
         return mInstance;
     }
+
+    /**
+     * Lets you grab the facade for the game, allows access to the current games model
+     * @return
+     */
+    public FacadeManager getFacade() {
+        if (mFacadeManager == null) mFacadeManager = new FacadeManager(mClientModel);
+        return mFacadeManager;
+    }
+
 
     /**
      * Starts the Poller
@@ -60,8 +82,9 @@ public class SessionManager extends Observable {
      * When the poller finds out the server has a new version it will call this function to update the client game
      * @param cm the new clientModel
      */
-    public void updateClientModels(ClientModel cm){
+    public void updateGameManager(ClientModel cm){
         mClientModel = cm;
+        mFacadeManager.update(cm);
     }
 
 
@@ -75,8 +98,8 @@ public class SessionManager extends Observable {
     }
 
 
-    public static void setInstance(SessionManager sm) {
-        SessionManager.mInstance = sm;
+    public static void setInstance(GameManager sm) {
+        GameManager.mInstance = sm;
     }
 
     public Poller getPoller() {

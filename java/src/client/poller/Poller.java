@@ -1,6 +1,6 @@
 package client.poller;
 
-import client.session.SessionManager;
+import client.game.GameManager;
 
 import shared.models.game.ClientModel;
 
@@ -32,21 +32,19 @@ public class Poller {
         ActionListener poll = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                // Grab a session manager
-                SessionManager sm = SessionManager.getInstance();
+                // Grab a game manager
+                GameManager gm = GameManager.getGame();
                 // Get our version number
-
-                int version = sm.getClientModel().getVersion();
+                int version = gm.getClientModel().getVersion();
                 // Call the server with the number
-                ClientModel response = sm.getServer().gameState(version);
+                ClientModel response = gm.getServer().gameState(version);
                 // If new model
                 if (response != null){
                     // Update ours
-                    sm.setmClientModel(response);
+                    gm.setmClientModel(response);
                 }
             }
         };
-
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, poll);
     }
 

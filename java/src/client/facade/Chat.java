@@ -1,11 +1,9 @@
 package client.facade;
 
-import client.session.SessionManager;
-
 /**
  * Created by audakel on 9/16/16.
  */
-public class Chat {
+public class Chat extends Facade{
 
     /**
      * checks if player can send chat
