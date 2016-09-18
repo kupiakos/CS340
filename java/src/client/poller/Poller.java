@@ -1,17 +1,13 @@
 package client.poller;
 
 import client.session.SessionManager;
-import jdk.nashorn.api.scripting.JSObject;
-import shared.models.ClientModel;
+
+import shared.models.game.ClientModel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
 import javax.swing.Timer;
 
-/**
- * Created by audakel on 9/14/16.
- */
 public class Poller {
     /**
      * How often we want to call the server in seconds
@@ -39,14 +35,14 @@ public class Poller {
                 // Grab a session manager
                 SessionManager sm = SessionManager.getInstance();
                 // Get our version number
-                String version = sm.getClientModel().getVersion();
+
+                int version = sm.getClientModel().getVersion();
                 // Call the server with the number
-                JSObject response = sm.getServer().getModel(version);
+                ClientModel response = sm.getServer().gameState(version);
                 // If new model
-                //TODO :: Actually fix this to the real meathod calls
                 if (response != null){
                     // Update ours
-                    sm.setmClientModel((ClientModel) response);
+                    sm.setmClientModel(response);
                 }
             }
         };

@@ -2,8 +2,6 @@ package client.facade;
 
 import client.data.PlayerInfo;
 import client.session.SessionManager;
-import shared.models.Player;
-import shared.models.TurnTracker;
 
 import java.util.ArrayList;
 import java.util.List;
