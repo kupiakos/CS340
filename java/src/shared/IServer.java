@@ -1,21 +1,11 @@
 package shared;
 
-import com.google.gson.Gson;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.games.*;
 import shared.models.moves.*;
 import shared.models.user.Credentials;
 import shared.models.util.ChangeLogLevelRequest;
-import shared.definitions.ResourceType;
-import shared.locations.EdgeLocation;
-import shared.locations.HexLocation;
-import shared.locations.VertexLocation;
-import shared.models.*;
-import sun.plugin.javascript.JSObject;
-
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -116,7 +106,7 @@ public interface IServer {
      * @post If the operation succeeds,  1. The server returns an HTTP 200 success response.  2. The body contains a JSON array of  commands that have been executed in the game.  This command array is suitable for passing back to the /game/command [POST] method to  restore the state of the game later (after calling /game/reset to revert the game to its initial state).     If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
      * @return true if the list of commands is returned; false otherwise
      */
-    Gson getCommandsGame();
+    boolean getCommandsGame();
 
     /**
      * Executes the specified command list in the current game.  Used for testing and debugging

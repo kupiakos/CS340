@@ -16,6 +16,10 @@ class ClientCommunicator {
 
     private ClientCommunicator(){}
 
+    /**
+     * Returns the {@link ClientCommunicator SINGLETON}.
+     * @return {@link ClientCommunicator} SINGLETON.
+     */
     public static ClientCommunicator getSingleton(){
         if(SINGLETON==null){
             SINGLETON = new ClientCommunicator();
