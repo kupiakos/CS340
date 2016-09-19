@@ -1,6 +1,7 @@
 package shared;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.xml.internal.org.jvnet.mimepull.CleanUpExecutorFactory;
 import shared.exceptions.JoinGameException;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
@@ -191,35 +192,37 @@ public interface IServer {
      * Sends a chat message to the other players anytime
      *
      * @param sendChatObject The information that needs to be added to the body of the HTTP request.  This contains a type, the player index, and the content of the chat
-     * @return The message that the player wants to send
+     * @return The ClientModel of the current game.
      * @throws CommunicationException   if there is an error communicating with the server.
      * @throws IllegalArgumentException if {@link SendChatAction} is not valid.
      * @pre None
      * @post Chat contains your message at the end
      */
-    String sendChat(@NotNull SendChatAction sendChatObject) throws CommunicationException, IllegalArgumentException;
+    ClientModel sendChat(@NotNull SendChatAction sendChatObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Method considers if player has accepted the offer and then swaps specified resources if true
      *
      * @param acceptTradeObject The information that needs to be added to the body of the HTTP request.  This includes the player index and whether they are accepting or not
+     * @return The ClientModel of the current game.
      * @throws CommunicationException   if there is an error contacting the server.
      * @throws IllegalArgumentException if {@link AcceptTradeAction} does not contain valid data.
      * @pre player is offered a domestic trade.
      * @post If you accepted, you and the player who offered swap the specified resources, If you declined no resources are exchanged, The trade offer is removed
      */
-    void acceptTrade(@NotNull AcceptTradeAction acceptTradeObject) throws CommunicationException, IllegalArgumentException;
+    ClientModel acceptTrade(@NotNull AcceptTradeAction acceptTradeObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Method that discards cards from a players hand.
      *
      * @param discardCardsObject The information that needs to be added to the body of the HTTP request.  This includes the player index and the cards they are discarding.
+     * @return The ClientModel of the current game.
      * @throws CommunicationException   if there is an error contacting the server.
      * @throws IllegalArgumentException if the {@link DiscardCardsAction} does not contain valid data.
      * @pre Caller has the cards that he is trying to discard.
      * @post Caller no longer has the cards defined in {@link DiscardCardsAction}.
      */
-    void discardCards(@NotNull DiscardCardsAction discardCardsObject) throws CommunicationException, IllegalArgumentException;
+    ClientModel discardCards(@NotNull DiscardCardsAction discardCardsObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Tells the server what number you have rolled
