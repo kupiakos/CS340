@@ -1,7 +1,5 @@
 package shared.definitions;
 
-import shared.models.game.ClientModel;
-
 /**
  * A safer representation of a specific player's index in a specific game.
  * @see #fromInt
@@ -9,11 +7,6 @@ import shared.models.game.ClientModel;
 public enum PlayerIndex {
 
     // TODO: Custom serializer/deserializer
-
-    /**
-     * Currently only used by {@link ClientModel#winner}, to represent nobody having won.
-     */
-    NOBODY(-1),
 
     /**
      * The first player
@@ -43,7 +36,7 @@ public enum PlayerIndex {
 
     /**
      * Get the numeric index this represents.
-     * @return a number 1-4, or -1 if {@link #NOBODY}
+     * @return a number 1-4
      */
     public int index() {
         return playerIndex;
@@ -53,10 +46,9 @@ public enum PlayerIndex {
      * Initializes an instance from a player's integer index.
      *
      * Index must be 0-3 for a valid player.
-     * Any other index (-1 in the API) represents the
-     * special index {@link #NOBODY}.
-     * @param index the player index, 0-3 or -1
+     * @param index the player index, in range [0, 3]
      * @return a {@link PlayerIndex} representing {@code index}
+     * @throws IllegalArgumentException if index is not in range [0, 3]
      */
     public static PlayerIndex fromInt(int index) {
         switch (index) {
@@ -68,7 +60,8 @@ public enum PlayerIndex {
                 return THIRD;
             case 3:
                 return FOURTH;
+            default:
+                throw new IllegalArgumentException("PlayerIndex must be 0-3");
         }
-        return NOBODY;
     }
 }
