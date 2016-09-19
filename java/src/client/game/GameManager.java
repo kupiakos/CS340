@@ -7,6 +7,9 @@ import shared.models.game.ClientModel;
 
 import java.util.Observable;
 
+/**
+ * Manages a single game
+ */
 public class GameManager extends Observable {
     /**
      * Setting up the singleton for all to use
