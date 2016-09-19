@@ -2,21 +2,20 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
+
+import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
 public class MaritimeTradeAction {
 
-    @SerializedName("outputResource")
-    @Expose
-    private ResourceType outputResource;
-
     @SerializedName("type")
     @Expose(deserialize = false)
     private final String TYPE = "MaritimeTrade";
-
+    @SerializedName("outputResource")
+    @Expose
+    private ResourceType outputResource;
     @SerializedName("ratio")
     @Expose
     private int ratio;
@@ -40,75 +39,95 @@ public class MaritimeTradeAction {
     }
 
     /**
-      * @param outputResource What TYPE of resource you're getting.
-      * @param TYPE The type
-      * @param ratio The ratio of the trade your doing as an integer (ie. put 3 for a 3:1 trade)
-      * @param playerIndex Who's doing the trading
-      * @param inputResource What TYPE of resource you're giving.
+     * @param outputResource What TYPE of resource you're getting.
+     * @param ratio          The ratio of the trade your doing as an integer (ie. put 3 for a 3:1 trade)
+     * @param playerIndex    Who's doing the trading
+     * @param inputResource  What TYPE of resource you're giving.
      */
     public MaritimeTradeAction(ResourceType outputResource, int ratio, PlayerIndex playerIndex, ResourceType inputResource) {
-            this.outputResource = outputResource;
-            this.ratio = ratio;
-            this.playerIndex = playerIndex;
-            this.inputResource = inputResource;
+        this.outputResource = outputResource;
+        this.ratio = ratio;
+        this.playerIndex = playerIndex;
+        this.inputResource = inputResource;
     }
 
     /**
      * @return What TYPE of resource you're getting.
      */
-    public ResourceType getOutputResource() { return outputResource; }
+    public ResourceType getOutputResource() {
+        return outputResource;
+    }
 
     /**
      * @param outputResource What TYPE of resource you're getting.
      */
-    public void setOutputResource(ResourceType outputResource) { this.outputResource = outputResource; }
+    public void setOutputResource(ResourceType outputResource) {
+        this.outputResource = outputResource;
+    }
 
     public MaritimeTradeAction withOutputResource(ResourceType outputResource) {
         setOutputResource(outputResource);
         return this;
     }
+
     /**
      * @return The type
      */
-    public final String getType() { return TYPE; }
+    public final String getType() {
+        return TYPE;
+    }
 
     /**
      * @return The ratio of the trade your doing as an integer (ie. put 3 for a 3:1 trade)
      */
-    public int getRatio() { return ratio; }
+    public int getRatio() {
+        return ratio;
+    }
 
     /**
      * @param ratio The ratio of the trade your doing as an integer (ie. put 3 for a 3:1 trade)
      */
-    public void setRatio(int ratio) { this.ratio = ratio; }
+    public void setRatio(int ratio) {
+        this.ratio = ratio;
+    }
 
     public MaritimeTradeAction withRatio(int ratio) {
         setRatio(ratio);
         return this;
     }
+
     /**
      * @return Who's doing the trading
      */
-    public PlayerIndex getPlayerIndex() { return playerIndex; }
+    public PlayerIndex getPlayerIndex() {
+        return playerIndex;
+    }
 
     /**
      * @param playerIndex Who's doing the trading
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) { this.playerIndex = playerIndex; }
+    public void setPlayerIndex(PlayerIndex playerIndex) {
+        this.playerIndex = playerIndex;
+    }
 
     public MaritimeTradeAction withPlayerIndex(PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }
+
     /**
      * @return What TYPE of resource you're giving.
      */
-    public ResourceType getInputResource() { return inputResource; }
+    public ResourceType getInputResource() {
+        return inputResource;
+    }
 
     /**
      * @param inputResource What TYPE of resource you're giving.
      */
-    public void setInputResource(ResourceType inputResource) { this.inputResource = inputResource; }
+    public void setInputResource(ResourceType inputResource) {
+        this.inputResource = inputResource;
+    }
 
     public MaritimeTradeAction withInputResource(ResourceType inputResource) {
         setInputResource(inputResource);
@@ -118,29 +137,29 @@ public class MaritimeTradeAction {
     @Override
     public String toString() {
         return "MaritimeTradeAction [" +
-            "outputResource=" + outputResource +
-            ", type=" + TYPE +
-            ", ratio=" + ratio +
-            ", playerIndex=" + playerIndex +
-            ", inputResource=" + inputResource +
-            "]";
+                "outputResource=" + outputResource +
+                ", type=" + TYPE +
+                ", ratio=" + ratio +
+                ", playerIndex=" + playerIndex +
+                ", inputResource=" + inputResource +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof MaritimeTradeAction) {
-            return equals((MaritimeTradeAction)other);
+            return equals((MaritimeTradeAction) other);
         }
         return false;
     }
 
     public boolean equals(MaritimeTradeAction other) {
         return (
-            outputResource == other.outputResource &&
-            TYPE == other.TYPE &&
-            ratio == other.ratio &&
-            playerIndex == other.playerIndex &&
-            inputResource == other.inputResource
+                outputResource == other.outputResource &&
+                        TYPE == other.TYPE &&
+                        ratio == other.ratio &&
+                        playerIndex == other.playerIndex &&
+                        inputResource == other.inputResource
         );
     }
 }

@@ -2,8 +2,9 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
 import shared.definitions.PlayerIndex;
+
+import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
 public class BuyDevCardAction {
@@ -27,27 +28,32 @@ public class BuyDevCardAction {
     }
 
     /**
-      * @param TYPE The type
-      * @param playerIndex Who's playing this dev card
+     * @param playerIndex Who's playing this dev card
      */
     public BuyDevCardAction(PlayerIndex playerIndex) {
-            this.playerIndex = playerIndex;
+        this.playerIndex = playerIndex;
     }
 
     /**
      * @return The type
      */
-    public final String getType() { return TYPE; }
+    public final String getType() {
+        return TYPE;
+    }
 
     /**
      * @return Who's playing this dev card
      */
-    public PlayerIndex getPlayerIndex() { return playerIndex; }
+    public PlayerIndex getPlayerIndex() {
+        return playerIndex;
+    }
 
     /**
      * @param playerIndex Who's playing this dev card
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) { this.playerIndex = playerIndex; }
+    public void setPlayerIndex(PlayerIndex playerIndex) {
+        this.playerIndex = playerIndex;
+    }
 
     public BuyDevCardAction withPlayerIndex(PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
@@ -57,23 +63,23 @@ public class BuyDevCardAction {
     @Override
     public String toString() {
         return "BuyDevCardAction [" +
-            "type=" + TYPE +
-            ", playerIndex=" + playerIndex +
-            "]";
+                "type=" + TYPE +
+                ", playerIndex=" + playerIndex +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof BuyDevCardAction) {
-            return equals((BuyDevCardAction)other);
+            return equals((BuyDevCardAction) other);
         }
         return false;
     }
 
     public boolean equals(BuyDevCardAction other) {
         return (
-            TYPE == other.TYPE &&
-            playerIndex == other.playerIndex
+                TYPE == other.TYPE &&
+                        playerIndex == other.playerIndex
         );
     }
 }

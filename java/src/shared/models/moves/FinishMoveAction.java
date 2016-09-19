@@ -2,8 +2,9 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
 import shared.definitions.PlayerIndex;
+
+import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
 public class FinishMoveAction {
@@ -27,27 +28,32 @@ public class FinishMoveAction {
     }
 
     /**
-      * @param TYPE The type
-      * @param playerIndex Who's sending this command (0-3)
+     * @param playerIndex Who's sending this command (0-3)
      */
     public FinishMoveAction(PlayerIndex playerIndex) {
-            this.playerIndex = playerIndex;
+        this.playerIndex = playerIndex;
     }
 
     /**
      * @return The type
      */
-    public final String getType() { return TYPE; }
+    public final String getType() {
+        return TYPE;
+    }
 
     /**
      * @return Who's sending this command (0-3)
      */
-    public PlayerIndex getPlayerIndex() { return playerIndex; }
+    public PlayerIndex getPlayerIndex() {
+        return playerIndex;
+    }
 
     /**
      * @param playerIndex Who's sending this command (0-3)
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) { this.playerIndex = playerIndex; }
+    public void setPlayerIndex(PlayerIndex playerIndex) {
+        this.playerIndex = playerIndex;
+    }
 
     public FinishMoveAction withPlayerIndex(PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
@@ -57,23 +63,23 @@ public class FinishMoveAction {
     @Override
     public String toString() {
         return "FinishMoveAction [" +
-            "type=" + TYPE +
-            ", playerIndex=" + playerIndex +
-            "]";
+                "type=" + TYPE +
+                ", playerIndex=" + playerIndex +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof FinishMoveAction) {
-            return equals((FinishMoveAction)other);
+            return equals((FinishMoveAction) other);
         }
         return false;
     }
 
     public boolean equals(FinishMoveAction other) {
         return (
-            TYPE == other.TYPE &&
-            playerIndex == other.playerIndex
+                TYPE == other.TYPE &&
+                        playerIndex == other.playerIndex
         );
     }
 }

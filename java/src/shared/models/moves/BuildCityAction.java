@@ -2,9 +2,10 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
 import shared.definitions.PlayerIndex;
 import shared.locations.VertexLocation;
+
+import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
 public class BuildCityAction {
@@ -32,43 +33,53 @@ public class BuildCityAction {
     }
 
     /**
-      * @param TYPE The type
-      * @param vertexLocation The vertexLocation
-      * @param playerIndex Who's placing the city
+     * @param vertexLocation The vertexLocation
+     * @param playerIndex    Who's placing the city
      */
     public BuildCityAction(VertexLocation vertexLocation, PlayerIndex playerIndex) {
-            this.vertexLocation = vertexLocation;
-            this.playerIndex = playerIndex;
+        this.vertexLocation = vertexLocation;
+        this.playerIndex = playerIndex;
     }
 
     /**
      * @return The type
      */
-    public final String getType() { return TYPE; }
+    public final String getType() {
+        return TYPE;
+    }
 
     /**
      * @return The vertexLocation
      */
-    public VertexLocation getVertexLocation() { return vertexLocation; }
+    public VertexLocation getVertexLocation() {
+        return vertexLocation;
+    }
 
     /**
      * @param vertexLocation The vertexLocation
      */
-    public void setVertexLocation(VertexLocation vertexLocation) { this.vertexLocation = vertexLocation; }
+    public void setVertexLocation(VertexLocation vertexLocation) {
+        this.vertexLocation = vertexLocation;
+    }
 
     public BuildCityAction withVertexLocation(VertexLocation vertexLocation) {
         setVertexLocation(vertexLocation);
         return this;
     }
+
     /**
      * @return Who's placing the city
      */
-    public PlayerIndex getPlayerIndex() { return playerIndex; }
+    public PlayerIndex getPlayerIndex() {
+        return playerIndex;
+    }
 
     /**
      * @param playerIndex Who's placing the city
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) { this.playerIndex = playerIndex; }
+    public void setPlayerIndex(PlayerIndex playerIndex) {
+        this.playerIndex = playerIndex;
+    }
 
     public BuildCityAction withPlayerIndex(PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
@@ -78,25 +89,25 @@ public class BuildCityAction {
     @Override
     public String toString() {
         return "BuildCityAction [" +
-            "type=" + TYPE +
-            ", vertexLocation=" + vertexLocation +
-            ", playerIndex=" + playerIndex +
-            "]";
+                "type=" + TYPE +
+                ", vertexLocation=" + vertexLocation +
+                ", playerIndex=" + playerIndex +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof BuildCityAction) {
-            return equals((BuildCityAction)other);
+            return equals((BuildCityAction) other);
         }
         return false;
     }
 
     public boolean equals(BuildCityAction other) {
         return (
-            TYPE == other.TYPE &&
-            vertexLocation == other.vertexLocation &&
-            playerIndex == other.playerIndex
+                TYPE == other.TYPE &&
+                        vertexLocation == other.vertexLocation &&
+                        playerIndex == other.playerIndex
         );
     }
 }
