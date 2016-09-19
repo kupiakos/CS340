@@ -152,7 +152,7 @@ public class ServerProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public String sendChat(@NotNull SendChatAction sendChatObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel sendChat(@NotNull SendChatAction sendChatObject) throws CommunicationException, IllegalArgumentException {
         return null;
     }
 
@@ -160,16 +160,16 @@ public class ServerProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void acceptTrade(@NotNull AcceptTradeAction acceptTradeObject) throws CommunicationException, IllegalArgumentException {
-
+    public ClientModel acceptTrade(@NotNull AcceptTradeAction acceptTradeObject) throws CommunicationException, IllegalArgumentException {
+        return null;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void discardCards(@NotNull DiscardCardsAction discardCardsObject) throws CommunicationException, IllegalArgumentException {
-
+    public ClientModel discardCards(@NotNull DiscardCardsAction discardCardsObject) throws CommunicationException, IllegalArgumentException {
+        return null;
     }
 
     /**
