@@ -1,11 +1,16 @@
 package shared;
 
+import com.sun.istack.internal.NotNull;
+import shared.exceptions.JoinGameException;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.games.*;
 import shared.models.moves.*;
 import shared.models.user.Credentials;
 import shared.models.util.ChangeLogLevelRequest;
+
+import javax.naming.CommunicationException;
+import javax.security.auth.login.CredentialNotFoundException;
 import java.util.List;
 
 /**
@@ -16,279 +21,373 @@ import java.util.List;
 public interface IServer {
 
 //Non-Move APIs
+
     /**
-     * Method checks if the login credentials are valid
+     * Method checks if the login credentials are valid.  Throws exception if there are any problems or conflicts.
+     *
      * @param credentialsObject The information that needs to be added to the body of the HTTP request. Contains the username and password of the player.
-     * @pre  username and password are not null
-     * @post If the passed-in (username, password) pair is valid,  1. The server returns an HTTP 200 success response with "Success" in the body.  2. The HTTP response headers set the catan.user cookie to contain the identity of the  logged-in player.  The cookie uses "Path=/", and its value contains a url-encoded JSON object of  the following form: { "name": STRING, "password": STRING, "playerID": INTEGER }.  For  example, { "name": "Rick", "password": "secret", "playerID": 14 }.    If the passed-in (username, password) pair is not valid, or the operation fails for any other  reason,  1. The server returns an HTTP 400 error response, and the body contains an error  message.
-     * @return true if user is logged in; false otherwise
+     * @pre The username and password are valid.
+     * @post The login operation is successful and the user session is being tracked.
+     * @throws CredentialNotFoundException if the credentials are invalid.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link Credentials} is not valid.
      */
-    boolean login(Credentials credentialsObject);
+    void login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, CommunicationException, IllegalArgumentException;
 
     /**
      * Method register a new user if the user name is not used, logs the caller in to the server, and sets their
-     *  catan.user HTTP cookie
+     * catan.user HTTP cookie
+     *
      * @param credentialsObject The information that needs to be added to the body of the HTTP request.  Contains the username and password of the player.
-     * @pre username is not null, password is not null, The specified username is not already in use.
-     * @post If there is no existing user with the specified username,  1. A new user account has been created with the specified username and password.  2. The server returns an HTTP 200 success response with "Success" in the body.  3. The HTTP response headers set the catan.user cookie to contain the identity of the  logged-in player.  The cookie uses "Path=/", and its value contains a url-encoded JSON object of  the following form: { "name": STRING, "password": STRING, "playerID": INTEGER }.  For  example, { "name": "Rick", "password": "secret", "playerID": 14 }.  If there is already an existing user with the specified name, or the operation fails for any other  reason,  1. The server returns an HTTP 400 error response, and the body contains an error message.
-     * @return True if the username and password are registered; else false
+     * @pre The crediantials are are valid and have not already been used.
+     * @post A new user is registered on the server and the user session is being tracked.
+     * @throws CredentialNotFoundException if the credentials are an invalid format or have already been used.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link Credentials} is not valid.
      */
-    boolean register(Credentials credentialsObject);
+    void register(@NotNull Credentials credentialsObject)throws CredentialNotFoundException, CommunicationException, IllegalArgumentException;
 
     /**
      * Method returns info about all of the current games on the server
+     *
      * @pre None
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response.  2. The body contains a JSON array containing a list of objects that contain information about the server’s games    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
+     * @post None
      * @return The list of {@link GameInfo} objects that are running on the server.
+     * @throws CommunicationException if there is an error contacting the server.
      */
-    List<GameInfo> listOfGames();
+    List<GameInfo> listOfGames() throws CommunicationException;
 
     /**
      * Creates a new game on the server
+     *
      * @param createGameObject The information that needs to be added to the body of the HTTP request.
      * @pre name is not null and randomTiles, randomNumbers, and randomPorts contain valid boolean values
-     * @post If the operation succeeds,  1. A new game with the specified properties has been created  2. The server returns an HTTP 200 success response.  3. The body contains a JSON object describing the newly created game    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
-     * @return true if the game is created; else false
+     * @post A new game is created on the server
+     * @throws CommunicationException If there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link CreateGameRequest} is not valid.
      */
-    boolean createGame(CreateGameRequest createGameObject);
+    void createGame(@NotNull CreateGameRequest createGameObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Adds a player to a specific game and sets their catan.game cookie
+     *
      * @param joinGameObject The information that needs to be added to the body of the HTTP request.
-     * @pre 1. The user has previously logged in to the server (i.e., they have a valid catan.user HTTP  cookie).   2. The player may join the game because   2.a They are already in the game, OR  2.b There is space in the game to add a new player  3. The specified game ID is valid  4. The specified color is valid (red, green, blue, yellow, puce, brown, white, purple, orange)
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with "Success" in the body.  2. The player is in the game with the specified color (i.e. calls to /games/list method will  show the player in the game with the chosen color). 3. The server response includes the "Set-cookie" response header setting the catan.game  HTTP cookie    If the operation fails,
-    1. The server returns an HTTP 400 error response, and the body contains an error  message.
-     * @return true if player is added with chosen color and the server response includes the set cookie response
-    false if else
-     * Note: The 1st, 4th, and 5th pre-conditions need to be true.  Only one of the 2nd and 3rd pre-conditions need to
-    be true
+     * @pre
+     * <ul>
+     *     <li>The user has previously logged in to the server</li>
+     *     <li>There is space in the game to add a new player.</li>
+     *     <li>The specified game ID is valid</li>
+     *     <li>The specified color is valid</li>
+     * </ul>
+     * @post The current Player has been added to the specified game with the specified color.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws JoinGameException if the {@link JoinGameRequest} does not allow the player to join.
+     *
      */
-    boolean joinGames(JoinGameRequest joinGameObject);
+    void joinGame(@NotNull JoinGameRequest joinGameObject) throws CommunicationException, JoinGameException;
 
     /**
      * For testing and debugging.  Save a game with a bug report for others to fix
+     *
      * @param saveGameObject The information that needs to be added to the body of the HTTP request.
-     * @pre gameID and file_name are valid
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with "Success" in the body.  2. The current state of the specified game (including its ID) has been saved to the  specified file name in the server’s saves/ directory    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
-     * @return True if the game was saved to a file in the server's directory; false otherwise
+     * @pre {@link SaveGameRequest} contains a valid file name and game ID.
+     * @post  The current state of the specified game (including its ID) has been saved to the  specified file name in the server’s saves/ directory.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link SaveGameRequest} does not contain a valid game ID or file name.
      */
-    boolean saveGame(SaveGameRequest saveGameObject);
+    void saveGame(@NotNull SaveGameRequest saveGameObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * For testing and debugging.  Loads a game that was saved with a bug report for fixing purposes
+     *
      * @param loadGameObject The information that needs to be added to the body of the HTTP request. This includes the file name
-     * @pre a previously saved game file with the specified name exists in the server's saves/directory
-     * @post If the operation succeeds, 1. The server returns an HTTP 200 success response with "Success" in the body.  2. The game in the specified file has been loaded into the server and its state restored  (including its ID).    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
-     * @return True if game is loaded into the server; false otherwise
+     * @pre {@link LoadGameRequest} contains a valid file name.
+     * @post The game in the specified file has been loaded into the server and its state restored  (including its ID).
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link LoadGameRequest} does not contain a valid file name to load from.
      */
-    boolean loadGame(LoadGameRequest loadGameObject);
+    void loadGame(@NotNull LoadGameRequest loadGameObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Returns the current state of the game
+     *
      * @param version If needed, a version number is needed in the URL; null is valid
-     * @pre caller is logged in and joined a game and, if specified, the version number is included as the "version" query parameter in the request URL, and its value is a valid integer.
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response.  2. The response body contains JSON data  a. The full client model JSON is returned if the caller does not provide a version number, or the provide version number does not match the version on the server  b. "true" (true in double quotes) is returned if the caller provided a version number, and the version number matched the version number on the server    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
+     * @pre
+     * <ul>
+     *     <li>User is logged in and in a game.</li>
+     *     <li>version is a valid integer</li>
+     * </ul>
+     * @post None
      * @return The current game state, or null if one does not exist
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if the version number is not valid.
      */
-    ClientModel gameState(int version);
+    ClientModel gameState(int version) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Clears the command history of the current game (not the players)
-     * @pre caller is logged in and joined a game
-     * @post If the operation succeeds,  1. The game’s command history has been cleared out  2. The game’s players have NOT been cleared out  3. The server returns an HTTP 200 success response.  4. The body contains the game’s updated client model JSON    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
-     * @return True if the command history is cleared; false otherwise
+     *
+     * @pre Caller is logged in and joined a game.
+     * @post Command list is cleared
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
      */
-    boolean resetGame();
+    ClientModel resetGame() throws CommunicationException;
 
     /**
-     * Returns a list of commands that have been executed in the current game.  Used for testing and debugging
-     * @pre caller is logged in and joined a game
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response.  2. The body contains a JSON array of  commands that have been executed in the game.  This command array is suitable for passing back to the /game/command [POST] method to  restore the state of the game later (after calling /game/reset to revert the game to its initial state).     If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
-     * @return true if the list of commands is returned; false otherwise
+     * Returns a list of commands that have been executed in the current game.  Used for testing and debugging.
+     *
+     * @pre Caller is logged in and joined a game.
+     * @post None.
+     * @return List of all game commands that have been executed since the setup round of the game.
+     * @throws CommunicationException if there is an error contacting the server.
      */
-    boolean getCommandsGame();
+    List<String> getCommandsGame() throws CommunicationException;
 
     /**
-     * Executes the specified command list in the current game.  Used for testing and debugging
-     * @pre caller is logged in and joined a game
-     * @post If the operation succeeds,  1. The passed-in command list has been applied to the game.  2. The server returns an HTTP 200 success response.  3. The body contains the game’s updated client model JSON    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
-     * @return True if the command is executed; false otherwise
+     * Executes the specified command list in the current game.  Used for testing and debugging.
+     *
+     * @param gameCommands  The game commands that have been executed in the current game.
+     * @pre Caller is logged in and joined a game.
+     * @post The passed-in command list has been applied to the game.
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if the list of commands is invalid.
      */
-    boolean postCommandsGame();
+    ClientModel postCommandsGame(@NotNull List<String> gameCommands) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Returns a list of supported AI player types
+     *
      * @pre None
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response.  2. The body contains a JSON string array enumerating the different types of AI players.  These are the values that may be passed to the /game/addAI method.
+     * @post None.
+     * @return A list of the supported AI types.
+     * @throws CommunicationException if there is an error communicating with the server.
      */
-    void listAI();
+    List<String> listAI()  throws CommunicationException;
 
     /**
      * Adds an AI player to the current game. You must login and join a game before calling this method
+     *
      * @param addAIObject The information that needs to be added to the body of the HTTP request.  This contains an AI type
-     * @pre caller is logged in and joined a game, there is space for another player, and AIType is valid
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with "Success" in the body.  2. A new AI player of the specified type has been added to the current game.  The server  selected a name and color for the player.    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
-     * @return true if a new AI is added to the current game; false if not
+     * @pre Caller is logged in and joined a game, there is space for another player, {@link AddAIRequest} contains a valid AI type.
+     * @post A new AI player of the specified type has been added to the current game.
+     * @throws CommunicationException if there is an error communicating with the server.
+     * @throws IllegalArgumentException if {@link AddAIRequest} does not contain valid information.
      */
-    boolean addAI(AddAIRequest addAIObject);
+    void addAI(@NotNull AddAIRequest addAIObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Sets the server's logging level
+     *
      * @param changeLogLevelObject The information that needs to be added to the body of the HTTP request.  This includes a valid logging value
      * @pre LogLevel is a valid logging level
-     * @post If the operation succeeds,  1. The server returns an HTTP 200 success response with "Success" in the body.  2. The Server is using the specified logging level    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
-     * @return True if logging level is changed; false if it is the same
+     * @post The Server is using the specified logging level.
+     * @throws CommunicationException if there is an error communicating with the server.
+     * @throws IllegalArgumentException if {@link ChangeLogLevelRequest} does not contain a valid log level.
      */
-    boolean changeLogLevel(ChangeLogLevelRequest changeLogLevelObject);
+    void changeLogLevel(@NotNull ChangeLogLevelRequest changeLogLevelObject) throws CommunicationException, IllegalArgumentException;
 
 //Move APIs (Assumed pre-condition for all Move APIs are caller is logged in and joined a game)
+
     /**
      * Sends a chat message to the other players anytime
+     *
      * @param sendChatObject The information that needs to be added to the body of the HTTP request.  This contains a type, the player index, and the content of the chat
      * @pre None
      * @post Chat contains your message at the end
      * @return The message that the player wants to send
+     * @throws CommunicationException if there is an error communicating with the server.
+     * @throws IllegalArgumentException if {@link SendChatAction} is not valid.
      */
-    String sendChat(SendChatAction sendChatObject);
+    String sendChat(@NotNull SendChatAction sendChatObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Method considers if player has accepted the offer and then swaps specified resources if true
+     *
      * @param acceptTradeObject The information that needs to be added to the body of the HTTP request.  This includes the player index and whether they are accepting or not
-     * @pre offered a domestic trade and, to accept the trade, you have the required resources
-     * @post  If you accepted, you and the player who offered swap the specified resources, If you declined no resources are exchanged, The trade offer is removed
-     * @return True if resources is traded; false if not
+     * @pre player is offered a domestic trade.
+     * @post If you accepted, you and the player who offered swap the specified resources, If you declined no resources are exchanged, The trade offer is removed
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link AcceptTradeAction} does not contain valid data.
      */
-    boolean acceptTrade(AcceptTradeAction acceptTradeObject);
+    void acceptTrade(@NotNull AcceptTradeAction acceptTradeObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Method that discards cards from a players hand.
+     *
      * @param discardCardsObject The information that needs to be added to the body of the HTTP request.  This includes the player index and the cards they are discarding.
-     * @return True if cards were discarded; false otherwise.
+     * @pre Caller has the cards that he is trying to discard.
+     * @post Caller no longer has the cards defined in {@link DiscardCardsAction}.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if the {@link DiscardCardsAction} does not contain valid data.
      */
-    boolean discardCards(DiscardCardsAction discardCardsObject);
+    void discardCards(@NotNull DiscardCardsAction discardCardsObject) throws CommunicationException, IllegalArgumentException;
 
     /**
-     * Rolls dice.
-     * @pre  It is your turn and the client's model status is 'rolling'
-     * @post  The client model's status is now in 'Discarding', 'Robbing', or 'Playing'
-     * @return The number that was rolled
+     * Tells the server what number you have rolled
+     *
+     * @pre It is your turn and the client's model status is 'rolling'
+     * @post The client model's status is now in 'Discarding', 'Robbing', or 'Playing'
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link RollNumberAction} is not valid.
      */
-    int rollNumber();
+    ClientModel rollNumber(@NotNull RollNumberAction rollNumberObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Builds a road on the game map if player is able
-     * @pre The location is open, is connected to a road owned by the player, and is not on the water.
-     * @pre In addition, you must have the required resources if it is not free.  If in setup round, must be placed by a settlement owned by the player with no adjacent road
-     * @post  If !free, lose the required resources.  The road is now on the map in the correct location.  And longest road has been applied, if applicable.
+     *
      * @param buildRoadObject The information that needs to be added to the body of the HTTP request.  This includes a valid location, player index, and whether it is free
-     * @return True if road was built; false otherwise.
+     * @pre caller canBuildRoad. {@link BuildRoadAction} is valid.
+     * @post If !free, lose the required resources.  The road is now on the map in the correct location.  Player loses 1 road. Longest road has been applied, if applicable.
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link BuildRoadAction} is not valid.
      */
-    boolean buildRoad(BuildRoadAction buildRoadObject);
+    ClientModel buildRoad(@NotNull BuildRoadAction buildRoadObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Builds a settlement on game map if player is able
-     * @pre Location is open.  Location is not on water.  Location is connected to player's road (unless in setup).  Have resources (if !free). Not next to adjacent settlement.
-     * @post  Lose required resources (if !free).  The settlement has been placed on specified location.
+     *
      * @param buildSettlementObject The information that needs to be added to the body of the HTTP request.  This includes a valid location, player index, and whether the settlement is free
-     * @return True if settlement was built; false otherwise
+     * @pre Caller canBuildSettlement.  {@link BuildSettlementAction} is valid
+     * @post Lose required resources (if !free).  The settlement has been placed on specified location.  Player loses 1 settlement.
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there as an error contacting the server.
+     * @throws IllegalArgumentException if {@link BuildSettlementAction} is not valid.
      */
-    boolean buildSettlement(BuildSettlementAction buildSettlementObject);
+    ClientModel buildSettlement(@NotNull BuildSettlementAction buildSettlementObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Builds a city on game map if player is able
-     * @pre There is currently a settlement belonging to the player where the city is to be built.  Player has required resources.
-     * @post  Lose required resources.  City is placed on specified location.  Player receives 1 settlement back.
+     *
      * @param buildCityObject The information that needs to be added to the body of the HTTP request.  This includes a valid location and player index.
-     * @return True if city was built; false otherwise
+     * @pre Caller canBuildCity.  {@link BuildCityAction} is valid.
+     * @post Lose required resources.  City is placed on specified location.  Player receives 1 settlement back and loses 1 city.
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link BuildCityAction} is not valid.
      */
-    boolean buildCity(BuildCityAction buildCityObject);
+    ClientModel buildCity(@NotNull BuildCityAction buildCityObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Offers cards to trade with other players.  If successful, offer is sent to other player
-     * @pre Player has the resources they are offering.
-     * @post  The trade is offered to the other player (stored in server model)
+     *
      * @param offerTradeObject The information that needs to be added to the body of the HTTP request.  This includes the player index, the resources being offered, and the index of the receiving player
-     * @return True is offer was sent; false otherwise
+     * @pre Player has the resources they are offering. {@link OfferTradeAction} is valid.
+     * @post The trade is offered to the other player (stored in server model).
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link OfferTradeAction} is not valid.
      */
-    boolean offerTrade(OfferTradeAction offerTradeObject);
+    ClientModel offerTrade(@NotNull OfferTradeAction offerTradeObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Trades in your resources for resources offered by harbor.
+     *
+     * @param maritimeTradeObject The information that needs to be added to the body of the HTTP request.  This includes the player index, and , optionally, the ratio, input resource and output resource.
      * @pre Player has resources they are trading in.  For ratios less than 4, you have the correct port for the trade.
      * @post The trade has been executed (resources offered by player are now in bank,  requiested resources are received by player).
-     * @param maritimeTradeObject The information that needs to be added to the body of the HTTP request.  This includes th eplayer index, and , optionally, the ratio, input resource and output resource.
-     * @return True if trade was successful, false otherwise.
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link MaritimeTradeAction} is not valid.
      */
-    boolean maritimeTrade(MaritimeTradeAction maritimeTradeObject);
+    ClientModel maritimeTrade(@NotNull MaritimeTradeAction maritimeTradeObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Player gets to move robber to new location and target another player to rob
+     *
+     * @param robPlayerObject The information that needs to be added to the body of the HTTP request.  This includes the player index, the vitim index and the new location of the robber.
      * @pre The robber is not being kept in the same location.  If a player is being robbed, then that player has resources.
      * @post The robber is in the new specified location.  The play being robbed (if any) has given robbing player 1 random resource.
-     * @param robPlayerObject The information that needs to be added to the body of the HTTP request.  This includes the player index, the vitim index and the new location of the robber.
-     * @return True if robber was moved and player robbed; false otherwise.
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link RobPlayerAction} is not valid.
      */
-    boolean robPlayer(RobPlayerAction robPlayerObject);
+    ClientModel robPlayer(@NotNull RobPlayerAction robPlayerObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * This method ends your turn and moves the game to the next player.
      * It also puts your new development card hand into you old hand.
+     *
      * @pre None
      * @post The cards in the newDevHand have been transferred to the oldDevHand
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link FinishMoveAction} is not valid.
      */
-    void finishTurn(FinishMoveAction finishMoveObject);
+    ClientModel finishTurn(@NotNull FinishMoveAction finishMoveObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Buys a development card from the deck if any are left and if you have enough resources.
+     *
      * @pre Player has required resources.  There are dev cards left in the bank.
      * @post Player has a new dev card in 1) oldDevHand if monument; in newDevHand otherwise.
-     * @return  True if card was added to hand; false otherwise.
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there was an error contacting the server.
+     * @throws IllegalArgumentException if {@link BuyDevCardAction} is not valid.
      */
-    boolean buyDevCard(BuyDevCardAction buyDevCardObject);
+    ClientModel buyDevCard(@NotNull BuyDevCardAction buyDevCardObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Player gets to move robber to new location and target another player to rob
+     *
+     * @param soldierObject The information that needs to be added to the body of the HTTP request.  This includes the player index, the vitim index and the new location of the robber.
      * @pre The robber is not being kept in same location.  The player being robbed (if any) has resource cards.
      * @post Robber is moved.  Player being robbed (if any) has given player a resource card at random. Largest army is transferred (if applicable).  Cannot play other dev cards this turn.
-     * @param soldierObject The information that needs to be added to the body of the HTTP request.  This includes the player index, the vitim index and the new location of the robber.
-     * @return True if knight card was used; false otherwise.
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link SoldierAction} is not valid.
      */
-    boolean useSoldier(SoldierAction soldierObject);
+    ClientModel useSoldier(@NotNull SoldierAction soldierObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Play the year of plenty card to gain two resources of your choice.
+     *
+     * @param yearOfPlentyObject The information that needs to be added to the body of the HTTP request.  This includes the player index and the two specified resources.
      * @pre The two specified resources are in the bank.
      * @post Player has gained two specified resources.
-     * @param yearOfPlentyObject The information that needs to be added to the body of the HTTP request.  This includes the player index and the two specified resources.
-     * @return True if resources were given to player; false otherwise
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link YearofPlentyAction} is not valid.
      */
-    boolean useYearOfPlenty(YearofPlentyAction yearOfPlentyObject);
+    ClientModel useYearOfPlenty(@NotNull YearofPlentyAction yearOfPlentyObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Play the road building card to build two new roads, if available
+     *
+     * @param roadBuildingObject The information that needs to be added to the body of the HTTP request.  This includes the player index and the two edge locations to place the road.
      * @pre First road location is connected to one of player's other roads.  Second location is connected as well (can be connected to first road).  Neither road is on water.  Player has two unused roads.
      * @post Play has two fewer unused roads.  Roads are placed at specified location.  Longest road is transferred (if applicable).
-     * @param roadBuildingObject The information that needs to be added to the body of the HTTP request.  This includes the player index and the two edge locations to place the road.
-     * @return True if roads were built; false otherwise.
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link RoadBuildingAction} is not valid.
      */
-    boolean useRoadBuilding(RoadBuildingAction roadBuildingObject);
+    ClientModel useRoadBuilding(@NotNull RoadBuildingAction roadBuildingObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Play the monopoly card to take all of one type of resource from all other players
+     *
+     * @param monopolyObject The information that needs to be added to the body of the HTTP request.  This includes the player index and the resource type.
      * @pre None
      * @post All other players have given you all of their resource cards of one specified type.
-     * @param monopolyObject The information that needs to be added to the body of the HTTP request.  This includes the player index and the resource type.
-     * @return  True if resource was given to you; false otherwise.
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link MonopolyAction} is not valid.
      */
-    boolean useMonopoly(MonopolyAction monopolyObject);
+    ClientModel useMonopoly(@NotNull MonopolyAction monopolyObject) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Play your monument cards to gain victory point and win the game.
+     *
+     * @param monumentObject The information to be included in the HTTP request.  This includes the player index.
      * @pre Player will win after having played all of their monument cards.
      * @post You gain victory point(s).
-     * @param monumentObject The information to be included in the HTTP request.  This includes the player index.
-     * @return True if victory point was gained; false otherwise.
+     * @return The ClientModel of the current game.
+     * @throws CommunicationException if there is an error contacting the server.
+     * @throws IllegalArgumentException if {@link MonumentAction} is not valid.
      */
-    boolean useMonument(MonumentAction monumentObject);
+    ClientModel useMonument(@NotNull MonumentAction monumentObject) throws CommunicationException, IllegalArgumentException;
 
 }
