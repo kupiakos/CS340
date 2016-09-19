@@ -1,30 +1,24 @@
 package shared.facades;
 
+import com.sun.istack.internal.NotNull;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
 
-public class ChatFacade {
-
-    private ClientModel model;
-
-    /**
-     * Create a new {@code ChatFacade} and set its model.
-     *
-     * @param model the model to set
-     */
-    public ChatFacade(ClientModel model) {
-        this.model = model;
-    }
+/**
+ * Provides operations for users to chat with each other in a game.
+ */
+public class ChatFacade extends AbstractFacade {
 
     /**
-     * Sets the current {@link ClientModel}.
+     * Constructor. Requires a valid game model to work.
      *
-     * @param model the {@link ClientModel} to set
-     * @pre The given model is not null
-     * @post This will set its current model
+     * @param model the model to use, not null
+     * @throws NullPointerException if {@code model} is null
+     * @pre {@code model} is a valid {@link ClientModel}.
+     * @post This provides valid operations on {@code model}.
      */
-    public void setModel(ClientModel model) {
-        this.model = model;
+    public ChatFacade(@NotNull ClientModel model) {
+        super(model);
     }
 
     /**
@@ -32,14 +26,14 @@ public class ChatFacade {
      *
      * @return whether the player can send any chat messages
      */
-    public static boolean canSendChat(Player player) {
+    public static boolean canSendChat(@NotNull Player player) {
         return false;
     }
 
     /**
      * Sends a chat message to a {@link Player}.
      */
-    public static void sendChat(Player player) {
+    public static void sendChat(@NotNull Player player) {
 //        if (canSendChat(player)) {
 //        }
     }

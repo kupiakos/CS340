@@ -1,23 +1,27 @@
 package shared.facades;
 
+import com.sun.istack.internal.NotNull;
 import shared.definitions.TurnStatus;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
 
 import java.util.List;
 
-public class TurnFacade {
-    private ClientModel model;
+/**
+ * Provides common operations on the turn of a game.
+ */
+public class TurnFacade extends AbstractFacade {
 
     /**
-     * Create a new {@code TurnFacade} and set its model.
+     * Constructor. Requires a valid game model to work.
      *
+     * @param model the model to use, not null
+     * @throws NullPointerException if {@code model} is null
      * @pre {@code model} is a valid {@link ClientModel}.
-     * @post This is a valid object.
-     * @param model the model to set
+     * @post This provides valid operations on {@code model}.
      */
-    public TurnFacade(ClientModel model) {
-        this.model = model;
+    public TurnFacade(@NotNull ClientModel model) {
+        super(model);
     }
 
     /**
@@ -27,32 +31,21 @@ public class TurnFacade {
      * @pre @{code player} belongs to the current {@link ClientModel}, and it's their turn.
      * @post {@code player}'s turn is ended
      */
-    public static void endTurn(Player player) {
+    public static void endTurn(@NotNull Player player) {
 //        if (canEndTurn(player)) {
 //
 //        }
     }
 
     /**
-     * Sets the current {@link ClientModel}
-     *
-     * @param model the {@link ClientModel} to set
-     * @pre {@code model} is a valid {@link ClientModel}.
-     * @post This will set its current model
-     */
-    public void setModel(ClientModel model) {
-        this.model = model;
-    }
-
-    /**
      * Will check to see if the current {@link Player} can end their turn.
      *
      * @param player which {@link Player} to check
+     * @return whether the turn could be ended
      * @pre @{code player} belongs to the current {@link ClientModel}.
      * @post None.
-     * @return whether the turn could be ended
      */
-    public boolean canEndTurn(Player player) {
+    public boolean canEndTurn(@NotNull Player player) {
         return false;
     }
 
@@ -60,20 +53,20 @@ public class TurnFacade {
      * Returns whether it is a specific {@link Player}'s turn.
      *
      * @param player the {@link Player} to check against
+     * @return true if it is that {@link Player}'s turn
      * @pre @{code player} belongs to the current {@link ClientModel}.
      * @post None.
-     * @return true if it is that {@link Player}'s turn
      */
-    private boolean isPlayersTurn(Player player) {
+    private boolean isPlayersTurn(@NotNull Player player) {
         return false;
     }
 
     /**
      * Lets you check if you can trade, build, buy etc.
      *
+     * @return the current {@link TurnStatus} of the game
      * @pre A model is currently set, and it is a valid game.
      * @post None.
-     * @return the current {@link TurnStatus} of the game
      */
     public TurnStatus getPhase() {
         return TurnStatus.FIRST_ROUND;
@@ -82,9 +75,9 @@ public class TurnFacade {
     /**
      * Returns all {@link Player}s of the current game.
      *
+     * @return a list of {@link Player}s, from 2-4
      * @pre A model is currently set.
      * @post None.
-     * @return a list of {@link Player}s, from 2-4
      */
     public List<Player> getPlayers() {
         return null;
