@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
 import shared.definitions.PlayerIndex;
+import shared.models.game.ResourceList;
 
 @Generated("net.kupiakos")
 public class OfferTradeAction {
