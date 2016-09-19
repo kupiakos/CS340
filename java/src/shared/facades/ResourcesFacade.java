@@ -4,7 +4,7 @@ import com.sun.istack.internal.NotNull;
 import shared.definitions.PurchaseType;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
-import shared.models.game.ResourceList;
+import shared.models.game.ResourceSet;
 
 /**
  * Provides operations for users to manipulate their resources.
@@ -63,7 +63,7 @@ public class ResourcesFacade extends AbstractFacade {
      * @param resources the set of resources requested from the bank, not null
      * @return whether the player can receive the resources from the bank
      */
-    public boolean canReceiveFromBank(@NotNull Player player, @NotNull ResourceList resources) {
+    public boolean canReceiveFromBank(@NotNull Player player, @NotNull ResourceSet resources) {
         return false;
     }
 
@@ -78,7 +78,7 @@ public class ResourcesFacade extends AbstractFacade {
      * @post The bank has its resources deducted by {@code resources},
      * which are received by {@code player}.
      */
-    public void receiveFromBank(@NotNull Player player, @NotNull ResourceList resources) {
+    public void receiveFromBank(@NotNull Player player, @NotNull ResourceSet resources) {
         if (!canReceiveFromBank(player, resources)) {
             throw new IllegalArgumentException("Invalid bank receive");
         }
@@ -93,7 +93,7 @@ public class ResourcesFacade extends AbstractFacade {
      * @param resources the set of resources returning to the bank, not null
      * @return whether the player can return the resources to the bank
      */
-    public boolean canReturnToBank(@NotNull Player player, @NotNull ResourceList resources) {
+    public boolean canReturnToBank(@NotNull Player player, @NotNull ResourceSet resources) {
         return false;
     }
 
@@ -108,7 +108,7 @@ public class ResourcesFacade extends AbstractFacade {
      * @post The player has their resources deducted by {@code resources},
      * which are received by the bank.
      */
-    public void returnToBank(@NotNull Player player, @NotNull ResourceList resources) {
+    public void returnToBank(@NotNull Player player, @NotNull ResourceSet resources) {
         if (!canReceiveFromBank(player, resources)) {
             throw new IllegalArgumentException("Invalid bank receive");
         }

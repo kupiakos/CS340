@@ -13,7 +13,7 @@ public class MessageList {
 
     @SerializedName("lines")
     @Expose
-    private List<MessageLine> lines = new ArrayList<MessageLine>();
+    private List<MessageEntry> lines = new ArrayList<MessageEntry>();
 
 
     // CUSTOM CODE
@@ -28,21 +28,21 @@ public class MessageList {
     /**
       * @param lines The lines
      */
-    public MessageList(List<MessageLine> lines) {
+    public MessageList(List<MessageEntry> lines) {
             this.lines = lines;
     }
 
     /**
      * @return The lines
      */
-    public List<MessageLine> getLines() { return lines; }
+    public List<MessageEntry> getLines() { return lines; }
 
     /**
      * @param lines The lines
      */
-    public void setLines(@NotNull List<MessageLine> lines) { this.lines = lines; }
+    public void setLines(@NotNull List<MessageEntry> lines) { this.lines = lines; }
 
-    public MessageList withLines(@NotNull List<MessageLine> lines) {
+    public MessageList withLines(@NotNull List<MessageEntry> lines) {
         setLines(lines);
         return this;
     }

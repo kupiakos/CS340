@@ -4,7 +4,7 @@ import com.sun.istack.internal.NotNull;
 import shared.definitions.ResourceType;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
-import shared.models.game.ResourceList;
+import shared.models.game.ResourceSet;
 import shared.models.moves.OfferTradeAction;
 
 /**
@@ -42,7 +42,7 @@ public class TradingFacade extends AbstractFacade {
      * @pre None of the parameters are null.
      * @see #canOfferTrade(Player, Player)
      */
-    public boolean canOfferTrade(@NotNull Player sender, @NotNull Player receiver, @NotNull ResourceList offer) {
+    public boolean canOfferTrade(@NotNull Player sender, @NotNull Player receiver, @NotNull ResourceSet offer) {
         return false;
     }
 
@@ -60,7 +60,7 @@ public class TradingFacade extends AbstractFacade {
      * @param receiver the receiver of the trade, not null
      * @return true if all of the conditions are met; otherwise false
      * @pre None of the parameters are null.
-     * @see #canOfferTrade(Player, Player, ResourceList)
+     * @see #canOfferTrade(Player, Player, ResourceSet)
      */
     public boolean canOfferTrade(@NotNull Player sender, @NotNull Player receiver) {
         return false;
@@ -75,12 +75,12 @@ public class TradingFacade extends AbstractFacade {
      * @param receiver the receiver of the trade, not null
      * @param offer    the offer to make - what {@code sender} gets (+) and receives (-)
      * @throws IllegalArgumentException if the precondition is violated
-     * @pre {@link #canOfferTrade(Player, Player, ResourceList)} returns true
+     * @pre {@link #canOfferTrade(Player, Player, ResourceSet)} returns true
      * @post A pending trade offer will be pending for the sender and receiver.
-     * @see #canOfferTrade(Player, Player, ResourceList)
+     * @see #canOfferTrade(Player, Player, ResourceSet)
      * @see client.server.ServerProxy#offerTrade(OfferTradeAction)
      */
-    public void offerTrade(@NotNull Player sender, @NotNull Player receiver, @NotNull ResourceList offer) {
+    public void offerTrade(@NotNull Player sender, @NotNull Player receiver, @NotNull ResourceSet offer) {
         if (!canOfferTrade(sender, receiver, offer)) {
             throw new IllegalArgumentException("Invalid trade!");
         }

@@ -21,7 +21,7 @@ public class Player {
 
     @SerializedName("resources")
     @Expose
-    private ResourceList resources;
+    private ResourceSet resources;
 
     @SerializedName("roads")
     @Expose
@@ -98,7 +98,7 @@ public class Player {
       * @param playerID The unique playerID. This is used to pick the client player apart from the others. This is only used here and in your cookie.
       * @param playedDevCard Whether the player has played a dev card this turn.
      */
-    public Player(int cities, boolean discarded, ResourceList resources, int roads, int victoryPoints, DevCardList oldDevCards, int soldiers, CatanColor color, DevCardList newDevCards, PlayerIndex playerIndex, int monuments, String name, int settlements, int playerID, boolean playedDevCard) {
+    public Player(int cities, boolean discarded, ResourceSet resources, int roads, int victoryPoints, DevCardList oldDevCards, int soldiers, CatanColor color, DevCardList newDevCards, PlayerIndex playerIndex, int monuments, String name, int settlements, int playerID, boolean playedDevCard) {
             this.cities = cities;
             this.discarded = discarded;
             this.resources = resources;
@@ -147,14 +147,14 @@ public class Player {
     /**
      * @return The resource cards this player has.
      */
-    public ResourceList getResources() { return resources; }
+    public ResourceSet getResources() { return resources; }
 
     /**
      * @param resources The resource cards this player has.
      */
-    public void setResources(@NotNull ResourceList resources) { this.resources = resources; }
+    public void setResources(@NotNull ResourceSet resources) { this.resources = resources; }
 
-    public Player withResources(@NotNull ResourceList resources) {
+    public Player withResources(@NotNull ResourceSet resources) {
         setResources(resources);
         return this;
     }

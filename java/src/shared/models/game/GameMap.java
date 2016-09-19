@@ -3,18 +3,23 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
+import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
+import shared.locations.VertexLocation;
+import shared.utils.MapUtils;
 
 @Generated("net.kupiakos")
-public class Map {
+public class GameMap {
 
     @SerializedName("roads")
     @Expose
-    private List<Road> roads = new ArrayList<Road>();
+    private Map<EdgeLocation, Road> roads;
 
     @SerializedName("radius")
     @Expose
@@ -26,28 +31,79 @@ public class Map {
 
     @SerializedName("hexes")
     @Expose
-    private List<Hex> hexes = new ArrayList<Hex>();
+    private Map<HexLocation, Hex> hexes;
 
     @SerializedName("ports")
     @Expose
-    private List<Port> ports = new ArrayList<Port>();
+    private Map<HexLocation, Port> ports;
 
     @SerializedName("settlements")
     @Expose
-    private List<VertexObject> settlements = new ArrayList<VertexObject>();
+    private Map<VertexLocation, Player> settlements;
 
     @SerializedName("cities")
     @Expose
-    private List<VertexObject> cities = new ArrayList<VertexObject>();
+    private Map<VertexLocation, Player> cities;
 
 
     // CUSTOM CODE
+
+    // TODO: Javadocs
+
+    public Set<VertexLocation> getPlayerCities(@NotNull Player player) {
+        return MapUtils.keysWithValue(cities, player);
+    }
+
+    public Set<VertexLocation> getPlayerSettlements(@NotNull Player player) {
+        return MapUtils.keysWithValue(settlements, player);
+    }
+
+    @Nullable
+    public Road getRoad(@NotNull EdgeLocation location) {
+        location = location.getNormalizedLocation();
+        return roads.get(location);
+    }
+
+    @Nullable
+    public Hex getHex(@NotNull HexLocation location) {
+        return hexes.get(location);
+    }
+
+    public Set<Hex> getHexesWithNumber(int number) {
+        return MapUtils.valuesMatching(hexes, h -> h.getNumber() == number);
+    }
+
+    @Nullable
+    public Port getPort(@NotNull HexLocation location) {
+        return ports.get(location);
+    }
+
+    @Nullable
+    public Player getSettlementOwner(@NotNull VertexLocation location) {
+        return settlements.get(location);
+    }
+
+    @Nullable
+    public Player getCityOwner(@NotNull VertexLocation location) {
+        return cities.get(location);
+    }
+
+    public void addSettlement(@NotNull VertexLocation location, @NotNull Player player) {
+    }
+
+    public void addCity(@NotNull VertexLocation location, @NotNull Player player) {
+    }
+
+    public void addRoad(@NotNull Road road) {
+
+    }
+
     // END CUSTOM CODE
 
     /**
      * No args constructor for use in serialization
      */
-    public Map() {
+    public GameMap() {
     }
 
     /**
@@ -59,7 +115,13 @@ public class Map {
       * @param settlements The list of settlements currently placed on the map
       * @param cities The list of cities currently placed on the map
      */
-    public Map(List<Road> roads, int radius, HexLocation robber, List<Hex> hexes, List<Port> ports, List<VertexObject> settlements, List<VertexObject> cities) {
+    public GameMap(Map<EdgeLocation, Road> roads,
+                   int radius,
+                   HexLocation robber,
+                   Map<HexLocation, Hex> hexes,
+                   Map<HexLocation, Port> ports,
+                   Map<VertexLocation, Player> settlements,
+                   Map<VertexLocation, Player> cities) {
             this.roads = roads;
             this.radius = radius;
             this.robber = robber;
@@ -72,14 +134,14 @@ public class Map {
     /**
      * @return the list of roads currently placed on the map
      */
-    public List<Road> getRoads() { return roads; }
+    public Map<EdgeLocation, Road> getRoads() { return roads; }
 
     /**
      * @param roads list of roads currently placed on the map
      */
-    public void setRoads(@NotNull List<Road> roads) { this.roads = roads; }
+    public void setRoads(@NotNull Map<EdgeLocation, Road> roads) { this.roads = roads; }
 
-    public Map withRoads(@NotNull List<Road> roads) {
+    public GameMap withRoads(@NotNull Map<EdgeLocation, Road> roads) {
         setRoads(roads);
         return this;
     }
@@ -93,7 +155,7 @@ public class Map {
      */
     public void setRadius(int radius) { this.radius = radius; }
 
-    public Map withRadius(int radius) {
+    public GameMap withRadius(int radius) {
         setRadius(radius);
         return this;
     }
@@ -107,63 +169,63 @@ public class Map {
      */
     public void setRobber(@NotNull HexLocation robber) { this.robber = robber; }
 
-    public Map withRobber(@NotNull HexLocation robber) {
+    public GameMap withRobber(@NotNull HexLocation robber) {
         setRobber(robber);
         return this;
     }
     /**
      * @return A list of all the hexes on the grid - it's only land tiles
      */
-    public List<Hex> getHexes() { return hexes; }
+    public Map<HexLocation, Hex> getHexes() { return hexes; }
 
     /**
      * @param hexes A list of all the hexes on the grid - it's only land tiles
      */
-    public void setHexes(@NotNull List<Hex> hexes) { this.hexes = hexes; }
+    public void setHexes(@NotNull Map<HexLocation, Hex> hexes) { this.hexes = hexes; }
 
-    public Map withHexes(@NotNull List<Hex> hexes) {
+    public GameMap withHexes(@NotNull Map<HexLocation, Hex> hexes) {
         setHexes(hexes);
         return this;
     }
     /**
      * @return the list of ports currently placed on the map
      */
-    public List<Port> getPorts() { return ports; }
+    public Map<HexLocation, Port> getPorts() { return ports; }
 
     /**
      * @param ports list of ports currently placed on the map
      */
-    public void setPorts(@NotNull List<Port> ports) { this.ports = ports; }
+    public void setPorts(@NotNull Map<HexLocation, Port> ports) { this.ports = ports; }
 
-    public Map withPorts(@NotNull List<Port> ports) {
+    public GameMap withPorts(@NotNull Map<HexLocation, Port> ports) {
         setPorts(ports);
         return this;
     }
     /**
      * @return the list of settlements currently placed on the map
      */
-    public List<VertexObject> getSettlements() { return settlements; }
+    public Map<VertexLocation, Player> getSettlements() { return settlements; }
 
     /**
      * @param settlements list of settlements currently placed on the map
      */
-    public void setSettlements(@NotNull List<VertexObject> settlements) { this.settlements = settlements; }
+    public void setSettlements(@NotNull Map<VertexLocation, Player> settlements) { this.settlements = settlements; }
 
-    public Map withSettlements(@NotNull List<VertexObject> settlements) {
+    public GameMap withSettlements(@NotNull Map<VertexLocation, Player> settlements) {
         setSettlements(settlements);
         return this;
     }
     /**
      * @return the list of cities currently placed on the map
      */
-    public List<VertexObject> getCities() { return cities; }
+    public Map<VertexLocation, Player> getCities() { return cities; }
 
     /**
      * @param cities list of cities currently placed on the map
      */
-    public void setCities(@NotNull List<VertexObject> cities) { this.cities = cities; }
+    public void setCities(@NotNull Map<VertexLocation, Player> cities) { this.cities = cities; }
 
-    public Map withCities(@NotNull List<VertexObject> cities) {
+    public GameMap withCities(@NotNull Map<VertexLocation, Player> cities) {
         setCities(cities);
         return this;
     }
@@ -183,13 +245,13 @@ public class Map {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof Map) {
-            return equals((Map)other);
+        if (other instanceof GameMap) {
+            return equals((GameMap)other);
         }
         return false;
     }
 
-    public boolean equals(Map other) {
+    public boolean equals(GameMap other) {
         return (
             roads == other.roads &&
             radius == other.radius &&

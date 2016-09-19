@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
-import shared.models.game.ResourceList;
+import shared.models.game.ResourceSet;
 
 import javax.annotation.Generated;
 
@@ -17,7 +17,7 @@ public class DiscardCardsAction {
 
     @SerializedName("discardedCards")
     @Expose
-    private ResourceList discardedCards;
+    private ResourceSet discardedCards;
 
     @SerializedName("playerIndex")
     @Expose
@@ -37,7 +37,7 @@ public class DiscardCardsAction {
      * @param discardedCards The discardedCards
      * @param playerIndex    Who's discarding
      */
-    public DiscardCardsAction(ResourceList discardedCards, PlayerIndex playerIndex) {
+    public DiscardCardsAction(ResourceSet discardedCards, PlayerIndex playerIndex) {
         this.discardedCards = discardedCards;
         this.playerIndex = playerIndex;
     }
@@ -53,18 +53,18 @@ public class DiscardCardsAction {
      * @return The discardedCards
      */
     @NotNull
-    public ResourceList getDiscardedCards() {
+    public ResourceSet getDiscardedCards() {
         return discardedCards;
     }
 
     /**
      * @param discardedCards The discardedCards
      */
-    public void setDiscardedCards(@NotNull ResourceList discardedCards) {
+    public void setDiscardedCards(@NotNull ResourceSet discardedCards) {
         this.discardedCards = discardedCards;
     }
 
-    public DiscardCardsAction withDiscardedCards(@NotNull ResourceList discardedCards) {
+    public DiscardCardsAction withDiscardedCards(@NotNull ResourceSet discardedCards) {
         setDiscardedCards(discardedCards);
         return this;
     }

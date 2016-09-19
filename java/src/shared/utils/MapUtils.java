@@ -7,8 +7,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MapUtils {
-    public static <K, V> Set<K> getKeysWithEntryMatching(Map<K, V> items,
-                                                         Predicate<? super Map.Entry<K, V>> testFunction) {
+    // TODO: Javadocs
+    public static <K, V> Set<K> keysWithEntryMatching(Map<K, V> items,
+                                                      Predicate<Map.Entry<K, V>> testFunction) {
         // value or any contained value in items may be null
         return items.entrySet().stream()
                 .filter(testFunction)
@@ -16,14 +17,23 @@ public class MapUtils {
                 .collect(Collectors.toSet());
     }
 
-    public static <K, V> Set<K> getKeysWithValueMatching(Map<K, V> items,
-                                                         Predicate<? super V> testFunction) {
+    public static <K, V> Set<K> keysWithValueMatching(Map<K, V> items,
+                                                      Predicate<V> testFunction) {
         // value or any contained value in items may be null
-        return getKeysWithEntryMatching(items, e -> testFunction.test(e.getValue()));
+        return keysWithEntryMatching(items, e -> testFunction.test(e.getValue()));
     }
 
-    public static <K, V> Set<K> getKeysWithValue(Map<K, V> items, V value) {
+    public static <K, V> Set<K> keysWithValue(Map<K, V> items, V value) {
         // value or any contained value in items may be null
-        return getKeysWithEntryMatching(items, e -> Objects.equals(e.getValue(), value));
+        return keysWithEntryMatching(items, e -> Objects.equals(e.getValue(), value));
+    }
+
+    public static <K, V> Set<V> valuesMatching(Map<K, V> items,
+                                               Predicate<? super V> testFunction) {
+        // value or any contained value in items may be null
+        return items.values()
+                .stream()
+                .filter(testFunction)
+                .collect(Collectors.toSet());
     }
 }

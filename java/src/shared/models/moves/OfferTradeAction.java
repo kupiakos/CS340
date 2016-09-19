@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
-import shared.models.game.ResourceList;
+import shared.models.game.ResourceSet;
 
 import javax.annotation.Generated;
 
@@ -21,7 +21,7 @@ public class OfferTradeAction {
 
     @SerializedName("offer")
     @Expose
-    private ResourceList offer;
+    private ResourceSet offer;
 
     @SerializedName("playerIndex")
     @Expose
@@ -42,7 +42,7 @@ public class OfferTradeAction {
      * @param offer       What you get (+) and what you give (-)
      * @param playerIndex Who's sending the offer
      */
-    public OfferTradeAction(PlayerIndex receiver, ResourceList offer, PlayerIndex playerIndex) {
+    public OfferTradeAction(PlayerIndex receiver, ResourceSet offer, PlayerIndex playerIndex) {
         this.receiver = receiver;
         this.offer = offer;
         this.playerIndex = playerIndex;
@@ -77,18 +77,18 @@ public class OfferTradeAction {
     /**
      * @return What you get (+) and what you give (-)
      */
-    public ResourceList getOffer() {
+    public ResourceSet getOffer() {
         return offer;
     }
 
     /**
      * @param offer What you get (+) and what you give (-)
      */
-    public void setOffer(@NotNull ResourceList offer) {
+    public void setOffer(@NotNull ResourceSet offer) {
         this.offer = offer;
     }
 
-    public OfferTradeAction withOffer(@NotNull ResourceList offer) {
+    public OfferTradeAction withOffer(@NotNull ResourceSet offer) {
         setOffer(offer);
         return this;
     }

@@ -32,11 +32,11 @@ public class ClientModel {
 
     @SerializedName("map")
     @Expose
-    private Map map;
+    private GameMap map;
 
     @SerializedName("bank")
     @Expose
-    private ResourceList bank;
+    private ResourceSet bank;
 
     @SerializedName("tradeOffer")
     @Expose
@@ -65,7 +65,7 @@ public class ClientModel {
      * @param chat        all the chat messages the players have sent to each other
      * @param winner      the player who has won the game, or null if nobody
      * @param turnTracker tracks whose turn it is and what action's being done
-     * @param map         the current {@link Map} of the game
+     * @param map         the current {@link GameMap} of the game
      * @param bank        the set of cards available to be distributed to the players
      * @param tradeOffer  the current trade offer, if there is one
      * @param players     the current {@link Player}s in the game, from 2-4
@@ -75,8 +75,8 @@ public class ClientModel {
     public ClientModel(@NotNull MessageList chat,
                        @Nullable PlayerIndex winner,
                        @NotNull TurnTracker turnTracker,
-                       @NotNull Map map,
-                       @NotNull ResourceList bank,
+                       @NotNull GameMap map,
+                       @NotNull ResourceSet bank,
                        @NotNull TradeOffer tradeOffer,
                        @NotNull List<Player> players,
                        int version,
@@ -176,31 +176,31 @@ public class ClientModel {
     }
 
     /**
-     * Gets the current {@link Map} of the game.
+     * Gets the current {@link GameMap} of the game.
      *
-     * @return the current {@link Map} of the game
+     * @return the current {@link GameMap} of the game
      */
     @NotNull
-    public Map getMap() {
+    public GameMap getMap() {
         return map;
     }
 
     /**
-     * Sets the {@link Map} of the game.
+     * Sets the {@link GameMap} of the game.
      *
-     * @param map the current {@link Map} of the game
+     * @param map the current {@link GameMap} of the game
      */
-    public void setMap(@NotNull Map map) {
+    public void setMap(@NotNull GameMap map) {
         this.map = map;
     }
 
     /**
-     * Sets the {@link Map} of the game.
+     * Sets the {@link GameMap} of the game.
      *
-     * @param map the current {@link Map} of the game
-     * @return the current {@link Map} of the game
+     * @param map the current {@link GameMap} of the game
+     * @return the current {@link GameMap} of the game
      */
-    public ClientModel withMap(@NotNull Map map) {
+    public ClientModel withMap(@NotNull GameMap map) {
         setMap(map);
         return this;
     }
@@ -209,18 +209,18 @@ public class ClientModel {
      * @return the set of cards available to be distributed to the players
      */
     @NotNull
-    public ResourceList getBank() {
+    public ResourceSet getBank() {
         return bank;
     }
 
     /**
      * @param bank the set of cards available to be distributed to the players
      */
-    public void setBank(@NotNull ResourceList bank) {
+    public void setBank(@NotNull ResourceSet bank) {
         this.bank = bank;
     }
 
-    public ClientModel withBank(@NotNull ResourceList bank) {
+    public ClientModel withBank(@NotNull ResourceSet bank) {
         setBank(bank);
         return this;
     }
