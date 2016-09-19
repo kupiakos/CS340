@@ -2,7 +2,10 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import shared.definitions.ResourceType;
+
 import javax.annotation.Generated;
+import java.util.Arrays;
 
 @Generated("net.kupiakos")
 public class ResourceList {
@@ -29,7 +32,6 @@ public class ResourceList {
 
 
     // CUSTOM CODE
-    // END CUSTOM CODE
 
     /**
      * No args constructor for use in serialization
@@ -38,85 +40,225 @@ public class ResourceList {
     }
 
     /**
-      * @param ore The ore
-      * @param brick The brick
-      * @param sheep The sheep
-      * @param wood The wood
-      * @param wheat The wheat
+     * @param ore   The ore
+     * @param brick The brick
+     * @param sheep The sheep
+     * @param wood  The wood
+     * @param wheat The wheat
      */
     public ResourceList(int ore, int brick, int sheep, int wood, int wheat) {
-            this.ore = ore;
-            this.brick = brick;
-            this.sheep = sheep;
-            this.wood = wood;
-            this.wheat = wheat;
+        this.ore = ore;
+        this.brick = brick;
+        this.sheep = sheep;
+        this.wood = wood;
+        this.wheat = wheat;
+    }
+
+    /**
+     * Returns a copy of {@code list} that swaps the signs of each of its resources
+     *
+     * @param list the list to form a negative copy of
+     * @return a negative copy of {@code list}
+     */
+    public static ResourceList toNegative(ResourceList list) {
+        if (list == null) {
+            return null;
+        }
+        ResourceList result = new ResourceList();
+        for (ResourceType type : ResourceType.values()) {
+            result.setOfType(type, -list.getOfType(type));
+        }
+        return result;
+    }
+
+    /**
+     * Combine two resource lists, summing their contents.
+     *
+     * @param list1 the first list, not null
+     * @param list2 the second list, not null
+     * @return a new {@link ResourceList} containing the sum of their contents.
+     * @pre {@code list1} and {@code list2} are valid resource lists
+     * @post The return will be valid. {@code list1} and {@code list2} are unmodified.
+     */
+    public static ResourceList combine(ResourceList list1, ResourceList list2) {
+        if (list1 == null || list2 == null) {
+            return null;
+        }
+        // look into using cloning for this
+        ResourceList result = new ResourceList();
+        for (ResourceType type : ResourceType.values()) {
+            result.setOfType(type, list1.getOfType(type) + list2.getOfType(type));
+        }
+        return result;
+    }
+
+    // TODO: isSubset, subtract
+
+    /**
+     * Get the amount of a type of resource represented by this list.
+     *
+     * @param type the type of resource to get
+     * @return the amount of that resource represented
+     */
+    public int getOfType(ResourceType type) {
+        switch (type) {
+            case WOOD:
+                return getWood();
+            case BRICK:
+                return getBrick();
+            case SHEEP:
+                return getSheep();
+            case WHEAT:
+                return getWheat();
+            case ORE:
+                return getOre();
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * Set the amount of a type of resource represented by this list.
+     *
+     * @param type  the type of resource to set
+     * @param value the amount that resource will represent
+     */
+    public void setOfType(ResourceType type, int value) {
+        switch (type) {
+            case WOOD:
+                setWood(value);
+            case BRICK:
+                setBrick(value);
+            case SHEEP:
+                setSheep(value);
+            case WHEAT:
+                setWheat(value);
+            case ORE:
+                setOre(value);
+            default:
+                break;
+        }
+    }
+
+
+    // END CUSTOM CODE
+
+    /**
+     * Whether any of the resources are less than 0.
+     *
+     * @return true if at least one resource is less than 0; false otherwise
+     */
+    public boolean isNegative() {
+        return Arrays.stream(ResourceType.values())
+                .anyMatch(t -> getOfType(t) < 0);
+    }
+
+    /**
+     * Combines this with another resource list, summing their contents.
+     *
+     * @param other the other list to combine with, not null
+     * @pre {@code other} is a valid resource list
+     * @post This will be summed with the resources in {@code other},
+     * but {@code other} will not be modified.
+     */
+    public void combine(ResourceList other) {
+        if (other == null) {
+            return;
+        }
+        for (ResourceType type : ResourceType.values()) {
+            setOfType(type, getOfType(type) + other.getOfType(type));
+        }
     }
 
     /**
      * @return The ore
      */
-    public int getOre() { return ore; }
+    public int getOre() {
+        return ore;
+    }
 
     /**
      * @param ore The ore
      */
-    public void setOre(int ore) { this.ore = ore; }
+    public void setOre(int ore) {
+        this.ore = ore;
+    }
 
     public ResourceList withOre(int ore) {
         setOre(ore);
         return this;
     }
+
     /**
      * @return The brick
      */
-    public int getBrick() { return brick; }
+    public int getBrick() {
+        return brick;
+    }
 
     /**
      * @param brick The brick
      */
-    public void setBrick(int brick) { this.brick = brick; }
+    public void setBrick(int brick) {
+        this.brick = brick;
+    }
 
     public ResourceList withBrick(int brick) {
         setBrick(brick);
         return this;
     }
+
     /**
      * @return The sheep
      */
-    public int getSheep() { return sheep; }
+    public int getSheep() {
+        return sheep;
+    }
 
     /**
      * @param sheep The sheep
      */
-    public void setSheep(int sheep) { this.sheep = sheep; }
+    public void setSheep(int sheep) {
+        this.sheep = sheep;
+    }
 
     public ResourceList withSheep(int sheep) {
         setSheep(sheep);
         return this;
     }
+
     /**
      * @return The wood
      */
-    public int getWood() { return wood; }
+    public int getWood() {
+        return wood;
+    }
 
     /**
      * @param wood The wood
      */
-    public void setWood(int wood) { this.wood = wood; }
+    public void setWood(int wood) {
+        this.wood = wood;
+    }
 
     public ResourceList withWood(int wood) {
         setWood(wood);
         return this;
     }
+
     /**
      * @return The wheat
      */
-    public int getWheat() { return wheat; }
+    public int getWheat() {
+        return wheat;
+    }
 
     /**
      * @param wheat The wheat
      */
-    public void setWheat(int wheat) { this.wheat = wheat; }
+    public void setWheat(int wheat) {
+        this.wheat = wheat;
+    }
 
     public ResourceList withWheat(int wheat) {
         setWheat(wheat);
@@ -126,29 +268,29 @@ public class ResourceList {
     @Override
     public String toString() {
         return "ResourceList [" +
-            "ore=" + ore +
-            ", brick=" + brick +
-            ", sheep=" + sheep +
-            ", wood=" + wood +
-            ", wheat=" + wheat +
-            "]";
+                "ore=" + ore +
+                ", brick=" + brick +
+                ", sheep=" + sheep +
+                ", wood=" + wood +
+                ", wheat=" + wheat +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof ResourceList) {
-            return equals((ResourceList)other);
+            return equals((ResourceList) other);
         }
         return false;
     }
 
     public boolean equals(ResourceList other) {
         return (
-            ore == other.ore &&
-            brick == other.brick &&
-            sheep == other.sheep &&
-            wood == other.wood &&
-            wheat == other.wheat
+                ore == other.ore &&
+                        brick == other.brick &&
+                        sheep == other.sheep &&
+                        wood == other.wood &&
+                        wheat == other.wheat
         );
     }
 }
