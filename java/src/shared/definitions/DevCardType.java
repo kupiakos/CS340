@@ -2,6 +2,9 @@ package shared.definitions;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * The types of development cards.
+ */
 public enum DevCardType
 {
 	@SerializedName("Soldier")
