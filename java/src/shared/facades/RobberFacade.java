@@ -1,5 +1,6 @@
 package shared.facades;
 
+import com.sun.istack.internal.NotNull;
 import shared.locations.HexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
@@ -8,7 +9,19 @@ import shared.models.game.Player;
  * RobberFacade is a facade for the robber.  It checks if players have 8 or more resource cards.
  * It also checks where the robber is being moved and who the player can steal from.
  */
-public class RobberFacade {
+public class RobberFacade extends AbstractFacade {
+
+    /**
+     * Constructor. Requires a valid game model to work.
+     *
+     * @param model the model to use, not null
+     * @throws NullPointerException if {@code model} is null
+     * @pre {@code model} is a valid {@link ClientModel}.
+     * @post This provides valid operations on {@code model}.
+     */
+    RobberFacade(@NotNull ClientModel model) {
+        super(model);
+    }
 
     /**
      * This method is activated by rolling a 7 and calls the {@link RobberFacade#discardHalf(Player)}, {@link RobberFacade#moveRobber(HexLocation, HexLocation)}, and {@link RobberFacade#stealFrom(Player, Player)}, in left-to-right order

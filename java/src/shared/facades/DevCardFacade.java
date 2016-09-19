@@ -1,5 +1,6 @@
 package shared.facades;
 
+import com.sun.istack.internal.NotNull;
 import shared.definitions.ResourceType;
 import shared.models.game.Player;
 import shared.models.game.ClientModel;
@@ -7,7 +8,19 @@ import shared.models.game.ClientModel;
 /**
  * Created by Philip on 9/17/2016.
  */
-public class DevCardFacade {
+public class DevCardFacade extends AbstractFacade {
+
+    /**
+     * Constructor. Requires a valid game model to work.
+     *
+     * @param model the model to use, not null
+     * @throws NullPointerException if {@code model} is null
+     * @pre {@code model} is a valid {@link ClientModel}.
+     * @post This provides valid operations on {@code model}.
+     */
+    DevCardFacade(@NotNull ClientModel model) {
+        super(model);
+    }
 
     /**
      * Checks if the {@code currentPlayer} can buy a development card.  The resources needed are one ore, wool, and grain
