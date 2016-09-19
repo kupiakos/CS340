@@ -1,6 +1,5 @@
 package shared;
 
-import client.game.GameManager;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.games.*;
@@ -40,9 +39,9 @@ public interface IServer {
      * Method returns info about all of the current games on the server
      * @pre None
      * @post If the operation succeeds,  1. The server returns an HTTP 200 success response.  2. The body contains a JSON array containing a list of objects that contain information about the server’s games    If the operation fails,  1. The server returns an HTTP 400 error response, and the body contains an error message.
-     * @return The list of {@link Game} objects that are running on the server.
+     * @return The list of {@link GameInfo} objects that are running on the server.
      */
-    List<GameManager> listOfGames();
+    List<GameInfo> listOfGames();
 
     /**
      * Creates a new game on the server

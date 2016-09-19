@@ -1,6 +1,5 @@
 package client.server;
 
-import client.game.GameManager;
 import shared.IServer;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
@@ -72,7 +71,7 @@ public class ServerProxy implements IServer {
      * @post an error message.
      */
     @Override
-    public List<GameManager> listOfGames() {
+    public List<GameInfo> listOfGames() {
         return null;
     }
 
