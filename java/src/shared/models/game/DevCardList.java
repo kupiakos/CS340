@@ -37,11 +37,11 @@ public class DevCardList {
     }
 
     /**
-     * @param yearOfPlenty The yearOfPlenty
-     * @param roadBuilding The roadBuilding
-     * @param monument     The monument
-     * @param soldier      The soldier
-     * @param monopoly     The monopoly
+     * @param yearOfPlenty The Year of Plenty Cards
+     * @param roadBuilding The Road Building Cards
+     * @param monument     The Monument (Victory Point) Cards
+     * @param soldier      The Knight/Soldier Cards
+     * @param monopoly     The Monopoly Cards
      */
     public DevCardList(int yearOfPlenty, int roadBuilding, int monument, int soldier, int monopoly) {
         this.yearOfPlenty = yearOfPlenty;
@@ -52,6 +52,12 @@ public class DevCardList {
     }
 
     // CUSTOM CODE
+
+    /**
+     * Get the number of cards in this DevCardList of a specific type
+     * @param type the type to check against
+     * @return the number of cards, less than 0
+     */
     public int getOfType(DevCardType type) {
         return 0;
     }
@@ -59,18 +65,18 @@ public class DevCardList {
     // END CUSTOM CODE
 
     /**
-     * @return The yearOfPlenty
+     * @return The Year of Plenty Cards
      */
     public int getYearOfPlenty() {
         return yearOfPlenty;
     }
 
     /**
-     * @param yearOfPlenty The yearOfPlenty
+     * @param yearOfPlenty The Year of Plenty Cards
      */
     public void setYearOfPlenty(int yearOfPlenty) {
-        if (yearOfPlenty < 0) {
-            throw new IllegalArgumentException("value cannot be less than 0");
+        if (yearOfPlenty < 0 || yearOfPlenty > 2) {
+            throw new IllegalArgumentException("value cannot be less than 0 or more than 2");
         }
         this.yearOfPlenty = yearOfPlenty;
     }
@@ -81,18 +87,18 @@ public class DevCardList {
     }
 
     /**
-     * @return The roadBuilding
+     * @return The Road Building Cards
      */
     public int getRoadBuilding() {
         return roadBuilding;
     }
 
     /**
-     * @param roadBuilding The roadBuilding
+     * @param roadBuilding The Road Building Cards
      */
     public void setRoadBuilding(int roadBuilding) {
-        if (roadBuilding < 0) {
-            throw new IllegalArgumentException("value cannot be less than 0");
+        if (roadBuilding < 0 || roadBuilding > 2) {
+            throw new IllegalArgumentException("value cannot be less than 0 or more than 2");
         }
         this.roadBuilding = roadBuilding;
     }
@@ -103,18 +109,18 @@ public class DevCardList {
     }
 
     /**
-     * @return The monument
+     * @return The Monument (Victory Point) Cards
      */
     public int getMonument() {
         return monument;
     }
 
     /**
-     * @param monument The monument
+     * @param monument The Monument (Victory Point) Cards
      */
     public void setMonument(int monument) {
-        if (monument < 0) {
-            throw new IllegalArgumentException("value cannot be less than 0");
+        if (monument < 0 || monument > 5) {
+            throw new IllegalArgumentException("value cannot be less than 0 or more than 5");
         }
         this.monument = monument;
     }
@@ -125,18 +131,18 @@ public class DevCardList {
     }
 
     /**
-     * @return The soldier
+     * @return The Knight/Soldier Cards
      */
     public int getSoldier() {
         return soldier;
     }
 
     /**
-     * @param soldier The soldier
+     * @param soldier The Knight/Soldier Cards
      */
     public void setSoldier(int soldier) {
-        if (soldier < 0) {
-            throw new IllegalArgumentException("value cannot be less than 0");
+        if (soldier < 0 || soldier > 14) {
+            throw new IllegalArgumentException("value cannot be less than 0 or more than 14");
         }
         this.soldier = soldier;
     }
@@ -147,18 +153,18 @@ public class DevCardList {
     }
 
     /**
-     * @return The monopoly
+     * @return The Monopoly Cards
      */
     public int getMonopoly() {
         return monopoly;
     }
 
     /**
-     * @param monopoly The monopoly
+     * @param monopoly The Monopoly Cards
      */
     public void setMonopoly(int monopoly) {
-        if (monopoly < 0) {
-            throw new IllegalArgumentException("value cannot be less than 0");
+        if (monopoly < 0 || monopoly > 2) {
+            throw new IllegalArgumentException("value cannot be less than 0 or more than 2");
         }
         this.monopoly = monopoly;
     }

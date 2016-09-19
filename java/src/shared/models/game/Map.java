@@ -51,13 +51,13 @@ public class Map {
     }
 
     /**
-      * @param roads The roads
+      * @param roads The list of roads currently placed on the map
       * @param radius The radius of the map (it includes the center hex, and the ocean hexes)
       * @param robber The current location of the robber
       * @param hexes A list of all the hexes on the grid - it's only land tiles
-      * @param ports The ports
-      * @param settlements The settlements
-      * @param cities The cities
+      * @param ports The list of ports currently placed on the map
+      * @param settlements The list of settlements currently placed on the map
+      * @param cities The list of cities currently placed on the map
      */
     public Map(List<Road> roads, int radius, HexLocation robber, List<Hex> hexes, List<Port> ports, List<VertexObject> settlements, List<VertexObject> cities) {
             this.roads = roads;
@@ -70,12 +70,12 @@ public class Map {
     }
 
     /**
-     * @return The roads
+     * @return the list of roads currently placed on the map
      */
     public List<Road> getRoads() { return roads; }
 
     /**
-     * @param roads The roads
+     * @param roads list of roads currently placed on the map
      */
     public void setRoads(@NotNull List<Road> roads) { this.roads = roads; }
 
@@ -126,12 +126,12 @@ public class Map {
         return this;
     }
     /**
-     * @return The ports
+     * @return the list of ports currently placed on the map
      */
     public List<Port> getPorts() { return ports; }
 
     /**
-     * @param ports The ports
+     * @param ports list of ports currently placed on the map
      */
     public void setPorts(@NotNull List<Port> ports) { this.ports = ports; }
 
@@ -140,12 +140,12 @@ public class Map {
         return this;
     }
     /**
-     * @return The settlements
+     * @return the list of settlements currently placed on the map
      */
     public List<VertexObject> getSettlements() { return settlements; }
 
     /**
-     * @param settlements The settlements
+     * @param settlements list of settlements currently placed on the map
      */
     public void setSettlements(@NotNull List<VertexObject> settlements) { this.settlements = settlements; }
 
@@ -154,12 +154,12 @@ public class Map {
         return this;
     }
     /**
-     * @return The cities
+     * @return the list of cities currently placed on the map
      */
     public List<VertexObject> getCities() { return cities; }
 
     /**
-     * @param cities The cities
+     * @param cities list of cities currently placed on the map
      */
     public void setCities(@NotNull List<VertexObject> cities) { this.cities = cities; }
 
