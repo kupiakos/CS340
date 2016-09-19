@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.VertexLocation;
 
@@ -51,6 +52,7 @@ public class BuildCityAction {
     /**
      * @return The vertexLocation
      */
+    @NotNull
     public VertexLocation getVertexLocation() {
         return vertexLocation;
     }
@@ -58,11 +60,11 @@ public class BuildCityAction {
     /**
      * @param vertexLocation The vertexLocation
      */
-    public void setVertexLocation(VertexLocation vertexLocation) {
+    public void setVertexLocation(@NotNull VertexLocation vertexLocation) {
         this.vertexLocation = vertexLocation;
     }
 
-    public BuildCityAction withVertexLocation(VertexLocation vertexLocation) {
+    public BuildCityAction withVertexLocation(@NotNull VertexLocation vertexLocation) {
         setVertexLocation(vertexLocation);
         return this;
     }
@@ -77,11 +79,11 @@ public class BuildCityAction {
     /**
      * @param playerIndex Who's placing the city
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public BuildCityAction withPlayerIndex(PlayerIndex playerIndex) {
+    public BuildCityAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }

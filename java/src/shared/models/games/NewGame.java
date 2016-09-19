@@ -2,6 +2,8 @@ package shared.models.games;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
+
 import javax.annotation.Generated;
 import java.util.List;
 import java.util.ArrayList;
@@ -53,9 +55,9 @@ public class NewGame {
     /**
      * @param players The players
      */
-    public void setPlayers(List<EmptyPlayer> players) { this.players = players; }
+    public void setPlayers(@NotNull List<EmptyPlayer> players) { this.players = players; }
 
-    public NewGame withPlayers(List<EmptyPlayer> players) {
+    public NewGame withPlayers(@NotNull List<EmptyPlayer> players) {
         setPlayers(players);
         return this;
     }
@@ -67,9 +69,9 @@ public class NewGame {
     /**
      * @param title The title
      */
-    public void setTitle(String title) { this.title = title; }
+    public void setTitle(@NotNull String title) { this.title = title; }
 
-    public NewGame withTitle(String title) {
+    public NewGame withTitle(@NotNull String title) {
         setTitle(title);
         return this;
     }

@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
@@ -65,11 +66,11 @@ public class RoadBuildingAction {
     /**
      * @param spot2 The spot2
      */
-    public void setSpot2(EdgeLocation spot2) {
+    public void setSpot2(@NotNull EdgeLocation spot2) {
         this.spot2 = spot2;
     }
 
-    public RoadBuildingAction withSpot2(EdgeLocation spot2) {
+    public RoadBuildingAction withSpot2(@NotNull EdgeLocation spot2) {
         setSpot2(spot2);
         return this;
     }
@@ -84,11 +85,11 @@ public class RoadBuildingAction {
     /**
      * @param spot1 The spot1
      */
-    public void setSpot1(EdgeLocation spot1) {
+    public void setSpot1(@NotNull EdgeLocation spot1) {
         this.spot1 = spot1;
     }
 
-    public RoadBuildingAction withSpot1(EdgeLocation spot1) {
+    public RoadBuildingAction withSpot1(@NotNull EdgeLocation spot1) {
         setSpot1(spot1);
         return this;
     }
@@ -103,11 +104,11 @@ public class RoadBuildingAction {
     /**
      * @param playerIndex Who's placing the roads
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public RoadBuildingAction withPlayerIndex(PlayerIndex playerIndex) {
+    public RoadBuildingAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }

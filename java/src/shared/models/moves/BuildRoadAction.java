@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 
@@ -15,7 +16,7 @@ public class BuildRoadAction {
     private final String TYPE = "BuildRoad";
     @SerializedName("free")
     @Expose
-    private Boolean free;
+    private boolean free;
     @SerializedName("roadLocation")
     @Expose
     private EdgeLocation roadLocation;
@@ -39,7 +40,7 @@ public class BuildRoadAction {
      * @param roadLocation The roadLocation
      * @param playerIndex  Who's placing the road
      */
-    public BuildRoadAction(Boolean free, EdgeLocation roadLocation, PlayerIndex playerIndex) {
+    public BuildRoadAction(boolean free, EdgeLocation roadLocation, PlayerIndex playerIndex) {
         this.free = free;
         this.roadLocation = roadLocation;
         this.playerIndex = playerIndex;
@@ -48,18 +49,18 @@ public class BuildRoadAction {
     /**
      * @return Whether this is placed for free (setup)
      */
-    public Boolean getFree() {
+    public boolean getFree() {
         return free;
     }
 
     /**
      * @param free Whether this is placed for free (setup)
      */
-    public void setFree(Boolean free) {
+    public void setFree(boolean free) {
         this.free = free;
     }
 
-    public BuildRoadAction withFree(Boolean free) {
+    public BuildRoadAction withFree(boolean free) {
         setFree(free);
         return this;
     }
@@ -74,6 +75,7 @@ public class BuildRoadAction {
     /**
      * @return The roadLocation
      */
+    @NotNull
     public EdgeLocation getRoadLocation() {
         return roadLocation;
     }
@@ -81,11 +83,11 @@ public class BuildRoadAction {
     /**
      * @param roadLocation The roadLocation
      */
-    public void setRoadLocation(EdgeLocation roadLocation) {
+    public void setRoadLocation(@NotNull EdgeLocation roadLocation) {
         this.roadLocation = roadLocation;
     }
 
-    public BuildRoadAction withRoadLocation(EdgeLocation roadLocation) {
+    public BuildRoadAction withRoadLocation(@NotNull EdgeLocation roadLocation) {
         setRoadLocation(roadLocation);
         return this;
     }
@@ -100,11 +102,11 @@ public class BuildRoadAction {
     /**
      * @param playerIndex Who's placing the road
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public BuildRoadAction withPlayerIndex(PlayerIndex playerIndex) {
+    public BuildRoadAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }

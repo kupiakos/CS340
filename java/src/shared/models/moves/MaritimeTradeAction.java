@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 
@@ -54,6 +55,7 @@ public class MaritimeTradeAction {
     /**
      * @return What TYPE of resource you're getting.
      */
+    @NotNull
     public ResourceType getOutputResource() {
         return outputResource;
     }
@@ -61,11 +63,11 @@ public class MaritimeTradeAction {
     /**
      * @param outputResource What TYPE of resource you're getting.
      */
-    public void setOutputResource(ResourceType outputResource) {
+    public void setOutputResource(@NotNull ResourceType outputResource) {
         this.outputResource = outputResource;
     }
 
-    public MaritimeTradeAction withOutputResource(ResourceType outputResource) {
+    public MaritimeTradeAction withOutputResource(@NotNull ResourceType outputResource) {
         setOutputResource(outputResource);
         return this;
     }
@@ -106,11 +108,11 @@ public class MaritimeTradeAction {
     /**
      * @param playerIndex Who's doing the trading
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public MaritimeTradeAction withPlayerIndex(PlayerIndex playerIndex) {
+    public MaritimeTradeAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }
@@ -125,11 +127,11 @@ public class MaritimeTradeAction {
     /**
      * @param inputResource What TYPE of resource you're giving.
      */
-    public void setInputResource(ResourceType inputResource) {
+    public void setInputResource(@NotNull ResourceType inputResource) {
         this.inputResource = inputResource;
     }
 
-    public MaritimeTradeAction withInputResource(ResourceType inputResource) {
+    public MaritimeTradeAction withInputResource(@NotNull ResourceType inputResource) {
         setInputResource(inputResource);
         return this;
     }

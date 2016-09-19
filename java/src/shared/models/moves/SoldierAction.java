@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.locations.HexLocation;
@@ -65,11 +66,11 @@ public class SoldierAction {
     /**
      * @param location the new location of the robber
      */
-    public void setLocation(HexLocation location) {
+    public void setLocation(@NotNull HexLocation location) {
         this.location = location;
     }
 
-    public SoldierAction withLocation(HexLocation location) {
+    public SoldierAction withLocation(@NotNull HexLocation location) {
         setLocation(location);
         return this;
     }
@@ -84,11 +85,11 @@ public class SoldierAction {
     /**
      * @param playerIndex Who's playing this dev card
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public SoldierAction withPlayerIndex(PlayerIndex playerIndex) {
+    public SoldierAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }

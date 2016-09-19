@@ -2,6 +2,8 @@ package shared.models.user;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
+
 import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
@@ -37,14 +39,15 @@ public class Credentials {
     /**
      * @return The password
      */
+    @NotNull
     public String getPassword() { return password; }
 
     /**
      * @param password The password
      */
-    public void setPassword(String password) { this.password = password; }
+    public void setPassword(@NotNull String password) { this.password = password; }
 
-    public Credentials withPassword(String password) {
+    public Credentials withPassword(@NotNull String password) {
         setPassword(password);
         return this;
     }
@@ -56,9 +59,9 @@ public class Credentials {
     /**
      * @param username The username
      */
-    public void setUsername(String username) { this.username = username; }
+    public void setUsername(@NotNull String username) { this.username = username; }
 
-    public Credentials withUsername(String username) {
+    public Credentials withUsername(@NotNull String username) {
         setUsername(username);
         return this;
     }

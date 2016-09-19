@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.models.game.ResourceList;
 
@@ -51,6 +52,7 @@ public class DiscardCardsAction {
     /**
      * @return The discardedCards
      */
+    @NotNull
     public ResourceList getDiscardedCards() {
         return discardedCards;
     }
@@ -58,11 +60,11 @@ public class DiscardCardsAction {
     /**
      * @param discardedCards The discardedCards
      */
-    public void setDiscardedCards(ResourceList discardedCards) {
+    public void setDiscardedCards(@NotNull ResourceList discardedCards) {
         this.discardedCards = discardedCards;
     }
 
-    public DiscardCardsAction withDiscardedCards(ResourceList discardedCards) {
+    public DiscardCardsAction withDiscardedCards(@NotNull ResourceList discardedCards) {
         setDiscardedCards(discardedCards);
         return this;
     }
@@ -77,11 +79,11 @@ public class DiscardCardsAction {
     /**
      * @param playerIndex Who's discarding
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public DiscardCardsAction withPlayerIndex(PlayerIndex playerIndex) {
+    public DiscardCardsAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }

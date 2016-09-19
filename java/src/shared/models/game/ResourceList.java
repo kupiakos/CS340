@@ -124,7 +124,7 @@ public class ResourceList {
      * @param value the amount that resource will represent, not null
      * @pre neither attributes are null
      */
-    public void setOfType(@NotNull ResourceType type, @NotNull int value) {
+    public void setOfType(@NotNull ResourceType type, int value) {
         switch (type) {
             case WOOD:
                 setWood(value);

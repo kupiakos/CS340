@@ -67,9 +67,9 @@ public class GameInfo {
     /**
      * @param players The players
      */
-    public void setPlayers(List<PlayerInfo> players) { this.players = players; }
+    public void setPlayers(@NotNull List<PlayerInfo> players) { this.players = players; }
 
-    public GameInfo withPlayers(List<PlayerInfo> players) {
+    public GameInfo withPlayers(@NotNull List<PlayerInfo> players) {
         setPlayers(players);
         return this;
     }
@@ -81,9 +81,9 @@ public class GameInfo {
     /**
      * @param title The title
      */
-    public void setTitle(String title) { this.title = title; }
+    public void setTitle(@NotNull String title) { this.title = title; }
 
-    public GameInfo withTitle(String title) {
+    public GameInfo withTitle(@NotNull String title) {
         setTitle(title);
         return this;
     }

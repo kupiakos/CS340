@@ -3,6 +3,8 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
+
+import com.sun.istack.internal.NotNull;
 import shared.locations.EdgeLocation;
 import shared.definitions.PlayerIndex;
 
@@ -44,9 +46,9 @@ public class VertexObject {
     /**
      * @param owner The index (not id) of the player who owns thie piece (0-3)
      */
-    public void setOwner(PlayerIndex owner) { this.owner = owner; }
+    public void setOwner(@NotNull PlayerIndex owner) { this.owner = owner; }
 
-    public VertexObject withOwner(PlayerIndex owner) {
+    public VertexObject withOwner(@NotNull PlayerIndex owner) {
         setOwner(owner);
         return this;
     }
@@ -58,9 +60,9 @@ public class VertexObject {
     /**
      * @param location The location of this road.
      */
-    public void setLocation(EdgeLocation location) { this.location = location; }
+    public void setLocation(@NotNull EdgeLocation location) { this.location = location; }
 
-    public VertexObject withLocation(EdgeLocation location) {
+    public VertexObject withLocation(@NotNull EdgeLocation location) {
         setLocation(location);
         return this;
     }

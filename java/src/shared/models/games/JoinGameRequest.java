@@ -2,6 +2,8 @@ package shared.models.games;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
+
 import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
@@ -42,9 +44,9 @@ public class JoinGameRequest {
     /**
      * @param color What color you want to join (or rejoin) as.
      */
-    public void setColor(String color) { this.color = color; }
+    public void setColor(@NotNull String color) { this.color = color; }
 
-    public JoinGameRequest withColor(String color) {
+    public JoinGameRequest withColor(@NotNull String color) {
         setColor(color);
         return this;
     }

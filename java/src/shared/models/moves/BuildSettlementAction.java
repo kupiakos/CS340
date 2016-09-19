@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.VertexLocation;
 
@@ -16,7 +17,7 @@ public class BuildSettlementAction {
 
     @SerializedName("free")
     @Expose
-    private Boolean free;
+    private boolean free;
 
     @SerializedName("vertexLocation")
     @Expose
@@ -41,7 +42,7 @@ public class BuildSettlementAction {
      * @param vertexLocation The vertexLocation
      * @param playerIndex    Who's placing the settlement
      */
-    public BuildSettlementAction(Boolean free, VertexLocation vertexLocation, PlayerIndex playerIndex) {
+    public BuildSettlementAction(boolean free, VertexLocation vertexLocation, PlayerIndex playerIndex) {
         this.free = free;
         this.vertexLocation = vertexLocation;
         this.playerIndex = playerIndex;
@@ -57,18 +58,18 @@ public class BuildSettlementAction {
     /**
      * @return Whether this is placed for free (setup)
      */
-    public Boolean getFree() {
+    public boolean getFree() {
         return free;
     }
 
     /**
      * @param free Whether this is placed for free (setup)
      */
-    public void setFree(Boolean free) {
+    public void setFree(boolean free) {
         this.free = free;
     }
 
-    public BuildSettlementAction withFree(Boolean free) {
+    public BuildSettlementAction withFree(boolean free) {
         setFree(free);
         return this;
     }
@@ -76,6 +77,7 @@ public class BuildSettlementAction {
     /**
      * @return The vertexLocation
      */
+    @NotNull
     public VertexLocation getVertexLocation() {
         return vertexLocation;
     }
@@ -83,11 +85,11 @@ public class BuildSettlementAction {
     /**
      * @param vertexLocation The vertexLocation
      */
-    public void setVertexLocation(VertexLocation vertexLocation) {
+    public void setVertexLocation(@NotNull VertexLocation vertexLocation) {
         this.vertexLocation = vertexLocation;
     }
 
-    public BuildSettlementAction withVertexLocation(VertexLocation vertexLocation) {
+    public BuildSettlementAction withVertexLocation(@NotNull VertexLocation vertexLocation) {
         setVertexLocation(vertexLocation);
         return this;
     }
@@ -102,11 +104,11 @@ public class BuildSettlementAction {
     /**
      * @param playerIndex Who's placing the settlement
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public BuildSettlementAction withPlayerIndex(PlayerIndex playerIndex) {
+    public BuildSettlementAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }

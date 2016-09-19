@@ -3,6 +3,8 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
+
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 
 @Generated("net.kupiakos")
@@ -43,9 +45,9 @@ public class MessageLine {
     /**
      * @param source The source
      */
-    public void setSource(PlayerIndex source) { this.source = source; }
+    public void setSource(@NotNull PlayerIndex source) { this.source = source; }
 
-    public MessageLine withSource(PlayerIndex source) {
+    public MessageLine withSource(@NotNull PlayerIndex source) {
         setSource(source);
         return this;
     }
@@ -57,9 +59,9 @@ public class MessageLine {
     /**
      * @param message The message
      */
-    public void setMessage(String message) { this.message = message; }
+    public void setMessage(@NotNull String message) { this.message = message; }
 
-    public MessageLine withMessage(String message) {
+    public MessageLine withMessage(@NotNull String message) {
         setMessage(message);
         return this;
     }

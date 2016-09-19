@@ -3,6 +3,8 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
+
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 
 @Generated("net.kupiakos")
@@ -49,9 +51,9 @@ public class TradeOffer {
     /**
      * @param receiver The index of the person the trade was offered to.
      */
-    public void setReceiver(PlayerIndex receiver) { this.receiver = receiver; }
+    public void setReceiver(@NotNull PlayerIndex receiver) { this.receiver = receiver; }
 
-    public TradeOffer withReceiver(PlayerIndex receiver) {
+    public TradeOffer withReceiver(@NotNull PlayerIndex receiver) {
         setReceiver(receiver);
         return this;
     }
@@ -63,9 +65,9 @@ public class TradeOffer {
     /**
      * @param offer Positive numbers are resources being offered. Negative are resources being asked for.
      */
-    public void setOffer(ResourceList offer) { this.offer = offer; }
+    public void setOffer(@NotNull ResourceList offer) { this.offer = offer; }
 
-    public TradeOffer withOffer(ResourceList offer) {
+    public TradeOffer withOffer(@NotNull ResourceList offer) {
         setOffer(offer);
         return this;
     }
@@ -77,9 +79,9 @@ public class TradeOffer {
     /**
      * @param sender The index of the person offering the trade
      */
-    public void setSender(PlayerIndex sender) { this.sender = sender; }
+    public void setSender(@NotNull PlayerIndex sender) { this.sender = sender; }
 
-    public TradeOffer withSender(PlayerIndex sender) {
+    public TradeOffer withSender(@NotNull PlayerIndex sender) {
         setSender(sender);
         return this;
     }

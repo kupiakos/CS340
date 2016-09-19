@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.models.game.ResourceList;
 
@@ -64,11 +65,11 @@ public class OfferTradeAction {
     /**
      * @param receiver Who you're offering the trade to (0-3)
      */
-    public void setReceiver(PlayerIndex receiver) {
+    public void setReceiver(@NotNull PlayerIndex receiver) {
         this.receiver = receiver;
     }
 
-    public OfferTradeAction withReceiver(PlayerIndex receiver) {
+    public OfferTradeAction withReceiver(@NotNull PlayerIndex receiver) {
         setReceiver(receiver);
         return this;
     }
@@ -83,11 +84,11 @@ public class OfferTradeAction {
     /**
      * @param offer What you get (+) and what you give (-)
      */
-    public void setOffer(ResourceList offer) {
+    public void setOffer(@NotNull ResourceList offer) {
         this.offer = offer;
     }
 
-    public OfferTradeAction withOffer(ResourceList offer) {
+    public OfferTradeAction withOffer(@NotNull ResourceList offer) {
         setOffer(offer);
         return this;
     }
@@ -102,11 +103,11 @@ public class OfferTradeAction {
     /**
      * @param playerIndex Who's sending the offer
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public OfferTradeAction withPlayerIndex(PlayerIndex playerIndex) {
+    public OfferTradeAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }

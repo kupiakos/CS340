@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
 import java.util.List;
 import java.util.ArrayList;
+
+import com.sun.istack.internal.NotNull;
 import shared.locations.HexLocation;
 
 @Generated("net.kupiakos")
@@ -50,7 +52,7 @@ public class Map {
 
     /**
       * @param roads The roads
-      * @param radius The radius of the map (it includes the center hex, and the ocean hexes; pass this into the hexgrid constructor)
+      * @param radius The radius of the map (it includes the center hex, and the ocean hexes)
       * @param robber The current location of the robber
       * @param hexes A list of all the hexes on the grid - it's only land tiles
       * @param ports The ports
@@ -75,9 +77,9 @@ public class Map {
     /**
      * @param roads The roads
      */
-    public void setRoads(List<Road> roads) { this.roads = roads; }
+    public void setRoads(@NotNull List<Road> roads) { this.roads = roads; }
 
-    public Map withRoads(List<Road> roads) {
+    public Map withRoads(@NotNull List<Road> roads) {
         setRoads(roads);
         return this;
     }
@@ -103,9 +105,9 @@ public class Map {
     /**
      * @param robber The current location of the robber
      */
-    public void setRobber(HexLocation robber) { this.robber = robber; }
+    public void setRobber(@NotNull HexLocation robber) { this.robber = robber; }
 
-    public Map withRobber(HexLocation robber) {
+    public Map withRobber(@NotNull HexLocation robber) {
         setRobber(robber);
         return this;
     }
@@ -117,9 +119,9 @@ public class Map {
     /**
      * @param hexes A list of all the hexes on the grid - it's only land tiles
      */
-    public void setHexes(List<Hex> hexes) { this.hexes = hexes; }
+    public void setHexes(@NotNull List<Hex> hexes) { this.hexes = hexes; }
 
-    public Map withHexes(List<Hex> hexes) {
+    public Map withHexes(@NotNull List<Hex> hexes) {
         setHexes(hexes);
         return this;
     }
@@ -131,9 +133,9 @@ public class Map {
     /**
      * @param ports The ports
      */
-    public void setPorts(List<Port> ports) { this.ports = ports; }
+    public void setPorts(@NotNull List<Port> ports) { this.ports = ports; }
 
-    public Map withPorts(List<Port> ports) {
+    public Map withPorts(@NotNull List<Port> ports) {
         setPorts(ports);
         return this;
     }
@@ -145,9 +147,9 @@ public class Map {
     /**
      * @param settlements The settlements
      */
-    public void setSettlements(List<VertexObject> settlements) { this.settlements = settlements; }
+    public void setSettlements(@NotNull List<VertexObject> settlements) { this.settlements = settlements; }
 
-    public Map withSettlements(List<VertexObject> settlements) {
+    public Map withSettlements(@NotNull List<VertexObject> settlements) {
         setSettlements(settlements);
         return this;
     }
@@ -159,9 +161,9 @@ public class Map {
     /**
      * @param cities The cities
      */
-    public void setCities(List<VertexObject> cities) { this.cities = cities; }
+    public void setCities(@NotNull List<VertexObject> cities) { this.cities = cities; }
 
-    public Map withCities(List<VertexObject> cities) {
+    public Map withCities(@NotNull List<VertexObject> cities) {
         setCities(cities);
         return this;
     }

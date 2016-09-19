@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 
 import javax.annotation.Generated;
@@ -44,6 +45,7 @@ public class FinishMoveAction {
     /**
      * @return Who's sending this command (0-3)
      */
+    @NotNull
     public PlayerIndex getPlayerIndex() {
         return playerIndex;
     }
@@ -51,11 +53,11 @@ public class FinishMoveAction {
     /**
      * @param playerIndex Who's sending this command (0-3)
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public FinishMoveAction withPlayerIndex(PlayerIndex playerIndex) {
+    public FinishMoveAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }

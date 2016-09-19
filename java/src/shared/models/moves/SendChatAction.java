@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 
 import javax.annotation.Generated;
@@ -57,11 +58,11 @@ public class SendChatAction {
     /**
      * @param content The content
      */
-    public void setContent(String content) {
+    public void setContent(@NotNull String content) {
         this.content = content;
     }
 
-    public SendChatAction withContent(String content) {
+    public SendChatAction withContent(@NotNull String content) {
         setContent(content);
         return this;
     }
@@ -76,11 +77,11 @@ public class SendChatAction {
     /**
      * @param playerIndex Who's sending this chat message
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public SendChatAction withPlayerIndex(PlayerIndex playerIndex) {
+    public SendChatAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }

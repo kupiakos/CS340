@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
@@ -65,11 +66,11 @@ public class YearofPlentyAction {
     /**
      * @param resource1 The resource1
      */
-    public void setResource1(ResourceType resource1) {
+    public void setResource1(@NotNull ResourceType resource1) {
         this.resource1 = resource1;
     }
 
-    public YearofPlentyAction withResource1(ResourceType resource1) {
+    public YearofPlentyAction withResource1(@NotNull ResourceType resource1) {
         setResource1(resource1);
         return this;
     }
@@ -77,6 +78,7 @@ public class YearofPlentyAction {
     /**
      * @return Who's playing this dev card
      */
+    @NotNull
     public PlayerIndex getPlayerIndex() {
         return playerIndex;
     }
@@ -84,11 +86,11 @@ public class YearofPlentyAction {
     /**
      * @param playerIndex Who's playing this dev card
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public YearofPlentyAction withPlayerIndex(PlayerIndex playerIndex) {
+    public YearofPlentyAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }
@@ -103,11 +105,11 @@ public class YearofPlentyAction {
     /**
      * @param resource2 The resource2
      */
-    public void setResource2(ResourceType resource2) {
+    public void setResource2(@NotNull ResourceType resource2) {
         this.resource2 = resource2;
     }
 
-    public YearofPlentyAction withResource2(ResourceType resource2) {
+    public YearofPlentyAction withResource2(@NotNull ResourceType resource2) {
         setResource2(resource2);
         return this;
     }

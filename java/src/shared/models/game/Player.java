@@ -3,6 +3,8 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
+
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.definitions.CatanColor;
 
@@ -150,9 +152,9 @@ public class Player {
     /**
      * @param resources The resource cards this player has.
      */
-    public void setResources(ResourceList resources) { this.resources = resources; }
+    public void setResources(@NotNull ResourceList resources) { this.resources = resources; }
 
-    public Player withResources(ResourceList resources) {
+    public Player withResources(@NotNull ResourceList resources) {
         setResources(resources);
         return this;
     }
@@ -192,9 +194,9 @@ public class Player {
     /**
      * @param oldDevCards The dev cards the player had when the turn started.
      */
-    public void setOldDevCards(DevCardList oldDevCards) { this.oldDevCards = oldDevCards; }
+    public void setOldDevCards(@NotNull DevCardList oldDevCards) { this.oldDevCards = oldDevCards; }
 
-    public Player withOldDevCards(DevCardList oldDevCards) {
+    public Player withOldDevCards(@NotNull DevCardList oldDevCards) {
         setOldDevCards(oldDevCards);
         return this;
     }
@@ -220,9 +222,9 @@ public class Player {
     /**
      * @param color The color of this player.
      */
-    public void setColor(CatanColor color) { this.color = color; }
+    public void setColor(@NotNull CatanColor color) { this.color = color; }
 
-    public Player withColor(CatanColor color) {
+    public Player withColor(@NotNull CatanColor color) {
         setColor(color);
         return this;
     }
@@ -234,9 +236,9 @@ public class Player {
     /**
      * @param newDevCards The dev cards the player bought this turn.
      */
-    public void setNewDevCards(DevCardList newDevCards) { this.newDevCards = newDevCards; }
+    public void setNewDevCards(@NotNull DevCardList newDevCards) { this.newDevCards = newDevCards; }
 
-    public Player withNewDevCards(DevCardList newDevCards) {
+    public Player withNewDevCards(@NotNull DevCardList newDevCards) {
         setNewDevCards(newDevCards);
         return this;
     }
@@ -248,9 +250,9 @@ public class Player {
     /**
      * @param playerIndex What place in the array is this player? 0-3. It determines their turn order. This is used often everywhere.
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) { this.playerIndex = playerIndex; }
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) { this.playerIndex = playerIndex; }
 
-    public Player withPlayerIndex(PlayerIndex playerIndex) {
+    public Player withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }
@@ -276,9 +278,9 @@ public class Player {
     /**
      * @param name The name
      */
-    public void setName(String name) { this.name = name; }
+    public void setName(@NotNull String name) { this.name = name; }
 
-    public Player withName(String name) {
+    public Player withName(@NotNull String name) {
         setName(name);
         return this;
     }

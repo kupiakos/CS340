@@ -2,6 +2,8 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
+
 import javax.annotation.Generated;
 import java.util.List;
 import java.util.ArrayList;
@@ -38,9 +40,9 @@ public class MessageList {
     /**
      * @param lines The lines
      */
-    public void setLines(List<MessageLine> lines) { this.lines = lines; }
+    public void setLines(@NotNull List<MessageLine> lines) { this.lines = lines; }
 
-    public MessageList withLines(List<MessageLine> lines) {
+    public MessageList withLines(@NotNull List<MessageLine> lines) {
         setLines(lines);
         return this;
     }

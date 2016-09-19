@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 
 import javax.annotation.Generated;
@@ -69,6 +70,7 @@ public class AcceptTradeAction {
     /**
      * @return Who's accepting / rejecting this trade
      */
+    @NotNull
     public PlayerIndex getPlayerIndex() {
         return playerIndex;
     }
@@ -76,11 +78,11 @@ public class AcceptTradeAction {
     /**
      * @param playerIndex Who's accepting / rejecting this trade
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public AcceptTradeAction withPlayerIndex(PlayerIndex playerIndex) {
+    public AcceptTradeAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }

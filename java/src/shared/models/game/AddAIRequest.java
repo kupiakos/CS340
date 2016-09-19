@@ -3,6 +3,8 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
+
+import com.sun.istack.internal.NotNull;
 import shared.definitions.AIType;
 
 @Generated("net.kupiakos")
@@ -32,14 +34,15 @@ public class AddAIRequest {
     /**
      * @return Only strings returned by /game/listAI are valid.
      */
+    @NotNull
     public AIType getAIType() { return aIType; }
 
     /**
      * @param aIType Only strings returned by /game/listAI are valid.
      */
-    public void setAIType(AIType aIType) { this.aIType = aIType; }
+    public void setAIType(@NotNull AIType aIType) { this.aIType = aIType; }
 
-    public AddAIRequest withAIType(AIType aIType) {
+    public AddAIRequest withAIType(@NotNull AIType aIType) {
         setAIType(aIType);
         return this;
     }

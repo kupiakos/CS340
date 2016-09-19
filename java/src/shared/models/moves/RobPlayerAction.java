@@ -2,6 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.HexLocation;
 
@@ -64,11 +65,11 @@ public class RobPlayerAction {
     /**
      * @param location the new location of the robber
      */
-    public void setLocation(HexLocation location) {
+    public void setLocation(@NotNull HexLocation location) {
         this.location = location;
     }
 
-    public RobPlayerAction withLocation(HexLocation location) {
+    public RobPlayerAction withLocation(@NotNull HexLocation location) {
         setLocation(location);
         return this;
     }
@@ -83,11 +84,11 @@ public class RobPlayerAction {
     /**
      * @param playerIndex Who's doing the robbing
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) {
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
         this.playerIndex = playerIndex;
     }
 
-    public RobPlayerAction withPlayerIndex(PlayerIndex playerIndex) {
+    public RobPlayerAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }

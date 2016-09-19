@@ -3,6 +3,8 @@ package shared.models.games;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
+
+import com.sun.istack.internal.NotNull;
 import shared.definitions.CatanColor;
 
 /**
@@ -52,9 +54,9 @@ public class PlayerInfo {
     /**
      * @param color The color
      */
-    public void setColor(CatanColor color) { this.color = color; }
+    public void setColor(@NotNull CatanColor color) { this.color = color; }
 
-    public PlayerInfo withColor(CatanColor color) {
+    public PlayerInfo withColor(@NotNull CatanColor color) {
         setColor(color);
         return this;
     }
@@ -66,9 +68,9 @@ public class PlayerInfo {
     /**
      * @param name The name
      */
-    public void setName(String name) { this.name = name; }
+    public void setName(@NotNull String name) { this.name = name; }
 
-    public PlayerInfo withName(String name) {
+    public PlayerInfo withName(@NotNull String name) {
         setName(name);
         return this;
     }
