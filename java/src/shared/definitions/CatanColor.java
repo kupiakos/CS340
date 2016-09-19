@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.awt.*;
 
+/**
+ * The color of a {@link shared.models.game.Player Player} displayed to the user.
+ */
 public enum CatanColor
 {
     @SerializedName("Red")

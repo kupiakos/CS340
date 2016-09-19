@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * The top level client model
+ * The top level client model.
+ * Represents a full game.
  */
 @Generated("net.kupiakos")
 public class ClientModel {
@@ -63,10 +64,10 @@ public class ClientModel {
       * @param chat All the chat messages.
       * @param winner This is -1 when nobody's won yet. When they have, it's their order index [0-3]
       * @param turnTracker This tracks who's turn it is and what action's being done.
-      * @param map The map
+      * @param map The current {@link Map} of the game.
       * @param bank The cards available to be distributed to the players.
       * @param tradeOffer The current trade offer, if there is one.
-      * @param players The players
+      * @param players The current {@link Player}s in the game, from 2-4.
       * @param version The version of the model. This is incremented whenever anyone makes a move.
       * @param log All the log messages.
      */
@@ -174,13 +175,13 @@ public class ClientModel {
         return this;
     }
     /**
-     * Gets the {@link Player}s of the game
+     * Gets the {@link Player}s of the game, from 2-4.
      * @return The {@link Player}s currently playing this game
      */
     public List<Player> getPlayers() { return players; }
 
     /**
-     * Sets the {@link Player}s of the game
+     * Sets the {@link Player}s of the game, from 2-4.
      * @param players The {@link Player}s currently playing this game
      */
     public void setPlayers(List<Player> players) { this.players = players; }

@@ -2,15 +2,17 @@ package shared.models.games;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
+
 import javax.annotation.Generated;
 import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Information about a game
+ * Information about a game that a Player may or may not be able to join.
  */
 @Generated("net.kupiakos")
-public class Game {
+public class GameInfo {
 
     @SerializedName("players")
     @Expose
@@ -31,7 +33,7 @@ public class Game {
     /**
      * No args constructor for use in serialization
      */
-    public Game() {
+    public GameInfo() {
     }
 
     /**
@@ -39,10 +41,22 @@ public class Game {
       * @param title The title
       * @param id The id
      */
-    public Game(List<PlayerInfo> players, String title, int id) {
+    public GameInfo(List<PlayerInfo> players, String title, int id) {
             this.players = players;
             this.title = title;
             this.id = id;
+    }
+
+    /**
+     * Returns whether a player can join this game.
+     *
+     * If there are already 4 players, or this player is already part of the game, false.
+     * Otherwise, true.
+     * @param player the info of the player to check for
+     * @return whether this player could join this game
+     */
+    public boolean canJoinGame(@NotNull PlayerInfo player) {
+        return false;
     }
 
     /**
@@ -55,7 +69,7 @@ public class Game {
      */
     public void setPlayers(List<PlayerInfo> players) { this.players = players; }
 
-    public Game withPlayers(List<PlayerInfo> players) {
+    public GameInfo withPlayers(List<PlayerInfo> players) {
         setPlayers(players);
         return this;
     }
@@ -69,7 +83,7 @@ public class Game {
      */
     public void setTitle(String title) { this.title = title; }
 
-    public Game withTitle(String title) {
+    public GameInfo withTitle(String title) {
         setTitle(title);
         return this;
     }
@@ -83,7 +97,7 @@ public class Game {
      */
     public void setId(int id) { this.id = id; }
 
-    public Game withId(int id) {
+    public GameInfo withId(int id) {
         setId(id);
         return this;
     }
@@ -99,13 +113,13 @@ public class Game {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof Game) {
-            return equals((Game)other);
+        if (other instanceof GameInfo) {
+            return equals((GameInfo)other);
         }
         return false;
     }
 
-    public boolean equals(Game other) {
+    public boolean equals(GameInfo other) {
         return (
             players == other.players &&
             title == other.title &&

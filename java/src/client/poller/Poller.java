@@ -1,12 +1,15 @@
 package client.poller;
 
-import client.session.SessionManager;
+import client.game.GameManager;
+
 import shared.models.game.ClientModel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
-
+/**
+ * Will take care of contacting the server on regular intervals to check for game updates.
+ */
 public class Poller {
     /**
      * How often we want to call the server in seconds
@@ -19,38 +22,43 @@ public class Poller {
     /**
      * Game model on clients side for version
      */
-    private ClientModel clientModel;
+    private ClientModel mClientModel;
 
 
     /**
-     * Basically a mTimer that will start contacting the server every SERVER_CONTACT_INTERVAL secs to check for version updates of the game
-     * Also sets up a ActionListener called poll that is the actual item that will be run every SERVER_CONTACT_INTERVAL secs
+     * A timer that will start contacting the server every
+     * {@code SERVER_CONTACT_INTERVAL} secs to check for version updates of the game.
+     * Also sets up a ActionListener called poll that is the actual item
+     * that will be run every SERVER_CONTACT_INTERVAL secs.
+     *
+     * @post This provides a timer that will poll the server
      */
     public Poller(){
 
         ActionListener poll = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                // Grab a session manager
-                SessionManager sm = SessionManager.getInstance();
+                // Grab a game manager
+                GameManager gm = GameManager.getGame();
                 // Get our version number
-                int version = sm.getClientModel().getVersion();
+                int version = gm.getClientModel().getVersion();
                 // Call the server with the number
-                ClientModel response = sm.getServer().gameState(version);
+                ClientModel response = gm.getServer().gameState(version);
                 // If new model
                 if (response != null){
                     // Update ours
-                    sm.setmClientModel(response);
+                    gm.setmClientModel(response);
                 }
             }
         };
-
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, poll);
     }
 
 
     /**
      * Starts the mTimer, which starts up the polling
+     *
+     * @post the timer will be started
      */
     public void startPoller(){
         mTimer.start();
@@ -59,17 +67,21 @@ public class Poller {
 
     /**
      * Stops the mTimer, which stops the polling
+     *
+     * @post the timer will have stoped
      */
     public void stopPoller() {
         mTimer.stop();
     }
 
+
     /**
      * Adds the game model we will use, so we have access to the version
-     * @param cm a clientModel
+     *
+     * @param cm a ClientModel
      */
     public void setClientModel(ClientModel cm) {
-        clientModel = cm;
+        mClientModel = cm;
     }
 
 

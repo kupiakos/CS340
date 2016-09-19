@@ -24,9 +24,9 @@ public class MockProxy implements IServer{
      * @param credentialsObject The information that needs to be added to the body of the HTTP request.
      * @return true if user is logged in; false otherwise
      * @pre username and password are not null
-     * @post If the passed­in (username, password) pair is valid, 
-     * @post 2. The HTTP response headers set the catan.user cookie to contain the identity of the  logged­in player.  
-     * @post The cookie uses "Path=/", and its value contains a url­encoded JSON object of  the following form: { "name": STRING, "password": STRING, "playerID": INTEGER }.   
+     * @post If the passed-in (username, password) pair is valid,
+     * @post 2. The HTTP response headers set the catan.user cookie to contain the identity of the  logged-in player.
+     * @post The cookie uses "Path=/", and its value contains a url-encoded JSON object of  the following form: { "name": STRING, "password": STRING, "playerID": INTEGER }.
      */
     @Override
     public boolean login(Credentials credentialsObject) {
@@ -39,8 +39,8 @@ public class MockProxy implements IServer{
      *
      * @param credentialsObject The information that needs to be added to the body of the HTTP request.
      * @return True if the username and password are registered; else false
-     * @pre username is not null, password is not null, The specified username is not already in use.
-     * @post If there is no existing user with the specified username,  A new user account has been created with the specified username and password. The HTTP response headers set the catan.user cookie to contain the identity of the  logged­in player.  The cookie uses "Path=/", and its value contains a url­encoded JSON object of  the following form: { "name": STRING, "password": STRING, "playerID": INTEGER }.
+     * @pre username is not null, password is not null, The specified username is not already in use.
+     * @post If there is no existing user with the specified username,  A new user account has been created with the specified username and password. The HTTP response headers set the catan.user cookie to contain the identity of the  logged-in player.  The cookie uses "Path=/", and its value contains a url-encoded JSON object of  the following form: { "name": STRING, "password": STRING, "playerID": INTEGER }.
      */
     @Override
     public boolean register(Credentials credentialsObject) {
@@ -50,12 +50,12 @@ public class MockProxy implements IServer{
     /**
      * Method returns info about all of the current games on the server
      *
-     * @pre None 
-     * @post None 
-     * @return JSON array containing a list of objects with the server's games if true; else false 
+     * @pre None
+     * @post None
+     * @return JSON array containing a list of objects with the server's games if true; else false
      */
     @Override
-    public List<Game> listOfGames() {
+    public List<GameInfo> listOfGames() {
         return null;
     }
 
@@ -64,9 +64,9 @@ public class MockProxy implements IServer{
      *
      * @param createGameObject The information that needs to be added to the body of the HTTP request.
      * @return true if the game is created; else false
-     * @pre name is not null and randomTiles, randomNumbers, and randomPorts contain valid boolean values
-     * @post If the operation succeeds, A new game with the specified properties has been created 
-     * @post The body contains a JSON object describing the newly created game 
+     * @pre name is not null and randomTiles, randomNumbers, and randomPorts contain valid boolean values
+     * @post If the operation succeeds, A new game with the specified properties has been created
+     * @post The body contains a JSON object describing the newly created game
      */
     @Override
     public boolean createGame(CreateGameRequest createGameObject) {
@@ -81,11 +81,11 @@ public class MockProxy implements IServer{
      * false if else
      * Note: The 1st, 4th, and 5th pre-conditions need to be true.  Only one of the 2nd and 3rd pre-conditions need to
      * be true
-     * @pre 1. The user has previously logged in to the server (i.e., they have a valid catan.user HTTP  cookie).  
-     * @pre 2. The player may join the game because   2.a They are already in the game, OR 
-     * @pre 2.b There is space in the game to add a new player  3. The specified game ID is valid 
-     * @pre 4. The specified color is valid (red, green, blue, yellow, puce, brown, white, purple, orange)
-     * @post The player is in the game with the specified color. The server response includes the "Set­cookie" response header setting the catan.game HTTP cookie.
+     * @pre 1. The user has previously logged in to the server (i.e., they have a valid catan.user HTTP  cookie).
+     * @pre 2. The player may join the game because   2.a They are already in the game, OR
+     * @pre 2.b There is space in the game to add a new player  3. The specified game ID is valid
+     * @pre 4. The specified color is valid (red, green, blue, yellow, puce, brown, white, purple, orange)
+     * @post The player is in the game with the specified color. The server response includes the "Set-cookie" response header setting the catan.game HTTP cookie.
      */
     @Override
     public boolean joinGames(JoinGameRequest joinGameObject) {
@@ -98,7 +98,7 @@ public class MockProxy implements IServer{
      * @param saveGameObject The information that needs to be added to the body of the HTTP request.
      * @return True if the game was saved to a file in the server's directory; false otherwise
      * @pre gameID and file_name are valid
-     * @posr The current state of the specified game (including its ID) has been saved to the  specified file name in the server’s saves/ directory 
+     * @post The current state of the specified game (including its ID) has been saved to the  specified file name in the server’s saves/ directory
      */
     @Override
     public boolean saveGame(SaveGameRequest saveGameObject) {
@@ -111,7 +111,7 @@ public class MockProxy implements IServer{
      * @param loadGameObject The information that needs to be added to the body of the HTTP request.
      * @return True if game is loaded into the server; false otherwise
      * @pre a previously saved game file with the specified name exists in the server's saves/directory
-     * @post The game in the specified file has been loaded into the server and its state restored  (including its ID).   
+     * @post The game in the specified file has been loaded into the server and its state restored  (including its ID).
      */
     @Override
     public boolean loadGame(LoadGameRequest loadGameObject) {
@@ -123,8 +123,8 @@ public class MockProxy implements IServer{
      *
      * @param version If needed, a version number is needed in the URL; null is valid
      * @return The new ClientModel.  Null if their is no new client model.
-     * @pre caller is logged in and joined a game and, if specified, the version number is included as the "version" 
-     * @pre query parameter in the request URL, and its value is a valid integer.
+     * @pre caller is logged in and joined a game and, if specified, the version number is included as the "version"
+     * @pre query parameter in the request URL, and its value is a valid integer.
      * @post None
      */
     @Override
@@ -137,8 +137,8 @@ public class MockProxy implements IServer{
      *
      * @return True if the command history is cleared; false otherwise
      * @pre caller is logged in and joined a game
-     * @post If the operation succeeds,  1. The game’s command history has been cleared out 
-     * @post 2. The game’s players have NOT been cleared out. The body contains the game’s updated client model JSON
+     * @post If the operation succeeds,  1. The game’s command history has been cleared out
+     * @post 2. The game’s players have NOT been cleared out. The body contains the game’s updated client model JSON
      */
     @Override
     public boolean resetGame() {
@@ -149,10 +149,10 @@ public class MockProxy implements IServer{
      * Returns a list of commands that have been executed in the current game.  Used for testing and debugging
      *
      * @return true if the list of commands is returned; false otherwise
-     * @pre caller is logged in and joined a game 
-     * @post 2. The body contains a JSON array of  commands that have been executed in the game. 
-     * @post This command array is suitable for passing back to the /game/command [POST] method to  restore the state of 
-     * @post the game later (after calling /game/reset to revert the game to its initial state).    
+     * @pre caller is logged in and joined a game
+     * @post 2. The body contains a JSON array of  commands that have been executed in the game.
+     * @post This command array is suitable for passing back to the /game/command [POST] method to  restore the state of
+     * @post the game later (after calling /game/reset to revert the game to its initial state).
      */
     @Override
     public boolean getCommandsGame() {
@@ -164,7 +164,7 @@ public class MockProxy implements IServer{
      *
      * @return True if the command is executed; false otherwise
      * @pre caller is logged in and joined a game
-     * @post If the operation succeeds, The passed­in command list has been applied to the game. The body contains the game’s updated client model JSON   
+     * @post If the operation succeeds, The passed-in command list has been applied to the game. The body contains the game’s updated client model JSON
      */
     @Override
     public boolean postCommandsGame() {
@@ -175,8 +175,8 @@ public class MockProxy implements IServer{
      * Returns a list of supported AI player types
      *
      * @pre None
-     * @post The body contains a JSON string array enumerating the different types of AI players. 
-     * @post These are the values that may be passed to the /game/addAI method.
+     * @post The body contains a JSON string array enumerating the different types of AI players.
+     * @post These are the values that may be passed to the /game/addAI method.
      */
     @Override
     public void listAI() {
@@ -189,7 +189,7 @@ public class MockProxy implements IServer{
      * @param addAIObject The information that needs to be added to the body of the HTTP request.
      * @return true if a new AI is added to the current game; false if not
      * @pre caller is logged in and joined a game, there is space for another player, and AIType is valid
-     * @post A new AI player of the specified type has been added to the current game. Selects a name and color for the player.
+     * @post A new AI player of the specified type has been added to the current game. Selects a name and color for the player.
      */
     @Override
     public boolean addAI(AddAIRequest addAIObject) {
@@ -202,7 +202,7 @@ public class MockProxy implements IServer{
      * @param changeLogLevelObject The information that needs to be added to the body of the HTTP request.
      * @return True if logging level is changed; false if it is the same
      * @pre LogLevel is a valid logging level
-     * @post 2. The Server is using the specified logging level 
+     * @post 2. The Server is using the specified logging level
      */
     @Override
     public boolean changeLogLevel(ChangeLogLevelRequest changeLogLevelObject) {
@@ -228,8 +228,8 @@ public class MockProxy implements IServer{
      * @param acceptTradeObject The information that needs to be added to the body of the HTTP request.
      * @return True if resources is traded; false if not
      * @pre offered a domestic trade and, to accept the trade, you have the required resources
-     * @post If you accepted, you and the player who offered swap the specified resources, If you declined no resources 
-     * @post are exchanged, The trade offer is removed
+     * @post If you accepted, you and the player who offered swap the specified resources, If you declined no resources
+     * @post are exchanged, The trade offer is removed
      */
     @Override
     public boolean acceptTrade(AcceptTradeAction acceptTradeObject) {
