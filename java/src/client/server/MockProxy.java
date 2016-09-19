@@ -1,5 +1,6 @@
 package client.server;
 
+import client.game.GameManager;
 import shared.IServer;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
@@ -55,7 +56,7 @@ public class MockProxy implements IServer{
      * @return JSON array containing a list of objects with the server's games if true; else false 
      */
     @Override
-    public List<Game> listOfGames() {
+    public List<GameManager> listOfGames() {
         return null;
     }
 
