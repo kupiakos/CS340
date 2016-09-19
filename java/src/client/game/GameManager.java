@@ -1,15 +1,12 @@
 package client.game;
 
-import client.facade.FacadeManager;
+import shared.facades.FacadeManager;
 import client.poller.Poller;
 import shared.IServer;
 import shared.models.game.ClientModel;
 
 import java.util.Observable;
 
-/**
- * Created by audakel on 9/15/16.
- */
 public class GameManager extends Observable {
     /**
      * Setting up the singleton for all to use
@@ -35,6 +32,8 @@ public class GameManager extends Observable {
 
     /**
      * Init stuff for the game manager as needed
+     *
+     * @post This provides valid operations on GameManager
      */
     private GameManager(){
 
@@ -43,7 +42,8 @@ public class GameManager extends Observable {
 
     /**
      * Lets you grab the game, allows communications to all the parts of the game
-     * @return
+     *
+     * @post gives a instance of the game
      */
     public static GameManager getGame() {
         if (mInstance == null) mInstance = new GameManager();
@@ -52,7 +52,8 @@ public class GameManager extends Observable {
 
     /**
      * Lets you grab the facade for the game, allows access to the current games model
-     * @return
+     *
+     * @return FacadeManager with current ClientModel
      */
     public FacadeManager getFacade() {
         if (mFacadeManager == null) mFacadeManager = new FacadeManager(mClientModel);
@@ -61,7 +62,7 @@ public class GameManager extends Observable {
 
 
     /**
-     * Starts the Poller
+     * Starts the Poller, creates one if needed
      */
     public void startPoller() {
         if (mPoller == null) mPoller = new Poller();
@@ -79,7 +80,9 @@ public class GameManager extends Observable {
     }
 
     /**
-     * When the poller finds out the server has a new version it will call this function to update the client game
+     * When the poller finds out the server has a new version it will call this
+     * function to update the client game
+     *
      * @param cm the new clientModel
      */
     public void updateGameManager(ClientModel cm){
@@ -90,9 +93,9 @@ public class GameManager extends Observable {
 
     /**
      * Grabs a "server" for us so we can talk with the real server
-     * @return a server we can use
+     *
+     * @post a server we can use
      */
-
     public IServer getServer() {
         return mServer;
     }
