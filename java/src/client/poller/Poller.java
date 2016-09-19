@@ -36,25 +36,22 @@ public class Poller {
      */
     public Poller(){
 
-        ActionListener poll = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                // Grab a game manager
-                GameManager gm = GameManager.getGame();
-                // Get our version number
-                int version = gm.getClientModel().getVersion();
-                // Call the server with the number
-                ClientModel response;
-                try {
-                    response = gm.getServer().gameState(version);
-                } catch (CommunicationException e) {
-                    return;
-                }
-                // If new model
-                if (response != null){
-                    // Update ours
-                    gm.setClientModel(response);
-                }
+        ActionListener poll = (ActionEvent) -> {
+            // Grab a game manager
+            GameManager gm = GameManager.getGame();
+            // Get our version number
+            int version = gm.getClientModel().getVersion();
+            // Call the server with the number
+            ClientModel response;
+            try {
+                response = gm.getServer().gameState(version);
+            } catch (CommunicationException e) {
+                return;
+            }
+            // If new model
+            if (response != null){
+                // Update ours
+                gm.setClientModel(response);
             }
         };
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, poll);
