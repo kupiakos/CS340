@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Information about a game
  */
 @Generated("net.kupiakos")
-public class Game {
+public class GameInfo {
 
     @SerializedName("players")
     @Expose
@@ -31,7 +31,7 @@ public class Game {
     /**
      * No args constructor for use in serialization
      */
-    public Game() {
+    public GameInfo() {
     }
 
     /**
@@ -39,7 +39,7 @@ public class Game {
       * @param title The title
       * @param id The id
      */
-    public Game(List<PlayerInfo> players, String title, int id) {
+    public GameInfo(List<PlayerInfo> players, String title, int id) {
             this.players = players;
             this.title = title;
             this.id = id;
@@ -55,7 +55,7 @@ public class Game {
      */
     public void setPlayers(List<PlayerInfo> players) { this.players = players; }
 
-    public Game withPlayers(List<PlayerInfo> players) {
+    public GameInfo withPlayers(List<PlayerInfo> players) {
         setPlayers(players);
         return this;
     }
@@ -69,7 +69,7 @@ public class Game {
      */
     public void setTitle(String title) { this.title = title; }
 
-    public Game withTitle(String title) {
+    public GameInfo withTitle(String title) {
         setTitle(title);
         return this;
     }
@@ -83,7 +83,7 @@ public class Game {
      */
     public void setId(int id) { this.id = id; }
 
-    public Game withId(int id) {
+    public GameInfo withId(int id) {
         setId(id);
         return this;
     }
@@ -99,13 +99,13 @@ public class Game {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof Game) {
-            return equals((Game)other);
+        if (other instanceof GameInfo) {
+            return equals((GameInfo)other);
         }
         return false;
     }
 
-    public boolean equals(Game other) {
+    public boolean equals(GameInfo other) {
         return (
             players == other.players &&
             title == other.title &&
