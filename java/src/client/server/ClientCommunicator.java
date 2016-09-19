@@ -8,8 +8,25 @@ import java.net.MalformedURLException;
 /**
  * Created by elijahgk on 9/12/2016.
  * ClientCommunicator receives calls from ServerProxy and submits those calls as HTTP requests to the Catan Server.
+ * Package Private
  */
-public class ClientCommunicator {
+class ClientCommunicator {
+
+    private static ClientCommunicator SINGLETON = null;
+
+    private ClientCommunicator(){}
+
+    /**
+     * Returns the {@link ClientCommunicator SINGLETON}.
+     * @return {@link ClientCommunicator} SINGLETON.
+     */
+    public static ClientCommunicator getSingleton(){
+        if(SINGLETON==null){
+            SINGLETON = new ClientCommunicator();
+            return SINGLETON;
+        }
+        return SINGLETON;
+    }
 
     /**
      * Method that will communicate with the server and serialize the return information into GSON.
@@ -19,7 +36,7 @@ public class ClientCommunicator {
      * @param requestBody This is the request body which is required by the server command; may be null.
      * @return Any information pertinent to the client via gson
      */
-    public Gson HTTPRequest(String URLSuffix, Gson requestBody) throws MalformedURLException, MalformedJsonException{
+    public Gson sendHTTPRequest(String URLSuffix, Gson requestBody) throws MalformedURLException, MalformedJsonException{
         return null;
     }
 }
