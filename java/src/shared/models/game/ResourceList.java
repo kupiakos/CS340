@@ -2,10 +2,12 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.ResourceType;
 
 import javax.annotation.Generated;
 import java.util.Arrays;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class ResourceList {
@@ -60,10 +62,8 @@ public class ResourceList {
      * @param list the list to form a negative copy of
      * @return a negative copy of {@code list}
      */
-    public static ResourceList toNegative(ResourceList list) {
-        if (list == null) {
-            return null;
-        }
+    public static ResourceList toNegative(@NotNull ResourceList list) {
+        Objects.requireNonNull(list);
         ResourceList result = new ResourceList();
         for (ResourceType type : ResourceType.values()) {
             result.setOfType(type, -list.getOfType(type));
@@ -80,10 +80,9 @@ public class ResourceList {
      * @pre {@code list1} and {@code list2} are valid resource lists
      * @post The return will be valid. {@code list1} and {@code list2} are unmodified.
      */
-    public static ResourceList combine(ResourceList list1, ResourceList list2) {
-        if (list1 == null || list2 == null) {
-            return null;
-        }
+    public static ResourceList combine(@NotNull ResourceList list1, @NotNull ResourceList list2) {
+        Objects.requireNonNull(list1);
+        Objects.requireNonNull(list2);
         // look into using cloning for this
         ResourceList result = new ResourceList();
         for (ResourceType type : ResourceType.values()) {
@@ -100,7 +99,7 @@ public class ResourceList {
      * @param type the type of resource to get
      * @return the amount of that resource represented
      */
-    public int getOfType(ResourceType type) {
+    public int getOfType(@NotNull ResourceType type) {
         switch (type) {
             case WOOD:
                 return getWood();
@@ -113,6 +112,7 @@ public class ResourceList {
             case ORE:
                 return getOre();
             default:
+                assert false;
                 return 0;
         }
     }
@@ -120,10 +120,11 @@ public class ResourceList {
     /**
      * Set the amount of a type of resource represented by this list.
      *
-     * @param type  the type of resource to set
-     * @param value the amount that resource will represent
+     * @param type  the type of resource to set, not null
+     * @param value the amount that resource will represent, not null
+     * @pre neither attributes are null
      */
-    public void setOfType(ResourceType type, int value) {
+    public void setOfType(@NotNull ResourceType type, @NotNull int value) {
         switch (type) {
             case WOOD:
                 setWood(value);
