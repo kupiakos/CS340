@@ -6,6 +6,7 @@ import shared.models.game.ClientModel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.naming.CommunicationException;
 import javax.swing.Timer;
 /**
  * Will take care of contacting the server on regular intervals to check for game updates.
@@ -43,11 +44,16 @@ public class Poller {
                 // Get our version number
                 int version = gm.getClientModel().getVersion();
                 // Call the server with the number
-                ClientModel response = gm.getServer().gameState(version);
+                ClientModel response;
+                try {
+                    response = gm.getServer().gameState(version);
+                } catch (CommunicationException e) {
+                    return;
+                }
                 // If new model
                 if (response != null){
                     // Update ours
-                    gm.setmClientModel(response);
+                    gm.setClientModel(response);
                 }
             }
         };

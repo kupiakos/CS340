@@ -14,23 +14,23 @@ public class GameManager extends Observable {
     /**
      * Setting up the singleton for all to use
      */
-    private static GameManager mInstance;
+    private static GameManager instance;
     /**
-     * The mPoller that the game will use
+     * The poller that the game will use
      */
-    private Poller mPoller;
+    private Poller poller;
     /**
      * Game model on clients side for version
      */
-    private ClientModel mClientModel;
+    private ClientModel clientModel;
     /**
      * The server that may be a fake one or a real one
      */
-    private IServer mServer;
+    private IServer server;
     /**
      * Handel to a facade for the current game, allows for use on both client and server - with n games.
      */
-    private FacadeManager mFacadeManager;
+    private FacadeManager facadeManager;
 
 
     /**
@@ -49,8 +49,8 @@ public class GameManager extends Observable {
      * @post gives a instance of the game
      */
     public static GameManager getGame() {
-        if (mInstance == null) mInstance = new GameManager();
-        return mInstance;
+        if (instance == null) instance = new GameManager();
+        return instance;
     }
 
     /**
@@ -59,8 +59,8 @@ public class GameManager extends Observable {
      * @return FacadeManager with current ClientModel
      */
     public FacadeManager getFacade() {
-        if (mFacadeManager == null) mFacadeManager = new FacadeManager(mClientModel);
-        return mFacadeManager;
+        if (facadeManager == null) facadeManager = new FacadeManager(clientModel);
+        return facadeManager;
     }
 
 
@@ -68,18 +68,18 @@ public class GameManager extends Observable {
      * Starts the Poller, creates one if needed
      */
     public void startPoller() {
-        if (mPoller == null) mPoller = new Poller();
+        if (poller == null) poller = new Poller();
 
-        mPoller.setClientModel(mClientModel);
-        mPoller.startPoller();
+        poller.setClientModel(clientModel);
+        poller.startPoller();
     }
 
     /**
      * Stops the Poller
      */
     public void stopPoller() {
-        mPoller.stopPoller();
-        mPoller = null;
+        poller.stopPoller();
+        poller = null;
     }
 
     /**
@@ -89,8 +89,8 @@ public class GameManager extends Observable {
      * @param cm the new clientModel
      */
     public void updateGameManager(ClientModel cm){
-        mClientModel = cm;
-        mFacadeManager.update(cm);
+        clientModel = cm;
+        facadeManager.update(cm);
     }
 
 
@@ -100,27 +100,27 @@ public class GameManager extends Observable {
      * @post a server we can use
      */
     public IServer getServer() {
-        return mServer;
+        return server;
     }
 
 
     public static void setInstance(GameManager sm) {
-        GameManager.mInstance = sm;
+        GameManager.instance = sm;
     }
 
     public Poller getPoller() {
-        return mPoller;
+        return poller;
     }
 
     public void setPoller(Poller p) {
-        this.mPoller = p;
+        this.poller = p;
     }
 
     public ClientModel getClientModel() {
-        return mClientModel;
+        return clientModel;
     }
 
-    public void setmClientModel(ClientModel cm) {
-        this.mClientModel = cm;
+    public void setClientModel(ClientModel cm) {
+        this.clientModel = cm;
     }
 }
