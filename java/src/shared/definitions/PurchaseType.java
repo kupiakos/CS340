@@ -23,6 +23,7 @@ public enum PurchaseType {
             case DEVCARD:
                 return new ResourceList(1, 0, 1, 0, 1);
             default:
+                assert false;
                 return null;
         }
     }
