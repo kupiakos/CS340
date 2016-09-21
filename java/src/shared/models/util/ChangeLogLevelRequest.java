@@ -2,6 +2,8 @@ package shared.models.util;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
+
 import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
@@ -36,9 +38,9 @@ public class ChangeLogLevelRequest {
     /**
      * @param logLevel The server's new log level.  The following values are allowed: ALL, SEVERE, WARNING ,INFO, CONFIG, FINE, FINER, FINEST, OFF
      */
-    public void setLogLevel(String logLevel) { this.logLevel = logLevel; }
+    public void setLogLevel(@NotNull String logLevel) { this.logLevel = logLevel; }
 
-    public ChangeLogLevelRequest withLogLevel(String logLevel) {
+    public ChangeLogLevelRequest withLogLevel(@NotNull String logLevel) {
         setLogLevel(logLevel);
         return this;
     }

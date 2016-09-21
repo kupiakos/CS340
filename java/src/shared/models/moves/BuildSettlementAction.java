@@ -2,9 +2,11 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.VertexLocation;
+
+import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
 public class BuildSettlementAction {
@@ -15,7 +17,7 @@ public class BuildSettlementAction {
 
     @SerializedName("free")
     @Expose
-    private Boolean free;
+    private boolean free;
 
     @SerializedName("vertexLocation")
     @Expose
@@ -36,61 +38,77 @@ public class BuildSettlementAction {
     }
 
     /**
-      * @param TYPE The type
-      * @param free Whether this is placed for free (setup)
-      * @param vertexLocation The vertexLocation
-      * @param playerIndex Who's placing the settlement
+     * @param free           Whether this is placed for free (setup)
+     * @param vertexLocation The vertexLocation
+     * @param playerIndex    Who's placing the settlement
      */
-    public BuildSettlementAction(Boolean free, VertexLocation vertexLocation, PlayerIndex playerIndex) {
-            this.free = free;
-            this.vertexLocation = vertexLocation;
-            this.playerIndex = playerIndex;
+    public BuildSettlementAction(boolean free, VertexLocation vertexLocation, PlayerIndex playerIndex) {
+        this.free = free;
+        this.vertexLocation = vertexLocation;
+        this.playerIndex = playerIndex;
     }
 
     /**
      * @return The type
      */
-    public final String getType() { return TYPE; }
+    public final String getType() {
+        return TYPE;
+    }
 
     /**
      * @return Whether this is placed for free (setup)
      */
-    public Boolean getFree() { return free; }
+    public boolean getFree() {
+        return free;
+    }
 
     /**
      * @param free Whether this is placed for free (setup)
      */
-    public void setFree(Boolean free) { this.free = free; }
+    public void setFree(boolean free) {
+        this.free = free;
+    }
 
-    public BuildSettlementAction withFree(Boolean free) {
+    public BuildSettlementAction withFree(boolean free) {
         setFree(free);
         return this;
     }
+
     /**
      * @return The vertexLocation
      */
-    public VertexLocation getVertexLocation() { return vertexLocation; }
+    @NotNull
+    public VertexLocation getVertexLocation() {
+        return vertexLocation;
+    }
 
     /**
      * @param vertexLocation The vertexLocation
      */
-    public void setVertexLocation(VertexLocation vertexLocation) { this.vertexLocation = vertexLocation; }
+    public void setVertexLocation(@NotNull VertexLocation vertexLocation) {
+        this.vertexLocation = vertexLocation;
+    }
 
-    public BuildSettlementAction withVertexLocation(VertexLocation vertexLocation) {
+    public BuildSettlementAction withVertexLocation(@NotNull VertexLocation vertexLocation) {
         setVertexLocation(vertexLocation);
         return this;
     }
+
     /**
      * @return Who's placing the settlement
      */
-    public PlayerIndex getPlayerIndex() { return playerIndex; }
+    public PlayerIndex getPlayerIndex() {
+        return playerIndex;
+    }
 
     /**
      * @param playerIndex Who's placing the settlement
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) { this.playerIndex = playerIndex; }
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
+        this.playerIndex = playerIndex;
+    }
 
-    public BuildSettlementAction withPlayerIndex(PlayerIndex playerIndex) {
+    public BuildSettlementAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }
@@ -98,27 +116,27 @@ public class BuildSettlementAction {
     @Override
     public String toString() {
         return "BuildSettlementAction [" +
-            "type=" + TYPE +
-            ", free=" + free +
-            ", vertexLocation=" + vertexLocation +
-            ", playerIndex=" + playerIndex +
-            "]";
+                "type=" + TYPE +
+                ", free=" + free +
+                ", vertexLocation=" + vertexLocation +
+                ", playerIndex=" + playerIndex +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof BuildSettlementAction) {
-            return equals((BuildSettlementAction)other);
+            return equals((BuildSettlementAction) other);
         }
         return false;
     }
 
     public boolean equals(BuildSettlementAction other) {
         return (
-            TYPE == other.TYPE &&
-            free == other.free &&
-            vertexLocation == other.vertexLocation &&
-            playerIndex == other.playerIndex
+                TYPE == other.TYPE &&
+                        free == other.free &&
+                        vertexLocation == other.vertexLocation &&
+                        playerIndex == other.playerIndex
         );
     }
 }

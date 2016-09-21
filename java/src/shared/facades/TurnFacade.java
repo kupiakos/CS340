@@ -28,7 +28,7 @@ public class TurnFacade extends AbstractFacade {
      * Ends a player's turn.
      *
      * @param player the {@link Player} to end the turn of
-     * @pre @{code player} belongs to the current {@link ClientModel}, and it's their turn.
+     * @pre {@code player} belongs to the current {@link ClientModel}, and it's their turn.
      * @post {@code player}'s turn is ended
      */
     public static void endTurn(@NotNull Player player) {
@@ -42,7 +42,7 @@ public class TurnFacade extends AbstractFacade {
      *
      * @param player which {@link Player} to check
      * @return whether the turn could be ended
-     * @pre @{code player} belongs to the current {@link ClientModel}.
+     * @pre {@code player} belongs to the current {@link ClientModel}.
      * @post None.
      */
     public boolean canEndTurn(@NotNull Player player) {
@@ -54,7 +54,7 @@ public class TurnFacade extends AbstractFacade {
      *
      * @param player the {@link Player} to check against
      * @return true if it is that {@link Player}'s turn
-     * @pre @{code player} belongs to the current {@link ClientModel}.
+     * @pre {@code player} belongs to the current {@link ClientModel}.
      * @post None.
      */
     private boolean isPlayersTurn(@NotNull Player player) {

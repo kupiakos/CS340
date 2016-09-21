@@ -2,10 +2,12 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
+
+import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
 public class YearofPlentyAction {
@@ -37,61 +39,77 @@ public class YearofPlentyAction {
     }
 
     /**
-      * @param TYPE The type
-      * @param resource1 The resource1
-      * @param playerIndex Who's playing this dev card
-      * @param resource2 The resource2
+     * @param resource1   The resource1
+     * @param playerIndex Who's playing this dev card
+     * @param resource2   The resource2
      */
     public YearofPlentyAction(ResourceType resource1, PlayerIndex playerIndex, ResourceType resource2) {
-            this.resource1 = resource1;
-            this.playerIndex = playerIndex;
-            this.resource2 = resource2;
+        this.resource1 = resource1;
+        this.playerIndex = playerIndex;
+        this.resource2 = resource2;
     }
 
     /**
      * @return The type
      */
-    public final DevCardType getType() { return TYPE; }
+    public final DevCardType getType() {
+        return TYPE;
+    }
 
     /**
      * @return The resource1
      */
-    public ResourceType getResource1() { return resource1; }
+    public ResourceType getResource1() {
+        return resource1;
+    }
 
     /**
      * @param resource1 The resource1
      */
-    public void setResource1(ResourceType resource1) { this.resource1 = resource1; }
+    public void setResource1(@NotNull ResourceType resource1) {
+        this.resource1 = resource1;
+    }
 
-    public YearofPlentyAction withResource1(ResourceType resource1) {
+    public YearofPlentyAction withResource1(@NotNull ResourceType resource1) {
         setResource1(resource1);
         return this;
     }
+
     /**
      * @return Who's playing this dev card
      */
-    public PlayerIndex getPlayerIndex() { return playerIndex; }
+    @NotNull
+    public PlayerIndex getPlayerIndex() {
+        return playerIndex;
+    }
 
     /**
      * @param playerIndex Who's playing this dev card
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) { this.playerIndex = playerIndex; }
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
+        this.playerIndex = playerIndex;
+    }
 
-    public YearofPlentyAction withPlayerIndex(PlayerIndex playerIndex) {
+    public YearofPlentyAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }
+
     /**
      * @return The resource2
      */
-    public ResourceType getResource2() { return resource2; }
+    public ResourceType getResource2() {
+        return resource2;
+    }
 
     /**
      * @param resource2 The resource2
      */
-    public void setResource2(ResourceType resource2) { this.resource2 = resource2; }
+    public void setResource2(@NotNull ResourceType resource2) {
+        this.resource2 = resource2;
+    }
 
-    public YearofPlentyAction withResource2(ResourceType resource2) {
+    public YearofPlentyAction withResource2(@NotNull ResourceType resource2) {
         setResource2(resource2);
         return this;
     }
@@ -99,27 +117,27 @@ public class YearofPlentyAction {
     @Override
     public String toString() {
         return "YearofPlentyAction [" +
-            "type=" + TYPE +
-            ", resource1=" + resource1 +
-            ", playerIndex=" + playerIndex +
-            ", resource2=" + resource2 +
-            "]";
+                "type=" + TYPE +
+                ", resource1=" + resource1 +
+                ", playerIndex=" + playerIndex +
+                ", resource2=" + resource2 +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof YearofPlentyAction) {
-            return equals((YearofPlentyAction)other);
+            return equals((YearofPlentyAction) other);
         }
         return false;
     }
 
     public boolean equals(YearofPlentyAction other) {
         return (
-            TYPE == other.TYPE &&
-            resource1 == other.resource1 &&
-            playerIndex == other.playerIndex &&
-            resource2 == other.resource2
+                TYPE == other.TYPE &&
+                        resource1 == other.resource1 &&
+                        playerIndex == other.playerIndex &&
+                        resource2 == other.resource2
         );
     }
 }

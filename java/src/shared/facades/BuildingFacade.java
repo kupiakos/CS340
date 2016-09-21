@@ -18,9 +18,9 @@ public class BuildingFacade extends AbstractFacade {
      * @throws NullPointerException if {@code model} is null
      * @pre {@code model} is a valid {@link ClientModel}.
      * @post This provides valid operations on {@code model}.
+     * @pun This function is not pun-agnostic; it runs {@code super(model)}.
      */
     public BuildingFacade(@NotNull ClientModel model) {
-        // I now realize the pun
         super(model);
     }
 
@@ -33,7 +33,8 @@ public class BuildingFacade extends AbstractFacade {
      * @pre {@link #canBuildRoad} returns true for the given player and location.
      * @post <ul>
      * <li>Road is built on game map at specified location.</li>
-     * <li>Current {@link Player} has one fewer unused roads.</li>
+     * <li>The player has one fewer unused roads.</li>
+     * <li>Longest road may be given to the player if applicable.</li>
      * </ul>
      */
     public void buildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree) {

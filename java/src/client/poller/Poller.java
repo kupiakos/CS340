@@ -6,6 +6,7 @@ import shared.models.game.ClientModel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.naming.CommunicationException;
 import javax.swing.Timer;
 /**
  * Will take care of contacting the server on regular intervals to check for game updates.
@@ -35,20 +36,22 @@ public class Poller {
      */
     public Poller(){
 
-        ActionListener poll = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                // Grab a game manager
-                GameManager gm = GameManager.getGame();
-                // Get our version number
-                int version = gm.getClientModel().getVersion();
-                // Call the server with the number
-                ClientModel response = gm.getServer().gameState(version);
-                // If new model
-                if (response != null){
-                    // Update ours
-                    gm.setmClientModel(response);
-                }
+        ActionListener poll = (ActionEvent) -> {
+            // Grab a game manager
+            GameManager gm = GameManager.getGame();
+            // Get our version number
+            int version = gm.getClientModel().getVersion();
+            // Call the server with the number
+            ClientModel response;
+            try {
+                response = gm.getServer().gameState(version);
+            } catch (CommunicationException e) {
+                return;
+            }
+            // If new model
+            if (response != null){
+                // Update ours
+                gm.setClientModel(response);
             }
         };
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, poll);

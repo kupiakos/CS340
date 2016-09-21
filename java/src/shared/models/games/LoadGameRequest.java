@@ -2,6 +2,8 @@ package shared.models.games;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
+
 import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
@@ -36,9 +38,9 @@ public class LoadGameRequest {
     /**
      * @param name The name of the saved game file that you want to load. (The game's ID is restored as well.)
      */
-    public void setName(String name) { this.name = name; }
+    public void setName(@NotNull String name) { this.name = name; }
 
-    public LoadGameRequest withName(String name) {
+    public LoadGameRequest withName(@NotNull String name) {
         setName(name);
         return this;
     }

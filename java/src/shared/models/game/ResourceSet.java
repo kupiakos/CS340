@@ -2,13 +2,15 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.ResourceType;
 
 import javax.annotation.Generated;
 import java.util.Arrays;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class ResourceList {
+public class ResourceSet {
 
     @SerializedName("ore")
     @Expose
@@ -36,7 +38,7 @@ public class ResourceList {
     /**
      * No args constructor for use in serialization
      */
-    public ResourceList() {
+    public ResourceSet() {
     }
 
     /**
@@ -46,7 +48,7 @@ public class ResourceList {
      * @param wood  The wood
      * @param wheat The wheat
      */
-    public ResourceList(int ore, int brick, int sheep, int wood, int wheat) {
+    public ResourceSet(int ore, int brick, int sheep, int wood, int wheat) {
         this.ore = ore;
         this.brick = brick;
         this.sheep = sheep;
@@ -60,11 +62,9 @@ public class ResourceList {
      * @param list the list to form a negative copy of
      * @return a negative copy of {@code list}
      */
-    public static ResourceList toNegative(ResourceList list) {
-        if (list == null) {
-            return null;
-        }
-        ResourceList result = new ResourceList();
+    public static ResourceSet toNegative(@NotNull ResourceSet list) {
+        Objects.requireNonNull(list);
+        ResourceSet result = new ResourceSet();
         for (ResourceType type : ResourceType.values()) {
             result.setOfType(type, -list.getOfType(type));
         }
@@ -76,16 +76,15 @@ public class ResourceList {
      *
      * @param list1 the first list, not null
      * @param list2 the second list, not null
-     * @return a new {@link ResourceList} containing the sum of their contents.
+     * @return a new {@link ResourceSet} containing the sum of their contents.
      * @pre {@code list1} and {@code list2} are valid resource lists
      * @post The return will be valid. {@code list1} and {@code list2} are unmodified.
      */
-    public static ResourceList combine(ResourceList list1, ResourceList list2) {
-        if (list1 == null || list2 == null) {
-            return null;
-        }
+    public static ResourceSet combine(@NotNull ResourceSet list1, @NotNull ResourceSet list2) {
+        Objects.requireNonNull(list1);
+        Objects.requireNonNull(list2);
         // look into using cloning for this
-        ResourceList result = new ResourceList();
+        ResourceSet result = new ResourceSet();
         for (ResourceType type : ResourceType.values()) {
             result.setOfType(type, list1.getOfType(type) + list2.getOfType(type));
         }
@@ -100,7 +99,7 @@ public class ResourceList {
      * @param type the type of resource to get
      * @return the amount of that resource represented
      */
-    public int getOfType(ResourceType type) {
+    public int getOfType(@NotNull ResourceType type) {
         switch (type) {
             case WOOD:
                 return getWood();
@@ -113,6 +112,7 @@ public class ResourceList {
             case ORE:
                 return getOre();
             default:
+                assert false;
                 return 0;
         }
     }
@@ -120,10 +120,11 @@ public class ResourceList {
     /**
      * Set the amount of a type of resource represented by this list.
      *
-     * @param type  the type of resource to set
-     * @param value the amount that resource will represent
+     * @param type  the type of resource to set, not null
+     * @param value the amount that resource will represent, not null
+     * @pre neither attributes are null
      */
-    public void setOfType(ResourceType type, int value) {
+    public void setOfType(@NotNull ResourceType type, int value) {
         switch (type) {
             case WOOD:
                 setWood(value);
@@ -161,7 +162,7 @@ public class ResourceList {
      * @post This will be summed with the resources in {@code other},
      * but {@code other} will not be modified.
      */
-    public void combine(ResourceList other) {
+    public void combine(ResourceSet other) {
         if (other == null) {
             return;
         }
@@ -184,7 +185,7 @@ public class ResourceList {
         this.ore = ore;
     }
 
-    public ResourceList withOre(int ore) {
+    public ResourceSet withOre(int ore) {
         setOre(ore);
         return this;
     }
@@ -203,7 +204,7 @@ public class ResourceList {
         this.brick = brick;
     }
 
-    public ResourceList withBrick(int brick) {
+    public ResourceSet withBrick(int brick) {
         setBrick(brick);
         return this;
     }
@@ -222,7 +223,7 @@ public class ResourceList {
         this.sheep = sheep;
     }
 
-    public ResourceList withSheep(int sheep) {
+    public ResourceSet withSheep(int sheep) {
         setSheep(sheep);
         return this;
     }
@@ -241,7 +242,7 @@ public class ResourceList {
         this.wood = wood;
     }
 
-    public ResourceList withWood(int wood) {
+    public ResourceSet withWood(int wood) {
         setWood(wood);
         return this;
     }
@@ -260,7 +261,7 @@ public class ResourceList {
         this.wheat = wheat;
     }
 
-    public ResourceList withWheat(int wheat) {
+    public ResourceSet withWheat(int wheat) {
         setWheat(wheat);
         return this;
     }
@@ -278,13 +279,13 @@ public class ResourceList {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof ResourceList) {
-            return equals((ResourceList) other);
+        if (other instanceof ResourceSet) {
+            return equals((ResourceSet) other);
         }
         return false;
     }
 
-    public boolean equals(ResourceList other) {
+    public boolean equals(ResourceSet other) {
         return (
                 ore == other.ore &&
                         brick == other.brick &&

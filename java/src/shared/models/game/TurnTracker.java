@@ -3,6 +3,8 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
+
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.definitions.TurnStatus;
 
@@ -56,9 +58,9 @@ public class TurnTracker {
     /**
      * @param longestRoad The index of who has the longest road
      */
-    public void setLongestRoad(PlayerIndex longestRoad) { this.longestRoad = longestRoad; }
+    public void setLongestRoad(@NotNull PlayerIndex longestRoad) { this.longestRoad = longestRoad; }
 
-    public TurnTracker withLongestRoad(PlayerIndex longestRoad) {
+    public TurnTracker withLongestRoad(@NotNull PlayerIndex longestRoad) {
         setLongestRoad(longestRoad);
         return this;
     }
@@ -70,9 +72,9 @@ public class TurnTracker {
     /**
      * @param currentTurn Who's turn it is (0-3)
      */
-    public void setCurrentTurn(PlayerIndex currentTurn) { this.currentTurn = currentTurn; }
+    public void setCurrentTurn(@NotNull PlayerIndex currentTurn) { this.currentTurn = currentTurn; }
 
-    public TurnTracker withCurrentTurn(PlayerIndex currentTurn) {
+    public TurnTracker withCurrentTurn(@NotNull PlayerIndex currentTurn) {
         setCurrentTurn(currentTurn);
         return this;
     }
@@ -84,9 +86,9 @@ public class TurnTracker {
     /**
      * @param status What's happening now
      */
-    public void setStatus(TurnStatus status) { this.status = status; }
+    public void setStatus(@NotNull TurnStatus status) { this.status = status; }
 
-    public TurnTracker withStatus(TurnStatus status) {
+    public TurnTracker withStatus(@NotNull TurnStatus status) {
         setStatus(status);
         return this;
     }
@@ -98,9 +100,9 @@ public class TurnTracker {
     /**
      * @param largestArmy The index of who has the biggest army (3 or more)
      */
-    public void setLargestArmy(PlayerIndex largestArmy) { this.largestArmy = largestArmy; }
+    public void setLargestArmy(@NotNull PlayerIndex largestArmy) { this.largestArmy = largestArmy; }
 
-    public TurnTracker withLargestArmy(PlayerIndex largestArmy) {
+    public TurnTracker withLargestArmy(@NotNull PlayerIndex largestArmy) {
         setLargestArmy(largestArmy);
         return this;
     }

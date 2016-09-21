@@ -2,6 +2,8 @@ package shared.models.games;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
+
 import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
@@ -42,9 +44,9 @@ public class SaveGameRequest {
     /**
      * @param name The file name you want to save it under
      */
-    public void setName(String name) { this.name = name; }
+    public void setName(@NotNull String name) { this.name = name; }
 
-    public SaveGameRequest withName(String name) {
+    public SaveGameRequest withName(@NotNull String name) {
         setName(name);
         return this;
     }

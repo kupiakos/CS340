@@ -2,12 +2,14 @@ package shared.models.games;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
+
 import javax.annotation.Generated;
 import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Information about a game
+ * Information about a game that a Player may or may not be able to join.
  */
 @Generated("net.kupiakos")
 public class GameInfo {
@@ -46,6 +48,18 @@ public class GameInfo {
     }
 
     /**
+     * Returns whether a player can join this game.
+     *
+     * If there are already 4 players, or this player is already part of the game, false.
+     * Otherwise, true.
+     * @param player the info of the player to check for
+     * @return whether this player could join this game
+     */
+    public boolean canJoinGame(@NotNull PlayerInfo player) {
+        return false;
+    }
+
+    /**
      * @return The players
      */
     public List<PlayerInfo> getPlayers() { return players; }
@@ -53,9 +67,9 @@ public class GameInfo {
     /**
      * @param players The players
      */
-    public void setPlayers(List<PlayerInfo> players) { this.players = players; }
+    public void setPlayers(@NotNull List<PlayerInfo> players) { this.players = players; }
 
-    public GameInfo withPlayers(List<PlayerInfo> players) {
+    public GameInfo withPlayers(@NotNull List<PlayerInfo> players) {
         setPlayers(players);
         return this;
     }
@@ -67,9 +81,9 @@ public class GameInfo {
     /**
      * @param title The title
      */
-    public void setTitle(String title) { this.title = title; }
+    public void setTitle(@NotNull String title) { this.title = title; }
 
-    public GameInfo withTitle(String title) {
+    public GameInfo withTitle(@NotNull String title) {
         setTitle(title);
         return this;
     }

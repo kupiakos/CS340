@@ -2,10 +2,14 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import shared.definitions.PlayerIndex;
-import java.util.List;
+import shared.exceptions.JoinGameException;
+
+import javax.annotation.Generated;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The top level client model.
@@ -28,11 +32,11 @@ public class ClientModel {
 
     @SerializedName("map")
     @Expose
-    private Map map;
+    private GameMap map;
 
     @SerializedName("bank")
     @Expose
-    private ResourceList bank;
+    private ResourceSet bank;
 
     @SerializedName("tradeOffer")
     @Expose
@@ -51,9 +55,6 @@ public class ClientModel {
     private MessageList log;
 
 
-    // CUSTOM CODE
-    // END CUSTOM CODE
-
     /**
      * No args constructor for use in serialization
      */
@@ -61,160 +62,248 @@ public class ClientModel {
     }
 
     /**
-      * @param chat All the chat messages.
-      * @param winner This is -1 when nobody's won yet. When they have, it's their order index [0-3]
-      * @param turnTracker This tracks who's turn it is and what action's being done.
-      * @param map The current {@link Map} of the game.
-      * @param bank The cards available to be distributed to the players.
-      * @param tradeOffer The current trade offer, if there is one.
-      * @param players The current {@link Player}s in the game, from 2-4.
-      * @param version The version of the model. This is incremented whenever anyone makes a move.
-      * @param log All the log messages.
+     * @param chat        all the chat messages the players have sent to each other
+     * @param winner      the player who has won the game, or null if nobody
+     * @param turnTracker tracks whose turn it is and what action's being done
+     * @param map         the current {@link GameMap} of the game
+     * @param bank        the set of cards available to be distributed to the players
+     * @param tradeOffer  the current trade offer, if there is one
+     * @param players     the current {@link Player}s in the game, from 2-4
+     * @param version     the version of the model - incremented whenever anyone makes a move
+     * @param log         all the log messages for the game's progress
      */
-    public ClientModel(MessageList chat, PlayerIndex winner, TurnTracker turnTracker, Map map, ResourceList bank, TradeOffer tradeOffer, List<Player> players, int version, MessageList log) {
-            this.chat = chat;
-            this.winner = winner;
-            this.turnTracker = turnTracker;
-            this.map = map;
-            this.bank = bank;
-            this.tradeOffer = tradeOffer;
-            this.players = players;
-            this.version = version;
-            this.log = log;
+    public ClientModel(@NotNull MessageList chat,
+                       @Nullable PlayerIndex winner,
+                       @NotNull TurnTracker turnTracker,
+                       @NotNull GameMap map,
+                       @NotNull ResourceSet bank,
+                       @NotNull TradeOffer tradeOffer,
+                       @NotNull List<Player> players,
+                       int version,
+                       @NotNull MessageList log) {
+        this.chat = chat;
+        this.winner = winner;
+        this.turnTracker = turnTracker;
+        this.map = map;
+        this.bank = bank;
+        this.tradeOffer = tradeOffer;
+        this.players = players;
+        this.version = version;
+        this.log = log;
+    }
+
+    // CUSTOM CODE
+    @NotNull
+    public int getPlayerCount() {
+        return this.getPlayers().size();
+    }
+
+
+    // END CUSTOM CODE
+
+    public boolean canPlayerJoin(@NotNull Player player) {
+        return false;
+    }
+
+    public void playerJoin(@NotNull Player player) {
+        if (!canPlayerJoin(player)) {
+            throw new JoinGameException("Could not join the game");
+        }
     }
 
     /**
-     * @return All the chat messages.
+     * @return all the chat messages the players have sent to each other
      */
-    public MessageList getChat() { return chat; }
+    @NotNull
+    public MessageList getChat() {
+        return chat;
+    }
 
     /**
-     * @param chat All the chat messages.
+     * @param chat all the chat messages the players have sent to each other
      */
-    public void setChat(MessageList chat) { this.chat = chat; }
+    public void setChat(@NotNull MessageList chat) {
+        this.chat = chat;
+    }
 
-    public ClientModel withChat(MessageList chat) {
+    public ClientModel withChat(@NotNull MessageList chat) {
         setChat(chat);
         return this;
     }
-    /**
-     * @return This is -1 when nobody's won yet. When they have, it's their order index [0-3]
-     */
-    public PlayerIndex getWinner() { return winner; }
 
     /**
-     * @param winner This is -1 when nobody's won yet. When they have, it's their order index [0-3]
+     * @return the player who has won the game, or null if nobody
      */
-    public void setWinner(PlayerIndex winner) { this.winner = winner; }
+    @Nullable
+    public PlayerIndex getWinner() {
+        return winner;
+    }
 
-    public ClientModel withWinner(PlayerIndex winner) {
+    /**
+     * Sets the player who has won the game, or null if nobody
+     *
+     * @param winner the player who has won the game, or null if nobody
+     */
+    public void setWinner(@Nullable PlayerIndex winner) {
+        this.winner = winner;
+    }
+
+    public ClientModel withWinner(@Nullable PlayerIndex winner) {
         setWinner(winner);
         return this;
     }
-    /**
-     * @return This tracks who's turn it is and what action's being done.
-     */
-    public TurnTracker getTurnTracker() { return turnTracker; }
 
     /**
-     * @param turnTracker This tracks who's turn it is and what action's being done.
+     * Tracks whose turn it is and what action's being done
+     *
+     * @return the object that tracks whose turn it is and what action's being done
      */
-    public void setTurnTracker(TurnTracker turnTracker) { this.turnTracker = turnTracker; }
+    @NotNull
+    public TurnTracker getTurnTracker() {
+        return turnTracker;
+    }
 
-    public ClientModel withTurnTracker(TurnTracker turnTracker) {
+    /**
+     * @param turnTracker tracks whose turn it is and what action's being done
+     */
+    public void setTurnTracker(@NotNull TurnTracker turnTracker) {
+        this.turnTracker = turnTracker;
+    }
+
+    public ClientModel withTurnTracker(@NotNull TurnTracker turnTracker) {
         setTurnTracker(turnTracker);
         return this;
     }
-    /**
-     * Gets the current {@link Map} of the game.
-     * @return the current {@link Map} of the game
-     */
-    public Map getMap() { return map; }
 
     /**
-     * Sets the {@link Map} of the game.
-     * @param map the current {@link Map} of the game
+     * Gets the current {@link GameMap} of the game.
+     *
+     * @return the current {@link GameMap} of the game
      */
-    public void setMap(Map map) { this.map = map; }
+    @NotNull
+    public GameMap getMap() {
+        return map;
+    }
 
     /**
-     * Sets the {@link Map} of the game.
-     * @param map the current {@link Map} of the game
-     * @return the current {@link Map} of the game
+     * Sets the {@link GameMap} of the game.
+     *
+     * @param map the current {@link GameMap} of the game
      */
-    public ClientModel withMap(Map map) {
+    public void setMap(@NotNull GameMap map) {
+        this.map = map;
+    }
+
+    /**
+     * Sets the {@link GameMap} of the game.
+     *
+     * @param map the current {@link GameMap} of the game
+     * @return the current {@link GameMap} of the game
+     */
+    public ClientModel withMap(@NotNull GameMap map) {
         setMap(map);
         return this;
     }
-    /**
-     * @return The cards available to be distributed to the players.
-     */
-    public ResourceList getBank() { return bank; }
 
     /**
-     * @param bank The cards available to be distributed to the players.
+     * @return the set of cards available to be distributed to the players
      */
-    public void setBank(ResourceList bank) { this.bank = bank; }
+    @NotNull
+    public ResourceSet getBank() {
+        return bank;
+    }
 
-    public ClientModel withBank(ResourceList bank) {
+    /**
+     * @param bank the set of cards available to be distributed to the players
+     */
+    public void setBank(@NotNull ResourceSet bank) {
+        this.bank = bank;
+    }
+
+    public ClientModel withBank(@NotNull ResourceSet bank) {
         setBank(bank);
         return this;
     }
+
     /**
      * @return The current trade offer, if there is one.
      */
-    public TradeOffer getTradeOffer() { return tradeOffer; }
+    @NotNull
+    public TradeOffer getTradeOffer() {
+        return tradeOffer;
+    }
 
     /**
-     * @param tradeOffer The current trade offer, if there is one.
+     * @param tradeOffer the current trade offer, if there is one
      */
-    public void setTradeOffer(TradeOffer tradeOffer) { this.tradeOffer = tradeOffer; }
+    public void setTradeOffer(@NotNull TradeOffer tradeOffer) {
+        this.tradeOffer = tradeOffer;
+    }
 
-    public ClientModel withTradeOffer(TradeOffer tradeOffer) {
+    public ClientModel withTradeOffer(@NotNull TradeOffer tradeOffer) {
         setTradeOffer(tradeOffer);
         return this;
     }
+
     /**
      * Gets the {@link Player}s of the game, from 2-4.
+     *
      * @return The {@link Player}s currently playing this game
      */
-    public List<Player> getPlayers() { return players; }
+    public List<Player> getPlayers() {
+        return players;
+    }
 
     /**
      * Sets the {@link Player}s of the game, from 2-4.
+     *
      * @param players The {@link Player}s currently playing this game
      */
-    public void setPlayers(List<Player> players) { this.players = players; }
+    public void setPlayers(@NotNull List<Player> players) {
+        this.players = players;
+    }
 
-    public ClientModel withPlayers(List<Player> players) {
+    public ClientModel withPlayers(@NotNull List<Player> players) {
         setPlayers(players);
         return this;
     }
+
     /**
      * @return The version of the model. This is incremented whenever anyone makes a move.
      */
-    public int getVersion() { return version; }
+    @NotNull
+    public int getVersion() {
+        return version;
+    }
 
     /**
-     * @param version The version of the model. This is incremented whenever anyone makes a move.
+     * @param version the version of the model - incremented whenever anyone makes a move
      */
-    public void setVersion(int version) { this.version = version; }
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public ClientModel withVersion(int version) {
         setVersion(version);
         return this;
     }
+
     /**
      * @return All the log messages.
      */
-    public MessageList getLog() { return log; }
+    @NotNull
+    public MessageList getLog() {
+        return log;
+    }
 
     /**
      * @param log All the log messages.
      */
-    public void setLog(MessageList log) { this.log = log; }
+    public void setLog(@NotNull MessageList log) {
+        this.log = log;
+    }
 
-    public ClientModel withLog(MessageList log) {
+    public ClientModel withLog(@NotNull MessageList log) {
         setLog(log);
         return this;
     }
@@ -222,37 +311,37 @@ public class ClientModel {
     @Override
     public String toString() {
         return "ClientModel [" +
-            "chat=" + chat +
-            ", winner=" + winner +
-            ", turnTracker=" + turnTracker +
-            ", map=" + map +
-            ", bank=" + bank +
-            ", tradeOffer=" + tradeOffer +
-            ", players=" + players +
-            ", version=" + version +
-            ", log=" + log +
-            "]";
+                "chat=" + chat +
+                ", winner=" + winner +
+                ", turnTracker=" + turnTracker +
+                ", map=" + map +
+                ", bank=" + bank +
+                ", tradeOffer=" + tradeOffer +
+                ", players=" + players +
+                ", version=" + version +
+                ", log=" + log +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof ClientModel) {
-            return equals((ClientModel)other);
+            return equals((ClientModel) other);
         }
         return false;
     }
 
     public boolean equals(ClientModel other) {
         return (
-            chat == other.chat &&
-            winner == other.winner &&
-            turnTracker == other.turnTracker &&
-            map == other.map &&
-            bank == other.bank &&
-            tradeOffer == other.tradeOffer &&
-            players == other.players &&
-            version == other.version &&
-            log == other.log
+                chat == other.chat &&
+                        winner == other.winner &&
+                        turnTracker == other.turnTracker &&
+                        map == other.map &&
+                        bank == other.bank &&
+                        tradeOffer == other.tradeOffer &&
+                        players == other.players &&
+                        version == other.version &&
+                        log == other.log
         );
     }
 }

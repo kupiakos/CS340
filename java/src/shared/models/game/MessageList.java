@@ -2,6 +2,8 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
+
 import javax.annotation.Generated;
 import java.util.List;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ public class MessageList {
 
     @SerializedName("lines")
     @Expose
-    private List<MessageLine> lines = new ArrayList<MessageLine>();
+    private List<MessageEntry> lines = new ArrayList<MessageEntry>();
 
 
     // CUSTOM CODE
@@ -26,21 +28,21 @@ public class MessageList {
     /**
       * @param lines The lines
      */
-    public MessageList(List<MessageLine> lines) {
+    public MessageList(List<MessageEntry> lines) {
             this.lines = lines;
     }
 
     /**
      * @return The lines
      */
-    public List<MessageLine> getLines() { return lines; }
+    public List<MessageEntry> getLines() { return lines; }
 
     /**
      * @param lines The lines
      */
-    public void setLines(List<MessageLine> lines) { this.lines = lines; }
+    public void setLines(@NotNull List<MessageEntry> lines) { this.lines = lines; }
 
-    public MessageList withLines(List<MessageLine> lines) {
+    public MessageList withLines(@NotNull List<MessageEntry> lines) {
         setLines(lines);
         return this;
     }

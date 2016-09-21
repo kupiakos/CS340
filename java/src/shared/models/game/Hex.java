@@ -3,6 +3,8 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
+
+import com.sun.istack.internal.NotNull;
 import shared.locations.HexLocation;
 import shared.definitions.HexType;
 
@@ -64,9 +66,9 @@ public class Hex {
     /**
      * @param location The location
      */
-    public void setLocation(HexLocation location) { this.location = location; }
+    public void setLocation(@NotNull HexLocation location) { this.location = location; }
 
-    public Hex withLocation(HexLocation location) {
+    public Hex withLocation(@NotNull HexLocation location) {
         setLocation(location);
         return this;
     }
@@ -78,9 +80,9 @@ public class Hex {
     /**
      * @param resource What resource this tile gives - it's only here if the tile is not desert.
      */
-    public void setResource(HexType resource) { this.resource = resource; }
+    public void setResource(@NotNull HexType resource) { this.resource = resource; }
 
-    public Hex withResource(HexType resource) {
+    public Hex withResource(@NotNull HexType resource) {
         setResource(resource);
         return this;
     }

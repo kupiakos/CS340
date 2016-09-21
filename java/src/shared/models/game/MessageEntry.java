@@ -3,10 +3,12 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
+
+import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 
 @Generated("net.kupiakos")
-public class MessageLine {
+public class MessageEntry {
 
     @SerializedName("source")
     @Expose
@@ -23,14 +25,14 @@ public class MessageLine {
     /**
      * No args constructor for use in serialization
      */
-    public MessageLine() {
+    public MessageEntry() {
     }
 
     /**
       * @param source The source
       * @param message The message
      */
-    public MessageLine(PlayerIndex source, String message) {
+    public MessageEntry(PlayerIndex source, String message) {
             this.source = source;
             this.message = message;
     }
@@ -43,9 +45,9 @@ public class MessageLine {
     /**
      * @param source The source
      */
-    public void setSource(PlayerIndex source) { this.source = source; }
+    public void setSource(@NotNull PlayerIndex source) { this.source = source; }
 
-    public MessageLine withSource(PlayerIndex source) {
+    public MessageEntry withSource(@NotNull PlayerIndex source) {
         setSource(source);
         return this;
     }
@@ -57,9 +59,9 @@ public class MessageLine {
     /**
      * @param message The message
      */
-    public void setMessage(String message) { this.message = message; }
+    public void setMessage(@NotNull String message) { this.message = message; }
 
-    public MessageLine withMessage(String message) {
+    public MessageEntry withMessage(@NotNull String message) {
         setMessage(message);
         return this;
     }
@@ -74,13 +76,13 @@ public class MessageLine {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof MessageLine) {
-            return equals((MessageLine)other);
+        if (other instanceof MessageEntry) {
+            return equals((MessageEntry)other);
         }
         return false;
     }
 
-    public boolean equals(MessageLine other) {
+    public boolean equals(MessageEntry other) {
         return (
             source == other.source &&
             message == other.message

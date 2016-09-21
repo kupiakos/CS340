@@ -10,16 +10,28 @@ public class FacadeManager {
      * A reference to the game info in the client model, will update frequently
      */
     private ClientModel clientModel;
+
     /**
-     * Handels all the api code for a players turn
+     * Handles all the api code for a players turn
      */
     private TurnFacade turn;
+
     /**
      * Checks to see if player can chat, than provides api for chatting
      */
     private ChatFacade chat;
-    // TODO:: add more facades here
 
+    /**
+     * Provides an abstracted interface over the model for the game map
+     */
+    private MapFacade map;
+
+    /**
+     * Provides an abstracted interface over the model for building
+     */
+    private BuildingFacade building;
+
+    // TODO:: add more facades here
 
     /**
      * Init the Facade manager with the starting clientModel
@@ -32,6 +44,8 @@ public class FacadeManager {
         clientModel = cm;
         turn = new TurnFacade(cm);
         chat = new ChatFacade(cm);
+        map = new MapFacade(cm);
+        building = new BuildingFacade(cm);
         // TODO:: add more facades here
     }
 
@@ -46,15 +60,16 @@ public class FacadeManager {
         setClientModel(cm);
         turn.setModel(cm);
         chat.setModel(cm);
+        map.setModel(cm);
+        building.setModel(cm);
         // TODO:: add more facades here
     }
-
 
     public ClientModel getClientModel() {
         return clientModel;
     }
 
-    public void setClientModel(ClientModel clientModel) {
+    private void setClientModel(ClientModel clientModel) {
         this.clientModel = clientModel;
     }
 
@@ -64,6 +79,14 @@ public class FacadeManager {
 
     public ChatFacade getChat() {
         return chat;
+    }
+
+    public BuildingFacade getBuilding() {
+        return building;
+    }
+
+    public MapFacade getMap() {
+        return map;
     }
 
 }

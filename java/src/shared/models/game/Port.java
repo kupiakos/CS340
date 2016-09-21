@@ -3,6 +3,8 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
+
+import com.sun.istack.internal.NotNull;
 import shared.locations.EdgeLocation;
 import shared.definitions.PortType;
 import shared.locations.HexLocation;
@@ -57,9 +59,9 @@ public class Port {
     /**
      * @param location Which hex this port is on. This shows the (ocean/non-existent) hex to draw the port on.
      */
-    public void setLocation(HexLocation location) { this.location = location; }
+    public void setLocation(@NotNull HexLocation location) { this.location = location; }
 
-    public Port withLocation(HexLocation location) {
+    public Port withLocation(@NotNull HexLocation location) {
         setLocation(location);
         return this;
     }
@@ -71,9 +73,9 @@ public class Port {
     /**
      * @param direction Which edge this port is on.
      */
-    public void setDirection(EdgeLocation direction) { this.direction = direction; }
+    public void setDirection(@NotNull EdgeLocation direction) { this.direction = direction; }
 
-    public Port withDirection(EdgeLocation direction) {
+    public Port withDirection(@NotNull EdgeLocation direction) {
         setDirection(direction);
         return this;
     }
@@ -99,9 +101,9 @@ public class Port {
     /**
      * @param resource What type resource this port trades for. If it's omitted, then it's for any resource.
      */
-    public void setResource(PortType resource) { this.resource = resource; }
+    public void setResource(@NotNull PortType resource) { this.resource = resource; }
 
-    public Port withResource(PortType resource) {
+    public Port withResource(@NotNull PortType resource) {
         setResource(resource);
         return this;
     }

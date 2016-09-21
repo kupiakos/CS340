@@ -2,10 +2,12 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
+import com.sun.istack.internal.NotNull;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
+
+import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
 public class MonopolyAction {
@@ -33,45 +35,56 @@ public class MonopolyAction {
     }
 
     /**
-      * @param TYPE The type
-      * @param playerIndex Who's playing this dev card
-      * @param resource The resource
+     * @param playerIndex Who's playing this dev card
+     * @param resource    The resource
      */
     public MonopolyAction(PlayerIndex playerIndex, ResourceType resource) {
-            this.playerIndex = playerIndex;
-            this.resource = resource;
+        this.playerIndex = playerIndex;
+        this.resource = resource;
     }
 
     /**
      * @return The type
      */
-    public final DevCardType getType() { return TYPE; }
+    public final DevCardType getType() {
+        return TYPE;
+    }
 
     /**
      * @return Who's playing this dev card
      */
-    public PlayerIndex getPlayerIndex() { return playerIndex; }
+    @NotNull
+    public PlayerIndex getPlayerIndex() {
+        return playerIndex;
+    }
 
     /**
      * @param playerIndex Who's playing this dev card
      */
-    public void setPlayerIndex(PlayerIndex playerIndex) { this.playerIndex = playerIndex; }
+    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
+        this.playerIndex = playerIndex;
+    }
 
-    public MonopolyAction withPlayerIndex(PlayerIndex playerIndex) {
+    public MonopolyAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
         setPlayerIndex(playerIndex);
         return this;
     }
+
     /**
      * @return The resource
      */
-    public ResourceType getResource() { return resource; }
+    public ResourceType getResource() {
+        return resource;
+    }
 
     /**
      * @param resource The resource
      */
-    public void setResource(ResourceType resource) { this.resource = resource; }
+    public void setResource(@NotNull ResourceType resource) {
+        this.resource = resource;
+    }
 
-    public MonopolyAction withResource(ResourceType resource) {
+    public MonopolyAction withResource(@NotNull ResourceType resource) {
         setResource(resource);
         return this;
     }
@@ -79,25 +92,25 @@ public class MonopolyAction {
     @Override
     public String toString() {
         return "MonopolyAction [" +
-            "type=" + TYPE +
-            ", playerIndex=" + playerIndex +
-            ", resource=" + resource +
-            "]";
+                "type=" + TYPE +
+                ", playerIndex=" + playerIndex +
+                ", resource=" + resource +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof MonopolyAction) {
-            return equals((MonopolyAction)other);
+            return equals((MonopolyAction) other);
         }
         return false;
     }
 
     public boolean equals(MonopolyAction other) {
         return (
-            TYPE == other.TYPE &&
-            playerIndex == other.playerIndex &&
-            resource == other.resource
+                TYPE == other.TYPE &&
+                        playerIndex == other.playerIndex &&
+                        resource == other.resource
         );
     }
 }

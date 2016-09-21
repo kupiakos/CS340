@@ -2,6 +2,8 @@ package shared.models.games;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.NotNull;
+
 import javax.annotation.Generated;
 
 /**
@@ -99,9 +101,9 @@ public class CreateGameRequest {
     /**
      * @param name The name of the game
      */
-    public void setName(String name) { this.name = name; }
+    public void setName(@NotNull String name) { this.name = name; }
 
-    public CreateGameRequest withName(String name) {
+    public CreateGameRequest withName(@NotNull String name) {
         setName(name);
         return this;
     }
