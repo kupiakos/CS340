@@ -1,5 +1,8 @@
 package shared.utils;
 
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -7,9 +10,19 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MapUtils {
-    // TODO: Javadocs
-    public static <K, V> Set<K> keysWithEntryMatching(Map<K, V> items,
-                                                      Predicate<Map.Entry<K, V>> testFunction) {
+
+    /**
+     * Get every key in {@code items} where the entry satisfies {@code testFunction}.
+     *
+     * @param items        the map to work with, not null
+     * @param testFunction the predicate to test entries against, not null
+     * @param <K>          the key of the map
+     * @param <V>          the value of the map
+     * @return a set of all keys where the entry satisfies {@code testFunction}
+     */
+    @NotNull
+    public static <K, V> Set<K> keysWithEntryMatching(@NotNull Map<K, V> items,
+                                                      @NotNull Predicate<Map.Entry<K, V>> testFunction) {
         // value or any contained value in items may be null
         return items.entrySet().stream()
                 .filter(testFunction)
@@ -17,17 +30,45 @@ public class MapUtils {
                 .collect(Collectors.toSet());
     }
 
-    public static <K, V> Set<K> keysWithValueMatching(Map<K, V> items,
-                                                      Predicate<V> testFunction) {
+    /**
+     * Get every key in {@code items} where the value satisfies {@code testFunction}.
+     *
+     * @param items        the map to work with, not null
+     * @param testFunction the predicate to test values against, not null
+     * @param <K>          the key of the map
+     * @param <V>          the value of the map
+     * @return a set of all keys where the value satisfies {@code testFunction}
+     */
+    @NotNull
+    public static <K, V> Set<K> keysWithValueMatching(@NotNull Map<K, V> items,
+                                                      @NotNull Predicate<V> testFunction) {
         // value or any contained value in items may be null
         return keysWithEntryMatching(items, e -> testFunction.test(e.getValue()));
     }
 
-    public static <K, V> Set<K> keysWithValue(Map<K, V> items, V value) {
+    /**
+     * Get every key in {@code items} where the value equals {@code value}.
+     *
+     * @param items the map to work with, not null
+     * @param value the value to check equality against, may be null
+     * @param <K>   the key of the map
+     * @param <V>   the value of the map
+     * @return a set of all keys where the value equals {@code value}
+     */
+    public static <K, V> Set<K> keysWithValue(@NotNull Map<K, V> items, @Nullable V value) {
         // value or any contained value in items may be null
         return keysWithEntryMatching(items, e -> Objects.equals(e.getValue(), value));
     }
 
+    /**
+     * Get every value in {@code items} that satisfies {@code testFunction}.
+     *
+     * @param items        the map to work with, not null
+     * @param testFunction the predicate to test values against, not null
+     * @param <K>          the key of the map
+     * @param <V>          the value of the map
+     * @return a set of all values that satisfy {@code testFunction}
+     */
     public static <K, V> Set<V> valuesMatching(Map<K, V> items,
                                                Predicate<? super V> testFunction) {
         // value or any contained value in items may be null
