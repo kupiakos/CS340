@@ -1,5 +1,6 @@
 package client.server;
 
+import client.game.GameManager;
 import com.sun.istack.internal.NotNull;
 import shared.IServer;
 import shared.exceptions.JoinGameException;
@@ -44,6 +45,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
+
     public List<GameInfo> listOfGames() throws CommunicationException {
         return null;
     }
