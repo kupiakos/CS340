@@ -100,24 +100,13 @@ public class GameMap {
 
     /**
      * Get all roads owned by the given player.
+     *
      * @param player the player whose roads to retrieve, not null
      * @return the set containing every road owned by the player
      */
     @NotNull
     public Set<EdgeLocation> getPlayerRoads(@NotNull Player player) {
         return MapUtils.keysWithValue(roads, player);
-    }
-
-    /**
-     * Get the road associated with a given location.
-     *
-     * @param location the location to check
-     * @return the road at that location, or null if none
-     */
-    @Nullable
-    public Player getRoad(@NotNull EdgeLocation location) {
-        location = location.getNormalizedLocation();
-        return roads.get(location);
     }
 
     /**
@@ -154,6 +143,18 @@ public class GameMap {
     }
 
     /**
+     * Get the road owner associated with a given location.
+     *
+     * @param location the location to check
+     * @return the owner of the road at that location, or null if none
+     */
+    @Nullable
+    public Player getRoadOwner(@NotNull EdgeLocation location) {
+        location = location.getNormalizedLocation();
+        return roads.get(location);
+    }
+
+    /**
      * Get the owner of a settlement, or null if that location does not have a settlement.
      *
      * @param location the location to check
@@ -183,8 +184,9 @@ public class GameMap {
      * but strictly whether adding this to the map would not be an illegal configuration.
      * <p>
      * This tests distance and adjacency requirements.
+     *
      * @param location the location to test, not null
-     * @param player the player to test, not null
+     * @param player   the player to test, not null
      * @return whether the map could support adding a settlement owned by the player at that location
      */
     public boolean canAddSettlement(@NotNull VertexLocation location, @NotNull Player player) {
@@ -193,10 +195,11 @@ public class GameMap {
 
     /**
      * Add a settlement at the specific location belonging to a specific player.
+     *
      * @param location the location to add the settlement, not null
-     * @param player the player to test, not null
-     * @pre {@link #canAddSettlement} returns true
+     * @param player   the player to test, not null
      * @throws IllegalArgumentException if the precondition is violated
+     * @pre {@link #canAddSettlement} returns true
      */
     public void addSettlement(@NotNull VertexLocation location, @NotNull Player player) {
     }
@@ -208,6 +211,7 @@ public class GameMap {
      * but strictly whether adding this to the map would not be an illegal configuration.
      * <p>
      * This tests distance and adjacency requirements.
+     *
      * @param road the road containing the location and owner to add
      * @return whether the map could support adding a road owned by the player at that location
      */
@@ -217,10 +221,11 @@ public class GameMap {
 
     /**
      * Add a road at the specific location belonging to a specific player.
+     *
      * @param location the location to add the road, not null
-     * @param player the player to test, not null
-     * @pre {@link #canAddSettlement} returns true
+     * @param player   the player to test, not null
      * @throws IllegalArgumentException if the precondition is violated
+     * @pre {@link #canAddSettlement} returns true
      */
     public void addRoad(@NotNull EdgeLocation location, @NotNull Player player) {
 
@@ -233,8 +238,9 @@ public class GameMap {
      * but strictly whether adding this to the map would not be an illegal configuration.
      * <p>
      * A settlement owned by the player must exist at that location.
+     *
      * @param location the location to test, not null
-     * @param player the player to test, not null
+     * @param player   the player to test, not null
      * @return whether the map could support adding a settlement owned by the player at that location
      */
     public boolean canUpgradeSettlement(@NotNull VertexLocation location, @NotNull Player player) {
@@ -243,10 +249,11 @@ public class GameMap {
 
     /**
      * Upgrade a settlement at the specific location belonging to a specific player.
+     *
      * @param location the location to add the settlement, not null
-     * @param player the player to test, not null
-     * @pre {@link #canAddSettlement} returns true
+     * @param player   the player to test, not null
      * @throws IllegalArgumentException if the precondition is violated
+     * @pre {@link #canAddSettlement} returns true
      */
     public boolean upgradeSettlement(@NotNull VertexLocation location, @NotNull Player player) {
         return false;
