@@ -57,41 +57,56 @@ public class ResourceSet {
     }
 
     /**
-     * Returns a copy of {@code list} that swaps the signs of each of its resources
+     * Returns a copy of {@code set} that swaps the signs of each of its resources
      *
-     * @param list the list to form a negative copy of
-     * @return a negative copy of {@code list}
+     * @param set the set to form a negative copy of
+     * @return a negative copy of {@code set}
      */
-    public static ResourceSet toNegative(@NotNull ResourceSet list) {
-        Objects.requireNonNull(list);
+    public static ResourceSet toNegative(@NotNull ResourceSet set) {
+        Objects.requireNonNull(set);
         ResourceSet result = new ResourceSet();
-        for (ResourceType type : ResourceType.values()) {
-            result.setOfType(type, -list.getOfType(type));
-        }
+        result.toNegative();
         return result;
     }
 
     /**
-     * Combine two resource lists, summing their contents.
+     * Combine two resource sets, summing their contents.
      *
-     * @param list1 the first list, not null
-     * @param list2 the second list, not null
+     * @param set1 the first set, not null
+     * @param set2 the second set, not null
      * @return a new {@link ResourceSet} containing the sum of their contents.
-     * @pre {@code list1} and {@code list2} are valid resource lists
-     * @post The return will be valid. {@code list1} and {@code list2} are unmodified.
+     * @pre {@code set1} and {@code set2} are valid resource sets
+     * @post The return will be valid. {@code set1} and {@code set2} are unmodified.
      */
-    public static ResourceSet combine(@NotNull ResourceSet list1, @NotNull ResourceSet list2) {
-        Objects.requireNonNull(list1);
-        Objects.requireNonNull(list2);
-        // look into using cloning for this
-        ResourceSet result = new ResourceSet();
-        for (ResourceType type : ResourceType.values()) {
-            result.setOfType(type, list1.getOfType(type) + list2.getOfType(type));
-        }
+    public static ResourceSet combine(@NotNull ResourceSet set1, @NotNull ResourceSet set2) {
+        ResourceSet result = set1.copy();
+        result.combine(set2);
         return result;
     }
 
-    // TODO: isSubset, subtract
+    /**
+     * Combines two resource sets, subtracting the contents of {@code set1} from {@code set2}
+     *
+     * @param set1 the set (copied) to be subtracted from, not null
+     * @param set2 the set to subtract with, not null
+     * @return a new {@link ResourceSet} containing the difference of their contents.
+     * @pre {@code set1} and {@code set2} are valid resource sets
+     * @post The return will be valid. {@code set1} and {@code set2} are unmodified.
+     */
+    public static ResourceSet subtract(@NotNull ResourceSet set1, @NotNull ResourceSet set2) {
+        ResourceSet result = set1.copy();
+        result.subtract(set2);
+        return result;
+    }
+
+    /**
+     * Returns a copy of this object.
+     *
+     * @return a copy of this object
+     */
+    public ResourceSet copy() {
+        return new ResourceSet(ore, brick, sheep, wood, wheat);
+    }
 
     /**
      * Get the amount of a type of resource represented by this list.
@@ -137,12 +152,23 @@ public class ResourceSet {
             case ORE:
                 setOre(value);
             default:
+                assert false;
                 break;
         }
     }
 
-
-    // END CUSTOM CODE
+    /**
+     * Determines whether all of the resources in this are less than or equal to {@code other}.
+     * <p>
+     * Effectively determines whether the given resources are required.
+     *
+     * @param other the set to determine if larger
+     * @return true if all of the resources in this are less than ore equal to in {@code other}
+     */
+    public boolean isSubset(@NotNull ResourceSet other) {
+        return Arrays.stream(ResourceType.values())
+                .allMatch(t -> getOfType(t) < other.getOfType(t));
+    }
 
     /**
      * Whether any of the resources are less than 0.
@@ -157,17 +183,40 @@ public class ResourceSet {
     /**
      * Combines this with another resource list, summing their contents.
      *
-     * @param other the other list to combine with, not null
-     * @pre {@code other} is a valid resource list
+     * @param other the other set to combine with, not null
+     * @pre {@code other} is a valid resource set
      * @post This will be summed with the resources in {@code other},
      * but {@code other} will not be modified.
      */
-    public void combine(ResourceSet other) {
-        if (other == null) {
-            return;
-        }
+    public void combine(@NotNull ResourceSet other) {
         for (ResourceType type : ResourceType.values()) {
             setOfType(type, getOfType(type) + other.getOfType(type));
+        }
+    }
+
+    /**
+     * Combines this with another resource list, subtracting with {@code other}'s contents.
+     *
+     * @param other the other set to subtract from, not null
+     * @pre {@code other} is a valid resource set
+     * @post This will be summed with the resources in {@code other},
+     * but {@code other} will not be modified.
+     */
+    public void subtract(@NotNull ResourceSet other) {
+        for (ResourceType type : ResourceType.values()) {
+            setOfType(type, getOfType(type) - other.getOfType(type));
+        }
+    }
+
+    /**
+     * Swap the signs of each of this set's resources
+     *
+     * @param set the set to form a negative copy of
+     * @return a negative copy of {@code set}
+     */
+    public void toNegative() {
+        for (ResourceType type : ResourceType.values()) {
+            setOfType(type, -getOfType(type));
         }
     }
 
