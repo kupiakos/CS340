@@ -18,7 +18,7 @@ public class GameMap {
 
     @SerializedName("roads")
     @Expose
-    private Map<EdgeLocation, Road> roads;
+    private Map<EdgeLocation, Player> roads;
 
     @SerializedName("radius")
     @Expose
@@ -60,7 +60,7 @@ public class GameMap {
      * @param settlements The list of settlements currently placed on the map
      * @param cities      The list of cities currently placed on the map
      */
-    public GameMap(Map<EdgeLocation, Road> roads,
+    public GameMap(Map<EdgeLocation, Player> roads,
                    int radius,
                    HexLocation robber,
                    Map<HexLocation, Hex> hexes,
@@ -104,8 +104,8 @@ public class GameMap {
      * @return the set containing every road owned by the player
      */
     @NotNull
-    public Set<Road> getPlayerRoads(@NotNull Player player) {
-        return MapUtils.valuesMatching(roads, r -> player.getPlayerIndex() == r.getOwner());
+    public Set<EdgeLocation> getPlayerRoads(@NotNull Player player) {
+        return MapUtils.keysWithValue(roads, player);
     }
 
     /**
@@ -115,7 +115,7 @@ public class GameMap {
      * @return the road at that location, or null if none
      */
     @Nullable
-    public Road getRoad(@NotNull EdgeLocation location) {
+    public Player getRoad(@NotNull EdgeLocation location) {
         location = location.getNormalizedLocation();
         return roads.get(location);
     }
@@ -211,17 +211,18 @@ public class GameMap {
      * @param road the road containing the location and owner to add
      * @return whether the map could support adding a road owned by the player at that location
      */
-    public boolean canAddRoad(@NotNull Road road) {
+    public boolean canAddRoad(@NotNull EdgeLocation location, @NotNull Player player) {
         return false;
     }
 
     /**
      * Add a road at the specific location belonging to a specific player.
-     * @param road the road containing the location and owner to add
+     * @param location the location to add the road, not null
+     * @param player the player to test, not null
      * @pre {@link #canAddSettlement} returns true
      * @throws IllegalArgumentException if the precondition is violated
      */
-    public void addRoad(@NotNull Road road) {
+    public void addRoad(@NotNull EdgeLocation location, @NotNull Player player) {
 
     }
 
@@ -254,18 +255,18 @@ public class GameMap {
     /**
      * @return the list of roads currently placed on the map
      */
-    public Map<EdgeLocation, Road> getRoads() {
+    public Map<EdgeLocation, Player> getRoads() {
         return roads;
     }
 
     /**
      * @param roads list of roads currently placed on the map
      */
-    public void setRoads(@NotNull Map<EdgeLocation, Road> roads) {
+    public void setRoads(@NotNull Map<EdgeLocation, Player> roads) {
         this.roads = roads;
     }
 
-    public GameMap withRoads(@NotNull Map<EdgeLocation, Road> roads) {
+    public GameMap withRoads(@NotNull Map<EdgeLocation, Player> roads) {
         setRoads(roads);
         return this;
     }
