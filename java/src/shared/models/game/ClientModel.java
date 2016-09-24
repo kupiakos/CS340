@@ -98,6 +98,14 @@ public class ClientModel {
         return this.getPlayers().size();
     }
 
+    @Nullable
+    public Player getPlayer(PlayerIndex p) {
+        if (p.index() >= getPlayers().size()) {
+            return null;
+        }
+        return getPlayers().get(p.index());
+    }
+
 
     // END CUSTOM CODE
 

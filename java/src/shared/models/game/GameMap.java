@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
+import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
 import shared.locations.VertexLocation;
@@ -18,7 +19,7 @@ public class GameMap {
 
     @SerializedName("roads")
     @Expose
-    private Map<EdgeLocation, Player> roads;
+    private Map<EdgeLocation, PlayerIndex> roads;
 
     @SerializedName("radius")
     @Expose
@@ -38,11 +39,11 @@ public class GameMap {
 
     @SerializedName("settlements")
     @Expose
-    private Map<VertexLocation, Player> settlements;
+    private Map<VertexLocation, PlayerIndex> settlements;
 
     @SerializedName("cities")
     @Expose
-    private Map<VertexLocation, Player> cities;
+    private Map<VertexLocation, PlayerIndex> cities;
 
 
     /**
@@ -60,13 +61,13 @@ public class GameMap {
      * @param settlements The list of settlements currently placed on the map
      * @param cities      The list of cities currently placed on the map
      */
-    public GameMap(Map<EdgeLocation, Player> roads,
+    public GameMap(Map<EdgeLocation, PlayerIndex> roads,
                    int radius,
                    HexLocation robber,
                    Map<HexLocation, Hex> hexes,
                    Map<HexLocation, Port> ports,
-                   Map<VertexLocation, Player> settlements,
-                   Map<VertexLocation, Player> cities) {
+                   Map<VertexLocation, PlayerIndex> settlements,
+                   Map<VertexLocation, PlayerIndex> cities) {
         this.roads = roads;
         this.radius = radius;
         this.robber = robber;
@@ -83,7 +84,7 @@ public class GameMap {
      * @return the set containing the location of each city owned by the player
      */
     @NotNull
-    public Set<VertexLocation> getPlayerCities(@NotNull Player player) {
+    public Set<VertexLocation> getPlayerCities(@NotNull PlayerIndex player) {
         return MapUtils.keysWithValue(cities, player);
     }
 
@@ -94,7 +95,7 @@ public class GameMap {
      * @return the set containing the location of each settlement owned by the player
      */
     @NotNull
-    public Set<VertexLocation> getPlayerSettlements(@NotNull Player player) {
+    public Set<VertexLocation> getPlayerSettlements(@NotNull PlayerIndex player) {
         return MapUtils.keysWithValue(settlements, player);
     }
 
@@ -105,7 +106,7 @@ public class GameMap {
      * @return the set containing every road owned by the player
      */
     @NotNull
-    public Set<EdgeLocation> getPlayerRoads(@NotNull Player player) {
+    public Set<EdgeLocation> getPlayerRoads(@NotNull PlayerIndex player) {
         return MapUtils.keysWithValue(roads, player);
     }
 
@@ -149,7 +150,7 @@ public class GameMap {
      * @return the owner of the road at that location, or null if none
      */
     @Nullable
-    public Player getRoadOwner(@NotNull EdgeLocation location) {
+    public PlayerIndex getRoadOwner(@NotNull EdgeLocation location) {
         location = location.getNormalizedLocation();
         return roads.get(location);
     }
@@ -161,7 +162,7 @@ public class GameMap {
      * @return the owner of the settlement at that location, or null if no settlement
      */
     @Nullable
-    public Player getSettlementOwner(@NotNull VertexLocation location) {
+    public PlayerIndex getSettlementOwner(@NotNull VertexLocation location) {
         return settlements.get(location);
     }
 
@@ -172,7 +173,7 @@ public class GameMap {
      * @return the owner of the city at that location, or null if no city
      */
     @Nullable
-    public Player getCityOwner(@NotNull VertexLocation location) {
+    public PlayerIndex getCityOwner(@NotNull VertexLocation location) {
         return cities.get(location);
     }
 
@@ -262,18 +263,18 @@ public class GameMap {
     /**
      * @return the list of roads currently placed on the map
      */
-    public Map<EdgeLocation, Player> getRoads() {
+    public Map<EdgeLocation, PlayerIndex> getRoads() {
         return roads;
     }
 
     /**
      * @param roads list of roads currently placed on the map
      */
-    public void setRoads(@NotNull Map<EdgeLocation, Player> roads) {
+    public void setRoads(@NotNull Map<EdgeLocation, PlayerIndex> roads) {
         this.roads = roads;
     }
 
-    public GameMap withRoads(@NotNull Map<EdgeLocation, Player> roads) {
+    public GameMap withRoads(@NotNull Map<EdgeLocation, PlayerIndex> roads) {
         setRoads(roads);
         return this;
     }
@@ -357,18 +358,18 @@ public class GameMap {
     /**
      * @return the list of settlements currently placed on the map
      */
-    public Map<VertexLocation, Player> getSettlements() {
+    public Map<VertexLocation, PlayerIndex> getSettlements() {
         return settlements;
     }
 
     /**
      * @param settlements list of settlements currently placed on the map
      */
-    public void setSettlements(@NotNull Map<VertexLocation, Player> settlements) {
+    public void setSettlements(@NotNull Map<VertexLocation, PlayerIndex> settlements) {
         this.settlements = settlements;
     }
 
-    public GameMap withSettlements(@NotNull Map<VertexLocation, Player> settlements) {
+    public GameMap withSettlements(@NotNull Map<VertexLocation, PlayerIndex> settlements) {
         setSettlements(settlements);
         return this;
     }
@@ -376,18 +377,18 @@ public class GameMap {
     /**
      * @return the list of cities currently placed on the map
      */
-    public Map<VertexLocation, Player> getCities() {
+    public Map<VertexLocation, PlayerIndex> getCities() {
         return cities;
     }
 
     /**
      * @param cities list of cities currently placed on the map
      */
-    public void setCities(@NotNull Map<VertexLocation, Player> cities) {
+    public void setCities(@NotNull Map<VertexLocation, PlayerIndex> cities) {
         this.cities = cities;
     }
 
-    public GameMap withCities(@NotNull Map<VertexLocation, Player> cities) {
+    public GameMap withCities(@NotNull Map<VertexLocation, PlayerIndex> cities) {
         setCities(cities);
         return this;
     }
