@@ -1,5 +1,9 @@
 package shared.serialization;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import shared.models.game.ClientModel;
+
 public class ModelExample {
     public static final String fullJson = "{\n" +
             "  \"deck\": {\n" +
@@ -533,4 +537,12 @@ public class ModelExample {
             "  \"winner\": -1,\n" +
             "  \"version\": 21\n" +
             "}";
+
+    public static JsonObject fullJsonObject() {
+        return new JsonParser().parse(fullJson).getAsJsonObject();
+    }
+
+    public static ClientModel fullJsonModel() {
+        return ModelSerializer.getInstance().fromJson(fullJson, ClientModel.class);
+    }
 }
