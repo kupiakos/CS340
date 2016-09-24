@@ -1,8 +1,9 @@
 package client.game;
 
-import shared.facades.FacadeManager;
+import client.data.PlayerInfo;
 import client.poller.Poller;
 import shared.IServer;
+import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
 
 import java.util.Observable;
@@ -31,6 +32,10 @@ public class GameManager extends Observable {
      * Handel to a facade for the current game, allows for use on both client and server - with n games.
      */
     private FacadeManager facadeManager;
+    /**
+     * Info on the games players
+     */
+    private PlayerInfo playerInfo;
 
 
     /**
@@ -38,7 +43,7 @@ public class GameManager extends Observable {
      *
      * @post This provides valid operations on GameManager
      */
-    private GameManager(){
+    private GameManager() {
 
     }
 
@@ -88,7 +93,7 @@ public class GameManager extends Observable {
      *
      * @param cm the new clientModel
      */
-    public void updateGameManager(ClientModel cm){
+    public void updateGameManager(ClientModel cm) {
         clientModel = cm;
         facadeManager.update(cm);
     }
@@ -122,5 +127,13 @@ public class GameManager extends Observable {
 
     public void setClientModel(ClientModel cm) {
         this.clientModel = cm;
+    }
+
+    public PlayerInfo getPlayerInfo() {
+        return playerInfo;
+    }
+
+    public void setPlayerInfo(PlayerInfo playerInfo) {
+        this.playerInfo = playerInfo;
     }
 }
