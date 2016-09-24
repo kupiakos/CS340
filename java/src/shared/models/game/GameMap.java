@@ -11,6 +11,7 @@ import shared.locations.VertexLocation;
 import shared.utils.MapUtils;
 
 import javax.annotation.Generated;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,7 +20,7 @@ public class GameMap {
 
     @SerializedName("roads")
     @Expose
-    private Map<EdgeLocation, PlayerIndex> roads;
+    private Map<EdgeLocation, PlayerIndex> roads = new HashMap<>();
 
     @SerializedName("radius")
     @Expose
@@ -31,19 +32,19 @@ public class GameMap {
 
     @SerializedName("hexes")
     @Expose
-    private Map<HexLocation, Hex> hexes;
+    private Map<HexLocation, Hex> hexes = new HashMap<>();
 
     @SerializedName("ports")
     @Expose
-    private Map<HexLocation, Port> ports;
+    private Map<HexLocation, Port> ports = new HashMap<>();
 
     @SerializedName("settlements")
     @Expose
-    private Map<VertexLocation, PlayerIndex> settlements;
+    private Map<VertexLocation, PlayerIndex> settlements = new HashMap<>();
 
     @SerializedName("cities")
     @Expose
-    private Map<VertexLocation, PlayerIndex> cities;
+    private Map<VertexLocation, PlayerIndex> cities = new HashMap<>();
 
 
     /**
