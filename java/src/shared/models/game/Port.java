@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
 
 import com.sun.istack.internal.NotNull;
-import shared.locations.EdgeLocation;
+import shared.locations.EdgeDirection;
 import shared.definitions.PortType;
 import shared.locations.HexLocation;
 
@@ -18,7 +18,7 @@ public class Port {
 
     @SerializedName("direction")
     @Expose
-    private EdgeLocation direction;
+    private EdgeDirection direction;
 
     @SerializedName("ratio")
     @Expose
@@ -44,7 +44,7 @@ public class Port {
       * @param ratio The ratio for trade in (ie, if this is 2, then it's a 2:1 port.
       * @param resource What type resource this port trades for. If it's omitted, then it's for any resource.
      */
-    public Port(HexLocation location, EdgeLocation direction, int ratio, PortType resource) {
+    public Port(HexLocation location, EdgeDirection direction, int ratio, PortType resource) {
             this.location = location;
             this.direction = direction;
             this.ratio = ratio;
@@ -68,14 +68,14 @@ public class Port {
     /**
      * @return Which edge this port is on.
      */
-    public EdgeLocation getDirection() { return direction; }
+    public EdgeDirection getDirection() { return direction; }
 
     /**
      * @param direction Which edge this port is on.
      */
-    public void setDirection(@NotNull EdgeLocation direction) { this.direction = direction; }
+    public void setDirection(@NotNull EdgeDirection direction) { this.direction = direction; }
 
-    public Port withDirection(@NotNull EdgeLocation direction) {
+    public Port withDirection(@NotNull EdgeDirection direction) {
         setDirection(direction);
         return this;
     }
