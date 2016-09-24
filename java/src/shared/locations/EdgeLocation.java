@@ -5,7 +5,6 @@ package shared.locations;
  */
 public class EdgeLocation
 {
-	// TODO: GSON serialization
 	private HexLocation hexLoc;
 	private EdgeDirection dir;
 	

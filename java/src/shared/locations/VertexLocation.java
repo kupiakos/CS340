@@ -5,7 +5,6 @@ package shared.locations;
  */
 public class VertexLocation
 {
-	
 	private HexLocation hexLoc;
 	private VertexDirection dir;
 	

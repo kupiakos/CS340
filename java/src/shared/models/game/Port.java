@@ -26,7 +26,7 @@ public class Port {
 
     @SerializedName("resource")
     @Expose
-    private PortType resource;
+    private PortType portType = PortType.THREE;
 
 
     // CUSTOM CODE
@@ -42,13 +42,13 @@ public class Port {
       * @param location Which hex this port is on. This shows the (ocean/non-existent) hex to draw the port on.
       * @param direction Which edge this port is on.
       * @param ratio The ratio for trade in (ie, if this is 2, then it's a 2:1 port.
-      * @param resource What type resource this port trades for. If it's omitted, then it's for any resource.
+      * @param portType What type resource this port trades for. If it's omitted, then it's for any resource.
      */
-    public Port(HexLocation location, EdgeDirection direction, int ratio, PortType resource) {
+    public Port(HexLocation location, EdgeDirection direction, int ratio, PortType portType) {
             this.location = location;
             this.direction = direction;
             this.ratio = ratio;
-            this.resource = resource;
+            this.portType = portType;
     }
 
     /**
@@ -96,15 +96,15 @@ public class Port {
     /**
      * @return What type resource this port trades for. If it's omitted, then it's for any resource.
      */
-    public PortType getResource() { return resource; }
+    public PortType getPortType() { return portType; }
 
     /**
-     * @param resource What type resource this port trades for. If it's omitted, then it's for any resource.
+     * @param portType What type resource this port trades for. If it's omitted, then it's for any resource.
      */
-    public void setResource(@NotNull PortType resource) { this.resource = resource; }
+    public void setPortType(@NotNull PortType portType) { this.portType = portType; }
 
-    public Port withResource(@NotNull PortType resource) {
-        setResource(resource);
+    public Port withPortType(@NotNull PortType resource) {
+        setPortType(resource);
         return this;
     }
 
@@ -114,7 +114,7 @@ public class Port {
             "location=" + location +
             ", direction=" + direction +
             ", ratio=" + ratio +
-            ", resource=" + resource +
+            ", resource=" + portType +
             "]";
     }
 
@@ -131,7 +131,7 @@ public class Port {
             location == other.location &&
             direction == other.direction &&
             ratio == other.ratio &&
-            resource == other.resource
+            portType == other.portType
         );
     }
 }

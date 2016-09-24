@@ -1,14 +1,24 @@
 package shared.locations;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Represents the location of a hex on a hex map
  */
 public class HexLocation
 {
-	
+	@SerializedName("x")
+	@Expose
 	private int x;
+
+    @SerializedName("y")
+    @Expose
 	private int y;
-	
+
+    public HexLocation() {
+    }
+
 	public HexLocation(int x, int y)
 	{
 		setX(x);

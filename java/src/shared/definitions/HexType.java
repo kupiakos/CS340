@@ -8,25 +8,25 @@ import com.google.gson.annotations.SerializedName;
  */
 public enum HexType
 {
-    @SerializedName("Wood")
+    @SerializedName("wood")
     WOOD(ResourceType.WOOD),
 
-    @SerializedName("Brick")
+    @SerializedName("brick")
     BRICK(ResourceType.BRICK),
 
-    @SerializedName("Sheep")
+    @SerializedName("sheep")
     SHEEP(ResourceType.SHEEP),
 
-    @SerializedName("Wheat")
+    @SerializedName("wheat")
     WHEAT(ResourceType.WHEAT),
 
-    @SerializedName("Ore")
+    @SerializedName("ore")
     ORE(ResourceType.ORE),
 
-    @SerializedName("Desert")
+    @SerializedName("desert")
     DESERT(null),
 
-    @SerializedName("Water")
+    @SerializedName("water")
     WATER(null);
 
     private ResourceType resource;

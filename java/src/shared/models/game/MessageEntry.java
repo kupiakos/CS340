@@ -5,14 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
 
 import com.sun.istack.internal.NotNull;
-import shared.definitions.PlayerIndex;
 
 @Generated("net.kupiakos")
 public class MessageEntry {
 
     @SerializedName("source")
     @Expose
-    private PlayerIndex source;
+    private String source;
 
     @SerializedName("message")
     @Expose
@@ -32,7 +31,7 @@ public class MessageEntry {
       * @param source The source
       * @param message The message
      */
-    public MessageEntry(PlayerIndex source, String message) {
+    public MessageEntry(String source, String message) {
             this.source = source;
             this.message = message;
     }
@@ -40,14 +39,14 @@ public class MessageEntry {
     /**
      * @return The source
      */
-    public PlayerIndex getSource() { return source; }
+    public String getSource() { return source; }
 
     /**
      * @param source The source
      */
-    public void setSource(@NotNull PlayerIndex source) { this.source = source; }
+    public void setSource(@NotNull String source) { this.source = source; }
 
-    public MessageEntry withSource(@NotNull PlayerIndex source) {
+    public MessageEntry withSource(@NotNull String source) {
         setSource(source);
         return this;
     }

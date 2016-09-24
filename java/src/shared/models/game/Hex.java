@@ -19,9 +19,12 @@ public class Hex {
     @Expose
     private HexLocation location;
 
+    // Unfortunately it's quite difficult to tell GSON to
+    // deserialize a default value for a missing property.
+    // So, Java defaults are used.
     @SerializedName("resource")
     @Expose
-    private HexType resource;
+    private HexType resource = HexType.DESERT;
 
 
     // CUSTOM CODE

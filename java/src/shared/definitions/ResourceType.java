@@ -4,19 +4,19 @@ import com.google.gson.annotations.SerializedName;
 
 public enum ResourceType
 {
-    @SerializedName("Wood")
+    @SerializedName("wood")
 	WOOD,
 
-    @SerializedName("Brick")
+    @SerializedName("brick")
 	BRICK,
 
-    @SerializedName("Sheep")
+    @SerializedName("sheep")
     SHEEP,
 
-    @SerializedName("Wheat")
+    @SerializedName("wheat")
     WHEAT,
 
-    @SerializedName("Ore")
+    @SerializedName("ore")
     ORE
 }
 

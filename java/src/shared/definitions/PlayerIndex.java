@@ -6,8 +6,6 @@ package shared.definitions;
  */
 public enum PlayerIndex {
 
-    // TODO: Custom serializer/deserializer
-
     /**
      * The first player
      */
@@ -33,6 +31,8 @@ public enum PlayerIndex {
     PlayerIndex(int index) {
         playerIndex = index;
     }
+
+    public static final int MAX_PLAYERS = 4;
 
     /**
      * Get the numeric index this represents.
