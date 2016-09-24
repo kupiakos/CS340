@@ -10,9 +10,12 @@ java/build/*
 .idea/misc.xml
 .idea/jsLibraryMappings.xml
 
+# Custom
+demo/logs/
 cs340.properties
 cs340.xml
 java/dist/
+
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
