@@ -31,7 +31,7 @@ public class TurnFacade extends AbstractFacade {
      * @pre {@code player} belongs to the current {@link ClientModel}, and it's their turn.
      * @post {@code player}'s turn is ended
      */
-    public static void endTurn(@NotNull Player player) {
+    public void endTurn(@NotNull Player player) {
 //        if (canEndTurn(player)) {
 //
 //        }
