@@ -7,6 +7,7 @@ import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class BuildRoadAction {
@@ -133,8 +134,8 @@ public class BuildRoadAction {
         return (
                 free == other.free &&
                         TYPE == other.TYPE &&
-                        roadLocation == other.roadLocation &&
-                        playerIndex == other.playerIndex
+                        Objects.equals(roadLocation, other.roadLocation) &&
+                        Objects.equals(playerIndex, other.playerIndex)
         );
     }
 }

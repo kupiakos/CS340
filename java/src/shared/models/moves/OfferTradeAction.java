@@ -7,6 +7,7 @@ import shared.definitions.PlayerIndex;
 import shared.models.game.ResourceSet;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class OfferTradeAction {
@@ -133,9 +134,9 @@ public class OfferTradeAction {
     public boolean equals(OfferTradeAction other) {
         return (
                 TYPE == other.TYPE &&
-                        receiver == other.receiver &&
-                        offer == other.offer &&
-                        playerIndex == other.playerIndex
+                        Objects.equals(receiver, other.receiver) &&
+                        Objects.equals(offer, other.offer) &&
+                        Objects.equals(playerIndex, other.playerIndex)
         );
     }
 }

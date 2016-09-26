@@ -7,6 +7,7 @@ import shared.definitions.PlayerIndex;
 import shared.models.game.ResourceSet;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class DiscardCardsAction {
@@ -108,8 +109,8 @@ public class DiscardCardsAction {
     public boolean equals(DiscardCardsAction other) {
         return (
                 TYPE == other.TYPE &&
-                        discardedCards == other.discardedCards &&
-                        playerIndex == other.playerIndex
+                        Objects.equals(discardedCards, other.discardedCards) &&
+                        Objects.equals(playerIndex, other.playerIndex)
         );
     }
 }

@@ -7,7 +7,7 @@ import shared.definitions.DevCardType;
 import javax.annotation.Generated;
 
 @Generated("net.kupiakos")
-public class DevCardList {
+public class DevCardSet {
 
     @SerializedName("yearOfPlenty")
     @Expose
@@ -33,7 +33,7 @@ public class DevCardList {
     /**
      * No args constructor for use in serialization
      */
-    public DevCardList() {
+    public DevCardSet() {
     }
 
     /**
@@ -43,7 +43,7 @@ public class DevCardList {
      * @param soldier      The Knight/Soldier Cards
      * @param monopoly     The Monopoly Cards
      */
-    public DevCardList(int yearOfPlenty, int roadBuilding, int monument, int soldier, int monopoly) {
+    public DevCardSet(int yearOfPlenty, int roadBuilding, int monument, int soldier, int monopoly) {
         this.yearOfPlenty = yearOfPlenty;
         this.roadBuilding = roadBuilding;
         this.monument = monument;
@@ -81,7 +81,7 @@ public class DevCardList {
         this.yearOfPlenty = yearOfPlenty;
     }
 
-    public DevCardList withYearOfPlenty(int yearOfPlenty) {
+    public DevCardSet withYearOfPlenty(int yearOfPlenty) {
         setYearOfPlenty(yearOfPlenty);
         return this;
     }
@@ -103,7 +103,7 @@ public class DevCardList {
         this.roadBuilding = roadBuilding;
     }
 
-    public DevCardList withRoadBuilding(int roadBuilding) {
+    public DevCardSet withRoadBuilding(int roadBuilding) {
         setRoadBuilding(roadBuilding);
         return this;
     }
@@ -125,7 +125,7 @@ public class DevCardList {
         this.monument = monument;
     }
 
-    public DevCardList withMonument(int monument) {
+    public DevCardSet withMonument(int monument) {
         setMonument(monument);
         return this;
     }
@@ -147,7 +147,7 @@ public class DevCardList {
         this.soldier = soldier;
     }
 
-    public DevCardList withSoldier(int soldier) {
+    public DevCardSet withSoldier(int soldier) {
         setSoldier(soldier);
         return this;
     }
@@ -169,7 +169,7 @@ public class DevCardList {
         this.monopoly = monopoly;
     }
 
-    public DevCardList withMonopoly(int monopoly) {
+    public DevCardSet withMonopoly(int monopoly) {
         setMonopoly(monopoly);
         return this;
     }
@@ -187,13 +187,13 @@ public class DevCardList {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof DevCardList) {
-            return equals((DevCardList) other);
+        if (other instanceof DevCardSet) {
+            return equals((DevCardSet) other);
         }
         return false;
     }
 
-    public boolean equals(DevCardList other) {
+    public boolean equals(DevCardSet other) {
         return (
                 yearOfPlenty == other.yearOfPlenty &&
                         roadBuilding == other.roadBuilding &&

@@ -2,11 +2,12 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
-
 import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.definitions.TurnStatus;
+
+import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class TurnTracker {
@@ -127,10 +128,10 @@ public class TurnTracker {
 
     public boolean equals(TurnTracker other) {
         return (
-            longestRoad == other.longestRoad &&
-            currentTurn == other.currentTurn &&
-            status == other.status &&
-            largestArmy == other.largestArmy
+                Objects.equals(longestRoad, other.longestRoad) &&
+                        Objects.equals(currentTurn, other.currentTurn) &&
+                        Objects.equals(status, other.status) &&
+                        Objects.equals(largestArmy, other.largestArmy)
         );
     }
 }

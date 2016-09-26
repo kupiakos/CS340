@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class Credentials {
@@ -84,8 +85,8 @@ public class Credentials {
 
     public boolean equals(Credentials other) {
         return (
-            password == other.password &&
-            username == other.username
+                Objects.equals(password, other.password) &&
+                        Objects.equals(username, other.username)
         );
     }
 }

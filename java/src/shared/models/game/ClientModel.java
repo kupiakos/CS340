@@ -10,6 +10,7 @@ import shared.exceptions.JoinGameException;
 import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The top level client model.
@@ -341,15 +342,15 @@ public class ClientModel {
 
     public boolean equals(ClientModel other) {
         return (
-                chat == other.chat &&
-                        winner == other.winner &&
-                        turnTracker == other.turnTracker &&
-                        map == other.map &&
-                        bank == other.bank &&
-                        tradeOffer == other.tradeOffer &&
-                        players == other.players &&
+                Objects.equals(chat, other.chat) &&
+                        Objects.equals(winner, other.winner) &&
+                        Objects.equals(turnTracker, other.turnTracker) &&
+                        Objects.equals(map, other.map) &&
+                        Objects.equals(bank, other.bank) &&
+                        Objects.equals(tradeOffer, other.tradeOffer) &&
+                        Objects.equals(players, other.players) &&
                         version == other.version &&
-                        log == other.log
+                        Objects.equals(log, other.log)
         );
     }
 }

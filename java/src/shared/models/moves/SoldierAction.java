@@ -8,6 +8,7 @@ import shared.definitions.PlayerIndex;
 import shared.locations.HexLocation;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class SoldierAction {
@@ -134,8 +135,8 @@ public class SoldierAction {
     public boolean equals(SoldierAction other) {
         return (
                 TYPE == other.TYPE &&
-                        location == other.location &&
-                        playerIndex == other.playerIndex &&
+                        Objects.equals(location, other.location) &&
+                        Objects.equals(playerIndex, other.playerIndex) &&
                         victimIndex == other.victimIndex
         );
     }

@@ -2,10 +2,11 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
-
 import com.sun.istack.internal.NotNull;
 import shared.definitions.AIType;
+
+import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class AddAIRequest {
@@ -64,7 +65,7 @@ public class AddAIRequest {
 
     public boolean equals(AddAIRequest other) {
         return (
-            aIType == other.aIType
+                Objects.equals(aIType, other.aIType)
         );
     }
 }

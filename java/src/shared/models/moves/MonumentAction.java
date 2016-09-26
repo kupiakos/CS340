@@ -7,6 +7,7 @@ import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class MonumentAction {
@@ -82,7 +83,7 @@ public class MonumentAction {
     public boolean equals(MonumentAction other) {
         return (
                 TYPE == other.TYPE &&
-                        playerIndex == other.playerIndex
+                        Objects.equals(playerIndex, other.playerIndex)
         );
     }
 }

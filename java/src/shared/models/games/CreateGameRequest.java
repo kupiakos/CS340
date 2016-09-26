@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 /**
  * A game creation request.
@@ -131,7 +132,7 @@ public class CreateGameRequest {
             randomTiles == other.randomTiles &&
             randomPorts == other.randomPorts &&
             randomNumbers == other.randomNumbers &&
-            name == other.name
+                    Objects.equals(name, other.name)
         );
     }
 }

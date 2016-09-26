@@ -2,11 +2,12 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
-
 import com.sun.istack.internal.NotNull;
-import shared.locations.HexLocation;
 import shared.definitions.HexType;
+import shared.locations.HexLocation;
+
+import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class Hex {
@@ -110,8 +111,8 @@ public class Hex {
     public boolean equals(Hex other) {
         return (
             number == other.number &&
-            location == other.location &&
-            resource == other.resource
+                    Objects.equals(location, other.location) &&
+                    Objects.equals(resource, other.resource)
         );
     }
 }

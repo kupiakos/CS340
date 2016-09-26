@@ -2,10 +2,11 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
-
 import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
+
+import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class TradeOffer {
@@ -105,9 +106,9 @@ public class TradeOffer {
 
     public boolean equals(TradeOffer other) {
         return (
-            receiver == other.receiver &&
-            offer == other.offer &&
-            sender == other.sender
+                Objects.equals(receiver, other.receiver) &&
+                        Objects.equals(offer, other.offer) &&
+                        Objects.equals(sender, other.sender)
         );
     }
 }

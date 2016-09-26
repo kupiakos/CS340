@@ -8,6 +8,7 @@ import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class RoadBuildingAction {
@@ -134,9 +135,9 @@ public class RoadBuildingAction {
     public boolean equals(RoadBuildingAction other) {
         return (
                 TYPE == other.TYPE &&
-                        spot2 == other.spot2 &&
-                        spot1 == other.spot1 &&
-                        playerIndex == other.playerIndex
+                        Objects.equals(spot2, other.spot2) &&
+                        Objects.equals(spot1, other.spot1) &&
+                        Objects.equals(playerIndex, other.playerIndex)
         );
     }
 }

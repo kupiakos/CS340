@@ -7,6 +7,7 @@ import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class MaritimeTradeAction {
@@ -157,11 +158,11 @@ public class MaritimeTradeAction {
 
     public boolean equals(MaritimeTradeAction other) {
         return (
-                outputResource == other.outputResource &&
+                Objects.equals(outputResource, other.outputResource) &&
                         TYPE == other.TYPE &&
                         ratio == other.ratio &&
-                        playerIndex == other.playerIndex &&
-                        inputResource == other.inputResource
+                        Objects.equals(playerIndex, other.playerIndex) &&
+                        Objects.equals(inputResource, other.inputResource)
         );
     }
 }
