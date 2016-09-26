@@ -46,7 +46,7 @@ public class MockProxy implements IServer {
      */
     @Override
 
-    public List<GameInfo> listOfGames() throws CommunicationException {
+    public GameInfo[] listOfGames() throws CommunicationException {
         return null;
     }
 
@@ -102,7 +102,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public List<String> getCommandsGame() throws CommunicationException {
+    public String[] getCommandsGame() throws CommunicationException {
         return null;
     }
 
@@ -110,7 +110,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel postCommandsGame(@NotNull List<String> gameCommands) throws CommunicationException, IllegalArgumentException {
+    public ClientModel postCommandsGame(@NotNull String[] gameCommands) throws CommunicationException, IllegalArgumentException {
         return null;
     }
 
@@ -118,7 +118,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public List<String> listAI() throws CommunicationException {
+    public String[] listAI() throws CommunicationException {
         return null;
     }
 
