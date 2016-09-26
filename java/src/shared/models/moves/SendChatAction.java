@@ -6,6 +6,7 @@ import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class SendChatAction {
@@ -106,8 +107,8 @@ public class SendChatAction {
     public boolean equals(SendChatAction other) {
         return (
                 TYPE == other.TYPE &&
-                        content == other.content &&
-                        playerIndex == other.playerIndex
+                        Objects.equals(content, other.content) &&
+                        Objects.equals(playerIndex, other.playerIndex)
         );
     }
 }

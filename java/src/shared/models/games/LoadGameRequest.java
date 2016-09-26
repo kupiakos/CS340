@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class LoadGameRequest {
@@ -62,7 +63,7 @@ public class LoadGameRequest {
 
     public boolean equals(LoadGameRequest other) {
         return (
-            name == other.name
+                Objects.equals(name, other.name)
         );
     }
 }

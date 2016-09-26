@@ -31,7 +31,13 @@ public class FacadeManager {
      */
     private BuildingFacade building;
 
-    // TODO:: add more facades here
+    private RobberFacade robber;
+
+    private TradingFacade trading;
+
+    private ResourcesFacade resources;
+
+    private DevCardFacade devCards;
 
     /**
      * Init the Facade manager with the starting clientModel
@@ -42,11 +48,14 @@ public class FacadeManager {
      */
     public FacadeManager(ClientModel cm) {
         clientModel = cm;
-        turn = new TurnFacade(cm);
-        chat = new ChatFacade(cm);
-        map = new MapFacade(cm);
-        building = new BuildingFacade(cm);
-        // TODO:: add more facades here
+        turn = new TurnFacade(this);
+        chat = new ChatFacade(this);
+        map = new MapFacade(this);
+        building = new BuildingFacade(this);
+        robber = new RobberFacade(this);
+        trading = new TradingFacade(this);
+        resources = new ResourcesFacade(this);
+        devCards = new DevCardFacade(this);
     }
 
 
@@ -58,11 +67,6 @@ public class FacadeManager {
      */
     public void update(ClientModel cm) {
         setClientModel(cm);
-        turn.setModel(cm);
-        chat.setModel(cm);
-        map.setModel(cm);
-        building.setModel(cm);
-        // TODO:: add more facades here
     }
 
     public ClientModel getClientModel() {
@@ -89,4 +93,20 @@ public class FacadeManager {
         return map;
     }
 
+
+    public RobberFacade getRobber() {
+        return robber;
+    }
+
+    public TradingFacade getTrading() {
+        return trading;
+    }
+
+    public ResourcesFacade getResources() {
+        return resources;
+    }
+
+    public DevCardFacade getDevCards() {
+        return devCards;
+    }
 }

@@ -2,9 +2,10 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
-
 import com.sun.istack.internal.NotNull;
+
+import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class MessageEntry {
@@ -83,8 +84,8 @@ public class MessageEntry {
 
     public boolean equals(MessageEntry other) {
         return (
-            source == other.source &&
-            message == other.message
+                Objects.equals(source, other.source) &&
+                        Objects.equals(message, other.message)
         );
     }
 }

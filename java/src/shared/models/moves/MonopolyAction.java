@@ -8,6 +8,7 @@ import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class MonopolyAction {
@@ -109,8 +110,8 @@ public class MonopolyAction {
     public boolean equals(MonopolyAction other) {
         return (
                 TYPE == other.TYPE &&
-                        playerIndex == other.playerIndex &&
-                        resource == other.resource
+                        Objects.equals(playerIndex, other.playerIndex) &&
+                        Objects.equals(resource, other.resource)
         );
     }
 }

@@ -2,12 +2,13 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
-
 import com.sun.istack.internal.NotNull;
-import shared.locations.EdgeDirection;
 import shared.definitions.PortType;
+import shared.locations.EdgeDirection;
 import shared.locations.HexLocation;
+
+import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class Port {
@@ -128,10 +129,10 @@ public class Port {
 
     public boolean equals(Port other) {
         return (
-            location == other.location &&
-            direction == other.direction &&
+                Objects.equals(location, other.location) &&
+                        Objects.equals(direction, other.direction) &&
             ratio == other.ratio &&
-            portType == other.portType
+                        Objects.equals(portType, other.portType)
         );
     }
 }

@@ -2,11 +2,12 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
-
 import com.sun.istack.internal.NotNull;
-import shared.definitions.PlayerIndex;
 import shared.definitions.CatanColor;
+import shared.definitions.PlayerIndex;
+
+import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class Player {
@@ -33,7 +34,7 @@ public class Player {
 
     @SerializedName("oldDevCards")
     @Expose
-    private DevCardList oldDevCards;
+    private DevCardSet oldDevCards;
 
     @SerializedName("soldiers")
     @Expose
@@ -45,7 +46,7 @@ public class Player {
 
     @SerializedName("newDevCards")
     @Expose
-    private DevCardList newDevCards;
+    private DevCardSet newDevCards;
 
     @SerializedName("playerIndex")
     @Expose
@@ -98,7 +99,7 @@ public class Player {
       * @param playerID The unique playerID. This is used to pick the client player apart from the others. This is only used here and in your cookie.
       * @param playedDevCard Whether the player has played a dev card this turn.
      */
-    public Player(int cities, boolean discarded, ResourceSet resources, int roads, int victoryPoints, DevCardList oldDevCards, int soldiers, CatanColor color, DevCardList newDevCards, PlayerIndex playerIndex, int monuments, String name, int settlements, int playerID, boolean playedDevCard) {
+    public Player(int cities, boolean discarded, ResourceSet resources, int roads, int victoryPoints, DevCardSet oldDevCards, int soldiers, CatanColor color, DevCardSet newDevCards, PlayerIndex playerIndex, int monuments, String name, int settlements, int playerID, boolean playedDevCard) {
             this.cities = cities;
             this.discarded = discarded;
             this.resources = resources;
@@ -189,14 +190,18 @@ public class Player {
     /**
      * @return The dev cards the player had when the turn started.
      */
-    public DevCardList getOldDevCards() { return oldDevCards; }
+    public DevCardSet getOldDevCards() {
+        return oldDevCards;
+    }
 
     /**
      * @param oldDevCards The dev cards the player had when the turn started.
      */
-    public void setOldDevCards(@NotNull DevCardList oldDevCards) { this.oldDevCards = oldDevCards; }
+    public void setOldDevCards(@NotNull DevCardSet oldDevCards) {
+        this.oldDevCards = oldDevCards;
+    }
 
-    public Player withOldDevCards(@NotNull DevCardList oldDevCards) {
+    public Player withOldDevCards(@NotNull DevCardSet oldDevCards) {
         setOldDevCards(oldDevCards);
         return this;
     }
@@ -231,14 +236,18 @@ public class Player {
     /**
      * @return The dev cards the player bought this turn.
      */
-    public DevCardList getNewDevCards() { return newDevCards; }
+    public DevCardSet getNewDevCards() {
+        return newDevCards;
+    }
 
     /**
      * @param newDevCards The dev cards the player bought this turn.
      */
-    public void setNewDevCards(@NotNull DevCardList newDevCards) { this.newDevCards = newDevCards; }
+    public void setNewDevCards(@NotNull DevCardSet newDevCards) {
+        this.newDevCards = newDevCards;
+    }
 
-    public Player withNewDevCards(@NotNull DevCardList newDevCards) {
+    public Player withNewDevCards(@NotNull DevCardSet newDevCards) {
         setNewDevCards(newDevCards);
         return this;
     }
@@ -360,16 +369,16 @@ public class Player {
         return (
             cities == other.cities &&
             discarded == other.discarded &&
-            resources == other.resources &&
+                    Objects.equals(resources, other.resources) &&
             roads == other.roads &&
             victoryPoints == other.victoryPoints &&
-            oldDevCards == other.oldDevCards &&
+                    Objects.equals(oldDevCards, other.oldDevCards) &&
             soldiers == other.soldiers &&
-            color == other.color &&
-            newDevCards == other.newDevCards &&
-            playerIndex == other.playerIndex &&
+                    Objects.equals(color, other.color) &&
+                    Objects.equals(newDevCards, other.newDevCards) &&
+                    Objects.equals(playerIndex, other.playerIndex) &&
             monuments == other.monuments &&
-            name == other.name &&
+                    Objects.equals(name, other.name) &&
             settlements == other.settlements &&
             playerID == other.playerID &&
             playedDevCard == other.playedDevCard

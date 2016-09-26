@@ -13,6 +13,7 @@ import shared.utils.MapUtils;
 import javax.annotation.Generated;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Generated("net.kupiakos")
@@ -417,13 +418,13 @@ public class GameMap {
 
     public boolean equals(GameMap other) {
         return (
-                roads == other.roads &&
+                Objects.equals(roads, other.roads) &&
                         radius == other.radius &&
-                        robber == other.robber &&
-                        hexes == other.hexes &&
-                        ports == other.ports &&
-                        settlements == other.settlements &&
-                        cities == other.cities
+                        Objects.equals(robber, other.robber) &&
+                        Objects.equals(hexes, other.hexes) &&
+                        Objects.equals(ports, other.ports) &&
+                        Objects.equals(settlements, other.settlements) &&
+                        Objects.equals(cities, other.cities)
         );
     }
 }

@@ -2,10 +2,11 @@ package shared.models.games;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import javax.annotation.Generated;
-
 import com.sun.istack.internal.NotNull;
 import shared.definitions.CatanColor;
+
+import javax.annotation.Generated;
+import java.util.Objects;
 
 /**
  * A stub for player representation
@@ -108,8 +109,8 @@ public class PlayerInfo {
 
     public boolean equals(PlayerInfo other) {
         return (
-            color == other.color &&
-            name == other.name &&
+                Objects.equals(color, other.color) &&
+                        Objects.equals(name, other.name) &&
             id == other.id
         );
     }
