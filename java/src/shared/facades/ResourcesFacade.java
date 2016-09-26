@@ -14,13 +14,13 @@ public class ResourcesFacade extends AbstractFacade {
     /**
      * Constructor. Requires a valid game model to work.
      *
-     * @param model the model to use, not null
+     * @param manager the manager to use, not null
      * @throws NullPointerException if {@code model} is null
      * @pre {@code model} is a valid {@link ClientModel}.
      * @post This provides valid operations on {@code model}.
      */
-    public ResourcesFacade(@NotNull ClientModel model) {
-        super(model);
+    public ResourcesFacade(@NotNull FacadeManager manager) {
+        super(manager);
     }
 
     /**
