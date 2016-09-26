@@ -165,6 +165,7 @@ public class GameMap {
      */
     @Nullable
     public PlayerIndex getSettlementOwner(@NotNull VertexLocation location) {
+        location = location.getNormalizedLocation();
         return settlements.get(location);
     }
 
@@ -176,6 +177,7 @@ public class GameMap {
      */
     @Nullable
     public PlayerIndex getCityOwner(@NotNull VertexLocation location) {
+        location = location.getNormalizedLocation();
         return cities.get(location);
     }
 
@@ -192,7 +194,21 @@ public class GameMap {
      * @param player   the player to test, not null
      * @return whether the map could support adding a settlement owned by the player at that location
      */
-    public boolean canAddSettlement(@NotNull VertexLocation location, @NotNull Player player) {
+    public boolean canAddSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) {
+        //only be place at corners of the terrain hexes
+        //never along the edges
+        //5 settlements per player max
+        //can only add settlement on an open intersection
+        //can only add settlement if all 3 of the adjacent intersections are vacant-none are occupied by an settlements or cities, including the players'
+        //each of your settlements must connect to at lease one of your roads
+        //cannot build settlement without adding road
+        //intersection:  where 3 hexes meet
+        //must always connect to one or more of your roads
+        //must observe the distance rule
+        //the setup phase has 2 rounds.  each player builds 1 road and 1 settlement per round
+        //settlement first, then road
+        //the second settlement can be placed on any open intersection, as long as the distance rule is observed; it dosen't have to connect to the first settlement
+        //the second road must attach to the second settlement pointing in any of the 3 directions
         return false;
     }
 
@@ -204,7 +220,9 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public void addSettlement(@NotNull VertexLocation location, @NotNull Player player) {
+    public void addSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) {
+        location = location.getNormalizedLocation();
+        settlements.put(location, player);
     }
 
     /**
@@ -218,7 +236,13 @@ public class GameMap {
      * @param road the road containing the location and owner to add
      * @return whether the map could support adding a road owned by the player at that location
      */
-    public boolean canAddRoad(@NotNull EdgeLocation location, @NotNull Player player) {
+    public boolean canAddRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player) {
+        //only be placed at the edges of the terrain hexes
+        // 1 road per edge
+        //intersections along roads will remain occupied
+        //15 roads max per player
+        //a new road must always connect to one of a player's existing roads, settlements, or cities
+        //the second road must attach to the second settlement(pointing in any 3 directions
         return false;
     }
 
@@ -230,8 +254,9 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public void addRoad(@NotNull EdgeLocation location, @NotNull Player player) {
-
+    public void addRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player) {
+        location = location.getNormalizedLocation();
+        roads.put(location, player);
     }
 
     /**
@@ -246,7 +271,11 @@ public class GameMap {
      * @param player   the player to test, not null
      * @return whether the map could support adding a settlement owned by the player at that location
      */
-    public boolean canUpgradeSettlement(@NotNull VertexLocation location, @NotNull Player player) {
+    public boolean canUpgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) {
+        //only 4 cities
+        //does the player have a settlement there?
+        //have they satisfied the request
+        //do you have to have 5 settlements to upgrade to city?
         return false;
     }
 
@@ -258,7 +287,10 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public boolean upgradeSettlement(@NotNull VertexLocation location, @NotNull Player player) {
+    public boolean upgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) {
+        location = location.getNormalizedLocation();
+        settlements.remove(location);
+        cities.put(location, player);
         return false;
     }
 
