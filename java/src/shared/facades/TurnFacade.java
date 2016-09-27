@@ -105,6 +105,10 @@ public class TurnFacade extends AbstractFacade {
         return getModel().getTurnTracker().getStatus();
     }
 
+    public void setPhase(TurnStatus ts) {
+        getModel().getTurnTracker().setStatus(ts);
+    }
+
     /**
      * Returns all {@link Player}s of the current game.
      *

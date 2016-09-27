@@ -19,5 +19,8 @@ public enum TurnStatus {
     FIRST_ROUND,
 
     @SerializedName("SecondRound")
-    SECOND_ROUND
+    SECOND_ROUND,
+
+    @SerializedName("GameOver")
+    GAME_OVER
 }
