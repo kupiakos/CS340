@@ -3,6 +3,7 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
+import shared.models.moves.SendChatAction;
 
 import javax.annotation.Generated;
 import java.util.ArrayList;
@@ -36,12 +37,35 @@ public class MessageList {
     /**
      * @return The lines
      */
-    public List<MessageEntry> getLines() { return lines; }
+    public List<MessageEntry> getLines() {
+        if (lines == null) lines = new ArrayList<>();
+
+        return lines;
+    }
 
     /**
      * @param lines The lines
      */
     public void setLines(@NotNull List<MessageEntry> lines) { this.lines = lines; }
+
+    /**
+     * Adds just one message to the list, creates a new one if needed
+     * @param lines
+     */
+    public void addMessage(@NotNull MessageEntry line) {
+        getLines().add(line);
+    }
+
+    /**
+     * Changes the SendChatAction to a MessageEntry then
+     * Adds just one message to the list, creates a new one if needed
+     *
+     * @param lines
+     */
+    public void addChat(@NotNull SendChatAction c) {
+
+        getLines().add(c.asMessageEntry());
+    }
 
     public MessageList withLines(@NotNull List<MessageEntry> lines) {
         setLines(lines);

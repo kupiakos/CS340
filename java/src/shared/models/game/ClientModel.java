@@ -312,10 +312,16 @@ public class ClientModel {
         this.log = log;
     }
 
+    public void writeLog(@NotNull MessageEntry m) {
+        getLog().addMessage(m);
+    }
+
     public ClientModel withLog(@NotNull MessageList log) {
         setLog(log);
         return this;
     }
+
+
 
     @Override
     public String toString() {
