@@ -5,8 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 
 import javax.annotation.Generated;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class MessageList {
@@ -64,7 +65,7 @@ public class MessageList {
 
     public boolean equals(MessageList other) {
         return (
-            lines == other.lines
+                Objects.equals(lines, other.lines)
         );
     }
 }

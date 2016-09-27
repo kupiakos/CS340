@@ -7,6 +7,7 @@ import shared.definitions.PlayerIndex;
 import shared.locations.VertexLocation;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class BuildCityAction {
@@ -108,8 +109,8 @@ public class BuildCityAction {
     public boolean equals(BuildCityAction other) {
         return (
                 TYPE == other.TYPE &&
-                        vertexLocation == other.vertexLocation &&
-                        playerIndex == other.playerIndex
+                        Objects.equals(vertexLocation, other.vertexLocation) &&
+                        Objects.equals(playerIndex, other.playerIndex)
         );
     }
 }

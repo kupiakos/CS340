@@ -1,12 +1,10 @@
 package shared.facades;
 
-import client.game.GameManager;
 import com.sun.istack.internal.NotNull;
 import shared.definitions.HexType;
 import shared.locations.*;
 import shared.models.game.ClientModel;
 import shared.models.game.GameMap;
-import shared.models.game.Hex;
 import shared.models.game.Player;
 
 /**
@@ -18,13 +16,13 @@ public class MapFacade extends AbstractFacade {
     /**
      * Constructor. Requires a valid game model to work.
      *
-     * @param model the model to use, not null
+     * @param manager the manager to use, not null
      * @throws NullPointerException if {@code model} is null
      * @pre {@code model} is a valid {@link ClientModel}.
      * @post This provides valid operations on {@code model}.
      */
-    public MapFacade(@NotNull ClientModel model) {
-        super(model);
+    public MapFacade(@NotNull FacadeManager manager) {
+        super(manager);
         map = getModel().getMap();
     }
 

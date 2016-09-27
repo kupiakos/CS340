@@ -5,8 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 
 import javax.annotation.Generated;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * A request to join a game
@@ -109,8 +110,8 @@ public class GameJoinRequest {
 
     public boolean equals(GameJoinRequest other) {
         return (
-            players == other.players &&
-            title == other.title &&
+                Objects.equals(players, other.players) &&
+                        Objects.equals(title, other.title) &&
             id == other.id
         );
     }

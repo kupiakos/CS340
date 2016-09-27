@@ -18,8 +18,13 @@ import java.sql.Connection;
 class ClientCommunicator {
 
     private static ClientCommunicator SINGLETON = null;
+    private String URLPrefix;
 
-    private ClientCommunicator(){}
+    private ClientCommunicator(){
+        URLPrefix = "localhost:8081";
+    }
+
+
 
     /**
      * Returns the {@link ClientCommunicator SINGLETON}.
@@ -43,7 +48,7 @@ class ClientCommunicator {
      * @return Any information pertinent to the client. Or an error message if not a 200 response code.
      */
     public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod) throws MalformedURLException, javax.naming.CommunicationException{
-        URL url = new URL(""+URLSuffix);
+        URL url = new URL(URLPrefix+URLSuffix);
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection)url.openConnection();
@@ -80,5 +85,9 @@ class ClientCommunicator {
         } finally {
             connection.disconnect();
         }
+    }
+
+    public void setURLPrefix(String URLPrefix) {
+        this.URLPrefix = URLPrefix;
     }
 }

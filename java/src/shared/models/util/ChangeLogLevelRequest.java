@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class ChangeLogLevelRequest {
@@ -62,7 +63,7 @@ public class ChangeLogLevelRequest {
 
     public boolean equals(ChangeLogLevelRequest other) {
         return (
-            logLevel == other.logLevel
+                Objects.equals(logLevel, other.logLevel)
         );
     }
 }

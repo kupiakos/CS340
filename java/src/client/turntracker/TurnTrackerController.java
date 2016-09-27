@@ -117,7 +117,7 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
         }
 
         if (gameOver) {
-            GameManager.getGame().endGame(winnerIndex);
+            //GameManager.getGame().endGame(winnerIndex);
             // TODO:: Game state should be a enum.... does it exist already?
             getView().updateGameState("GameOver", false);
         }

@@ -7,6 +7,7 @@ import shared.definitions.PlayerIndex;
 import shared.locations.VertexLocation;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class BuildSettlementAction {
@@ -133,10 +134,10 @@ public class BuildSettlementAction {
 
     public boolean equals(BuildSettlementAction other) {
         return (
-                TYPE == other.TYPE &&
-                        free == other.free &&
-                        vertexLocation == other.vertexLocation &&
-                        playerIndex == other.playerIndex
+                (TYPE == other.TYPE) &&
+                        (free == other.free) &&
+                        Objects.equals(vertexLocation, other.vertexLocation) &&
+                        Objects.equals(playerIndex, other.playerIndex)
         );
     }
 }

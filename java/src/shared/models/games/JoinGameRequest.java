@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class JoinGameRequest {
@@ -83,7 +84,7 @@ public class JoinGameRequest {
 
     public boolean equals(JoinGameRequest other) {
         return (
-            color == other.color &&
+                Objects.equals(color, other.color) &&
             id == other.id
         );
     }

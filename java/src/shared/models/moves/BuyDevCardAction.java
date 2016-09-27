@@ -6,6 +6,7 @@ import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class BuyDevCardAction {
@@ -81,7 +82,7 @@ public class BuyDevCardAction {
     public boolean equals(BuyDevCardAction other) {
         return (
                 TYPE == other.TYPE &&
-                        playerIndex == other.playerIndex
+                        Objects.equals(playerIndex, other.playerIndex)
         );
     }
 }

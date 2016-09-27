@@ -1,10 +1,12 @@
 package shared.facades;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import shared.definitions.ResourceType;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
 import shared.models.game.ResourceSet;
+import shared.models.game.TradeOffer;
 import shared.models.moves.OfferTradeAction;
 
 /**
@@ -15,13 +17,13 @@ public class TradingFacade extends AbstractFacade {
     /**
      * Constructor. Requires a valid game model to work.
      *
-     * @param model the model to use, not null
+     * @param manager the manager to use, not null
      * @throws NullPointerException if {@code model} is null
      * @pre {@code model} is a valid {@link ClientModel}.
      * @post This provides valid operations on {@code model}.
      */
-    public TradingFacade(@NotNull ClientModel model) {
-        super(model);
+    public TradingFacade(@NotNull FacadeManager manager) {
+        super(manager);
     }
 
     /**
@@ -84,6 +86,22 @@ public class TradingFacade extends AbstractFacade {
         if (!canOfferTrade(sender, receiver, offer)) {
             throw new IllegalArgumentException("Invalid trade!");
         }
+    }
+
+    @Nullable
+    public TradeOffer getMadeTradeOffer(@NotNull Player sender) {
+        return null;
+    }
+
+    /**
+     * Detect if a player has any outstanding trade offers waiting to be accepted/rejected by them.
+     *
+     * @param receiver the player to check if they have any trade offers waiting for them
+     * @return whether the player has any trade offers waiting for a response from them, or null if none
+     */
+    @Nullable
+    public TradeOffer getWaitingTradeOffer(@NotNull Player receiver) {
+        return null;
     }
 
     /**

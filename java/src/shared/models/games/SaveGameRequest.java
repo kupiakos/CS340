@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class SaveGameRequest {
@@ -83,7 +84,7 @@ public class SaveGameRequest {
 
     public boolean equals(SaveGameRequest other) {
         return (
-            name == other.name &&
+                Objects.equals(name, other.name) &&
             id == other.id
         );
     }

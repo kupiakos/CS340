@@ -6,6 +6,7 @@ import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class RollNumberAction {
@@ -105,7 +106,7 @@ public class RollNumberAction {
         return (
                 number == other.number &&
                         TYPE == other.TYPE &&
-                        playerIndex == other.playerIndex
+                        Objects.equals(playerIndex, other.playerIndex)
         );
     }
 }

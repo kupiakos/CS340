@@ -8,6 +8,7 @@ import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 
 import javax.annotation.Generated;
+import java.util.Objects;
 
 @Generated("net.kupiakos")
 public class YearofPlentyAction {
@@ -135,9 +136,9 @@ public class YearofPlentyAction {
     public boolean equals(YearofPlentyAction other) {
         return (
                 TYPE == other.TYPE &&
-                        resource1 == other.resource1 &&
-                        playerIndex == other.playerIndex &&
-                        resource2 == other.resource2
+                        Objects.equals(resource1, other.resource1) &&
+                        Objects.equals(playerIndex, other.playerIndex) &&
+                        Objects.equals(resource2, other.resource2)
         );
     }
 }

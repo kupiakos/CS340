@@ -3,21 +3,19 @@ package shared.facades;
 import com.sun.istack.internal.NotNull;
 import shared.models.game.ClientModel;
 
-import java.util.Objects;
-
 abstract class AbstractFacade {
-    private ClientModel model;
+    private FacadeManager manager;
 
     /**
      * Constructor. Requires a valid game model to work.
      *
-     * @param model the model to use, not null
+     * @param manager the facade manager to use, not null
      * @throws NullPointerException if {@code model} is null
      * @pre {@code model} is a valid {@link ClientModel}.
      * @post This provides valid operations on {@code model}.
      */
-    AbstractFacade(@NotNull ClientModel model) {
-        setModel(model);
+    AbstractFacade(@NotNull FacadeManager manager) {
+        setManager(manager);
     }
 
     /**
@@ -26,18 +24,18 @@ abstract class AbstractFacade {
      * @return the current model
      */
     protected ClientModel getModel() {
-        return this.model;
+        return this.manager.getClientModel();
     }
 
     /**
      * Sets the current game model.
      *
-     * @param model the model to use, not null
+     * @param manager the facade manager to use, not null
      * @throws NullPointerException if {@code model is null}
      * @pre {@code model} is a valid {@link ClientModel}.
      * @post This provides valid operations on {@code model}.
      */
-    public void setModel(@NotNull ClientModel model) {
-        this.model = model;
+    public void setManager(@NotNull FacadeManager manager) {
+        this.manager = manager;
     }
 }
