@@ -249,6 +249,7 @@ public class GameMap {
      * @return whether the map could support adding a road owned by the player at that location
      */
     public boolean canAddRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player) {
+<<<<<<< HEAD
         if (roads.containsKey(location))
             return false;
         Set<VertexLocation> vertices = new HashSet<>();
@@ -274,6 +275,15 @@ public class GameMap {
         if (!hasAdjacentRoad)
             return false;
         return true;
+=======
+        //only be placed at the edges of the terrain hexes
+        // 1 road per edge
+        //intersections along roads will remain occupied
+        //15 roads max per player
+        //a new road must always connect to one of a player's existing roads, settlements, or cities
+        //the second road must attach to the second settlement(pointing in any 3 directions
+        return false;
+>>>>>>> remotes/sarah/master
     }
 
     /**
