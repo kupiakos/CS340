@@ -11,6 +11,7 @@ import shared.models.user.Credentials;
 import shared.models.util.ChangeLogLevelRequest;
 
 import javax.naming.CommunicationException;
+import javax.security.auth.login.CredentialNotFoundException;
 
 /**
  * Created by elijahgk on 9/12/2016.
@@ -25,7 +26,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void login(@NotNull Credentials credentialsObject) {
+    public void login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException{
 
     }
 
@@ -33,7 +34,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void register(@NotNull Credentials credentialsObject) {
+    public void register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException {
 
     }
 

@@ -31,7 +31,7 @@ public interface IServer {
      * @pre The username and password are valid.
      * @post The login operation is successful and the user session is being tracked.
      */
-    void login(@NotNull Credentials credentialsObject);
+    void login(@NotNull Credentials credentialsObject)throws CredentialNotFoundException;
 
     /**
      * Method register a new user if the user name is not used, logs the caller in to the server, and sets their
@@ -41,7 +41,7 @@ public interface IServer {
      * @pre The crediantials are are valid and have not already been used.
      * @post A new user is registered on the server and the user session is being tracked.
      */
-    void register(@NotNull Credentials credentialsObject);
+    void register(@NotNull Credentials credentialsObject)throws CredentialNotFoundException;
 
     /**
      * Method returns info about all of the current games on the server

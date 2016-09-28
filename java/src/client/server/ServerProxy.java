@@ -12,6 +12,7 @@ import shared.models.util.ChangeLogLevelRequest;
 import shared.serialization.ModelSerializer;
 
 import javax.naming.CommunicationException;
+import javax.security.auth.login.CredentialNotFoundException;
 
 /**
  * Created by elijahgk on 9/12/2016.
@@ -27,13 +28,18 @@ public class ServerProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void login(@NotNull Credentials credentialsObject){
+    public void login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException{
         String requestBody = ModelSerializer.getInstance().toJson(credentialsObject,Credentials.class);
         try {
             ClientCommunicator.getSingleton().sendHTTPRequest("/user/login",requestBody,"POST");
         } catch (IllegalArgumentException | CommunicationException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            if(e.getMessage().equals("400")){
+                throw new CredentialNotFoundException("Username or password were not recognized.");
+            }
+            else{
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
@@ -41,13 +47,18 @@ public class ServerProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void register(@NotNull Credentials credentialsObject){
+    public void register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException{
         String requestBody = ModelSerializer.getInstance().toJson(credentialsObject, Credentials.class);
         try {
             ClientCommunicator.getSingleton().sendHTTPRequest("/user/register",requestBody,"POST");
         } catch (IllegalArgumentException | CommunicationException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            if(e.getMessage().equals("400")){
+                throw new CredentialNotFoundException("Invalid username or password.");
+            }
+            else{
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
