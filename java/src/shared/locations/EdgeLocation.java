@@ -1,5 +1,8 @@
 package shared.locations;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * Represents the location of an edge on a hex map
  */
@@ -105,5 +108,41 @@ public class EdgeLocation
 				return null;
 		}
 	}
+
+    public Set<VertexLocation> getConnectedVertices() {
+        EdgeLocation location = getNormalizedLocation();
+        Set<VertexLocation> vertices = new TreeSet<>();
+
+        HexLocation hex = location.getHexLoc();
+        EdgeDirection edgeDirection = location.getDir();
+
+        VertexLocation vertexOne;
+        VertexLocation vertexTwo;
+
+        switch (edgeDirection) {
+            case North:
+                vertexOne = new VertexLocation(hex, VertexDirection.NorthWest);
+                vertexTwo = new VertexLocation(hex, VertexDirection.NorthEast);
+                vertices.add(vertexOne);
+                vertices.add(vertexTwo);
+                break;
+            case NorthWest:
+                vertexOne = new VertexLocation(hex, VertexDirection.West).getNormalizedLocation();
+                vertexTwo = new VertexLocation(hex, VertexDirection.NorthWest);
+                vertices.add(vertexOne);
+                vertices.add(vertexTwo);
+                break;
+            case NorthEast:
+                vertexOne = new VertexLocation(hex, VertexDirection.NorthEast);
+                vertexTwo = new VertexLocation(hex, VertexDirection.East).getNormalizedLocation();
+                vertices.add(vertexOne);
+                vertices.add(vertexTwo);
+                break;
+            default:
+                assert false;
+                return null;
+        }
+        return vertices;
+    }
 }
 
