@@ -2,12 +2,9 @@ package shared.facades;
 
 import client.game.GameManager;
 import com.sun.istack.internal.NotNull;
-import shared.definitions.PlayerIndex;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
 import shared.models.moves.SendChatAction;
-
-import javax.naming.CommunicationException;
 
 /**
  * Provides operations for users to chat with each other in a game.
@@ -31,21 +28,16 @@ public class ChatFacade extends AbstractFacade {
      *
      * @return whether the player can send any chat messages
      */
-    public static boolean canSendChat(@NotNull PlayerIndex p) {
-        return false;
+    public static boolean canSendChat(@NotNull SendChatAction c) {
+        return(c.getContent() != null && !c.getContent().isEmpty());
     }
 
     /**
-     * Sends a chat message to a {@link Player}.
+     * Sends a chat message to a {@link Player} by updating the message list in the model
      */
     public static void sendChat(@NotNull SendChatAction c) {
-        if (canSendChat(c.getPlayerIndex())) {
-            try {
-                GameManager.getGame().getServer().sendChat(c);
-            } catch (CommunicationException e) {
-                e.printStackTrace();
-            }
-            //  TODO:: handleResponse ?
+        if (canSendChat(c)) {
+            GameManager.getGame().getClientModel().getChat().addMessage(c.asMessageEntry());
         }
     }
 }

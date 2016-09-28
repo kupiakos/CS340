@@ -2,10 +2,9 @@ package shared.facades;
 
 import com.sun.istack.internal.NotNull;
 import shared.definitions.HexType;
-import shared.locations.EdgeLocation;
-import shared.locations.HexLocation;
-import shared.locations.VertexLocation;
+import shared.locations.*;
 import shared.models.game.ClientModel;
+import shared.models.game.GameMap;
 import shared.models.game.Player;
 
 /**
@@ -13,6 +12,7 @@ import shared.models.game.Player;
  */
 public class MapFacade extends AbstractFacade {
 
+    private GameMap map;
     /**
      * Constructor. Requires a valid game model to work.
      *
@@ -23,6 +23,43 @@ public class MapFacade extends AbstractFacade {
      */
     public MapFacade(@NotNull FacadeManager manager) {
         super(manager);
+        map = getModel().getMap();
+    }
+
+    /**
+     * Checks to see if a road can be placed on the map at the specified {@link EdgeLocation}.
+     *
+     * @param location {@link EdgeLocation} being queried for road placement.
+     * @return True if the edge is empty and adjacent to a Road/{City}/settlement belonging to current {@link Player}.
+     * @pre The {@link Player} is in a game.
+     * @post None
+     */
+    public boolean canPlaceRoad(Player player, EdgeLocation location){
+        return map.canAddRoad(location,player.getPlayerIndex());
+    }
+
+    /**
+     * Checks to see if a settlement can be placed on the map at the specified {@link VertexLocation}.
+     *
+     * @param location {@link VertexLocation} being queried for settlement placement.
+     * @return True if the {@link VertexLocation} is empty and adjacent to a road belonging to current {@link Player}.
+     * @pre The {@link Player} is in a game.
+     * @post None
+     */
+    public boolean canPlaceSettlement(Player player, VertexLocation location){
+        return map.canAddSettlement(location,player.getPlayerIndex());
+    }
+
+    /**
+     * Checks to see if a city can be placed on the map at the specified {@link VertexLocation}.
+     *
+     * @param location {@link VertexLocation} being queried for city placement.
+     * @return True if the {@link VertexLocation} has a settlement belonging to the current {@link Player} and adjacent to a road belonging to current {@link Player}.
+     * @pre The {@link Player} is in a game.
+     * @post None
+     */
+    public boolean canPlaceCity(Player player, VertexLocation location){
+        return map.canUpgradeSettlement(location,player.getPlayerIndex());
     }
 
     /**
@@ -32,7 +69,7 @@ public class MapFacade extends AbstractFacade {
      * @return True if the {@link EdgeLocation}  has not been built upon; false otherwise.
      */
     public boolean isEdgeEmpty(@NotNull EdgeLocation edge) {
-        return false;
+        return map.getRoads().containsKey(edge);
     }
 
     /**
@@ -42,7 +79,7 @@ public class MapFacade extends AbstractFacade {
      * @return True if the{@link EdgeLocation} has not been built upon; false otherwise.
      */
     public boolean isVertexEmpty(@NotNull VertexLocation vertex) {
-        return false;
+        return (map.getSettlements().containsKey(vertex)&&map.getCities().containsKey(vertex));
     }
 
     /**
@@ -53,6 +90,10 @@ public class MapFacade extends AbstractFacade {
      * @return True if the {@code player} has a road built on the specified {@link EdgeLocation}.
      */
     public boolean hasRoad(@NotNull Player player, @NotNull EdgeLocation edge) {
+        if(map.getRoads().containsKey(edge)){
+            if(map.getRoads().get(edge)==player.getPlayerIndex())
+                return true;
+        }
         return false;
     }
 
@@ -64,6 +105,10 @@ public class MapFacade extends AbstractFacade {
      * @return True if the {@code player} has a settlement built on the specified {@link VertexLocation}.
      */
     public boolean hasSettlement(@NotNull Player player, @NotNull VertexLocation vertex) {
+        if(map.getSettlements().containsKey(vertex)){
+            if(map.getRoads().get(vertex)==player.getPlayerIndex())
+                return true;
+        }
         return false;
     }
 
@@ -75,6 +120,10 @@ public class MapFacade extends AbstractFacade {
      * @return True if the {@code player} has a city built on the specified {@link VertexLocation}.
      */
     public boolean hasCity(@NotNull Player player, @NotNull VertexLocation vertex) {
+        if(map.getCities().containsKey(vertex)){
+            if(map.getCities().get(vertex)==player.getPlayerIndex())
+                return true;
+        }
         return false;
     }
 
@@ -85,6 +134,8 @@ public class MapFacade extends AbstractFacade {
      * @return True if the robber is currently on the specified {@link HexLocation}; false otherwise.
      */
     public boolean hasRobber(@NotNull HexLocation hex) {
+        if(map.getRobber()==hex)
+            return true;
         return false;
     }
 
@@ -96,6 +147,41 @@ public class MapFacade extends AbstractFacade {
      * @return True if the {@code player} owns a road/building adjacent to the specified {@link EdgeLocation}.
      */
     public boolean isConnectedEdge(@NotNull Player player, @NotNull EdgeLocation edge) {
+        edge = edge.getNormalizedLocation();
+        HexLocation hex = edge.getHexLoc();
+        switch (edge.getDir()){
+            case North:
+                if(hasSettlement(player,new VertexLocation(hex, VertexDirection.NorthWest).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.NorthWest).getNormalizedLocation())||hasSettlement(player,new VertexLocation(hex, VertexDirection.NorthEast).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.NorthEast).getNormalizedLocation())){
+                    return true;
+                }
+                break;
+            case NorthEast:
+                if(hasSettlement(player,new VertexLocation(hex, VertexDirection.NorthEast).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.NorthEast).getNormalizedLocation())||hasSettlement(player,new VertexLocation(hex, VertexDirection.East).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.East).getNormalizedLocation())){
+                    return true;
+                }
+                break;
+            case SouthEast:
+                if(hasSettlement(player,new VertexLocation(hex, VertexDirection.East).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.East).getNormalizedLocation())||hasSettlement(player,new VertexLocation(hex, VertexDirection.SouthEast).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.SouthEast).getNormalizedLocation())){
+                    return true;
+                }
+                break;
+            case South:
+                if(hasSettlement(player,new VertexLocation(hex, VertexDirection.SouthEast).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.SouthEast).getNormalizedLocation())||hasSettlement(player,new VertexLocation(hex, VertexDirection.SouthWest).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.SouthWest).getNormalizedLocation())){
+                    return true;
+                }
+                break;
+            case SouthWest:
+                if(hasSettlement(player,new VertexLocation(hex, VertexDirection.SouthWest).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.SouthWest).getNormalizedLocation())||hasSettlement(player,new VertexLocation(hex, VertexDirection.West).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.West).getNormalizedLocation())){
+                    return true;
+                }
+                break;
+            case NorthWest:
+                if(hasSettlement(player,new VertexLocation(hex, VertexDirection.West).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.West).getNormalizedLocation())||hasSettlement(player,new VertexLocation(hex, VertexDirection.NorthWest).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.NorthWest).getNormalizedLocation())){
+                    return true;
+                }
+                break;
+            default: return false;
+        }
         return false;
     }
 
@@ -107,6 +193,35 @@ public class MapFacade extends AbstractFacade {
      * @return True if the {@code player} owns a road adjacent to the specified {@link VertexLocation}.
      */
     public boolean isConnectedVertex(@NotNull Player player, @NotNull VertexLocation vertex) {
+        vertex = vertex.getNormalizedLocation();
+        HexLocation hex = vertex.getHexLoc();
+        switch (vertex.getDir()){
+            case NorthEast:
+                if(hasRoad(player,new EdgeLocation(hex, EdgeDirection.North))||hasRoad(player,new EdgeLocation(hex,EdgeDirection.NorthEast))||hasRoad(player,new EdgeLocation(hex.getNeighborLoc(EdgeDirection.North),EdgeDirection.SouthEast)))
+                    return true;
+                break;
+            case East:
+                if(hasRoad(player,new EdgeLocation(hex, EdgeDirection.NorthEast))||hasRoad(player,new EdgeLocation(hex,EdgeDirection.SouthEast))||hasRoad(player,new EdgeLocation(hex.getNeighborLoc(EdgeDirection.NorthEast),EdgeDirection.South)))
+                    return true;
+                break;
+            case SouthEast:
+                if(hasRoad(player,new EdgeLocation(hex, EdgeDirection.SouthEast))||hasRoad(player,new EdgeLocation(hex,EdgeDirection.South))||hasRoad(player,new EdgeLocation(hex.getNeighborLoc(EdgeDirection.SouthEast),EdgeDirection.SouthWest)))
+                    return true;
+                break;
+            case SouthWest:
+                if(hasRoad(player,new EdgeLocation(hex, EdgeDirection.South))||hasRoad(player,new EdgeLocation(hex,EdgeDirection.SouthWest))||hasRoad(player,new EdgeLocation(hex.getNeighborLoc(EdgeDirection.South),EdgeDirection.NorthWest)))
+                    return true;
+                break;
+            case West:
+                if(hasRoad(player,new EdgeLocation(hex, EdgeDirection.SouthWest))||hasRoad(player,new EdgeLocation(hex,EdgeDirection.NorthWest))||hasRoad(player,new EdgeLocation(hex.getNeighborLoc(EdgeDirection.SouthWest),EdgeDirection.North)))
+                    return true;
+                break;
+            case NorthWest:
+                if(hasRoad(player,new EdgeLocation(hex, EdgeDirection.NorthWest))||hasRoad(player,new EdgeLocation(hex,EdgeDirection.North))||hasRoad(player,new EdgeLocation(hex.getNeighborLoc(EdgeDirection.NorthWest),EdgeDirection.NorthEast)))
+                    return true;
+                break;
+            default: return false;
+        }
         return false;
     }
 
@@ -117,7 +232,7 @@ public class MapFacade extends AbstractFacade {
      * @return The {@link HexType} produced at the specified {@link HexLocation}.
      */
     public HexType getHexType(@NotNull HexLocation hex) {
-        return null;
+        return map.getHex(hex).getResource();
     }
 
 }

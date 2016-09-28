@@ -21,6 +21,7 @@ import java.util.List;
  */
 public interface IServer {
 
+
 //Non-Move APIs
 
     /**
@@ -56,7 +57,7 @@ public interface IServer {
      * @pre None
      * @post None
      */
-    List<GameInfo> listOfGames() throws CommunicationException;
+    GameInfo[] listOfGames() throws CommunicationException;
 
     /**
      * Creates a new game on the server
@@ -140,7 +141,7 @@ public interface IServer {
      * @pre Caller is logged in and joined a game.
      * @post None.
      */
-    List<String> getCommandsGame() throws CommunicationException;
+    String[] getCommandsGame() throws CommunicationException;
 
     /**
      * Executes the specified command list in the current game.  Used for testing and debugging.
@@ -152,7 +153,7 @@ public interface IServer {
      * @pre Caller is logged in and joined a game.
      * @post The passed-in command list has been applied to the game.
      */
-    ClientModel postCommandsGame(@NotNull List<String> gameCommands) throws CommunicationException, IllegalArgumentException;
+    ClientModel postCommandsGame(@NotNull String[] gameCommands) throws CommunicationException, IllegalArgumentException;
 
     /**
      * Returns a list of supported AI player types
@@ -162,7 +163,7 @@ public interface IServer {
      * @pre None
      * @post None.
      */
-    List<String> listAI() throws CommunicationException;
+    String[] listAI() throws CommunicationException;
 
     /**
      * Adds an AI player to the current game. You must login and join a game before calling this method
