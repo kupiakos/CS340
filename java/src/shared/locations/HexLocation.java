@@ -3,6 +3,10 @@ package shared.locations;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Represents the location of a hex on a hex map
  */
@@ -73,12 +77,10 @@ public class HexLocation
 		HexLocation other = (HexLocation)obj;
 		if(x != other.x)
 			return false;
-		if(y != other.y)
-			return false;
-		return true;
-	}
-	
-	public HexLocation getNeighborLoc(EdgeDirection dir)
+        return y == other.y;
+    }
+
+    public HexLocation getNeighborLoc(EdgeDirection dir)
 	{
 		switch (dir)
 		{
@@ -99,6 +101,20 @@ public class HexLocation
 				return null;
 		}
 	}
-	
+
+    public Set<VertexLocation> getVertices() {
+        return Arrays.stream(VertexDirection.values())
+                .map(d -> new VertexLocation(this, d))
+                .map(VertexLocation::getNormalizedLocation)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<EdgeLocation> getEdges() {
+        return Arrays.stream(EdgeDirection.values())
+                .map(d -> new EdgeLocation(this, d))
+                .map(EdgeLocation::getNormalizedLocation)
+                .collect(Collectors.toSet());
+    }
+
 }
 
