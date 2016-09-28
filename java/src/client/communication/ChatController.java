@@ -28,7 +28,7 @@ public class ChatController extends Controller implements IChatController, Obser
      *
      * @param view chat view
      */
-    protected ChatController(IView view) {
+    public ChatController(IView view) {
         super(view);
     }
 
@@ -53,7 +53,7 @@ public class ChatController extends Controller implements IChatController, Obser
         ChatFacade cf = GameManager.getGame().getFacade().getChat();
         IServer s = GameManager.getGame().getServer();
 
-        if (cf.canSendChat(player)) {
+        if (cf.canSendChat(new SendChatAction(message, player))) {
             cf.sendChat(chat);
             try {
                 s.sendChat(chat);

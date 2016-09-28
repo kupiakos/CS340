@@ -1,11 +1,16 @@
 package shared.facades;
 
+import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 import shared.definitions.TurnStatus;
 import shared.models.game.ClientModel;
+import shared.models.game.MessageEntry;
 import shared.models.game.Player;
 
 import java.util.List;
+
+import static shared.definitions.Constants.LOG_FINISH_TURN_MSG;
+import static shared.definitions.TurnStatus.*;
 
 /**
  * Provides common operations on the turn of a game.
@@ -32,22 +37,50 @@ public class TurnFacade extends AbstractFacade {
      * @post {@code player}'s turn is ended
      */
     public void endTurn(@NotNull Player player) {
-//        if (canEndTurn(player)) {
-//
-//        }
+        if (canEndTurn(player)) {
+            //TODO:: Figure out if we need to consolidate cards or anything or reset them to a start state
+            advanceTurnStatus();
+            MessageEntry m = new MessageEntry(player.getName(), LOG_FINISH_TURN_MSG);
+            getModel().writeLog(m);
+        }
+    }
+
+    /**
+     * Looks at the current status, what players have gone, and then sets the correct game phase for the correct player
+     */
+    private void advanceTurnStatus() {
+        //TODO:: fig this out
     }
 
     /**
      * Will check to see if the current {@link Player} can end their turn.
      *
-     * @param player which {@link Player} to check
+     * @param p which {@link Player} to check
      * @return whether the turn could be ended
      * @pre {@code player} belongs to the current {@link ClientModel}.
      * @post None.
      */
-    public boolean canEndTurn(@NotNull Player player) {
-        return false;
+    public boolean canEndTurn(@NotNull Player p) {
+        TurnStatus ts = getModel().getTurnTracker().getStatus();
+
+        if (!isPlayersTurn(p)) return false;
+
+        switch(ts) {
+            case PLAYING:
+                return true;
+            case FIRST_ROUND:
+                return (p.getRoads() == 1) && (p.getSettlements() == 1);
+            case SECOND_ROUND:
+                return (p.getRoads() == 2) && (p.getSettlements() == 2);
+            case DISCARDING:
+            case ROLLING:
+            case ROBBING:
+                //TODO:: Read rules on what is supposed to happen if you try and end your turn
+            default:
+                return false;
+        }
     }
+
 
     /**
      * Returns whether it is a specific {@link Player}'s turn.
@@ -58,7 +91,7 @@ public class TurnFacade extends AbstractFacade {
      * @post None.
      */
     private boolean isPlayersTurn(@NotNull Player player) {
-        return false;
+        return (player.getPlayerIndex() == getModel().getTurnTracker().getCurrentTurn());
     }
 
     /**
@@ -69,7 +102,11 @@ public class TurnFacade extends AbstractFacade {
      * @post None.
      */
     public TurnStatus getPhase() {
-        return TurnStatus.FIRST_ROUND;
+        return getModel().getTurnTracker().getStatus();
+    }
+
+    public void setPhase(TurnStatus ts) {
+        getModel().getTurnTracker().setStatus(ts);
     }
 
     /**
@@ -80,6 +117,6 @@ public class TurnFacade extends AbstractFacade {
      * @post None.
      */
     public List<Player> getPlayers() {
-        return null;
+        return getModel().getPlayers();
     }
 }

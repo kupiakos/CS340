@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
+import shared.models.game.MessageEntry;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -110,5 +111,14 @@ public class SendChatAction {
                         Objects.equals(content, other.content) &&
                         Objects.equals(playerIndex, other.playerIndex)
         );
+    }
+
+    /**
+     * Converter that lets us change btwn chats and messages.... not sure why both are needed
+     * @return new MessageEntry
+     */
+    public MessageEntry asMessageEntry() {
+        // TODO:: How are we keeping track of who is sending messages? Enums of id?
+        return new MessageEntry(playerIndex.index() + "", content);
     }
 }
