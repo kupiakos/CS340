@@ -4,6 +4,7 @@ import client.base.Controller;
 import client.game.GameManager;
 import shared.IServer;
 import shared.definitions.PlayerIndex;
+import shared.definitions.TurnStatus;
 import shared.facades.TurnFacade;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
@@ -15,7 +16,9 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import static shared.definitions.Constants.END_GAME_MSG;
 import static shared.definitions.Constants.WINNING_AMOUNT_VICTORY_POINTS;
+import static shared.definitions.TurnStatus.GAME_OVER;
 
 
 /**
@@ -117,9 +120,8 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
         }
 
         if (gameOver) {
-            GameManager.getGame().endGame(winnerIndex);
-            // TODO:: Game state should be a enum.... does it exist already?
-            getView().updateGameState("GameOver", false);
+            GameManager.getGame().getFacade().getTurn().setPhase(GAME_OVER);
+            getView().updateGameState(END_GAME_MSG, false);
         }
     }
 }
