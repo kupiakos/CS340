@@ -77,7 +77,7 @@ class ClientCommunicator {
                 switch (responseCode){
                     case 400:  response.append("{\"error\":\"400 Response Code: Bad URL Request\"");
                         throw new CommunicationException("Server returned a 400 response code.");
-                    default: response.append("{\"error\":\"SendHTTPRequest responded with an unhandled error\""); break;
+                    default: response.append("{\"error\":\"SendHTTPRequest responded with an unhandled error resulting from response code: ").append(responseCode).append("\""); break;
                 }
                 connection.disconnect();
                 return response.toString();
