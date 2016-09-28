@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.MalformedJsonException;
 import com.sun.jmx.snmp.daemon.CommunicationException;
 
+import javax.security.auth.login.CredentialNotFoundException;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -47,10 +48,10 @@ class ClientCommunicator {
      * @param requestMethod GET OR POST
      * @return Any information pertinent to the client. Or an error message if not a 200 response code.
      */
-    public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod) throws MalformedURLException, javax.naming.CommunicationException{
-        URL url = new URL(URLPrefix+URLSuffix);
+    public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod) throws IllegalArgumentException, javax.naming.CommunicationException{
         HttpURLConnection connection = null;
         try {
+            URL url = new URL(URLPrefix+URLSuffix);
             connection = (HttpURLConnection)url.openConnection();
             connection.setRequestMethod(requestMethod);
             DataOutputStream output = new DataOutputStream(connection.getOutputStream());
@@ -74,14 +75,17 @@ class ClientCommunicator {
             }
             else{
                 switch (responseCode){
-                    case 400:  response.append("{\"error\":\"400 Response Code: Bad URL Request\""); break;
+                    case 400:  response.append("{\"error\":\"400 Response Code: Bad URL Request\"");
+                        throw new CommunicationException("Server returned a 400 response code.");
                     default: response.append("{\"error\":\"SendHTTPRequest responded with an unhandled error\""); break;
                 }
                 connection.disconnect();
                 return response.toString();
             }
+        } catch (MalformedURLException e){
+            throw new IllegalArgumentException("ClientCommunicator threw a Malformed URL Exception.");
         } catch (IOException e) {
-            throw new CommunicationException(e);
+            throw new CommunicationException(e,"ClientCommunicator threw an IO Exception.");
         } finally {
             connection.disconnect();
         }
