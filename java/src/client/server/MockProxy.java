@@ -1,6 +1,5 @@
 package client.server;
 
-import client.game.GameManager;
 import com.sun.istack.internal.NotNull;
 import shared.IServer;
 import shared.exceptions.JoinGameException;
@@ -12,8 +11,6 @@ import shared.models.user.Credentials;
 import shared.models.util.ChangeLogLevelRequest;
 
 import javax.naming.CommunicationException;
-import javax.security.auth.login.CredentialNotFoundException;
-import java.util.List;
 
 /**
  * Created by elijahgk on 9/12/2016.
