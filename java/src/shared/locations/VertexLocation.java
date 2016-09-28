@@ -1,5 +1,12 @@
 package shared.locations;
 
+import client.game.GameManager;
+import shared.models.game.GameMap;
+import shared.models.game.Hex;
+
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Represents the location of a vertex on a hex map
  */
@@ -115,5 +122,48 @@ public class VertexLocation
 				return null;
 		}
 	}
+    public Set<EdgeLocation> getEdges(){
+        HashSet<EdgeLocation> edges = new HashSet<>();
+        HexLocation neighbor;
+        switch (getDir()){
+            case NorthEast:
+                edges.add(new EdgeLocation(getHexLoc(), EdgeDirection.North).getNormalizedLocation());
+                edges.add(new EdgeLocation(getHexLoc(),EdgeDirection.NorthEast).getNormalizedLocation());
+                neighbor = getHexLoc().getNeighborLoc(EdgeDirection.North);
+                edges.add(new EdgeLocation(neighbor, EdgeDirection.SouthEast).getNormalizedLocation());
+                break;
+            case East:
+                edges.add(new EdgeLocation(getHexLoc(), EdgeDirection.NorthEast).getNormalizedLocation());
+                edges.add(new EdgeLocation(getHexLoc(),EdgeDirection.SouthEast).getNormalizedLocation());
+                neighbor = getHexLoc().getNeighborLoc(EdgeDirection.NorthEast);
+                edges.add(new EdgeLocation(neighbor,EdgeDirection.South).getNormalizedLocation());
+                break;
+            case SouthEast:
+                edges.add(new EdgeLocation(getHexLoc(), EdgeDirection.SouthEast).getNormalizedLocation());
+                edges.add(new EdgeLocation(getHexLoc(),EdgeDirection.South).getNormalizedLocation());
+                neighbor = getHexLoc().getNeighborLoc(EdgeDirection.SouthEast);
+                edges.add(new EdgeLocation(neighbor,EdgeDirection.SouthWest).getNormalizedLocation());
+                break;
+            case SouthWest:
+                edges.add(new EdgeLocation(getHexLoc(), EdgeDirection.South).getNormalizedLocation());
+                edges.add(new EdgeLocation(getHexLoc(),EdgeDirection.SouthWest).getNormalizedLocation());
+                neighbor = getHexLoc().getNeighborLoc(EdgeDirection.South);
+                edges.add(new EdgeLocation(neighbor,EdgeDirection.NorthWest).getNormalizedLocation());
+                break;
+            case West:
+                edges.add(new EdgeLocation(getHexLoc(), EdgeDirection.SouthWest).getNormalizedLocation());
+                edges.add(new EdgeLocation(getHexLoc(),EdgeDirection.NorthWest).getNormalizedLocation());
+                neighbor = getHexLoc().getNeighborLoc(EdgeDirection.SouthWest);
+                edges.add(new EdgeLocation(neighbor,EdgeDirection.North).getNormalizedLocation());
+                break;
+            case NorthWest:
+                edges.add(new EdgeLocation(getHexLoc(), EdgeDirection.NorthWest).getNormalizedLocation());
+                edges.add(new EdgeLocation(getHexLoc(),EdgeDirection.North).getNormalizedLocation());
+                neighbor = getHexLoc().getNeighborLoc(EdgeDirection.NorthWest);
+                edges.add(new EdgeLocation(neighbor,EdgeDirection.NorthEast).getNormalizedLocation());
+                break;
+        }
+        return edges;
+    }
 }
 

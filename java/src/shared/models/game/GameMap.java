@@ -4,17 +4,14 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
+import shared.definitions.HexType;
 import shared.definitions.PlayerIndex;
-import shared.locations.EdgeLocation;
-import shared.locations.HexLocation;
-import shared.locations.VertexLocation;
+import shared.locations.*;
 import shared.utils.MapUtils;
+import sun.security.provider.certpath.Vertex;
 
 import javax.annotation.Generated;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Generated("net.kupiakos")
 public class GameMap {
@@ -170,6 +167,13 @@ public class GameMap {
     }
 
     /**
+     * Get the road owner associated with a given location.
+     *
+     * @param location the location to check
+     * @return the owner of the road at that location, or null if none
+     */
+
+    /**
      * Get the owner of a city, or null if that location does not have a city.
      *
      * @param location the location to check
@@ -181,6 +185,14 @@ public class GameMap {
         return cities.get(location);
     }
 
+    @Nullable
+    public PlayerIndex getBuildingOwner(@NotNull VertexLocation location) {
+        location = location.getNormalizedLocation();
+        if(getSettlementOwner(location)!=null)
+            return getSettlementOwner(location);
+        else
+            return getCityOwner(location);
+    }
 
     /**
      * Get whether the map could support adding a settlement owned by a player at the given location.
@@ -237,13 +249,31 @@ public class GameMap {
      * @return whether the map could support adding a road owned by the player at that location
      */
     public boolean canAddRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player) {
-        //only be placed at the edges of the terrain hexes
-        // 1 road per edge
-        //intersections along roads will remain occupied
-        //15 roads max per player
-        //a new road must always connect to one of a player's existing roads, settlements, or cities
-        //the second road must attach to the second settlement(pointing in any 3 directions
-        return false;
+        if (roads.containsKey(location))
+            return false;
+        Set<VertexLocation> vertices = new HashSet<>();
+        boolean hasAdjacentRoad = false;
+        for (VertexLocation v : vertices) {
+            Set<EdgeLocation> edges = v.getEdges();
+            edges = getEdges(edges);
+            if (hasBuilding(v)) {
+                if (getBuildingOwner(v)!=player)
+                    return false;
+            }
+            for (EdgeLocation e : edges) {
+                if (e == location)
+                    continue;
+                else if (roads.containsKey(e)) {
+                    if (getRoadOwner(e)!=player)
+                        return false;
+                    else
+                        hasAdjacentRoad = true;
+                }
+            }
+        }
+        if (!hasAdjacentRoad)
+            return false;
+        return true;
     }
 
     /**
@@ -294,43 +324,20 @@ public class GameMap {
         return false;
     }
 
-    boolean isEdgeConnected(EdgeLocation edge, Player player){
-        edge = edge.getNormalizedLocation();
-        HexLocation hex = edge.getHexLoc();
-        switch (edge.getDir()){
-            case North:
-                if()
-                break;
-            case NorthEast:
-
-                break;
-            case SouthEast:
-
-                break;
-            case South:
-
-                break;
-            case SouthWest:
-
-                break;
-            case NorthWest:
-
-                break;
-        }
+    boolean hasBuilding(VertexLocation vertex) {
+        if (this.settlements.containsKey(vertex))
+            return true;
+        else if (this.cities.containsKey(vertex))
+            return true;
         return false;
     }
 
-    boolean hasBuilding(VertexLocation vertex, Player player){
-        vertex = vertex.getNormalizedLocation();
-        if(this.getSettlements().containsKey(vertex)){
-            if(settlements.get(vertex)==player.getPlayerIndex())
-                return true;
+    Set<EdgeLocation> getEdges(Set<EdgeLocation> edges) {
+        for (EdgeLocation e : edges) {
+            if (hexes.get(e.getHexLoc()).getResource() == HexType.WATER && hexes.get(e.getHexLoc().getNeighborLoc(e.getDir())).getResource() == HexType.WATER)
+                edges.remove(e);
         }
-        else if(this.getCities().containsKey(vertex)){
-            if(cities.get(vertex)==player.getPlayerIndex())
-                return true;
-        }
-        return false;
+        return edges;
     }
 
     /**
