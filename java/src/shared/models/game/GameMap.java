@@ -5,16 +5,11 @@ import com.google.gson.annotations.SerializedName;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import shared.definitions.PlayerIndex;
-import shared.locations.EdgeLocation;
-import shared.locations.HexLocation;
-import shared.locations.VertexLocation;
+import shared.locations.*;
 import shared.utils.MapUtils;
 
 import javax.annotation.Generated;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Generated("net.kupiakos")
 public class GameMap {
@@ -189,21 +184,37 @@ public class GameMap {
      * but strictly whether adding this to the map would not be an illegal configuration.
      * <p>
      * This tests distance and adjacency requirements.
+     * If it is the first turn, don't check whether the player is connected to one of their own roads.
      *
      * @param location the location to test, not null
      * @param player   the player to test, not null
+     * @param isFirstTurn whether the game is in the first turn or not
      * @return whether the map could support adding a settlement owned by the player at that location
      */
-    public boolean canAddSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) {
+    public boolean canAddSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTurn) {
         //only be place at corners of the terrain hexes
         //never along the edges
         //5 settlements per player max
         //can only add settlement on an open intersection
+        if(settlements.get(location) == null && cities.get(location) == null) {
+            return false;
+        }
+
+        //cant be placed by another person's road
+
         //can only add settlement if all 3 of the adjacent intersections are vacant-none are occupied by an settlements or cities, including the players'
-        //each of your settlements must connect to at lease one of your roads
+        //if the vertex is on the edge of the map, it doesn't have some of those adjacent edges
+        //if turn status is 1, don't check adjacent roads
+        //if turn status is more than 1, check adjacent
+        //each of your settlements must connect to at least one of your roads
+
         //cannot build settlement without adding road
         //intersection:  where 3 hexes meet
         //must always connect to one or more of your roads
+
+        //isvertexconnected
+        //checkadjacentvertices
+
         //must observe the distance rule
         //the setup phase has 2 rounds.  each player builds 1 road and 1 settlement per round
         //settlement first, then road
@@ -238,12 +249,19 @@ public class GameMap {
      */
     public boolean canAddRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player) {
         //only be placed at the edges of the terrain hexes
-        // 1 road per edge
+        //1 road per edge
         //intersections along roads will remain occupied
-        //15 roads max per player
         //a new road must always connect to one of a player's existing roads, settlements, or cities
         //the second road must attach to the second settlement(pointing in any 3 directions
-        return false;
+        location = location.getNormalizedLocation();
+        if (roads.get(location) != null) {
+            return false;
+        }
+        //if the edges connected to one side of the location have a road that the player owns or
+        //if the edges connected to the other side of the location have a road that the player owns
+        //or if one vertex on on side of the location has a city or a settlement that the player owns
+        //or if the other vertex on the other side of the location has a city or a settlement that the player owns
+        return true;
     }
 
     /**
@@ -272,11 +290,11 @@ public class GameMap {
      * @return whether the map could support adding a settlement owned by the player at that location
      */
     public boolean canUpgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) {
-        //only 4 cities
-        //does the player have a settlement there?
-        //have they satisfied the request
-        //do you have to have 5 settlements to upgrade to city?
-        return false;
+        location = location.getNormalizedLocation();
+        if (settlements.get(location) != player) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -287,11 +305,14 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public boolean upgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) {
+    public void upgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) {
         location = location.getNormalizedLocation();
         settlements.remove(location);
         cities.put(location, player);
-        return false;
+    }
+
+    public Set<EdgeLocation> getConnectedEdges(HexLocation location) {
+return null;
     }
 
     /**
