@@ -44,11 +44,15 @@ public class Poller {
             int version = gm.getClientModel().getVersion();
             // Call the server with the number
             ClientModel response;
-            response = gm.getServer().gameState(version);
-            // If new model
-            if (response != null) {
-                // Update ours
-                gm.setClientModel(response);
+            try {
+                response = gm.getServer().gameState(version);
+                // If new model
+                if (response != null) {
+                    // Update ours
+                    gm.setClientModel(response);
+                }
+            } catch (CommunicationException e) {
+                e.printStackTrace();
             }
         };
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, poll);
