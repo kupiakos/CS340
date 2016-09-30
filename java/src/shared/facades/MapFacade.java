@@ -1,10 +1,11 @@
 package shared.facades;
 
-import client.game.GameManager;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import shared.definitions.HexType;
 import shared.definitions.PlayerIndex;
-import shared.locations.*;
+import shared.locations.EdgeLocation;
+import shared.locations.HexLocation;
+import shared.locations.VertexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.GameMap;
 import shared.models.game.Player;
@@ -144,9 +145,7 @@ public class MapFacade extends AbstractFacade {
      * @return True if the robber is currently on the specified {@link HexLocation}; false otherwise.
      */
     public boolean hasRobber(@NotNull HexLocation hex) {
-        if (map.getRobber() == hex)
-            return true;
-        return false;
+        return map.getRobber() == hex;
     }
 
     /**

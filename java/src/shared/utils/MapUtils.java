@@ -1,7 +1,7 @@
 package shared.utils;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Objects;
@@ -27,6 +27,25 @@ public class MapUtils {
         return items.entrySet().stream()
                 .filter(testFunction)
                 .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Get every value in {@code items} where the entry satisfies {@code testFunction}.
+     *
+     * @param items        the map to work with, not null
+     * @param testFunction the predicate to test entries against, not null
+     * @param <K>          the key of the map
+     * @param <V>          the value of the map
+     * @return a set of all keys where the entry satisfies {@code testFunction}
+     */
+    @NotNull
+    public static <K, V> Set<V> valuesWithEntryMatching(@NotNull Map<K, V> items,
+                                                        @NotNull Predicate<Map.Entry<K, V>> testFunction) {
+        // value or any contained value in items may be null
+        return items.entrySet().stream()
+                .filter(testFunction)
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toSet());
     }
 
@@ -76,5 +95,19 @@ public class MapUtils {
                 .stream()
                 .filter(testFunction)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Get every value in {@code items} where the key satisfies {@code testFunction}.
+     *
+     * @param items        the map to work with, not null
+     * @param testFunction the predicate to test keys against, not null
+     * @param <K>          the key of the map
+     * @param <V>          the value of the map
+     * @return a set of all values where the key satisfies {@code testFunction}
+     */
+    public static <K, V> Set<V> valuesWithKeyMatching(Map<K, V> items,
+                                                      Predicate<? super K> testFunction) {
+        return valuesWithEntryMatching(items, e -> testFunction.test(e.getKey()));
     }
 }

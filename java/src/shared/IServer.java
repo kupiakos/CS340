@@ -1,6 +1,6 @@
 package shared;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import shared.exceptions.JoinGameException;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
@@ -72,7 +72,7 @@ public interface IServer {
      * </ul>
      * @post The current Player has been added to the specified game with the specified color.
      */
-    void joinGame(@NotNull JoinGameRequest joinGameObject) throws JoinGameException, IllegalArgumentException, CommunicationException;
+    void joinGame(@NotNull JoinGameRequest joinGameObject) throws IllegalArgumentException, CommunicationException;
 
     /**
      * For testing and debugging.  Save a game with a bug report for others to fix

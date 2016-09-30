@@ -1,6 +1,6 @@
 package shared.facades;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import shared.definitions.ResourceType;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;

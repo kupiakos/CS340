@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Represents the location of a hex on a hex map
@@ -103,18 +104,23 @@ public class HexLocation
 	}
 
     public Set<VertexLocation> getVertices() {
-        return Arrays.stream(VertexDirection.values())
-                .map(d -> new VertexLocation(this, d))
-                .map(VertexLocation::getNormalizedLocation)
-                .collect(Collectors.toSet());
+        return getVerticesStream().collect(Collectors.toSet());
     }
 
     public Set<EdgeLocation> getEdges() {
-        return Arrays.stream(EdgeDirection.values())
-                .map(d -> new EdgeLocation(this, d))
-                .map(EdgeLocation::getNormalizedLocation)
-                .collect(Collectors.toSet());
+        return getEdgesStream().collect(Collectors.toSet());
     }
 
+    public Stream<VertexLocation> getVerticesStream() {
+        return Arrays.stream(VertexDirection.values())
+                .map(d -> new VertexLocation(this, d))
+                .map(VertexLocation::getNormalizedLocation);
+    }
+
+    public Stream<EdgeLocation> getEdgesStream() {
+        return Arrays.stream(EdgeDirection.values())
+                .map(d -> new EdgeLocation(this, d))
+                .map(EdgeLocation::getNormalizedLocation);
+    }
 }
 

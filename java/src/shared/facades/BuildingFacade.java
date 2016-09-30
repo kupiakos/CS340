@@ -1,8 +1,6 @@
 package shared.facades;
 
-import client.game.GameManager;
-import com.sun.istack.internal.NotNull;
-import shared.definitions.PlayerIndex;
+import org.jetbrains.annotations.NotNull;
 import shared.definitions.PurchaseType;
 import shared.definitions.TurnStatus;
 import shared.locations.EdgeLocation;

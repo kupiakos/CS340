@@ -1,6 +1,6 @@
 package shared.facades;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import shared.locations.HexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
@@ -53,6 +53,7 @@ public class RobberFacade extends AbstractFacade {
      */
     public boolean shouldDiscardHalf(Player player)
     {
+
         return false;
     }
 

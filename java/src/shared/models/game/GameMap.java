@@ -2,9 +2,8 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
-import shared.definitions.HexType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
@@ -78,12 +77,6 @@ public class GameMap {
         this.cities = cities;
     }
 
-    public class IllegalOperationException extends Exception {
-        public IllegalOperationException(String message) {
-            super(message);
-        }
-    }
-
     /**
      * Get the locations of the cities owned by the given player.
      *
@@ -107,6 +100,18 @@ public class GameMap {
     }
 
     /**
+     * Get the locations of the buildings (settlements and cities) owned by the given player.
+     * @param player the player whose buildings to retrieve, not null
+     * @return the set containing the location of each settlement or city owned by the player
+     */
+    @NotNull
+    public Set<VertexLocation> getPlayerBuildings(@NotNull PlayerIndex player) {
+        Set<VertexLocation> buildings = getPlayerSettlements(player);
+        buildings.addAll(getPlayerCities(player));
+        return buildings;
+    }
+
+    /**
      * Get all roads owned by the given player.
      *
      * @param player the player whose roads to retrieve, not null
@@ -115,6 +120,18 @@ public class GameMap {
     @NotNull
     public Set<EdgeLocation> getPlayerRoads(@NotNull PlayerIndex player) {
         return MapUtils.keysWithValue(roads, player);
+    }
+
+    /**
+     *
+     * @param player
+     * @return
+     */
+    @NotNull
+    public Set<Port> getPlayerPorts(@NotNull PlayerIndex player) {
+        Set<VertexLocation> buildings = getPlayerBuildings(player);
+        return MapUtils.valuesWithKeyMatching(ports,
+                loc -> loc.getVerticesStream().anyMatch(buildings::contains));
     }
 
     /**
@@ -260,7 +277,7 @@ public class GameMap {
      */
     public void addSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTwoTurns) throws Exception {
         if (!canAddSettlement(location, player, isFirstTwoTurns)) {
-            throw new IllegalOperationException("Can't add Settlement");
+            throw new IllegalArgumentException("Can't add Settlement");
         }
         location = location.getNormalizedLocation();
         settlements.put(location, player);
@@ -319,7 +336,7 @@ public class GameMap {
 
     public void addRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player, @NotNull boolean isSetup) throws Exception {
         if (!canAddRoad(location, player, isSetup)) {
-            throw new IllegalOperationException("Can't add road");
+            throw new IllegalArgumentException("Can't add road");
         }
         location = location.getNormalizedLocation();
         roads.put(location, player);
@@ -355,7 +372,7 @@ public class GameMap {
      */
     public void upgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) throws Exception {
         if (!canUpgradeSettlement(location, player)) {
-            throw new IllegalOperationException("Can't upgrade Settlement");
+            throw new IllegalArgumentException("Can't upgrade Settlement");
         }
         location = location.getNormalizedLocation();
         settlements.remove(location);
