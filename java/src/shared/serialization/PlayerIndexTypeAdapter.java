@@ -1,5 +1,6 @@
 package shared.serialization;
 
+import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -24,8 +25,11 @@ public class PlayerIndexTypeAdapter extends TypeAdapter<PlayerIndex> {
             return null;
         }
         int idx = jsonReader.nextInt();
-        if (idx < 0 || idx >= PlayerIndex.MAX_PLAYERS) {
+        if (idx == -1) {
             return null;
+        }
+        if (idx < 0 || idx >= PlayerIndex.MAX_PLAYERS) {
+            throw new JsonParseException("Illegal index for PlayerIndex");
         }
         return PlayerIndex.fromInt(idx);
     }
