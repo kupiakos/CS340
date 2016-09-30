@@ -72,7 +72,7 @@ public class MapFacade extends AbstractFacade {
      * @return True if the {@link EdgeLocation}  has not been built upon; false otherwise.
      */
     public boolean isEdgeEmpty(@NotNull EdgeLocation edge) {
-        return map.getRoads().containsKey(edge);
+        return !map.getRoads().containsKey(edge);
     }
 
     /**
@@ -82,22 +82,7 @@ public class MapFacade extends AbstractFacade {
      * @return True if the{@link EdgeLocation} has not been built upon; false otherwise.
      */
     public boolean isVertexEmpty(@NotNull VertexLocation vertex) {
-        return (map.getSettlements().containsKey(vertex)&&map.getCities().containsKey(vertex));
-    }
-
-    /**
-     * Sees if a given {@link EdgeLocation} has a road built on it that belongs to the given {@code player}.
-     *
-     * @param player The {@code player} whose road is being checked for.
-     * @param edge   The {@link EdgeLocation} that is being queried.
-     * @return True if the {@code player} has a road built on the specified {@link EdgeLocation}.
-     */
-    public boolean hasRoad(@NotNull Player player, @NotNull EdgeLocation edge) {
-        if(map.getRoads().containsKey(edge)){
-            if(map.getRoads().get(edge)==player.getPlayerIndex())
-                return true;
-        }
-        return false;
+        return (!map.getSettlements().containsKey(vertex)&& !map.getCities().containsKey(vertex));
     }
 
     /**

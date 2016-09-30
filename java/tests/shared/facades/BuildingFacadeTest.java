@@ -2,9 +2,6 @@ package shared.facades;
 
 
 import client.game.GameManager;
-import javafx.beans.binding.MapBinding;
-import javafx.collections.ObservableMap;
-import shared.definitions.PlayerIndex;
 import shared.locations.*;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
@@ -36,7 +33,7 @@ public class BuildingFacadeTest {
     }
 
     @org.junit.Test
-    public void buildRoad() {
+    public void testBuildRoad() {
         facade.getModel().getMap().setRoads(new HashMap<>());
         facade.getModel().getMap().setSettlements(new HashMap<>());
         facade.getModel().getMap().setCities(new HashMap<>());
@@ -62,7 +59,7 @@ public class BuildingFacadeTest {
     }
 
     @org.junit.Test
-    public void buildSettlement() {
+    public void testBuildSettlement() {
         facade.getModel().getMap().setRoads(new HashMap<>());
         facade.getModel().getMap().setSettlements(new HashMap<>());
         facade.getModel().getMap().setCities(new HashMap<>());
@@ -85,7 +82,7 @@ public class BuildingFacadeTest {
     }
 
     @org.junit.Test
-    public void buildCity() {
+    public void testBuildCity() {
         facade.getModel().getMap().setRoads(new HashMap<>());
         facade.getModel().getMap().setSettlements(new HashMap<>());
         facade.getModel().getMap().setCities(new HashMap<>());
@@ -103,5 +100,21 @@ public class BuildingFacadeTest {
         facade.buildCity(player,new VertexLocation(new HexLocation(-1,2), VertexDirection.SouthWest));
         assertTrue(player.getCities()==0);
         assertFalse(facade.canBuildCity(player,new VertexLocation(new HexLocation(0,0), VertexDirection.NorthWest)));
+    }
+
+    @org.junit.Test
+    public void testGetTotalRoadsBuilt(){
+        facade.getModel().getMap().setRoads(new HashMap<>());
+        facade.getModel().getMap().setSettlements(new HashMap<>());
+        facade.getModel().getMap().setCities(new HashMap<>());
+        assertTrue(facade.getTotalRoadsBuilt(player)==0);
+        facade.getModel().getMap().getRoads().put(new EdgeLocation(new HexLocation(0, 0), EdgeDirection.North).getNormalizedLocation(), player.getPlayerIndex());
+        assertTrue(facade.getTotalRoadsBuilt(player)==1);
+        facade.getModel().getMap().getRoads().put(new EdgeLocation(new HexLocation(0, 0), EdgeDirection.NorthEast).getNormalizedLocation(), player.getPlayerIndex());
+        assertTrue(facade.getTotalRoadsBuilt(player)==2);
+        facade.getModel().getMap().getRoads().put(new EdgeLocation(new HexLocation(0, 0), EdgeDirection.SouthWest).getNormalizedLocation(), player.getPlayerIndex());
+        assertTrue(facade.getTotalRoadsBuilt(player)==3);
+        facade.getModel().getMap().getRoads().put(new EdgeLocation(new HexLocation(0, 0), EdgeDirection.South).getNormalizedLocation(), player.getPlayerIndex());
+        assertTrue(facade.getTotalRoadsBuilt(player)==4);
     }
 }
