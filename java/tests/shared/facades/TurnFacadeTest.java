@@ -15,6 +15,7 @@ import static shared.definitions.PlayerIndex.SECOND;
 import static shared.definitions.TurnStatus.PLAYING;
 import static shared.definitions.TurnStatus.ROLLING;
 
+
 /**
  * @author audakel on 9/29/16.
  */
@@ -69,6 +70,7 @@ public class TurnFacadeTest {
     public void isPlayersTurn() throws Exception {
         getGame().getClientModel().getTurnTracker().setCurrentTurn(FOURTH);
         assertEquals(getGame().getClientModel().getTurnTracker().getCurrentTurn(), FOURTH);
+
     }
 
     @Test
