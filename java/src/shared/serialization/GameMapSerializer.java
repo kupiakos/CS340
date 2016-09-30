@@ -89,7 +89,7 @@ public class GameMapSerializer implements JsonSerializer<GameMap>, JsonDeseriali
                 .collect(Collectors.toList())
         ));
 
-        result.add("hexes", context.serialize(map.getCities().values()));
+        result.add("hexes", context.serialize(map.getHexes().values()));
         result.add("ports", context.serialize(map.getPorts().values()));
 
         return result;
