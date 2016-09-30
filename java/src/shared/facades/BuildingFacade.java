@@ -52,7 +52,7 @@ public class BuildingFacade extends AbstractFacade {
         }catch (IllegalArgumentException e){
             System.err.println("Player tried to build a road without being able to.");
         }
-        this.getModel().getMap().addRoad(buildLocation, player);
+        this.getModel().getMap().addRoad(buildLocation, player.getPlayerIndex());
         player.setRoads(player.getRoads()-1);
         if(!isFree){
             resource.purchaseItem(player,PurchaseType.ROAD);
@@ -79,7 +79,7 @@ public class BuildingFacade extends AbstractFacade {
         }catch (IllegalArgumentException e){
             System.err.println("Player tried to build a settlement without being able to.");
         }
-        this.getModel().getMap().addSettlement(buildLocation, player);
+        this.getModel().getMap().addSettlement(buildLocation, player.getPlayerIndex());
         player.setSettlements(player.getRoads()-1);
         if(!isFree){
             resource.purchaseItem(player,PurchaseType.SETTLEMENT);
@@ -107,7 +107,7 @@ public class BuildingFacade extends AbstractFacade {
         }catch (IllegalArgumentException e){
             System.err.println("Player tried to build a city without being able to.");
         }
-        this.getModel().getMap().upgradeSettlement(buildLocation, player);
+        this.getModel().getMap().upgradeSettlement(buildLocation, player.getPlayerIndex());
         player.setRoads(player.getRoads()-1);
         resource.purchaseItem(player,PurchaseType.CITY);
         return;
@@ -146,7 +146,7 @@ public class BuildingFacade extends AbstractFacade {
     public boolean canBuildSettlement(@NotNull Player player, @NotNull VertexLocation buildLocation, boolean isFree) {
         if(getUnusedSettlements(player)<1)
             return false;
-        else if(!map.canPlaceSettlement(player, buildLocation))
+        else if(!map.canPlaceSettlement(player, buildLocation, false))
             return false;
         else if(!isFree){
             if(!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))

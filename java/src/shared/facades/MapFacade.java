@@ -46,8 +46,8 @@ public class MapFacade extends AbstractFacade {
      * @pre The {@link Player} is in a game.
      * @post None
      */
-    public boolean canPlaceSettlement(Player player, VertexLocation location){
-        return map.canAddSettlement(location,player.getPlayerIndex());
+    public boolean canPlaceSettlement(Player player, VertexLocation location, boolean isFirstTurn){
+        return map.canAddSettlement(location,player.getPlayerIndex(), isFirstTurn);
     }
 
     /**
@@ -146,84 +146,7 @@ public class MapFacade extends AbstractFacade {
      * @param edge   The {@link EdgeLocation} that is being queried.
      * @return True if the {@code player} owns a road/building adjacent to the specified {@link EdgeLocation}.
      */
-    public boolean isConnectedEdge(@NotNull Player player, @NotNull EdgeLocation edge) {
-        edge = edge.getNormalizedLocation();
-        HexLocation hex = edge.getHexLoc();
-        switch (edge.getDir()){
-            case North:
-                if(hasSettlement(player,new VertexLocation(hex, VertexDirection.NorthWest).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.NorthWest).getNormalizedLocation())||hasSettlement(player,new VertexLocation(hex, VertexDirection.NorthEast).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.NorthEast).getNormalizedLocation())){
-                    return true;
-                }
-                break;
-            case NorthEast:
-                if(hasSettlement(player,new VertexLocation(hex, VertexDirection.NorthEast).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.NorthEast).getNormalizedLocation())||hasSettlement(player,new VertexLocation(hex, VertexDirection.East).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.East).getNormalizedLocation())){
-                    return true;
-                }
-                break;
-            case SouthEast:
-                if(hasSettlement(player,new VertexLocation(hex, VertexDirection.East).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.East).getNormalizedLocation())||hasSettlement(player,new VertexLocation(hex, VertexDirection.SouthEast).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.SouthEast).getNormalizedLocation())){
-                    return true;
-                }
-                break;
-            case South:
-                if(hasSettlement(player,new VertexLocation(hex, VertexDirection.SouthEast).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.SouthEast).getNormalizedLocation())||hasSettlement(player,new VertexLocation(hex, VertexDirection.SouthWest).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.SouthWest).getNormalizedLocation())){
-                    return true;
-                }
-                break;
-            case SouthWest:
-                if(hasSettlement(player,new VertexLocation(hex, VertexDirection.SouthWest).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.SouthWest).getNormalizedLocation())||hasSettlement(player,new VertexLocation(hex, VertexDirection.West).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.West).getNormalizedLocation())){
-                    return true;
-                }
-                break;
-            case NorthWest:
-                if(hasSettlement(player,new VertexLocation(hex, VertexDirection.West).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.West).getNormalizedLocation())||hasSettlement(player,new VertexLocation(hex, VertexDirection.NorthWest).getNormalizedLocation())||hasCity(player,new VertexLocation(hex, VertexDirection.NorthWest).getNormalizedLocation())){
-                    return true;
-                }
-                break;
-            default: return false;
-        }
-        return false;
-    }
 
-    /**
-     * Sees if a given {@link VertexLocation} is adjacent a road owned by {@code player}.
-     *
-     * @param player The {@code player} for whom we are looking for owned roads adjacent to the {@link VertexLocation}.
-     * @param vertex The {@link VertexLocation} that is being queried.
-     * @return True if the {@code player} owns a road adjacent to the specified {@link VertexLocation}.
-     */
-    public boolean isConnectedVertex(@NotNull Player player, @NotNull VertexLocation vertex) {
-        vertex = vertex.getNormalizedLocation();
-        HexLocation hex = vertex.getHexLoc();
-        switch (vertex.getDir()){
-            case NorthEast:
-                if(hasRoad(player,new EdgeLocation(hex, EdgeDirection.North))||hasRoad(player,new EdgeLocation(hex,EdgeDirection.NorthEast))||hasRoad(player,new EdgeLocation(hex.getNeighborLoc(EdgeDirection.North),EdgeDirection.SouthEast)))
-                    return true;
-                break;
-            case East:
-                if(hasRoad(player,new EdgeLocation(hex, EdgeDirection.NorthEast))||hasRoad(player,new EdgeLocation(hex,EdgeDirection.SouthEast))||hasRoad(player,new EdgeLocation(hex.getNeighborLoc(EdgeDirection.NorthEast),EdgeDirection.South)))
-                    return true;
-                break;
-            case SouthEast:
-                if(hasRoad(player,new EdgeLocation(hex, EdgeDirection.SouthEast))||hasRoad(player,new EdgeLocation(hex,EdgeDirection.South))||hasRoad(player,new EdgeLocation(hex.getNeighborLoc(EdgeDirection.SouthEast),EdgeDirection.SouthWest)))
-                    return true;
-                break;
-            case SouthWest:
-                if(hasRoad(player,new EdgeLocation(hex, EdgeDirection.South))||hasRoad(player,new EdgeLocation(hex,EdgeDirection.SouthWest))||hasRoad(player,new EdgeLocation(hex.getNeighborLoc(EdgeDirection.South),EdgeDirection.NorthWest)))
-                    return true;
-                break;
-            case West:
-                if(hasRoad(player,new EdgeLocation(hex, EdgeDirection.SouthWest))||hasRoad(player,new EdgeLocation(hex,EdgeDirection.NorthWest))||hasRoad(player,new EdgeLocation(hex.getNeighborLoc(EdgeDirection.SouthWest),EdgeDirection.North)))
-                    return true;
-                break;
-            case NorthWest:
-                if(hasRoad(player,new EdgeLocation(hex, EdgeDirection.NorthWest))||hasRoad(player,new EdgeLocation(hex,EdgeDirection.North))||hasRoad(player,new EdgeLocation(hex.getNeighborLoc(EdgeDirection.NorthWest),EdgeDirection.NorthEast)))
-                    return true;
-                break;
-            default: return false;
-        }
-        return false;
-    }
 
     /**
      * Returns the {@link HexType} produced by the hex found at the given {@link HexLocation}.
