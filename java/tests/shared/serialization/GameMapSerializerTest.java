@@ -3,6 +3,7 @@ package shared.serialization;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import shared.models.game.GameMap;
 
@@ -364,9 +365,16 @@ public class GameMapSerializerTest {
             "    ]\n" +
             "}";
 
+    private static ModelSerializer serializer;
+
+    @BeforeClass
+    public static void setUp() {
+        serializer = ModelSerializer.getInstance();
+    }
+
     @Test
     public void deserializeFull() throws Exception {
-        GameMap map = ModelSerializer.getInstance().fromJson(
+        GameMap map = serializer.fromJson(
                 fullJson, GameMap.class);
         Assert.assertNotNull(map);
         // If anyone has a better solution to this, let me know
@@ -377,7 +385,7 @@ public class GameMapSerializerTest {
     public void serializeDefault() throws Exception {
         GameMap map = new GameMap();
 
-        JsonElement e = ModelSerializer.getInstance().toJsonTree(
+        JsonElement e = serializer.toJsonTree(
                 map, GameMap.class
         );
 
@@ -392,6 +400,16 @@ public class GameMapSerializerTest {
                         "}"),
                 e
         );
+    }
+
+    @Test
+    public void serializeDeserialize() throws Exception {
+        GameMap map = serializer.fromJson(fullJson, GameMap.class);
+        String mapSerialized = serializer.toJson(map, GameMap.class);
+        GameMap fromSerialized = serializer.fromJson(mapSerialized, GameMap.class);
+        String mapSerialized2 = serializer.toJson(fromSerialized, GameMap.class);
+
+        Assert.assertEquals(map, fromSerialized);
     }
 
     // TODO: Add extra de/serialization tests
