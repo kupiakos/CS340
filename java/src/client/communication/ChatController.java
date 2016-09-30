@@ -55,11 +55,7 @@ public class ChatController extends Controller implements IChatController, Obser
 
         if (cf.canSendChat(new SendChatAction(message, player))) {
             cf.sendChat(chat);
-            try {
                 s.sendChat(chat);
-            } catch (CommunicationException e) {
-                e.printStackTrace();
-            }
         }
     }
 

@@ -56,11 +56,7 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 
         if (tf.canEndTurn(player)) {
             tf.endTurn(player);
-            try {
-                s.finishTurn(action);
-            } catch (CommunicationException e) {
-                e.printStackTrace();
-            }
+            s.finishTurn(action);
         }
 
     }
