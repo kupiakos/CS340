@@ -2,7 +2,7 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import shared.models.moves.SendChatAction;
 
 import javax.annotation.Generated;

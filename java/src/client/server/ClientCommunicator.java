@@ -1,15 +1,10 @@
 package client.server;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.MalformedJsonException;
-import com.sun.jmx.snmp.daemon.CommunicationException;
-
-import javax.security.auth.login.CredentialNotFoundException;
+import javax.naming.CommunicationException;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Connection;
 
 /**
  * Created by elijahgk on 9/12/2016.
@@ -84,10 +79,11 @@ class ClientCommunicator implements IClientCommunicator{
             connection.disconnect();
             return response.toString();
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("ClientCommunicator threw a Malformed URL Exception.");
+            throw new IllegalArgumentException(e.getMessage());
         } catch (IOException e) {
-            throw new CommunicationException(e, "ClientCommunicator threw an IO Exception.");
+            throw new CommunicationException(e.getMessage());
         } finally {
+            assert connection != null;
             connection.disconnect();
         }
     }

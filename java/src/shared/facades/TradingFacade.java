@@ -1,7 +1,7 @@
 package shared.facades;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.ResourceType;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
@@ -35,6 +35,7 @@ public class TradingFacade extends AbstractFacade {
      * <li>It must be {@code sender}'s turn.</li>
      * <li>The game must be in a state in which trading is allowed.</li>
      * <li>The offer must add and subtract at least one resource.</li>
+     * <li>The sender can afford to send the given resources</li>
      * </ul>
      *
      * @param sender   the sender of the trade, not null
@@ -70,8 +71,6 @@ public class TradingFacade extends AbstractFacade {
 
     /**
      * Offer to trade with another player with the given conditions.
-     * <p>
-     * Note that this only modifies the local model. The server must be called as well.
      *
      * @param sender   the sender of the trade, not null
      * @param receiver the receiver of the trade, not null
@@ -88,6 +87,12 @@ public class TradingFacade extends AbstractFacade {
         }
     }
 
+    /**
+     * Detect if a player has made any outstanding trade offers waiting to be accepted by someone else.
+     *
+     * @param sender the person who has made the trade offer
+     * @return the trade offers made by the player, or null if none
+     */
     @Nullable
     public TradeOffer getMadeTradeOffer(@NotNull Player sender) {
         return null;
@@ -97,11 +102,25 @@ public class TradingFacade extends AbstractFacade {
      * Detect if a player has any outstanding trade offers waiting to be accepted/rejected by them.
      *
      * @param receiver the player to check if they have any trade offers waiting for them
-     * @return whether the player has any trade offers waiting for a response from them, or null if none
+     * @return the trade offers waiting for a response from the player, or null if none
      */
     @Nullable
     public TradeOffer getWaitingTradeOffer(@NotNull Player receiver) {
         return null;
+    }
+
+    public boolean canRespondToTradeOffer(@NotNull Player receiver, boolean willAccept) {
+        return false;
+    }
+
+    /**
+     * Respond to a trade offer that is withstanding with {@code receiver} as the receiver of the trade.
+     *
+     * @param receiver   the player that is receiving the trade
+     * @param willAccept whether the player will accept the trade desired
+     */
+    public void respondToTradeOffer(@NotNull Player receiver, boolean willAccept) {
+
     }
 
     /**

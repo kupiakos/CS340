@@ -1,8 +1,7 @@
 package client.server;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import shared.IServer;
-import shared.exceptions.JoinGameException;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.games.*;
@@ -58,7 +57,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void joinGame(@NotNull JoinGameRequest joinGameObject) throws JoinGameException, IllegalArgumentException, CommunicationException {
+    public void joinGame(@NotNull JoinGameRequest joinGameObject) throws IllegalArgumentException, CommunicationException {
 
     }
 

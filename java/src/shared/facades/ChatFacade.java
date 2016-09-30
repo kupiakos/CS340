@@ -1,7 +1,7 @@
 package shared.facades;
 
 import client.game.GameManager;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
 import shared.models.moves.SendChatAction;
