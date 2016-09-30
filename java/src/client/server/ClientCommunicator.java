@@ -16,7 +16,7 @@ import java.sql.Connection;
  * ClientCommunicator receives calls from ServerProxy and submits those calls as HTTP requests to the Catan Server.
  * Package Private
  */
-class ClientCommunicator {
+class ClientCommunicator implements IClientCommunicator{
 
     private static ClientCommunicator SINGLETON = null;
     private String URLPrefix;
