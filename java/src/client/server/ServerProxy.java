@@ -359,6 +359,7 @@ public class ServerProxy implements IServer {
         String modelJson = "";
         try {
             modelJson = cc.sendHTTPRequest("/moves/buildCity",requestBody,"POST");
+            System.out.println(modelJson);
         }catch (IllegalArgumentException | CommunicationException e){
             System.out.println(e.getMessage());
             e.printStackTrace();

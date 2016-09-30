@@ -13,6 +13,7 @@ import shared.models.game.Player;
 public class MapFacade extends AbstractFacade {
 
     private GameMap map;
+
     /**
      * Constructor. Requires a valid game model to work.
      *
@@ -34,9 +35,9 @@ public class MapFacade extends AbstractFacade {
      * @pre The {@link Player} is in a game.
      * @post None
      */
-    public boolean canPlaceRoad(Player player, EdgeLocation location){
+    public boolean canPlaceRoad(Player player, EdgeLocation location, boolean isSetup) {
         location = location.getNormalizedLocation();
-        return map.canAddRoad(location,player.getPlayerIndex());
+        return map.canAddRoad(location, player.getPlayerIndex(), isSetup);
     }
 
     /**
@@ -47,9 +48,9 @@ public class MapFacade extends AbstractFacade {
      * @pre The {@link Player} is in a game.
      * @post None
      */
-    public boolean canPlaceSettlement(Player player, VertexLocation location, boolean isFirstTurn){
+    public boolean canPlaceSettlement(Player player, VertexLocation location, boolean isFirstTurn) {
         location = location.getNormalizedLocation();
-        return map.canAddSettlement(location,player.getPlayerIndex(), isFirstTurn);
+        return map.canAddSettlement(location, player.getPlayerIndex(), isFirstTurn);
     }
 
     /**
@@ -60,9 +61,9 @@ public class MapFacade extends AbstractFacade {
      * @pre The {@link Player} is in a game.
      * @post None
      */
-    public boolean canPlaceCity(Player player, VertexLocation location){
+    public boolean canPlaceCity(Player player, VertexLocation location) {
         location = location.getNormalizedLocation();
-        return map.canUpgradeSettlement(location,player.getPlayerIndex());
+        return map.canUpgradeSettlement(location, player.getPlayerIndex());
     }
 
     /**
@@ -82,7 +83,7 @@ public class MapFacade extends AbstractFacade {
      * @return True if the{@link EdgeLocation} has not been built upon; false otherwise.
      */
     public boolean isVertexEmpty(@NotNull VertexLocation vertex) {
-        return (!map.getSettlements().containsKey(vertex)&& !map.getCities().containsKey(vertex));
+        return (!map.getSettlements().containsKey(vertex) && !map.getCities().containsKey(vertex));
     }
 
     /**
@@ -93,8 +94,8 @@ public class MapFacade extends AbstractFacade {
      * @return True if the {@code player} has a settlement built on the specified {@link VertexLocation}.
      */
     public boolean hasSettlement(@NotNull Player player, @NotNull VertexLocation vertex) {
-        if(map.getSettlements().containsKey(vertex)){
-            if(map.getRoads().get(vertex)==player.getPlayerIndex())
+        if (map.getSettlements().containsKey(vertex)) {
+            if (map.getRoads().get(vertex) == player.getPlayerIndex())
                 return true;
         }
         return false;
@@ -108,8 +109,8 @@ public class MapFacade extends AbstractFacade {
      * @return True if the {@code player} has a city built on the specified {@link VertexLocation}.
      */
     public boolean hasCity(@NotNull Player player, @NotNull VertexLocation vertex) {
-        if(map.getCities().containsKey(vertex)){
-            if(map.getCities().get(vertex)==player.getPlayerIndex())
+        if (map.getCities().containsKey(vertex)) {
+            if (map.getCities().get(vertex) == player.getPlayerIndex())
                 return true;
         }
         return false;
@@ -122,7 +123,7 @@ public class MapFacade extends AbstractFacade {
      * @return True if the robber is currently on the specified {@link HexLocation}; false otherwise.
      */
     public boolean hasRobber(@NotNull HexLocation hex) {
-        if(map.getRobber()==hex)
+        if (map.getRobber() == hex)
             return true;
         return false;
     }
