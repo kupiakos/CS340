@@ -49,7 +49,7 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
     @Override
     public void endTurn() {
         // TODO:: Fix this shiz for da real playas
-        Player player = new Player();
+        PlayerIndex player = GameManager.getGame().getClientModel().getTurnTracker().getCurrentTurn();
         FinishMoveAction action = new FinishMoveAction();
         TurnFacade tf = GameManager.getGame().getFacade().getTurn();
         IServer s = GameManager.getGame().getServer();
