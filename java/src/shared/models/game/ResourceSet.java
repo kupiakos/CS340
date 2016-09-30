@@ -56,6 +56,12 @@ public class ResourceSet {
         this.wheat = wheat;
     }
 
+    public ResourceSet(ResourceSet other) {
+        for (ResourceType type : ResourceType.values()) {
+            setOfType(type, getOfType(type) + other.getOfType(type));
+        }
+    }
+
     /**
      * Returns a copy of {@code set} that swaps the signs of each of its resources
      *
@@ -132,6 +138,11 @@ public class ResourceSet {
         }
     }
 
+    public int getTotal() {
+        return Arrays.stream(ResourceType.values())
+                .mapToInt(t -> getOfType(t)).sum();
+    }
+
     /**
      * Set the amount of a type of resource represented by this list.
      *
@@ -167,7 +178,7 @@ public class ResourceSet {
      */
     public boolean isSubset(@NotNull ResourceSet other) {
         return Arrays.stream(ResourceType.values())
-                .allMatch(t -> getOfType(t) < other.getOfType(t));
+                .allMatch(t -> getOfType(t) <= other.getOfType(t));
     }
 
     /**

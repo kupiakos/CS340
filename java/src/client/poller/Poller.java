@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.naming.CommunicationException;
 import javax.swing.Timer;
+
 /**
  * Will take care of contacting the server on regular intervals to check for game updates.
  */
@@ -34,7 +35,7 @@ public class Poller {
      *
      * @post This provides a timer that will poll the server
      */
-    public Poller(){
+    public Poller() {
 
         ActionListener poll = (ActionEvent) -> {
             // Grab a game manager
@@ -45,13 +46,13 @@ public class Poller {
             ClientModel response;
             try {
                 response = gm.getServer().gameState(version);
+                // If new model
+                if (response != null) {
+                    // Update ours
+                    gm.setClientModel(response);
+                }
             } catch (CommunicationException e) {
-                return;
-            }
-            // If new model
-            if (response != null){
-                // Update ours
-                gm.setClientModel(response);
+                e.printStackTrace();
             }
         };
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, poll);
@@ -63,7 +64,7 @@ public class Poller {
      *
      * @post the timer will be started
      */
-    public void startPoller(){
+    public void startPoller() {
         mTimer.start();
     }
 
