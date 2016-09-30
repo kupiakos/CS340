@@ -1,15 +1,25 @@
 package shared.facades;
 
+import client.game.GameManager;
 import com.sun.istack.internal.NotNull;
+import shared.definitions.PlayerIndex;
+import shared.definitions.PurchaseType;
+import shared.definitions.TurnStatus;
 import shared.locations.EdgeLocation;
 import shared.locations.VertexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
 
+import java.util.Set;
+
 /**
  * This facade creates an interface to communicate with the underlying building sub-model.
  */
 public class BuildingFacade extends AbstractFacade {
+
+    private FacadeManager manager;
+    private ResourcesFacade resource;
+    private MapFacade map;
 
     /**
      * Constructor. Requires a valid game model to work.
@@ -21,6 +31,9 @@ public class BuildingFacade extends AbstractFacade {
      */
     public BuildingFacade(@NotNull FacadeManager manager) {
         super(manager);
+        resource = manager.getResources();
+        map = manager.getMap();
+        this.manager = manager;
     }
 
     /**
@@ -36,7 +49,19 @@ public class BuildingFacade extends AbstractFacade {
      * <li>Longest road may be given to the player if applicable.</li>
      * </ul>
      */
-    public void buildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree) {
+    public void buildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree, boolean isSetup) throws IllegalArgumentException {
+        try {
+            if (!canBuildRoad(player, buildLocation, isFree, isSetup))
+                throw new IllegalArgumentException();
+            this.getModel().getMap().addRoad(buildLocation, player.getPlayerIndex(), isSetup);
+            player.setRoads(player.getRoads() - 1);
+        } catch (Exception e) {
+            System.err.println("Player tried to build a road without being able to.");
+        }
+        if (!isFree) {
+            resource.purchaseItem(player, PurchaseType.ROAD);
+        }
+        return;
     }
 
     /**
@@ -52,6 +77,19 @@ public class BuildingFacade extends AbstractFacade {
      * </ul>
      */
     public void buildSettlement(@NotNull Player player, @NotNull VertexLocation buildLocation, boolean isFree) {
+        try {
+            if (!canBuildSettlement(player, buildLocation, isFree))
+                throw new IllegalArgumentException();
+            this.getModel().getMap().addSettlement(buildLocation, player.getPlayerIndex(), false);
+        } catch (Exception e) {
+            System.err.println("Player tried to build a settlement without being able to.");
+        }
+        player.setSettlements(player.getSettlements() - 1);
+        if (!isFree) {
+            resource.purchaseItem(player, PurchaseType.SETTLEMENT);
+        }
+        return;
+
     }
 
     /**
@@ -67,6 +105,16 @@ public class BuildingFacade extends AbstractFacade {
      * </ul>
      */
     public void buildCity(@NotNull Player player, @NotNull VertexLocation buildLocation) {
+        try {
+            if (!canBuildCity(player, buildLocation))
+                throw new IllegalArgumentException();
+            this.getModel().getMap().upgradeSettlement(buildLocation, player.getPlayerIndex());
+        } catch (Exception e) {
+            System.err.println("Player tried to build a city without being able to.");
+        }
+        player.setCities(player.getCities() - 1);
+        resource.purchaseItem(player, PurchaseType.CITY);
+        return;
     }
 
     /**
@@ -78,8 +126,17 @@ public class BuildingFacade extends AbstractFacade {
      * @pre {@code Player} is currently in a game
      * @post None.
      */
-    public boolean canBuildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree) {
-        return false;
+    public boolean canBuildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree, boolean isSetup) {
+        resource = manager.getResources();
+        if (getUnusedRoads(player) < 1)
+            return false;
+        if (!map.canPlaceRoad(player, buildLocation, isSetup))
+            return false;
+        if (!isFree) {
+            if (!resource.canPurchaseItem(player, PurchaseType.ROAD))
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -92,7 +149,16 @@ public class BuildingFacade extends AbstractFacade {
      * @post None.
      */
     public boolean canBuildSettlement(@NotNull Player player, @NotNull VertexLocation buildLocation, boolean isFree) {
-        return false;
+        resource = manager.getResources();
+        if (getUnusedSettlements(player) < 1)
+            return false;
+        else if (!map.canPlaceSettlement(player, buildLocation, (manager.getTurn().getPhase() == TurnStatus.FIRST_ROUND || manager.getTurn().getPhase() == TurnStatus.SECOND_ROUND)))
+            return false;
+        else if (!isFree) {
+            if (!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -104,7 +170,14 @@ public class BuildingFacade extends AbstractFacade {
      * @post None.
      */
     public boolean canBuildCity(@NotNull Player player, @NotNull VertexLocation buildLocation) {
-        return false;
+        resource = manager.getResources();
+        if (getUnusedCities(player) < 1)
+            return false;
+        else if (!map.canPlaceCity(player, buildLocation))
+            return false;
+        else if (!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
+            return false;
+        return true;
     }
 
     /**
@@ -115,43 +188,8 @@ public class BuildingFacade extends AbstractFacade {
      * @post None.
      */
     public int getTotalRoadsBuilt(@NotNull Player player) {
-        return 0;
-    }
-
-    /**
-     * Checks to see if a road can be placed on the map at the specified {@link EdgeLocation}.
-     *
-     * @param buildLocation {@link EdgeLocation} being queried for road placement.
-     * @return True if the edge is empty and adjacent to a Road/{City}/settlement belonging to current {@link Player}.
-     * @pre The {@link Player} is in a game.
-     * @post None
-     */
-    private boolean canPlaceRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation) {
-        return false;
-    }
-
-    /**
-     * Checks to see if a settlement can be placed on the map at the specified {@link VertexLocation}.
-     *
-     * @param buildLocation {@link VertexLocation} being queried for settlement placement.
-     * @return True if the {@link VertexLocation} is empty and adjacent to a road belonging to current {@link Player}.
-     * @pre The {@link Player} is in a game.
-     * @post None
-     */
-    private boolean canPlaceSettlement(@NotNull Player player, @NotNull VertexLocation buildLocation) {
-        return false;
-    }
-
-    /**
-     * Checks to see if a city can be placed on the map at the specified {@link VertexLocation}.
-     *
-     * @param buildLocation {@link VertexLocation} being queried for city placement.
-     * @return True if the {@link VertexLocation} has a settlement belonging to the current {@link Player} and adjacent to a road belonging to current {@link Player}.
-     * @pre The {@link Player} is in a game.
-     * @post None
-     */
-    private boolean canPlaceCity(@NotNull Player player, @NotNull VertexLocation buildLocation) {
-        return false;
+        Set<EdgeLocation> roads = getModel().getMap().getPlayerRoads(player.getPlayerIndex());
+        return roads.size();
     }
 
     /**
@@ -163,7 +201,7 @@ public class BuildingFacade extends AbstractFacade {
      * @post None.
      */
     private int getUnusedRoads(@NotNull Player player) {
-        return 0;
+        return player.getRoads();
     }
 
     /**
@@ -174,7 +212,7 @@ public class BuildingFacade extends AbstractFacade {
      * @post None.
      */
     private int getUnusedSettlements(@NotNull Player player) {
-        return 0;
+        return player.getSettlements();
     }
 
     /**
@@ -185,7 +223,8 @@ public class BuildingFacade extends AbstractFacade {
      * @post None.
      */
     private int getUnusedCities(@NotNull Player player) {
-        return 0;
+        return player.getCities();
     }
+
 
 }

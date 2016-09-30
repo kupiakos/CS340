@@ -1,6 +1,5 @@
 package client.server;
 
-import client.game.GameManager;
 import com.sun.istack.internal.NotNull;
 import shared.IServer;
 import shared.exceptions.JoinGameException;
@@ -13,7 +12,6 @@ import shared.models.util.ChangeLogLevelRequest;
 
 import javax.naming.CommunicationException;
 import javax.security.auth.login.CredentialNotFoundException;
-import java.util.List;
 
 /**
  * Created by elijahgk on 9/12/2016.
@@ -24,12 +22,11 @@ public class MockProxy implements IServer {
     public MockProxy() {
     }
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public void login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, CommunicationException, IllegalArgumentException {
+    public void login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
 
     }
 
@@ -37,7 +34,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, CommunicationException, IllegalArgumentException {
+    public void register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
 
     }
 
@@ -45,16 +42,15 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-
-    public List<GameInfo> listOfGames() throws CommunicationException {
-        return null;
+    public GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException {
+        return new GameInfo[0];
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void createGame(@NotNull CreateGameRequest createGameObject) throws CommunicationException, IllegalArgumentException {
+    public void createGame(@NotNull CreateGameRequest createGameObject) throws IllegalArgumentException, CommunicationException {
 
     }
 
@@ -62,7 +58,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void joinGame(@NotNull JoinGameRequest joinGameObject) throws CommunicationException, JoinGameException {
+    public void joinGame(@NotNull JoinGameRequest joinGameObject) throws JoinGameException, IllegalArgumentException, CommunicationException {
 
     }
 
@@ -78,7 +74,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void loadGame(@NotNull LoadGameRequest loadGameObject) throws CommunicationException, IllegalArgumentException {
+    public void loadGame(@NotNull LoadGameRequest loadGameObject) throws IllegalArgumentException, CommunicationException {
 
     }
 
@@ -86,7 +82,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel gameState(int version) throws CommunicationException, IllegalArgumentException {
+    public ClientModel gameState(int version) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -94,7 +90,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel resetGame() throws CommunicationException {
+    public ClientModel resetGame() throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -102,7 +98,15 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public List<String> getCommandsGame() throws CommunicationException {
+    public String[] getCommandsGame() throws IllegalArgumentException, CommunicationException {
+        return new String[0];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ClientModel postCommandsGame(@NotNull String[] gameCommands) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -110,7 +114,31 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel postCommandsGame(@NotNull List<String> gameCommands) throws CommunicationException, IllegalArgumentException {
+    public String[] listAI() throws CommunicationException, IllegalArgumentException {
+        return new String[0];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addAI(@NotNull AddAIRequest addAIObject) throws IllegalArgumentException, CommunicationException {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void changeLogLevel(@NotNull ChangeLogLevelRequest changeLogLevelObject) throws IllegalArgumentException, CommunicationException {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ClientModel sendChat(@NotNull SendChatAction sendChatObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -118,7 +146,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public List<String> listAI() throws CommunicationException {
+    public ClientModel acceptTrade(@NotNull AcceptTradeAction acceptTradeObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -126,23 +154,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void addAI(@NotNull AddAIRequest addAIObject) throws CommunicationException, IllegalArgumentException {
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void changeLogLevel(@NotNull ChangeLogLevelRequest changeLogLevelObject) throws CommunicationException, IllegalArgumentException {
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ClientModel sendChat(@NotNull SendChatAction sendChatObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel discardCards(@NotNull DiscardCardsAction discardCardsObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -150,7 +162,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel acceptTrade(@NotNull AcceptTradeAction acceptTradeObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel rollNumber(@NotNull RollNumberAction rollNumberObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -158,7 +170,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel discardCards(@NotNull DiscardCardsAction discardCardsObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel buildRoad(@NotNull BuildRoadAction buildRoadObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -166,7 +178,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel rollNumber(@NotNull RollNumberAction rollNumberObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel buildSettlement(@NotNull BuildSettlementAction buildSettlementObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -174,7 +186,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel buildRoad(@NotNull BuildRoadAction buildRoadObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel buildCity(@NotNull BuildCityAction buildCityObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -182,7 +194,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel buildSettlement(@NotNull BuildSettlementAction buildSettlementObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel offerTrade(@NotNull OfferTradeAction offerTradeObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -190,7 +202,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel buildCity(@NotNull BuildCityAction buildCityObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel maritimeTrade(@NotNull MaritimeTradeAction maritimeTradeObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -198,7 +210,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel offerTrade(@NotNull OfferTradeAction offerTradeObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel robPlayer(@NotNull RobPlayerAction robPlayerObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -206,7 +218,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel maritimeTrade(@NotNull MaritimeTradeAction maritimeTradeObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel finishTurn(@NotNull FinishMoveAction finishMoveObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -214,7 +226,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel robPlayer(@NotNull RobPlayerAction robPlayerObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel buyDevCard(@NotNull BuyDevCardAction buyDevCardObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -222,7 +234,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel finishTurn(@NotNull FinishMoveAction finishMoveObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel useSoldier(@NotNull SoldierAction soldierObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -230,7 +242,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel buyDevCard(@NotNull BuyDevCardAction buyDevCardObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel useYearOfPlenty(@NotNull YearofPlentyAction yearOfPlentyObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -238,7 +250,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel useSoldier(@NotNull SoldierAction soldierObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel useRoadBuilding(@NotNull RoadBuildingAction roadBuildingObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -246,7 +258,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel useYearOfPlenty(@NotNull YearofPlentyAction yearOfPlentyObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel useMonopoly(@NotNull MonopolyAction monopolyObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 
@@ -254,23 +266,7 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public ClientModel useRoadBuilding(@NotNull RoadBuildingAction roadBuildingObject) throws CommunicationException, IllegalArgumentException {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ClientModel useMonopoly(@NotNull MonopolyAction monopolyObject) throws CommunicationException, IllegalArgumentException {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ClientModel useMonument(@NotNull MonumentAction monumentObject) throws CommunicationException, IllegalArgumentException {
+    public ClientModel useMonument(@NotNull MonumentAction monumentObject) throws IllegalArgumentException, CommunicationException {
         return null;
     }
 }
