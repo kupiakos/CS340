@@ -125,6 +125,8 @@ public class ClientModel {
      */
     @NotNull
     public MessageList getChat() {
+        if (chat == null) chat = new MessageList();
+
         return chat;
     }
 
