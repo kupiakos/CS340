@@ -186,6 +186,12 @@ public class GameMap {
         return cities.get(location);
     }
 
+    /**
+     * Get the owner of a building (settlement or city), or null if that location has neither
+     *
+     * @param location the location to check
+     * @return the owner of the building (settlement or city), or null if that location has neither
+     */
     @Nullable
     public PlayerIndex getBuildingOwner(@NotNull VertexLocation location) {
         location = location.getNormalizedLocation();
@@ -356,6 +362,12 @@ public class GameMap {
         cities.put(location, player);
     }
 
+    /**
+     * gets the adjacent vertices to the passed in vertex location
+     *
+     * @param location the passed in vertex location to get the adjacent vertices from
+     * @return the adjacent vertices to the passed in vertex location
+     */
     public Set<VertexLocation> getAdjacentVertices(VertexLocation location) {
 
         Set<VertexLocation> verticesResult = new HashSet<>();
@@ -365,9 +377,7 @@ public class GameMap {
 
             Set<VertexLocation> adjacentVertices = adjacentEdge.getConnectedVertices();
             for (VertexLocation adjacentVertex : adjacentVertices) {
-                if (hexes.get(adjacentVertex.getHexLoc()).getResource() != HexType.WATER) {
-                    verticesResult.add(adjacentVertex);
-                }
+                verticesResult.add(adjacentVertex);
             }
 
         }
@@ -375,6 +385,12 @@ public class GameMap {
         return verticesResult;
     }
 
+    /**
+     * Checks if the vertex location has a building (city or settlement), or neither
+     *
+     * @param vertex the vertex to be checked
+     * @return true if there is a building and false if there is no building
+     */
     boolean hasBuilding(VertexLocation vertex) {
         if (this.settlements.containsKey(vertex))
             return true;
@@ -383,6 +399,12 @@ public class GameMap {
         return false;
     }
 
+    /**
+     * Gets the Edges connecting to the passed in vertex location
+     *
+     * @param vertex the vertex to get the connecting edges from
+     * @return the edge locations connected to the passed in vertex
+     */
     Set<EdgeLocation> getVertexEdges(VertexLocation vertex) {
         Set<EdgeLocation> edges = vertex.getEdges();
         for(Iterator<EdgeLocation> itr = edges.iterator();itr.hasNext();){

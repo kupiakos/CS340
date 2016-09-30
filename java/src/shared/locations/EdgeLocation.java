@@ -109,6 +109,11 @@ public class EdgeLocation
 		}
 	}
 
+    /**
+     * gets the connected vertices to this edge location
+     *
+     * @return the connected vertices to this edge location
+     */
     public Set<VertexLocation> getConnectedVertices() {
         EdgeLocation location = getNormalizedLocation();
         Set<VertexLocation> vertices = new HashSet<>();
