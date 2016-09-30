@@ -40,7 +40,7 @@ public class TurnFacade extends AbstractFacade {
      */
     public void endTurn(@NotNull PlayerIndex player) {
         if (canEndTurn(player)) {
-            //TODO:: Figure out if we need to consolidate cards or anything or reset them to a start state
+            // TODO:: Figure out if we need to consolidate cards or anything or reset them to a start state
             advanceTurnStatus();
             MessageEntry m = new MessageEntry(player.name(), LOG_FINISH_TURN_MSG);
             getModel().writeLog(m);
@@ -72,6 +72,7 @@ public class TurnFacade extends AbstractFacade {
             case DISCARDING:
             case ROLLING:
             case ROBBING:
+                return false;
                 //TODO:: Read rules on what is supposed to happen if you try and end your turn
             default:
                 return false;
