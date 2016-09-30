@@ -29,7 +29,9 @@ public class ChatFacade extends AbstractFacade {
      * @return whether the player can send any chat messages
      */
     public static boolean canSendChat(@NotNull SendChatAction c) {
-        return(c.getContent() != null && !c.getContent().isEmpty());
+        return(c.getContent() != null
+                && !c.getContent().isEmpty()
+                && c.getPlayerIndex() != null);
     }
 
     /**
