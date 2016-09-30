@@ -1,7 +1,9 @@
 package shared.facades;
 
+import client.game.GameManager;
 import com.sun.istack.internal.NotNull;
 import shared.definitions.HexType;
+import shared.definitions.PlayerIndex;
 import shared.locations.*;
 import shared.models.game.ClientModel;
 import shared.models.game.GameMap;
@@ -13,6 +15,9 @@ import shared.models.game.Player;
 public class MapFacade extends AbstractFacade {
 
     private GameMap map;
+    private int longestRoadLength;
+    private PlayerIndex logestRoadOwner;
+
     /**
      * Constructor. Requires a valid game model to work.
      *
@@ -24,6 +29,8 @@ public class MapFacade extends AbstractFacade {
     public MapFacade(@NotNull FacadeManager manager) {
         super(manager);
         map = getModel().getMap();
+        longestRoadLength = 0;
+        logestRoadOwner = null;
     }
 
     /**
@@ -34,9 +41,9 @@ public class MapFacade extends AbstractFacade {
      * @pre The {@link Player} is in a game.
      * @post None
      */
-    public boolean canPlaceRoad(Player player, EdgeLocation location){
+    public boolean canPlaceRoad(Player player, EdgeLocation location, boolean isSetup) {
         location = location.getNormalizedLocation();
-        return map.canAddRoad(location,player.getPlayerIndex());
+        return map.canAddRoad(location, player.getPlayerIndex(), isSetup);
     }
 
     /**
@@ -47,9 +54,9 @@ public class MapFacade extends AbstractFacade {
      * @pre The {@link Player} is in a game.
      * @post None
      */
-    public boolean canPlaceSettlement(Player player, VertexLocation location, boolean isFirstTurn){
+    public boolean canPlaceSettlement(Player player, VertexLocation location, boolean isFirstTurn) {
         location = location.getNormalizedLocation();
-        return map.canAddSettlement(location,player.getPlayerIndex(), isFirstTurn);
+        return map.canAddSettlement(location, player.getPlayerIndex(), isFirstTurn);
     }
 
     /**
@@ -60,9 +67,24 @@ public class MapFacade extends AbstractFacade {
      * @pre The {@link Player} is in a game.
      * @post None
      */
-    public boolean canPlaceCity(Player player, VertexLocation location){
+    public boolean canPlaceCity(Player player, VertexLocation location) {
         location = location.getNormalizedLocation();
-        return map.canUpgradeSettlement(location,player.getPlayerIndex());
+        return map.canUpgradeSettlement(location, player.getPlayerIndex());
+    }
+
+    /**
+     * Returns the player who currently has the longest road.
+     * @return
+     */
+    public PlayerIndex findLongestRoad(){
+        for (Player p: getModel().getPlayers()) {
+            int roadSize = map.getPlayerLongestRoad(p.getPlayerIndex());
+            if(roadSize>longestRoadLength){
+                longestRoadLength = roadSize;
+                logestRoadOwner = p.getPlayerIndex();
+            }
+        }
+        return logestRoadOwner;
     }
 
     /**
@@ -82,7 +104,7 @@ public class MapFacade extends AbstractFacade {
      * @return True if the{@link EdgeLocation} has not been built upon; false otherwise.
      */
     public boolean isVertexEmpty(@NotNull VertexLocation vertex) {
-        return (!map.getSettlements().containsKey(vertex)&& !map.getCities().containsKey(vertex));
+        return (!map.getSettlements().containsKey(vertex) && !map.getCities().containsKey(vertex));
     }
 
     /**
@@ -93,8 +115,8 @@ public class MapFacade extends AbstractFacade {
      * @return True if the {@code player} has a settlement built on the specified {@link VertexLocation}.
      */
     public boolean hasSettlement(@NotNull Player player, @NotNull VertexLocation vertex) {
-        if(map.getSettlements().containsKey(vertex)){
-            if(map.getRoads().get(vertex)==player.getPlayerIndex())
+        if (map.getSettlements().containsKey(vertex)) {
+            if (map.getRoads().get(vertex) == player.getPlayerIndex())
                 return true;
         }
         return false;
@@ -108,8 +130,8 @@ public class MapFacade extends AbstractFacade {
      * @return True if the {@code player} has a city built on the specified {@link VertexLocation}.
      */
     public boolean hasCity(@NotNull Player player, @NotNull VertexLocation vertex) {
-        if(map.getCities().containsKey(vertex)){
-            if(map.getCities().get(vertex)==player.getPlayerIndex())
+        if (map.getCities().containsKey(vertex)) {
+            if (map.getCities().get(vertex) == player.getPlayerIndex())
                 return true;
         }
         return false;
@@ -122,7 +144,7 @@ public class MapFacade extends AbstractFacade {
      * @return True if the robber is currently on the specified {@link HexLocation}; false otherwise.
      */
     public boolean hasRobber(@NotNull HexLocation hex) {
-        if(map.getRobber()==hex)
+        if (map.getRobber() == hex)
             return true;
         return false;
     }

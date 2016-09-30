@@ -49,11 +49,11 @@ public class BuildingFacade extends AbstractFacade {
      * <li>Longest road may be given to the player if applicable.</li>
      * </ul>
      */
-    public void buildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree) throws IllegalArgumentException {
+    public void buildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree, boolean isSetup) throws IllegalArgumentException {
         try {
-            if (!canBuildRoad(player, buildLocation, isFree))
+            if (!canBuildRoad(player, buildLocation, isFree, isSetup))
                 throw new IllegalArgumentException();
-            this.getModel().getMap().addRoad(buildLocation, player.getPlayerIndex());
+            this.getModel().getMap().addRoad(buildLocation, player.getPlayerIndex(), isSetup);
             player.setRoads(player.getRoads() - 1);
         } catch (Exception e) {
             System.err.println("Player tried to build a road without being able to.");
@@ -126,11 +126,11 @@ public class BuildingFacade extends AbstractFacade {
      * @pre {@code Player} is currently in a game
      * @post None.
      */
-    public boolean canBuildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree) {
+    public boolean canBuildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree, boolean isSetup) {
         resource = manager.getResources();
         if (getUnusedRoads(player) < 1)
             return false;
-        if (!map.canPlaceRoad(player, buildLocation))
+        if (!map.canPlaceRoad(player, buildLocation, isSetup))
             return false;
         if (!isFree) {
             if (!resource.canPurchaseItem(player, PurchaseType.ROAD))
@@ -152,7 +152,7 @@ public class BuildingFacade extends AbstractFacade {
         resource = manager.getResources();
         if (getUnusedSettlements(player) < 1)
             return false;
-        else if (!map.canPlaceSettlement(player, buildLocation, (manager.getTurn().getPhase()== TurnStatus.FIRST_ROUND||manager.getTurn().getPhase()==TurnStatus.SECOND_ROUND)))
+        else if (!map.canPlaceSettlement(player, buildLocation, (manager.getTurn().getPhase() == TurnStatus.FIRST_ROUND || manager.getTurn().getPhase() == TurnStatus.SECOND_ROUND)))
             return false;
         else if (!isFree) {
             if (!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
@@ -170,7 +170,7 @@ public class BuildingFacade extends AbstractFacade {
      * @post None.
      */
     public boolean canBuildCity(@NotNull Player player, @NotNull VertexLocation buildLocation) {
-        resource=manager.getResources();
+        resource = manager.getResources();
         if (getUnusedCities(player) < 1)
             return false;
         else if (!map.canPlaceCity(player, buildLocation))
@@ -225,5 +225,6 @@ public class BuildingFacade extends AbstractFacade {
     private int getUnusedCities(@NotNull Player player) {
         return player.getCities();
     }
+
 
 }

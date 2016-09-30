@@ -8,6 +8,7 @@ import shared.definitions.HexType;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
+import shared.locations.VertexDirection;
 import shared.locations.VertexLocation;
 import shared.utils.MapUtils;
 
@@ -209,8 +210,8 @@ public class GameMap {
      * This tests distance and adjacency requirements.
      * If it is the first turn, don't check whether the player is connected to one of their own roads.
      *
-     * @param location the location to test, not null
-     * @param player   the player to test, not null
+     * @param location    the location to test, not null
+     * @param player      the player to test, not null
      * @param isFirstTurn whether the game is in the first turn or not
      * @return whether the map could support adding a settlement owned by the player at that location
      */
@@ -276,7 +277,7 @@ public class GameMap {
      * @param road the road containing the location and owner to add
      * @return whether the map could support adding a road owned by the player at that location
      */
-    public boolean canAddRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player) {
+    public boolean canAddRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player, @NotNull boolean isSetup) {
         if (roads.containsKey(location))
             return false;
         Set<VertexLocation> vertices = location.getConnectedVertices();
@@ -286,9 +287,11 @@ public class GameMap {
             if (hasBuilding(v)) {
                 if (getBuildingOwner(v) != player)
                     return false;
+                else if (isSetup && settlementHasAdjacentRoads(v))
+                    return false;
             }
             for (EdgeLocation e : edges) {
-                if (e == location)
+                if (e.equals(location))
                     continue;
                 else if (roads.containsKey(e)) {
                     if (getRoadOwner(e) != player)
@@ -298,7 +301,9 @@ public class GameMap {
                 }
             }
         }
-        if (!hasAdjacentRoad)
+        if (!hasAdjacentRoad && !isSetup)
+            return false;
+        else if (isSetup && hasAdjacentRoad)
             return false;
         return true;
     }
@@ -311,8 +316,9 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public void addRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player) throws Exception {
-        if (!canAddRoad(location, player)) {
+
+    public void addRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player, @NotNull boolean isSetup) throws Exception {
+        if (!canAddRoad(location, player, isSetup)) {
             throw new IllegalOperationException("Can't add road");
         }
         location = location.getNormalizedLocation();
@@ -401,11 +407,71 @@ public class GameMap {
      */
     Set<EdgeLocation> getVertexEdges(VertexLocation vertex) {
         Set<EdgeLocation> edges = vertex.getEdges();
-        for (EdgeLocation e : edges) {
-            if (hexes.get(e.getHexLoc()).getResource() == HexType.WATER && hexes.get(e.getHexLoc().getNeighborLoc(e.getDir())).getResource() == HexType.WATER)
-                edges.remove(e);
+        for(Iterator<EdgeLocation> itr = edges.iterator();itr.hasNext();){
+            EdgeLocation e = itr.next();
+            if ((Math.abs(e.getHexLoc().getX())==radius||Math.abs(e.getHexLoc().getY())==radius)||Math.abs(e.getHexLoc().getX()+e.getHexLoc().getY())==radius)
+                itr.remove();
         }
         return edges;
+    }
+
+    /**
+     * Method which is used only in the first two rounds of setup.  Makes sure player is only placing
+     * a road next to the settlement he just placed.
+     *
+     * @param v the location of a settlment
+     * @return true if settlement has no adjacent roads.
+     */
+    boolean settlementHasAdjacentRoads(VertexLocation v) {
+        HashSet<EdgeLocation> edges = (HashSet) getVertexEdges(v);
+        for (EdgeLocation e : edges) {
+            if (roads.containsKey(e))
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * Find the length of the longest connected road for the given player denoted by their {@link PlayerIndex}.
+     * @param player
+     * @return  Greatest number of connected roads.
+     */
+    public int getPlayerLongestRoad(PlayerIndex player){
+        int max = 0;
+        HashSet<EdgeLocation> edges = (HashSet)getPlayerRoads(player);
+        for (EdgeLocation e:edges) {
+            int roadSize = getRoadSize(1,e,player);
+            if(roadSize>max)
+                max = roadSize;
+        }
+        return max;
+    }
+
+    /**
+     * Recursive method that finds the greatest number of connected roads for the given player with a starting location.
+     * @param currentSize
+     * @param edge
+     * @param player
+     * @return
+     */
+    private int getRoadSize(int currentSize, EdgeLocation edge, PlayerIndex player){
+        HashSet<EdgeLocation> edges;
+        switch(edge.getDir()){
+            case North: edges = (HashSet)getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.NorthEast));break;
+            case NorthEast: edges = (HashSet)getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.East));break;
+            case SouthEast: edges = (HashSet)getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.SouthEast));break;
+            case South: edges = (HashSet)getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.SouthWest));break;
+            case SouthWest: edges = (HashSet)getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.West));break;
+            case NorthWest: edges = (HashSet)getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.NorthWest));break;
+            default: edges = new HashSet<>();break;
+        }
+        for (EdgeLocation e:edges) {
+            if(e.equals(edge.getNormalizedLocation()))
+                continue;
+            else if(roads.get(e)==player)
+                return getRoadSize(currentSize+1,e,player);
+        }
+        return currentSize;
     }
 
     /**
