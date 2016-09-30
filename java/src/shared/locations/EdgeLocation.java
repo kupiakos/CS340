@@ -1,7 +1,7 @@
 package shared.locations;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Represents the location of an edge on a hex map
@@ -111,7 +111,7 @@ public class EdgeLocation
 
     public Set<VertexLocation> getConnectedVertices() {
         EdgeLocation location = getNormalizedLocation();
-        Set<VertexLocation> vertices = new TreeSet<>();
+        Set<VertexLocation> vertices = new HashSet<>();
 
         HexLocation hex = location.getHexLoc();
         EdgeDirection edgeDirection = location.getDir();
