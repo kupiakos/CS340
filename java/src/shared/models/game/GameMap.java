@@ -253,7 +253,7 @@ public class GameMap {
      */
     public void addSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTwoTurns) throws Exception {
         if (!canAddSettlement(location, player, isFirstTwoTurns)) {
-            throw new IllegalOperationException("Can't upgradeSettlement");
+            throw new IllegalOperationException("Can't add Settlement");
         }
         location = location.getNormalizedLocation();
         settlements.put(location, player);

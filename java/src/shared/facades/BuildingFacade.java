@@ -4,6 +4,7 @@ import client.game.GameManager;
 import com.sun.istack.internal.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.definitions.PurchaseType;
+import shared.definitions.TurnStatus;
 import shared.locations.EdgeLocation;
 import shared.locations.VertexLocation;
 import shared.models.game.ClientModel;
@@ -16,8 +17,10 @@ import java.util.Set;
  */
 public class BuildingFacade extends AbstractFacade {
 
+    private FacadeManager manager;
     private ResourcesFacade resource;
     private MapFacade map;
+
     /**
      * Constructor. Requires a valid game model to work.
      *
@@ -30,6 +33,7 @@ public class BuildingFacade extends AbstractFacade {
         super(manager);
         resource = manager.getResources();
         map = manager.getMap();
+        this.manager = manager;
     }
 
     /**
@@ -45,17 +49,17 @@ public class BuildingFacade extends AbstractFacade {
      * <li>Longest road may be given to the player if applicable.</li>
      * </ul>
      */
-    public void buildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree) throws IllegalArgumentException{
+    public void buildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree) throws IllegalArgumentException {
         try {
             if (!canBuildRoad(player, buildLocation, isFree))
                 throw new IllegalArgumentException();
-        }catch (IllegalArgumentException e){
+            this.getModel().getMap().addRoad(buildLocation, player.getPlayerIndex());
+            player.setRoads(player.getRoads() - 1);
+        } catch (Exception e) {
             System.err.println("Player tried to build a road without being able to.");
         }
-        this.getModel().getMap().addRoad(buildLocation, player.getPlayerIndex());
-        player.setRoads(player.getRoads()-1);
-        if(!isFree){
-            resource.purchaseItem(player,PurchaseType.ROAD);
+        if (!isFree) {
+            resource.purchaseItem(player, PurchaseType.ROAD);
         }
         return;
     }
@@ -76,13 +80,13 @@ public class BuildingFacade extends AbstractFacade {
         try {
             if (!canBuildSettlement(player, buildLocation, isFree))
                 throw new IllegalArgumentException();
-        }catch (IllegalArgumentException e){
+            this.getModel().getMap().addSettlement(buildLocation, player.getPlayerIndex(), false);
+        } catch (Exception e) {
             System.err.println("Player tried to build a settlement without being able to.");
         }
-        this.getModel().getMap().addSettlement(buildLocation, player.getPlayerIndex());
-        player.setSettlements(player.getRoads()-1);
-        if(!isFree){
-            resource.purchaseItem(player,PurchaseType.SETTLEMENT);
+        player.setSettlements(player.getSettlements() - 1);
+        if (!isFree) {
+            resource.purchaseItem(player, PurchaseType.SETTLEMENT);
         }
         return;
 
@@ -104,12 +108,12 @@ public class BuildingFacade extends AbstractFacade {
         try {
             if (!canBuildCity(player, buildLocation))
                 throw new IllegalArgumentException();
-        }catch (IllegalArgumentException e){
+            this.getModel().getMap().upgradeSettlement(buildLocation, player.getPlayerIndex());
+        } catch (Exception e) {
             System.err.println("Player tried to build a city without being able to.");
         }
-        this.getModel().getMap().upgradeSettlement(buildLocation, player.getPlayerIndex());
-        player.setRoads(player.getRoads()-1);
-        resource.purchaseItem(player,PurchaseType.CITY);
+        player.setCities(player.getCities() - 1);
+        resource.purchaseItem(player, PurchaseType.CITY);
         return;
     }
 
@@ -123,12 +127,13 @@ public class BuildingFacade extends AbstractFacade {
      * @post None.
      */
     public boolean canBuildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree) {
-        if(getUnusedRoads(player)<1)
+        resource = manager.getResources();
+        if (getUnusedRoads(player) < 1)
             return false;
-        if(!map.canPlaceRoad(player,buildLocation))
+        if (!map.canPlaceRoad(player, buildLocation))
             return false;
-        if(!isFree){
-            if(!resource.canPurchaseItem(player,PurchaseType.ROAD))
+        if (!isFree) {
+            if (!resource.canPurchaseItem(player, PurchaseType.ROAD))
                 return false;
         }
         return true;
@@ -144,12 +149,13 @@ public class BuildingFacade extends AbstractFacade {
      * @post None.
      */
     public boolean canBuildSettlement(@NotNull Player player, @NotNull VertexLocation buildLocation, boolean isFree) {
-        if(getUnusedSettlements(player)<1)
+        resource = manager.getResources();
+        if (getUnusedSettlements(player) < 1)
             return false;
-        else if(!map.canPlaceSettlement(player, buildLocation, false))
+        else if (!map.canPlaceSettlement(player, buildLocation, (manager.getTurn().getPhase()== TurnStatus.FIRST_ROUND||manager.getTurn().getPhase()==TurnStatus.SECOND_ROUND)))
             return false;
-        else if(!isFree){
-            if(!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
+        else if (!isFree) {
+            if (!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
                 return false;
         }
         return true;
@@ -164,11 +170,12 @@ public class BuildingFacade extends AbstractFacade {
      * @post None.
      */
     public boolean canBuildCity(@NotNull Player player, @NotNull VertexLocation buildLocation) {
-        if(getUnusedCities(player)<1)
+        resource=manager.getResources();
+        if (getUnusedCities(player) < 1)
             return false;
-        else if(!map.canPlaceCity(player,buildLocation))
+        else if (!map.canPlaceCity(player, buildLocation))
             return false;
-        else if(!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
+        else if (!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
             return false;
         return true;
     }

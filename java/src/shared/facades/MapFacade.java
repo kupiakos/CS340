@@ -35,6 +35,7 @@ public class MapFacade extends AbstractFacade {
      * @post None
      */
     public boolean canPlaceRoad(Player player, EdgeLocation location){
+        location = location.getNormalizedLocation();
         return map.canAddRoad(location,player.getPlayerIndex());
     }
 
@@ -47,6 +48,7 @@ public class MapFacade extends AbstractFacade {
      * @post None
      */
     public boolean canPlaceSettlement(Player player, VertexLocation location, boolean isFirstTurn){
+        location = location.getNormalizedLocation();
         return map.canAddSettlement(location,player.getPlayerIndex(), isFirstTurn);
     }
 
@@ -59,6 +61,7 @@ public class MapFacade extends AbstractFacade {
      * @post None
      */
     public boolean canPlaceCity(Player player, VertexLocation location){
+        location = location.getNormalizedLocation();
         return map.canUpgradeSettlement(location,player.getPlayerIndex());
     }
 
