@@ -133,8 +133,8 @@ public class BuildingFacade extends AbstractFacade {
         if (!map.canPlaceRoad(player, buildLocation, isSetup))
             return false;
         if (!isFree) {
-            //   if (!resource.canPurchaseItem(player, PurchaseType.ROAD))
-            //       return false;
+            if (!resource.canPurchaseItem(player, PurchaseType.ROAD))
+                return false;
         }
         return true;
     }
@@ -155,8 +155,8 @@ public class BuildingFacade extends AbstractFacade {
         else if (!map.canPlaceSettlement(player, buildLocation, (manager.getTurn().getPhase() == TurnStatus.FIRST_ROUND || manager.getTurn().getPhase() == TurnStatus.SECOND_ROUND)))
             return false;
         else if (!isFree) {
-            //  if (!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
-            //     return false;
+            if (!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
+                return false;
         }
         return true;
     }
@@ -175,8 +175,8 @@ public class BuildingFacade extends AbstractFacade {
             return false;
         else if (!map.canPlaceCity(player, buildLocation))
             return false;
-        //else if (!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
-        //  return false;
+        else if (!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
+            return false;
         return true;
     }
 
