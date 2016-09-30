@@ -6,7 +6,9 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import shared.definitions.HexType;
 import shared.definitions.PlayerIndex;
-import shared.locations.*;
+import shared.locations.EdgeLocation;
+import shared.locations.HexLocation;
+import shared.locations.VertexLocation;
 import shared.utils.MapUtils;
 
 import javax.annotation.Generated;
@@ -73,6 +75,12 @@ public class GameMap {
         this.ports = ports;
         this.settlements = settlements;
         this.cities = cities;
+    }
+
+    public class IllegalOperationException extends Exception {
+        public IllegalOperationException(String message) {
+            super(message);
+        }
     }
 
     /**
@@ -200,36 +208,39 @@ public class GameMap {
      * @param isFirstTurn whether the game is in the first turn or not
      * @return whether the map could support adding a settlement owned by the player at that location
      */
-    public boolean canAddSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTurn) {
-        //only be place at corners of the terrain hexes
-        //never along the edges
-        //5 settlements per player max
-        //can only add settlement on an open intersection
-        if(settlements.get(location) == null && cities.get(location) == null) {
+    public boolean canAddSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTwoTurns) {
+
+        if (settlements.get(location) != null || cities.get(location) != null) {
             return false;
         }
 
-        //cant be placed by another person's road
+        Set<EdgeLocation> adjacentEdges = getVertexEdges(location);
 
-        //can only add settlement if all 3 of the adjacent intersections are vacant-none are occupied by an settlements or cities, including the players'
-        //if the vertex is on the edge of the map, it doesn't have some of those adjacent edges
-        //if turn status is 1, don't check adjacent roads
-        //if turn status is more than 1, check adjacent
-        //each of your settlements must connect to at least one of your roads
+        boolean ownsAdjacentRoad = false;
+        boolean adjacentToAnotherPlayersRoad = false;
+        for (EdgeLocation edge : adjacentEdges) {
+            if (getRoadOwner(edge) == player) {
+                ownsAdjacentRoad = true;
+            } else if (getRoadOwner(edge) != null) {
+                adjacentToAnotherPlayersRoad = true;
+            }
+        }
+        if (!ownsAdjacentRoad && !isFirstTwoTurns) {
+            return false;
+        }
+        if (adjacentToAnotherPlayersRoad) {
+            return false;
+        }
 
-        //cannot build settlement without adding road
-        //intersection:  where 3 hexes meet
-        //must always connect to one or more of your roads
+        Set<VertexLocation> vertices = getAdjacentVertices(location);
 
-        //isvertexconnected
-        //checkadjacentvertices
+        for (VertexLocation vertex : vertices) {
+            if (settlements.get(vertex) != null || cities.get(vertex) != null) {
+                return false;
+            }
+        }
 
-        //must observe the distance rule
-        //the setup phase has 2 rounds.  each player builds 1 road and 1 settlement per round
-        //settlement first, then road
-        //the second settlement can be placed on any open intersection, as long as the distance rule is observed; it dosen't have to connect to the first settlement
-        //the second road must attach to the second settlement pointing in any of the 3 directions
-        return false;
+        return true;
     }
 
     /**
@@ -240,7 +251,10 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public void addSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) {
+    public void addSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTwoTurns) throws Exception {
+        if (!canAddSettlement(location, player, isFirstTwoTurns)) {
+            throw new IllegalOperationException("Can't upgradeSettlement");
+        }
         location = location.getNormalizedLocation();
         settlements.put(location, player);
     }
@@ -281,12 +295,6 @@ public class GameMap {
         if (!hasAdjacentRoad)
             return false;
         return true;
-        //only be placed at the edges of the terrain hexes
-        // 1 road per edge
-        //intersections along roads will remain occupied
-        //15 roads max per player
-        //a new road must always connect to one of a player's existing roads, settlements, or cities
-        //the second road must attach to the second settlement(pointing in any 3 directions
     }
 
     /**
@@ -297,7 +305,10 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public void addRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player) {
+    public void addRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player) throws Exception {
+        if (!canAddRoad(location, player)) {
+            throw new IllegalOperationException("Can't add road");
+        }
         location = location.getNormalizedLocation();
         roads.put(location, player);
     }
@@ -330,14 +341,32 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public void upgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) {
+    public void upgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) throws Exception {
+        if (!canUpgradeSettlement(location, player)) {
+            throw new IllegalOperationException("Can't upgrade Settlement");
+        }
         location = location.getNormalizedLocation();
         settlements.remove(location);
         cities.put(location, player);
     }
 
-    public Set<EdgeLocation> getConnectedEdges(HexLocation location) {
-return null;
+    public Set<VertexLocation> getAdjacentVertices(VertexLocation location) {
+
+        Set<VertexLocation> verticesResult = new HashSet<>();
+
+        Set<EdgeLocation> adjacentEdges = getVertexEdges(location);
+        for (EdgeLocation adjacentEdge : adjacentEdges) {
+
+            Set<VertexLocation> adjacentVertices = adjacentEdge.getConnectedVertices();
+            for (VertexLocation adjacentVertex : adjacentVertices) {
+                if (hexes.get(adjacentVertex.getHexLoc()).getResource() != HexType.WATER) {
+                    verticesResult.add(adjacentVertex);
+                }
+            }
+
+        }
+
+        return verticesResult;
     }
 
     boolean hasBuilding(VertexLocation vertex) {
