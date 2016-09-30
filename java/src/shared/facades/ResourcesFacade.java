@@ -35,7 +35,7 @@ public class ResourcesFacade extends AbstractFacade {
      * @post None.
      */
     public boolean canPurchaseItem(@NotNull Player player, @NotNull PurchaseType item) {
-        return true;
+        return false;
     }
 
     /**
