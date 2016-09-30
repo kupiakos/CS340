@@ -1,7 +1,9 @@
 package shared.facades;
 
+import client.game.GameManager;
 import com.sun.istack.internal.NotNull;
 import shared.definitions.HexType;
+import shared.definitions.PlayerIndex;
 import shared.locations.*;
 import shared.models.game.ClientModel;
 import shared.models.game.GameMap;
@@ -13,6 +15,8 @@ import shared.models.game.Player;
 public class MapFacade extends AbstractFacade {
 
     private GameMap map;
+    private int longestRoadLength;
+    private PlayerIndex logestRoadOwner;
 
     /**
      * Constructor. Requires a valid game model to work.
@@ -25,6 +29,8 @@ public class MapFacade extends AbstractFacade {
     public MapFacade(@NotNull FacadeManager manager) {
         super(manager);
         map = getModel().getMap();
+        longestRoadLength = 0;
+        logestRoadOwner = null;
     }
 
     /**
@@ -64,6 +70,21 @@ public class MapFacade extends AbstractFacade {
     public boolean canPlaceCity(Player player, VertexLocation location) {
         location = location.getNormalizedLocation();
         return map.canUpgradeSettlement(location, player.getPlayerIndex());
+    }
+
+    /**
+     * Returns the player who currently has the longest road.
+     * @return
+     */
+    public PlayerIndex findLongestRoad(){
+        for (Player p: getModel().getPlayers()) {
+            int roadSize = map.getPlayerLongestRoad(p.getPlayerIndex());
+            if(roadSize>longestRoadLength){
+                longestRoadLength = roadSize;
+                logestRoadOwner = p.getPlayerIndex();
+            }
+        }
+        return logestRoadOwner;
     }
 
     /**

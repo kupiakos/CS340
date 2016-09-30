@@ -226,4 +226,5 @@ public class BuildingFacade extends AbstractFacade {
         return player.getCities();
     }
 
+
 }

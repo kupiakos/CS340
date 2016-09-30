@@ -40,6 +40,7 @@ public class BuildingFacadeTest {
         facade.getModel().getMap().getRoads().put(new EdgeLocation(new HexLocation(0, 0), EdgeDirection.North).getNormalizedLocation(), player.getPlayerIndex());
         player.setRoads(2);
         player.setResources(new ResourceSet(0, 2, 0, 1, 0));
+        assertFalse(facade.canBuildRoad(player, new EdgeLocation(new HexLocation(1, -1), EdgeDirection.NorthWest), false, true));
         assertTrue(facade.canBuildRoad(player, new EdgeLocation(new HexLocation(1, -1), EdgeDirection.NorthWest), false, false));
         facade.buildRoad(player, new EdgeLocation(new HexLocation(1, -1), EdgeDirection.NorthWest), false, false);
         assertTrue(facade.getTotalRoadsBuilt(player) == 2);
