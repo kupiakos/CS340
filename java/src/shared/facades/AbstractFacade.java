@@ -27,6 +27,10 @@ abstract class AbstractFacade {
         return this.manager.getClientModel();
     }
 
+    protected FacadeManager getFacades() {
+        return manager;
+    }
+
     /**
      * Sets the current game model.
      *
