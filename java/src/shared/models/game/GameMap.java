@@ -371,9 +371,7 @@ public class GameMap {
 
             Set<VertexLocation> adjacentVertices = adjacentEdge.getConnectedVertices();
             for (VertexLocation adjacentVertex : adjacentVertices) {
-                if (hexes.get(adjacentVertex.getHexLoc()).getResource() != HexType.WATER) {
-                    verticesResult.add(adjacentVertex);
-                }
+                verticesResult.add(adjacentVertex);
             }
 
         }
