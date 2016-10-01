@@ -6,8 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.ResourceType;
 
 import javax.annotation.Generated;
-import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Generated("net.kupiakos")
 public class ResourceSet {
@@ -138,9 +139,17 @@ public class ResourceSet {
         }
     }
 
+    private Stream<ResourceType> getTypes() {
+        return ResourceType.valuesStream();
+    }
+
+    private IntStream getValues() {
+        // Useful if we want statistics but don't care about the resource type
+        return getTypes().mapToInt(this::getOfType);
+    }
+
     public int getTotal() {
-        return Arrays.stream(ResourceType.values())
-                .mapToInt(t -> getOfType(t)).sum();
+        return getTypes().mapToInt(t -> getOfType(t)).sum();
     }
 
     /**
@@ -171,14 +180,61 @@ public class ResourceSet {
     /**
      * Determines whether all of the resources in this are less than or equal to {@code other}.
      * <p>
-     * Effectively determines whether the given resources are required.
+     * If true, then .
      *
      * @param other the set to determine if larger
      * @return true if all of the resources in this are less than ore equal to in {@code other}
      */
     public boolean isSubset(@NotNull ResourceSet other) {
-        return Arrays.stream(ResourceType.values())
-                .allMatch(t -> getOfType(t) <= other.getOfType(t));
+        return getTypes().allMatch(t -> getOfType(t) <= other.getOfType(t));
+    }
+
+    /**
+     * Determines whether all of the resources in this are more than or equal to {@code other}.
+     * <p>
+     * Effectively determines whether the given resources are required.
+     *
+     * @param other the set to determine if larger
+     * @return true if all of the resources in this are less than ore equal to in {@code other}
+     */
+    public boolean isSuperset(@NotNull ResourceSet other) {
+        return getTypes().allMatch(t -> getOfType(t) >= other.getOfType(t));
+    }
+
+    /**
+     * Whether all of the resources are more than or equal to 0.
+     *
+     * @return true if all resources are more than or equal to 0; false otherwise.
+     */
+    public boolean isPositive() {
+        return getValues().allMatch(v -> v >= 0);
+    }
+
+    /**
+     * Whether all of the resources are less than or equal to 0.
+     *
+     * @return true if at least one resource is less than 0; false otherwise
+     */
+    public boolean isNegative() {
+        return getValues().allMatch(v -> v <= 0);
+    }
+
+    /**
+     * Whether all of the resources are equal to 0.
+     *
+     * @return true if all resources are equal to 0; false otherwise
+     */
+    public boolean isEmpty() {
+        return getValues().allMatch(v -> v == 0);
+    }
+
+    /**
+     * Whether any of the resources are more than 0.
+     *
+     * @return true if all resources are more than or equal to 0; false otherwise.
+     */
+    public boolean hasPositive() {
+        return getValues().anyMatch(v -> v > 0);
     }
 
     /**
@@ -186,9 +242,8 @@ public class ResourceSet {
      *
      * @return true if at least one resource is less than 0; false otherwise
      */
-    public boolean isNegative() {
-        return Arrays.stream(ResourceType.values())
-                .anyMatch(t -> getOfType(t) < 0);
+    public boolean hasNegative() {
+        return getValues().anyMatch(v -> v < 0);
     }
 
     /**

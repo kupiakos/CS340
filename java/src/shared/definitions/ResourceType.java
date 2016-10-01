@@ -1,6 +1,10 @@
 package shared.definitions;
 
 import com.google.gson.annotations.SerializedName;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 public enum ResourceType
 {
@@ -17,6 +21,11 @@ public enum ResourceType
     WHEAT,
 
     @SerializedName("ore")
-    ORE
+    ORE;
+
+    @NotNull
+    public static Stream<ResourceType> valuesStream() {
+        return Arrays.stream(values());
+    }
 }
 
