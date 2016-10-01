@@ -74,7 +74,7 @@ public class ResourcesFacade extends AbstractFacade {
      * @return whether the player can receive the resources from the bank
      */
     public boolean canReceiveFromBank(@NotNull ResourceSet resources) {
-        return !(resources.isEmpty() || resources.hasNegative()) && !resources.isSubset(getModel().getBank());
+        return !(resources.isEmpty() || resources.hasNegative()) && resources.isSubset(getModel().getBank());
     }
 
     /**
