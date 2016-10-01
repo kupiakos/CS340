@@ -189,14 +189,19 @@ public class ResourceSet {
         switch (type) {
             case WOOD:
                 setWood(value);
+                break;
             case BRICK:
                 setBrick(value);
+                break;
             case SHEEP:
                 setSheep(value);
+                break;
             case WHEAT:
                 setWheat(value);
+                break;
             case ORE:
                 setOre(value);
+                break;
             default:
                 assert false;
                 break;
