@@ -7,11 +7,10 @@ import shared.definitions.ResourceType;
 
 import javax.annotation.Generated;
 import java.util.Objects;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Generated("net.kupiakos")
-public class ResourceSet {
+public class ResourceSet extends CardSet<ResourceType> {
 
     @SerializedName("ore")
     @Expose
@@ -63,6 +62,10 @@ public class ResourceSet {
         }
     }
 
+    public ResourceSet(ResourceType type, int value) {
+        setOfType(type, value);
+    }
+
     /**
      * Returns a copy of {@code set} that swaps the signs of each of its resources
      *
@@ -85,7 +88,7 @@ public class ResourceSet {
      * @pre {@code set1} and {@code set2} are valid resource sets
      * @post The return will be valid. {@code set1} and {@code set2} are unmodified.
      */
-    public static ResourceSet combine(@NotNull ResourceSet set1, @NotNull ResourceSet set2) {
+    public static ResourceSet combined(@NotNull ResourceSet set1, @NotNull ResourceSet set2) {
         ResourceSet result = set1.copy();
         result.combine(set2);
         return result;
@@ -100,7 +103,7 @@ public class ResourceSet {
      * @pre {@code set1} and {@code set2} are valid resource sets
      * @post The return will be valid. {@code set1} and {@code set2} are unmodified.
      */
-    public static ResourceSet subtract(@NotNull ResourceSet set1, @NotNull ResourceSet set2) {
+    public static ResourceSet subtracted(@NotNull ResourceSet set1, @NotNull ResourceSet set2) {
         ResourceSet result = set1.copy();
         result.subtract(set2);
         return result;
@@ -111,8 +114,14 @@ public class ResourceSet {
      *
      * @return a copy of this object
      */
+    @Override
     public ResourceSet copy() {
         return new ResourceSet(ore, brick, sheep, wood, wheat);
+    }
+
+    @Override
+    protected Stream<ResourceType> getTypes() {
+        return ResourceType.valuesStream();
     }
 
     /**
@@ -139,19 +148,6 @@ public class ResourceSet {
         }
     }
 
-    private Stream<ResourceType> getTypes() {
-        return ResourceType.valuesStream();
-    }
-
-    private IntStream getValues() {
-        // Useful if we want statistics but don't care about the resource type
-        return getTypes().mapToInt(this::getOfType);
-    }
-
-    public int getTotal() {
-        return getTypes().mapToInt(t -> getOfType(t)).sum();
-    }
-
     /**
      * Set the amount of a type of resource represented by this list.
      *
@@ -163,126 +159,22 @@ public class ResourceSet {
         switch (type) {
             case WOOD:
                 setWood(value);
+                break;
             case BRICK:
                 setBrick(value);
+                break;
             case SHEEP:
                 setSheep(value);
+                break;
             case WHEAT:
                 setWheat(value);
+                break;
             case ORE:
                 setOre(value);
+                break;
             default:
                 assert false;
                 break;
-        }
-    }
-
-    /**
-     * Determines whether all of the resources in this are less than or equal to {@code other}.
-     * <p>
-     * If true, then .
-     *
-     * @param other the set to determine if larger
-     * @return true if all of the resources in this are less than ore equal to in {@code other}
-     */
-    public boolean isSubset(@NotNull ResourceSet other) {
-        return getTypes().allMatch(t -> getOfType(t) <= other.getOfType(t));
-    }
-
-    /**
-     * Determines whether all of the resources in this are more than or equal to {@code other}.
-     * <p>
-     * Effectively determines whether the given resources are required.
-     *
-     * @param other the set to determine if larger
-     * @return true if all of the resources in this are less than ore equal to in {@code other}
-     */
-    public boolean isSuperset(@NotNull ResourceSet other) {
-        return getTypes().allMatch(t -> getOfType(t) >= other.getOfType(t));
-    }
-
-    /**
-     * Whether all of the resources are more than or equal to 0.
-     *
-     * @return true if all resources are more than or equal to 0; false otherwise.
-     */
-    public boolean isPositive() {
-        return getValues().allMatch(v -> v >= 0);
-    }
-
-    /**
-     * Whether all of the resources are less than or equal to 0.
-     *
-     * @return true if at least one resource is less than 0; false otherwise
-     */
-    public boolean isNegative() {
-        return getValues().allMatch(v -> v <= 0);
-    }
-
-    /**
-     * Whether all of the resources are equal to 0.
-     *
-     * @return true if all resources are equal to 0; false otherwise
-     */
-    public boolean isEmpty() {
-        return getValues().allMatch(v -> v == 0);
-    }
-
-    /**
-     * Whether any of the resources are more than 0.
-     *
-     * @return true if all resources are more than or equal to 0; false otherwise.
-     */
-    public boolean hasPositive() {
-        return getValues().anyMatch(v -> v > 0);
-    }
-
-    /**
-     * Whether any of the resources are less than 0.
-     *
-     * @return true if at least one resource is less than 0; false otherwise
-     */
-    public boolean hasNegative() {
-        return getValues().anyMatch(v -> v < 0);
-    }
-
-    /**
-     * Combines this with another resource list, summing their contents.
-     *
-     * @param other the other set to combine with, not null
-     * @pre {@code other} is a valid resource set
-     * @post This will be summed with the resources in {@code other},
-     * but {@code other} will not be modified.
-     */
-    public void combine(@NotNull ResourceSet other) {
-        for (ResourceType type : ResourceType.values()) {
-            setOfType(type, getOfType(type) + other.getOfType(type));
-        }
-    }
-
-    /**
-     * Combines this with another resource list, subtracting with {@code other}'s contents.
-     *
-     * @param other the other set to subtract from, not null
-     * @pre {@code other} is a valid resource set
-     * @post This will be summed with the resources in {@code other},
-     * but {@code other} will not be modified.
-     */
-    public void subtract(@NotNull ResourceSet other) {
-        for (ResourceType type : ResourceType.values()) {
-            setOfType(type, getOfType(type) - other.getOfType(type));
-        }
-    }
-
-    /**
-     * Swap the signs of each of this set's resources
-     *
-     * @param set the set to form a negative copy of
-     * @return a negative copy of {@code set}
-     */
-    public void toNegative() {
-        for (ResourceType type : ResourceType.values()) {
-            setOfType(type, -getOfType(type));
         }
     }
 
