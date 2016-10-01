@@ -1,8 +1,7 @@
 package shared.models.game;
 
+import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ResourceSetTest {
     @Test
@@ -31,7 +30,7 @@ public class ResourceSetTest {
     }
 
     @Test
-    public void combine1() throws Exception {
+    public void combineStatic() throws Exception {
 
     }
 
@@ -41,8 +40,15 @@ public class ResourceSetTest {
     }
 
     @Test
-    public void toNegative1() throws Exception {
+    public void toNegativeStatic() throws Exception {
 
+    }
+
+    @Test
+    public void equals() throws Exception {
+        Assert.assertEquals(new ResourceSet(1, 2, 3, 4, 5), new ResourceSet(1, 2, 3, 4, 5));
+        Assert.assertNotEquals(new ResourceSet(1, 2, 3, 4, 5), new ResourceSet(5, 4, 3, 2, 1));
+        Assert.assertEquals(new ResourceSet(), new ResourceSet());
     }
 
 }

@@ -236,7 +236,7 @@ public class ClientModel {
     /**
      * @return The current trade offer, if there is one.
      */
-    @NotNull
+    @Nullable
     public TradeOffer getTradeOffer() {
         return tradeOffer;
     }
@@ -244,11 +244,11 @@ public class ClientModel {
     /**
      * @param tradeOffer the current trade offer, if there is one
      */
-    public void setTradeOffer(@NotNull TradeOffer tradeOffer) {
+    public void setTradeOffer(@Nullable TradeOffer tradeOffer) {
         this.tradeOffer = tradeOffer;
     }
 
-    public ClientModel withTradeOffer(@NotNull TradeOffer tradeOffer) {
+    public ClientModel withTradeOffer(@Nullable TradeOffer tradeOffer) {
         setTradeOffer(tradeOffer);
         return this;
     }
