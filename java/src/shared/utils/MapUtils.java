@@ -3,9 +3,8 @@ package shared.utils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -110,4 +109,17 @@ public class MapUtils {
                                                       Predicate<? super K> testFunction) {
         return valuesWithEntryMatching(items, e -> testFunction.test(e.getKey()));
     }
+
+    public static <K, V> AbstractMap.SimpleImmutableEntry<K, V> createEntry(K key, V value) {
+        return new AbstractMap.SimpleImmutableEntry<K, V>(key, value);
+    }
+
+    public static <K, V> Map<K, V> mergeMaps(Map<K, V> m1,
+                                             Map<K, V> m2,
+                                             BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+        Map<K, V> result = new HashMap<K, V>(m1);
+        m2.forEach((k, v) -> result.merge(k, v, remappingFunction));
+        return result;
+    }
+
 }

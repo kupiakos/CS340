@@ -99,11 +99,8 @@ public class ClientModel {
         return this.getPlayers().size();
     }
 
-    @Nullable
-    public Player getPlayer(PlayerIndex p) {
-        if (p.index() >= getPlayers().size()) {
-            return null;
-        }
+    @NotNull
+    public Player getPlayer(@NotNull PlayerIndex p) {
         return getPlayers().get(p.index());
     }
 

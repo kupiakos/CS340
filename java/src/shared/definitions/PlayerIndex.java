@@ -1,5 +1,10 @@
 package shared.definitions;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 /**
  * A safer representation of a specific player's index in a specific game.
  * @see #fromInt
@@ -26,20 +31,11 @@ public enum PlayerIndex {
      */
     FOURTH(3);
 
+    public static final int MAX_PLAYERS = 4;
     private int playerIndex;
 
     PlayerIndex(int index) {
         playerIndex = index;
-    }
-
-    public static final int MAX_PLAYERS = 4;
-
-    /**
-     * Get the numeric index this represents.
-     * @return a number 1-4
-     */
-    public int index() {
-        return playerIndex;
     }
 
     /**
@@ -63,5 +59,19 @@ public enum PlayerIndex {
             default:
                 throw new IllegalArgumentException("PlayerIndex must be 0-3");
         }
+    }
+
+    @NotNull
+    public static Stream<PlayerIndex> valuesStream() {
+        return Arrays.stream(values());
+    }
+
+    /**
+     * Get the numeric index this represents.
+     *
+     * @return a number 1-4
+     */
+    public int index() {
+        return playerIndex;
     }
 }
