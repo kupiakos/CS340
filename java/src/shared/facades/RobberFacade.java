@@ -51,7 +51,7 @@ public class RobberFacade extends AbstractFacade {
      * @post None
      * @return True if the {@link Player} has 8 or more resource cards, False if 7 or less.
      */
-    public boolean shouldDiscardHalf(Player player)
+    public boolean shouldDiscardHalf(@NotNull Player player)
     {
 
         return false;
@@ -65,7 +65,7 @@ public class RobberFacade extends AbstractFacade {
      *      {@link RobberFacade#shouldDiscardHalf(Player)} returned a true statement.
      * @post The {@link Player} must have half of their cards.
      */
-    public void discardHalf(Player player) {
+    public void discardHalf(@NotNull Player player) {
 
     }
 
@@ -78,8 +78,7 @@ public class RobberFacade extends AbstractFacade {
      * @post None.
      * @return True if {@code newLocation} is valid, False if not
      */
-    public boolean canMoveRobber(HexLocation newLocation, HexLocation currentLocation)
-    {
+    public boolean canMoveRobber(@NotNull HexLocation newLocation, @NotNull HexLocation currentLocation) {
         return false;
     }
 
@@ -91,7 +90,7 @@ public class RobberFacade extends AbstractFacade {
      *      {@link RobberFacade#canMoveRobber(HexLocation, HexLocation)} returns a true statement.
      * @post The robber is moved to the {@code newLocation}.
      */
-    public void moveRobber(HexLocation newLocation, HexLocation currentLocation) {
+    public void moveRobber(@NotNull HexLocation newLocation, @NotNull HexLocation currentLocation) {
 
     }
 
@@ -104,7 +103,7 @@ public class RobberFacade extends AbstractFacade {
      * @post None.
      * @return True if the {@code currentPlayer} can steal from the {@code targetPlayer}, False if not
      */
-    public boolean canStealFrom(Player currentPlayer, Player targetPlayer)
+    public boolean canStealFrom(@NotNull Player currentPlayer, @NotNull Player targetPlayer)
     {
         return false;
     }
@@ -118,7 +117,7 @@ public class RobberFacade extends AbstractFacade {
      *      {@code currentPlayer} and {@code targetPlayer} are both valid (not null) and are both part of the current {@link ClientModel}.
      * @post The {@code currentPlayer} takes one resource card that originally belonged to the {@code targetPlayer}
      */
-    public void stealFrom(Player currentPlayer, Player targetPlayer)
+    public void stealFrom(@NotNull Player currentPlayer, @NotNull Player targetPlayer)
     {
 
     }

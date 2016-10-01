@@ -2,11 +2,13 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.istack.internal.Nullable;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.ResourceType;
 
 import javax.annotation.Generated;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -152,6 +154,26 @@ public class ResourceSet {
         return getTypes().mapToInt(this::getOfType);
     }
 
+    /**
+     * Pick a single random card from this resource set.
+     * Does not modify the set.
+     *
+     * @return the ResourceType chosen, or null if the set is empty
+     */
+    @Nullable
+    public ResourceType getRandom() {
+        // Inefficient, but should work.
+        if (isEmpty()) {
+            return null;
+        }
+
+        int n = new Random().nextInt(getTotal());
+        return getTypes()
+                .flatMap(t -> IntStream.range(0, getOfType(t)).mapToObj(v -> t))
+                .skip(n)
+                .findFirst().get();
+    }
+
     public int getTotal() {
         return getTypes().mapToInt(t -> getOfType(t)).sum();
     }
@@ -167,14 +189,19 @@ public class ResourceSet {
         switch (type) {
             case WOOD:
                 setWood(value);
+                break;
             case BRICK:
                 setBrick(value);
+                break;
             case SHEEP:
                 setSheep(value);
+                break;
             case WHEAT:
                 setWheat(value);
+                break;
             case ORE:
                 setOre(value);
+                break;
             default:
                 assert false;
                 break;

@@ -78,6 +78,16 @@ public class GameMap {
         this.cities = cities;
     }
 
+    private static <V> Map<VertexLocation, V> normalizeVertexMap(Map<VertexLocation, V> vMap) {
+        return vMap.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey().getNormalizedLocation(), e -> e.getValue()));
+    }
+
+    private static <V> Map<EdgeLocation, V> normalizeEdgeMap(Map<EdgeLocation, V> eMap) {
+        return eMap.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey().getNormalizedLocation(), e -> e.getValue()));
+    }
+
     /**
      * Get the locations of the cities owned by the given player.
      *
@@ -289,7 +299,7 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public void addSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTwoTurns) throws Exception {
+    public void addSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTwoTurns)  {
         if (!canAddSettlement(location, player, isFirstTwoTurns)) {
             throw new IllegalArgumentException("Can't add Settlement");
         }
@@ -348,7 +358,7 @@ public class GameMap {
      * @pre {@link #canAddSettlement} returns true
      */
 
-    public void addRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player, @NotNull boolean isSetup) throws Exception {
+    public void addRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player, @NotNull boolean isSetup)  {
         if (!canAddRoad(location, player, isSetup)) {
             throw new IllegalArgumentException("Can't add road");
         }
@@ -384,7 +394,7 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public void upgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) throws Exception {
+    public void upgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player)  {
         if (!canUpgradeSettlement(location, player)) {
             throw new IllegalArgumentException("Can't upgrade Settlement");
         }
@@ -532,7 +542,7 @@ public class GameMap {
      * @param roads list of roads currently placed on the map
      */
     public void setRoads(@NotNull Map<EdgeLocation, PlayerIndex> roads) {
-        this.roads = roads;
+        this.roads = normalizeEdgeMap(roads);
     }
 
     public GameMap withRoads(@NotNull Map<EdgeLocation, PlayerIndex> roads) {
@@ -627,7 +637,7 @@ public class GameMap {
      * @param settlements list of settlements currently placed on the map
      */
     public void setSettlements(@NotNull Map<VertexLocation, PlayerIndex> settlements) {
-        this.settlements = settlements;
+        this.settlements = normalizeVertexMap(settlements);
     }
 
     public GameMap withSettlements(@NotNull Map<VertexLocation, PlayerIndex> settlements) {
@@ -646,7 +656,7 @@ public class GameMap {
      * @param cities list of cities currently placed on the map
      */
     public void setCities(@NotNull Map<VertexLocation, PlayerIndex> cities) {
-        this.cities = cities;
+        this.cities = normalizeVertexMap(cities);
     }
 
     public GameMap withCities(@NotNull Map<VertexLocation, PlayerIndex> cities) {
