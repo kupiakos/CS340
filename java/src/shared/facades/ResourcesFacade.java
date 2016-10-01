@@ -35,7 +35,9 @@ public class ResourcesFacade extends AbstractFacade {
      * @post None.
      */
     public boolean canPurchaseItem(@NotNull Player player, @NotNull PurchaseType item) {
-        return true;
+        ResourceSet itemCost = item.purchaseCost();
+        return itemCost.isSubset(player.getResources());
+
     }
 
     /**
@@ -52,25 +54,25 @@ public class ResourcesFacade extends AbstractFacade {
         if (!canPurchaseItem(player, item)) {
             throw new IllegalArgumentException("Invalid purchase attempt");
         }
+        returnToBank(player, item.purchaseCost());
     }
 
     /**
      * Whether the player can receive the resources from the bank.
      * <p>
-     * The bank must have the resources to be able to fulfill the request.
+     * The bank must have the resources to be able to fulfill the request from the player
      *
-     * @param player    the player to check against, not null
-     * @param resources the set of resources requested from the bank, not null
+     * @param resources the set of resources requested to be given to the player from the bank, not null
      * @return whether the player can receive the resources from the bank
      */
-    public boolean canReceiveFromBank(@NotNull Player player, @NotNull ResourceSet resources) {
-        return false;
+    public boolean canReceiveFromBank(@NotNull ResourceSet resources) {
+        return !(resources.isEmpty() || resources.hasNegative()) && !resources.isSubset(getModel().getBank());
     }
 
     /**
      * Whether the player can receive the resources from the bank.
      * <p>
-     * The bank must have the resources to be able to fulfill the request.
+     * The bank must have the resources to be able to fulfill the request made by the player.
      *
      * @param player    the player to check against, not null
      * @param resources the set of resources requested from the bank, not null
@@ -79,9 +81,11 @@ public class ResourcesFacade extends AbstractFacade {
      * which are received by {@code player}.
      */
     public void receiveFromBank(@NotNull Player player, @NotNull ResourceSet resources) {
-        if (!canReceiveFromBank(player, resources)) {
+        if (!canReceiveFromBank(resources)) {
             throw new IllegalArgumentException("Invalid bank receive");
         }
+        getModel().getBank().subtract(resources);
+        player.getResources().combine(resources);
     }
 
     /**
@@ -94,7 +98,7 @@ public class ResourcesFacade extends AbstractFacade {
      * @return whether the player can return the resources to the bank
      */
     public boolean canReturnToBank(@NotNull Player player, @NotNull ResourceSet resources) {
-        return false;
+        return !(resources.isEmpty() || resources.hasNegative()) && resources.isSubset(player.getResources());
     }
 
     /**
@@ -109,8 +113,10 @@ public class ResourcesFacade extends AbstractFacade {
      * which are received by the bank.
      */
     public void returnToBank(@NotNull Player player, @NotNull ResourceSet resources) {
-        if (!canReceiveFromBank(player, resources)) {
+        if (!canReturnToBank(player, resources)) {
             throw new IllegalArgumentException("Invalid bank receive");
         }
+        player.getResources().subtract(resources);
+        getModel().getBank().combine(resources);
     }
 }
