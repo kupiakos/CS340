@@ -4,7 +4,6 @@ import client.base.Controller;
 import client.game.GameManager;
 import shared.IServer;
 import shared.definitions.PlayerIndex;
-import shared.definitions.TurnStatus;
 import shared.facades.TurnFacade;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
@@ -56,7 +55,11 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 
         if (tf.canEndTurn(player)) {
             tf.endTurn(player);
-            s.finishTurn(action);
+            try {
+                s.finishTurn(action);
+            } catch (CommunicationException e) {
+                e.printStackTrace();
+            }
         }
 
     }
