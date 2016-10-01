@@ -101,7 +101,7 @@ public class DevCardSet extends CardSet<DevCardType> {
                 setRoadBuilding(value);
                 break;
             case MONUMENT:
-                setMonument(monument);
+                setMonument(value);
                 break;
             default:
                 assert false;
