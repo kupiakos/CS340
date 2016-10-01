@@ -63,6 +63,10 @@ public class ResourceSet {
         }
     }
 
+    public ResourceSet(ResourceType type, int value) {
+        setOfType(type, value);
+    }
+
     /**
      * Returns a copy of {@code set} that swaps the signs of each of its resources
      *
@@ -85,7 +89,7 @@ public class ResourceSet {
      * @pre {@code set1} and {@code set2} are valid resource sets
      * @post The return will be valid. {@code set1} and {@code set2} are unmodified.
      */
-    public static ResourceSet combine(@NotNull ResourceSet set1, @NotNull ResourceSet set2) {
+    public static ResourceSet combined(@NotNull ResourceSet set1, @NotNull ResourceSet set2) {
         ResourceSet result = set1.copy();
         result.combine(set2);
         return result;
@@ -100,7 +104,7 @@ public class ResourceSet {
      * @pre {@code set1} and {@code set2} are valid resource sets
      * @post The return will be valid. {@code set1} and {@code set2} are unmodified.
      */
-    public static ResourceSet subtract(@NotNull ResourceSet set1, @NotNull ResourceSet set2) {
+    public static ResourceSet subtracted(@NotNull ResourceSet set1, @NotNull ResourceSet set2) {
         ResourceSet result = set1.copy();
         result.subtract(set2);
         return result;
