@@ -202,21 +202,21 @@ public class ResourceSet {
     }
 
     /**
-     * Whether all of the resources are more than 0.
+     * Whether all of the resources are more than or equal to 0.
      *
      * @return true if all resources are more than or equal to 0; false otherwise.
      */
     public boolean isPositive() {
-        return getValues().allMatch(v -> v > 0);
+        return getValues().allMatch(v -> v >= 0);
     }
 
     /**
-     * Whether all of the resources are less than 0.
+     * Whether all of the resources are less than or equal to 0.
      *
      * @return true if at least one resource is less than 0; false otherwise
      */
     public boolean isNegative() {
-        return getValues().allMatch(v -> v < 0);
+        return getValues().allMatch(v -> v <= 0);
     }
 
     /**
@@ -229,7 +229,7 @@ public class ResourceSet {
     }
 
     /**
-     * Whether all of the resources are more than 0.
+     * Whether any of the resources are more than 0.
      *
      * @return true if all resources are more than or equal to 0; false otherwise.
      */
