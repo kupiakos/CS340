@@ -78,6 +78,16 @@ public class GameMap {
         this.cities = cities;
     }
 
+    private static <V> Map<VertexLocation, V> normalizeVertexMap(Map<VertexLocation, V> vMap) {
+        return vMap.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey().getNormalizedLocation(), e -> e.getValue()));
+    }
+
+    private static <V> Map<EdgeLocation, V> normalizeEdgeMap(Map<EdgeLocation, V> eMap) {
+        return eMap.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey().getNormalizedLocation(), e -> e.getValue()));
+    }
+
     /**
      * Get the locations of the cities owned by the given player.
      *
@@ -532,7 +542,7 @@ public class GameMap {
      * @param roads list of roads currently placed on the map
      */
     public void setRoads(@NotNull Map<EdgeLocation, PlayerIndex> roads) {
-        this.roads = roads;
+        this.roads = normalizeEdgeMap(roads);
     }
 
     public GameMap withRoads(@NotNull Map<EdgeLocation, PlayerIndex> roads) {
@@ -627,7 +637,7 @@ public class GameMap {
      * @param settlements list of settlements currently placed on the map
      */
     public void setSettlements(@NotNull Map<VertexLocation, PlayerIndex> settlements) {
-        this.settlements = settlements;
+        this.settlements = normalizeVertexMap(settlements);
     }
 
     public GameMap withSettlements(@NotNull Map<VertexLocation, PlayerIndex> settlements) {
@@ -646,7 +656,7 @@ public class GameMap {
      * @param cities list of cities currently placed on the map
      */
     public void setCities(@NotNull Map<VertexLocation, PlayerIndex> cities) {
-        this.cities = cities;
+        this.cities = normalizeVertexMap(cities);
     }
 
     public GameMap withCities(@NotNull Map<VertexLocation, PlayerIndex> cities) {
