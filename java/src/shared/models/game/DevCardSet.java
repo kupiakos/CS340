@@ -2,12 +2,15 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import org.jetbrains.annotations.NotNull;
 import shared.definitions.DevCardType;
 
 import javax.annotation.Generated;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 @Generated("net.kupiakos")
-public class DevCardSet {
+public class DevCardSet extends CardSet<DevCardType> {
 
     @SerializedName("yearOfPlenty")
     @Expose
@@ -53,13 +56,61 @@ public class DevCardSet {
 
     // CUSTOM CODE
 
+    @Override
+    public CardSet<DevCardType> copy() {
+        return new DevCardSet(yearOfPlenty, roadBuilding, monument, soldier, monopoly);
+    }
+
     /**
      * Get the number of cards in this DevCardList of a specific type
+     *
      * @param type the type to check against
      * @return the number of cards, less than 0
      */
     public int getOfType(DevCardType type) {
-        return 0;
+        switch (type) {
+            case MONOPOLY:
+                return monopoly;
+            case ROAD_BUILD:
+                return roadBuilding;
+            case MONUMENT:
+                return monument;
+            case SOLDIER:
+                return soldier;
+            case YEAR_OF_PLENTY:
+                return yearOfPlenty;
+            default:
+                assert false;
+                return 0;
+        }
+    }
+
+    @Override
+    public void setOfType(@NotNull DevCardType type, int value) {
+        switch (type) {
+            case SOLDIER:
+                setSoldier(value);
+                break;
+            case YEAR_OF_PLENTY:
+                setYearOfPlenty(value);
+                break;
+            case MONOPOLY:
+                setMonopoly(value);
+                break;
+            case ROAD_BUILD:
+                setRoadBuilding(value);
+                break;
+            case MONUMENT:
+                setMonument(monument);
+                break;
+            default:
+                assert false;
+        }
+    }
+
+    @Override
+    protected Stream<DevCardType> getTypes() {
+        return Arrays.stream(DevCardType.values());
     }
 
     // END CUSTOM CODE
