@@ -30,7 +30,7 @@ public class DevCardFacade extends AbstractFacade {
      * @post None.
      * @return True if {@code currentPlayer} can buy a development card, False if not
      */
-    public boolean canBuyDevCard(Player currentPlayer) {
+    public boolean canBuyDevCard(@NotNull Player currentPlayer) {
         return false;
     }
 
@@ -41,7 +41,7 @@ public class DevCardFacade extends AbstractFacade {
      *      The method {@link DevCardFacade#canBuyDevCard(Player)} returns a true statement.
      * @post The {@code currentPlayer} gets a random development card
      */
-    public void buyDevCard(Player currentPlayer) {
+    public void buyDevCard(@NotNull Player currentPlayer) {
 
     }
 
@@ -55,7 +55,7 @@ public class DevCardFacade extends AbstractFacade {
      * @post None.
      * @return True if the player can use a development card, False if not
      */
-    public boolean canUseDevCard(Player currentPlayer) {
+    public boolean canUseDevCard(@NotNull Player currentPlayer) {
         return false;
     }
 
@@ -67,7 +67,7 @@ public class DevCardFacade extends AbstractFacade {
      * @post This calls another method that is connected to the development card action
      *       The card is discarded and cannot be used for the rest of the game
      */
-    public void useDevCard(Player currentPlayer) {
+    public void useDevCard(@NotNull Player currentPlayer) {
 
     }
 
@@ -79,7 +79,7 @@ public class DevCardFacade extends AbstractFacade {
      *       The card cannot be reused for the rest of the game
      *       If applicable, the {@code currentPlayer} gets the Largest Army card
      */
-    public void useSoldierCard(Player currentPlayer) {
+    public void useSoldierCard(@NotNull Player currentPlayer) {
 
     }
 
@@ -90,7 +90,7 @@ public class DevCardFacade extends AbstractFacade {
      * @post None.
      * @return True if the total victory point count is 10 (or more), False otherwise
      */
-    public boolean canUseVictoryPointCards(Player currentPlayer) {
+    public boolean canUseVictoryPointCards(@NotNull Player currentPlayer) {
         return false;
     }
 
@@ -102,7 +102,7 @@ public class DevCardFacade extends AbstractFacade {
      * @post Played victory point cards add points to the {@code currentPlayer}'s visible victory point count
      *       The card cannot be reused for the rest of the game
      */
-    public void useVictoryPointCards(Player currentPlayer) {
+    public void useVictoryPointCards(@NotNull Player currentPlayer) {
 
     }
 
@@ -113,7 +113,7 @@ public class DevCardFacade extends AbstractFacade {
      * @post None.
      * @return True if the {@code currentPlayer} has 2 roads that are not placed on the map, False otherwise
      */
-    public boolean canUseRoadBuildingCard(Player currentPlayer) {
+    public boolean canUseRoadBuildingCard(@NotNull Player currentPlayer) {
         return false;
     }
 
@@ -126,7 +126,7 @@ public class DevCardFacade extends AbstractFacade {
      *       The card is discarded and cannot be used for the rest of the game
      *       If applicable, the {@code currentPlayer} gets the Longest Road card
      */
-    public void useRoadBuildingCard(Player currentPlayer) {
+    public void useRoadBuildingCard(@NotNull Player currentPlayer) {
 
     }
 
@@ -140,7 +140,7 @@ public class DevCardFacade extends AbstractFacade {
      * @post None.
      * @return True if both {@code resourceType1} and {@code resourceType2} are available, False if not
      */
-    public boolean canUseYearOfPlentyCard(Player currentPlayer, ResourceType resourceType1, ResourceType resourceType2) {
+    public boolean canUseYearOfPlentyCard(@NotNull Player currentPlayer, @NotNull ResourceType resourceType1, @NotNull ResourceType resourceType2) {
         return false;
     }
 
@@ -154,7 +154,7 @@ public class DevCardFacade extends AbstractFacade {
      * @post Draw 2 resource cards of the {@code currentPlayer}'s choice, as long as the cards are available
      *       The card is discarded and cannot be used for the rest of the game
      */
-    public void useYearOfPlentyCard(Player currentPlayer, ResourceType resourceType1, ResourceType resourceType2) {
+    public void useYearOfPlentyCard(@NotNull Player currentPlayer, @NotNull ResourceType resourceType1, @NotNull ResourceType resourceType2) {
 
     }
 
@@ -166,7 +166,7 @@ public class DevCardFacade extends AbstractFacade {
      * @post The {@code currentPlayer} declares one resource card and all other players give the {@code currentPlayer} all resources of that same resource type
      *       The card is discarded and cannot be used for the rest of the game
      */
-    public void useMonopolyCard(Player currentPlayer, ResourceType monopolyType) {
+    public void useMonopolyCard(@NotNull Player currentPlayer, @NotNull ResourceType monopolyType) {
 
     }
 }
