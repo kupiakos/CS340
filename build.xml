@@ -28,10 +28,19 @@
 	<property name="client.jar.file" value="${demo.dir}/client.jar"/>
 
 
+
+
+	<property name="java.dir" location="java"/>
+	<property name="java.src" location="${java.dir}/src"/>
+	<property name="java.images" location="${java.dir}/images"/>
+	<property name="java.build" location="${java.dir}/build"/>
+	<property name="java.dist" location="${java.dir}/dist"/>
+	<property name="java.lib" location="${java.dir}/lib"/>
+
 	<!-- Variables used for JUnit testing -->
-	<property name="test.report.dir" location="testreport" />
-	<property name="test.dir" location="tests" />
-	<property name="build.test.dir" location="bin/tests" />
+	<property name="java.test.report" location="${java.dir}/testreport" />
+	<property name="java.test" location="${java.dir}/tests" />
+	<property name="java.build.test" location="${java.build}/tests" />
 
 	<!-- CLASSPATHS -->
 	<!-- ********** -->
@@ -41,6 +50,14 @@
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
+
+	<path id="classpath.test">
+		<fileset dir="${java.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${java.build}"/>
+	</path>
+
 
 
 	<!-- TARGETS -->
@@ -88,34 +105,35 @@
     </target>
     -->
 
-	<property name="java.dir" location="java"/>
-	<property name="java.src" location="${java.dir}/src"/>
-	<property name="java.images" location="${java.dir}/images"/>
-	<property name="java.build" location="${java.dir}/build"/>
-	<property name="java.dist" location="${java.dir}/dist"/>
-	<property name="java.lib" location="${java.dir}/lib"/>
+
+
 
 	<target name="init" description="create build directories">
 		<tstamp/>
 		<mkdir dir="${java.build}"/>
 		<mkdir dir="${java.dist}"/>
-		<mkdir dir="${test.report.dir}" />
+		<mkdir dir="${java.build.test}" />
+		<mkdir dir="${java.test.report}/results"/>
+		<mkdir dir="${java.test.report}/report"/>
+
 
 	</target>
 
 	<target name="clean" description="clean build files" >
 		<delete dir="${java.build}"/>
 		<delete dir="${java.dist}"/>
-		<delete dir="${test.report.dir}" />
+		<delete dir="${java.test.report}" />
 	</target>
 
 	<target name="compile" depends="clean, init" description="compile the source " >
 		<javac srcdir="${java.src}" destdir="${java.build}" debug="true" includeantruntime="true">
 			<classpath refid="java.lib.classpath" />
 		</javac>
+	</target>
 
-		<javac srcdir="${test.dir}" destdir="${build.test.dir}">
-			<classpath refid="java.lib.classpath" />
+	<target name="test-compile" depends="compile" description="compile the test source " >
+		<javac srcdir="${java.test}" destdir="${java.build.test}" includeantruntime="false">
+			<classpath refid="classpath.test"/>
 		</javac>
 	</target>
 
@@ -172,19 +190,43 @@
 
 	<!-- Run the JUnit Tests -->
 	<!-- Output is XML, could also be plain-->
-	<target name="junit" depends="compile">
+	<target name="junit" depends="test-compile">
 		<junit printsummary="on" fork="true"> <!-- haltonfailure="yes"> -->
-			<classpath refid="java.lib.classpath" />
 			<classpath>
-				<pathelement location="${build.test.dir}"/>
+				<path refid="classpath.test"/>
+				<pathelement location="${java.build.test}"/>
 			</classpath>
-			<formatter type="xml" />
-			<batchtest todir="${test.report.dir}">
-				<fileset dir="${test.dir}">
+
+			<!--<formatter type="xml" />-->
+			<formatter type="plain" usefile="false" />
+			<batchtest todir="${java.test.report}">
+				<fileset dir="${java.test}">
 					<include name="**/*Test*.java" />
 				</fileset>
 			</batchtest>
 		</junit>
+
+		<!-- generate report with junitreport -->
+		<junitreport todir="${java.test.report}">
+			<fileset dir="${java.test.report}/results" />
+			<report todir="${java.test.report}/report" />
+		</junitreport>
+
+		<!-- concat the report through a filter chain to extract what you want -->
+		<concat>
+			<fileset file="${java.test.report}/overview-summary.html" />
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern='title="Display all tests"' />
+				</linecontainsregexp>
+				<tokenfilter>
+					<replaceregex pattern='&lt;td&gt;&lt;a href="all-tests.html" title="Display all tests"&gt;(\d+)&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="alltests-fails.html" title="Display all failures"&gt;(\d+)&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="alltests-errors.html" title="Display all errors"&gt;(\d+).*$' replace="Run: \1, Failed: \2, Errors: \3" />
+				</tokenfilter>
+			</filterchain>
+		</concat>
+
+		<fail message="test failed" if="test.failure" />
+
 	</target>
 
 	<target name="main" depends="compile, junit">
@@ -192,4 +234,3 @@
 	</target>
 
 </project>
-
