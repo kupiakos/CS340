@@ -2,12 +2,13 @@ package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import shared.definitions.PortType;
 import shared.definitions.ResourceType;
-import shared.models.game.ClientModel;
-import shared.models.game.Player;
-import shared.models.game.ResourceSet;
-import shared.models.game.TradeOffer;
+import shared.definitions.TurnStatus;
+import shared.models.game.*;
 import shared.models.moves.OfferTradeAction;
+
+import java.util.Set;
 
 /**
  * Provides common operations for users to trade with each other.
@@ -46,7 +47,10 @@ public class TradingFacade extends AbstractFacade {
      * @see #canOfferTrade(Player, Player)
      */
     public boolean canOfferTrade(@NotNull Player sender, @NotNull Player receiver, @NotNull ResourceSet offer) {
-        return false;
+        return canOfferTrade(sender, receiver) &&
+                offer.hasNegative() &&
+                offer.hasPositive() &&
+                offer.isSubset(sender.getResources());
     }
 
     /**
@@ -66,7 +70,10 @@ public class TradingFacade extends AbstractFacade {
      * @see #canOfferTrade(Player, Player, ResourceSet)
      */
     public boolean canOfferTrade(@NotNull Player sender, @NotNull Player receiver) {
-        return false;
+        return getModel().getTradeOffer() == null &&
+                getModel().getTurnTracker().getStatus() == TurnStatus.PLAYING &&
+                getFacades().getTurn().isPlayersTurn(sender) &&
+                sender.getPlayerIndex() != receiver.getPlayerIndex();
     }
 
     /**
@@ -85,6 +92,7 @@ public class TradingFacade extends AbstractFacade {
         if (!canOfferTrade(sender, receiver, offer)) {
             throw new IllegalArgumentException("Invalid trade!");
         }
+        getModel().setTradeOffer(new TradeOffer(receiver.getPlayerIndex(), offer, sender.getPlayerIndex()));
     }
 
     /**
@@ -95,6 +103,10 @@ public class TradingFacade extends AbstractFacade {
      */
     @Nullable
     public TradeOffer getMadeTradeOffer(@NotNull Player sender) {
+        TradeOffer trade = getModel().getTradeOffer();
+        if (trade != null) {
+            return trade.getSender() == sender.getPlayerIndex() ? trade : null;
+        }
         return null;
     }
 
@@ -106,11 +118,18 @@ public class TradingFacade extends AbstractFacade {
      */
     @Nullable
     public TradeOffer getWaitingTradeOffer(@NotNull Player receiver) {
+        TradeOffer trade = getModel().getTradeOffer();
+        if (trade != null) {
+            return trade.getReceiver() == receiver.getPlayerIndex() ? trade : null;
+        }
         return null;
     }
 
     public boolean canRespondToTradeOffer(@NotNull Player receiver, boolean willAccept) {
-        return false;
+        TradeOffer offer = getWaitingTradeOffer(receiver);
+        return offer != null &&
+                (!willAccept ||
+                        ResourceSet.toNegative(offer.getOffer()).isSubset(receiver.getResources()));
     }
 
     /**
@@ -120,7 +139,17 @@ public class TradingFacade extends AbstractFacade {
      * @param willAccept whether the player will accept the trade desired
      */
     public void respondToTradeOffer(@NotNull Player receiver, boolean willAccept) {
-
+        if (!canRespondToTradeOffer(receiver, willAccept)) {
+            throw new IllegalArgumentException("Invalid trade response");
+        }
+        TradeOffer trade = getModel().getTradeOffer();
+        ResourceSet offer = trade.getOffer();
+        getModel().setTradeOffer(null);
+        if (willAccept) {
+            receiver.getResources().combine(offer);
+            offer.toNegative();
+            getModel().getPlayer(trade.getSender()).getResources().combine(offer);
+        }
     }
 
     /**
@@ -135,13 +164,20 @@ public class TradingFacade extends AbstractFacade {
      * @return the best trade ratio available to the player for the given resource type, 2-4
      */
     public int maritimeTradeRatio(@NotNull Player player, @NotNull ResourceType resourceType) {
+        Set<Port> ports = getModel().getMap().getPlayerPorts(player.getPlayerIndex());
+        if (ports.stream().anyMatch(p -> p.getPortType().getResource() == resourceType)) {
+            return 2;
+        }
+        if (ports.stream().anyMatch(p -> p.getPortType() == PortType.THREE)) {
+            return 3;
+        }
         return 4;
     }
 
     /**
      * Determines whether a player can perform a maritime trade with the given resource.
      * <p>
-     * It must be the player's turn, and at the ratio desired must be valid.
+     * It must be the player's turn.
      *
      * @param player         the player that wants to perform the trade, not null
      * @param inputResource  the type of resource to trade with, not null
@@ -153,7 +189,12 @@ public class TradingFacade extends AbstractFacade {
     public boolean canMaritimeTrade(@NotNull Player player,
                                     @NotNull ResourceType inputResource,
                                     @NotNull ResourceType outputResource) {
-        return false;
+        int ratio = maritimeTradeRatio(player, inputResource);
+        return inputResource != outputResource &&
+                getModel().getTurnTracker().getStatus() == TurnStatus.PLAYING &&
+                player.getResources().getOfType(inputResource) > 0 &&
+                getModel().getBank().getOfType(outputResource) >= ratio &&
+                getFacades().getTurn().isPlayersTurn(player);
     }
 
     /**
@@ -173,5 +214,9 @@ public class TradingFacade extends AbstractFacade {
         if (!canMaritimeTrade(player, inputResource, outputResource)) {
             throw new IllegalArgumentException("Invalid maritime trade!");
         }
+        int ratio = maritimeTradeRatio(player, inputResource);
+        ResourcesFacade resources = getFacades().getResources();
+        resources.returnToBank(player, new ResourceSet(inputResource, 1));
+        resources.receiveFromBank(player, new ResourceSet(outputResource, ratio));
     }
 }
