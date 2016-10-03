@@ -1,9 +1,13 @@
 package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
+import shared.definitions.DevCardType;
 import shared.definitions.ResourceType;
+import shared.definitions.TurnStatus;
 import shared.models.game.ClientModel;
+import shared.models.game.DevCardSet;
 import shared.models.game.Player;
+import shared.models.game.ResourceSet;
 
 /**
  * Created by Philip on 9/17/2016.
@@ -24,83 +28,132 @@ public class DevCardFacade extends AbstractFacade {
 
     /**
      * Checks if the {@code currentPlayer} can buy a development card.  The resources needed are one ore, wool, and grain
+     *
      * @param currentPlayer The player who is buying the development card during their turn
-     * @pre {@link DevCardFacade#buyDevCard(Player)} calls this function
-     *      {@code currentPlayer} is part of the current {@link ClientModel}
-     * @post None.
      * @return True if {@code currentPlayer} can buy a development card, False if not
+     * @pre The {@code currentPlayer} calls this method when they want to buy a development card.
+     * {@code currentPlayer} is part of the current {@link ClientModel}
+     * {@link TurnStatus#PLAYING} is the turn status.
+     * It is the {@code currentPlayer} turn.
+     * There is at least one development card available
+     * @post None.
      */
     public boolean canBuyDevCard(@NotNull Player currentPlayer) {
-        return false;
+        if (currentPlayer == null || getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+            return false;
+        }
+        DevCardSet all = new DevCardSet();
+        for (Player p : getModel().getPlayers()) {
+            all.combine(p.getNewDevCards());
+            all.combine(p.getOldDevCards());
+        }
+
+        DevCardSet bank = new DevCardSet(2, 2, 5, 14, 2);
+        if (all.getTotal() == bank.getTotal()) {
+            return false;
+        }
+        ResourceSet set = currentPlayer.getResources();
+        return set.getOre() > 0 && set.getSheep() > 0 && set.getWheat() > 0;
     }
 
     /**
      * The {@code currentPlayer} buys a random development card and returns the required resources to the bank or deck.
+     *
      * @param currentPlayer The player who is buying the development card during their turn.
-     * @pre The player calls this method during their turn when they want to buy a development card.
-     *      The method {@link DevCardFacade#canBuyDevCard(Player)} returns a true statement.
+     * @throws IllegalArgumentException
+     * @pre The {@code currentPlayer} calls this method during their turn when they want to buy a development card.
+     * The method {@link DevCardFacade#canBuyDevCard(Player)} returns a true statement.
      * @post The {@code currentPlayer} gets a random development card
      */
     public void buyDevCard(@NotNull Player currentPlayer) {
-
+        if (!canBuyDevCard(currentPlayer)) {
+            throw new IllegalArgumentException();
+        }
+        DevCardSet bank = new DevCardSet(2, 2, 5, 14, 2);
+        DevCardSet all = new DevCardSet();
+        for (Player p : getModel().getPlayers()) {
+            all.combine(p.getNewDevCards());
+            all.combine(p.getOldDevCards());
+        }
+        for (DevCardType t : DevCardType.values()) {
+            bank.setOfType(t, bank.getOfType(t) - all.getOfType(t));
+        }
+        DevCardType randomType = bank.getRandom();
+        currentPlayer.getNewDevCards().setOfType(randomType, currentPlayer.getNewDevCards().getOfType(randomType) + 1);
     }
 
     /**
-     * Checks to see if the {@code currentPlayer} can use a development card.  A player can use only one development card
-     *  during their turn and that card cannot be bought and used on the same turn
-     *  Note: Only victory point cards can be played on the same turn, though they can only be played when the player has a total of 10 victory points
-     * @param currentPlayer The player who is using their development card during their turn.
-     * @pre This method is called by {@link DevCardFacade#canUseDevCard(Player)}
-     *      {@code currentPlayer} is part of the current {@link ClientModel}.
+     * The {@code currentPlayer} attempts to use the Soldier development card
+     *
+     * @param currentPlayer The {@link Player} who is using their development card during their turn.
+     * @return true if the {@code currentPlayer} can use the Soldier card. False if not
+     * @pre This method is called by the controller when the card to be used is a Soldier card
+     * {@code currentPlayer} is part of the current {@link ClientModel}
+     * {@link TurnStatus#PLAYING} is the turn status.
+     * It is the {@code currentPlayer} turn.
      * @post None.
-     * @return True if the player can use a development card, False if not
      */
-    public boolean canUseDevCard(@NotNull Player currentPlayer) {
-        return false;
-    }
-
-    /**
-     * The {@code currentPlayer} uses the development card and discards it.  This method calls other methods that relate to the individual cards
-     * @param currentPlayer The player who is using their development card during their turn.
-     * @pre This method is called when the player uses a development card
-     *      {@link DevCardFacade#canUseDevCard(Player)} returns a true statement
-     * @post This calls another method that is connected to the development card action
-     *       The card is discarded and cannot be used for the rest of the game
-     */
-    public void useDevCard(@NotNull Player currentPlayer) {
-
+    public boolean canUseSoldierCard(@NotNull Player currentPlayer) {
+        if (currentPlayer == null) {
+            return false;
+        }
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+            return false;
+        }
+        return currentPlayer.getOldDevCards().getSoldier() > 0;
     }
 
     /**
      * The {@code currentPlayer} uses the Soldier development card
+     * @throws IllegalArgumentException
      * @param currentPlayer The player who is using their development card during their turn.
-     * @pre This method is called by {@link DevCardFacade#useDevCard(Player)} when the card to be used is a Soldier card
+     * @pre This method is called by the controller when the card to be used is a Soldier card
+     * {@code currentPlayer} is part of the current {@link ClientModel}
+     * {@link DevCardFacade#canUseSoldierCard(Player)} returns a true statement
      * @post The robber is activated
-     *       The card cannot be reused for the rest of the game
-     *       If applicable, the {@code currentPlayer} gets the Largest Army card
+     * The card cannot be reused for the rest of the game
+     * If applicable, the {@code currentPlayer} gets the Largest Army card
      */
     public void useSoldierCard(@NotNull Player currentPlayer) {
-
+        if (!canUseSoldierCard(currentPlayer)) {
+            throw new IllegalArgumentException();
+        }
+        RobberFacade facade = getFacades().getRobber();
+        //Call move Robber
+        //facade.moveRobber();
     }
 
     /**
      * Does the {@code currentPlayer} have 10 victory points, including the unplayed victory point cards.  This method takes the {@code currentPlayer}'s current victory points and adds the unplayed victory point cards to see if they equal 10
+     *
      * @param currentPlayer The player who is using their development card during their turn.
-     * @pre This method is called by {@link DevCardFacade#useVictoryPointCards(Player)}
-     * @post None.
      * @return True if the total victory point count is 10 (or more), False otherwise
+     * @pre This method is called by the controller when the card to be used is a Victory Point card
+     * {@code currentPlayer} is part of the current {@link ClientModel}
+     * {@link TurnStatus#PLAYING} is the turn status.
+     * It is the {@code currentPlayer} turn.
+     * @post None.
      */
     public boolean canUseVictoryPointCards(@NotNull Player currentPlayer) {
-        return false;
+        if (currentPlayer == null) {
+            return false;
+        }
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+            return false;
+        }
+        int total = currentPlayer.getOldDevCards().getMonument() + currentPlayer.getNewDevCards().getMonument();
+        return total > 0 && (currentPlayer.getVictoryPoints() + total) >= 10;
     }
 
     /**
      * The {@code currentPlayer} uses all of their the Victory Point development cards.  This can only be played when the {@code currentPlayer}'s total victory points equal 10, including unplayed victory point cards
+     *
      * @param currentPlayer The player who is using their development card during their turn.
-     * @pre This method is called by {@link DevCardFacade#useDevCard(Player)} when the card to be used is a Victory Point card
-     *      The method {@link DevCardFacade#canUseVictoryPointCards(Player)} returns a true statement
+     * @pre This method is called by the controller when the card to be used is a Victory Point card
+     * {@code currentPlayer} is part of the current {@link ClientModel}
+     * The method {@link DevCardFacade#canUseVictoryPointCards(Player)} returns a true statement
      * @post Played victory point cards add points to the {@code currentPlayer}'s visible victory point count
-     *       The card cannot be reused for the rest of the game
+     * The card cannot be reused for the rest of the game
      */
     public void useVictoryPointCards(@NotNull Player currentPlayer) {
 
@@ -108,10 +161,12 @@ public class DevCardFacade extends AbstractFacade {
 
     /**
      * This method checks if the {@code currentPlayer} have 2 roads that are not placed on the map.
+     *
      * @param currentPlayer The player who is using their development card during their turn.
-     * @pre This method is called by {@link DevCardFacade#useRoadBuildingCard(Player)}.
-     * @post None.
      * @return True if the {@code currentPlayer} has 2 roads that are not placed on the map, False otherwise
+     * @pre This method is called by the controller when the card to be used is a Road Building card.
+     * {@code currentPlayer} is part of the current {@link ClientModel}
+     * @post None.
      */
     public boolean canUseRoadBuildingCard(@NotNull Player currentPlayer) {
         return false;
@@ -119,12 +174,14 @@ public class DevCardFacade extends AbstractFacade {
 
     /**
      * The {@code currentPlayer} uses the Road Building development card.  The {@code currentPlayer} places 2 roads down
+     *
      * @param currentPlayer The player who is using their development card during their turn.
-     * @pre This method is called by {@link DevCardFacade#useDevCard(Player)} when the card to be used is a Road Building card
-     *      The method {@link DevCardFacade#canUseRoadBuildingCard(Player)} returns a true statement.
+     * @pre This method is called by the controller when the card to be used is a Road Building card
+     * {@code currentPlayer} is part of the current {@link ClientModel}
+     * The method {@link DevCardFacade#canUseRoadBuildingCard(Player)} returns a true statement.
      * @post Place 2 roads on the map according to the rules of placing roads
-     *       The card is discarded and cannot be used for the rest of the game
-     *       If applicable, the {@code currentPlayer} gets the Longest Road card
+     * The card is discarded and cannot be used for the rest of the game
+     * If applicable, the {@code currentPlayer} gets the Longest Road card
      */
     public void useRoadBuildingCard(@NotNull Player currentPlayer) {
 
@@ -132,13 +189,15 @@ public class DevCardFacade extends AbstractFacade {
 
     /**
      * Are the requested {@code resourceType1} and {@code resourceType2} available to draw?
+     *
      * @param currentPlayer The player who is using their development card during their turn.
      * @param resourceType1 The first resource desired by the {@code currentPlayer}
      * @param resourceType2 The second resource desired by the {@code currentPlayer}
-     * @pre This method is called by {@link DevCardFacade#useYearOfPlentyCard(Player, ResourceType, ResourceType)}
-     *      {@code resourceType1} and {@code resourceType2} are not null
-     * @post None.
      * @return True if both {@code resourceType1} and {@code resourceType2} are available, False if not
+     * @pre This method is called by the controller when the card to be used is a Year of Plenty card
+     * {@code currentPlayer} is part of the current {@link ClientModel}
+     * {@code resourceType1} and {@code resourceType2} are not null
+     * @post None.
      */
     public boolean canUseYearOfPlentyCard(@NotNull Player currentPlayer, @NotNull ResourceType resourceType1, @NotNull ResourceType resourceType2) {
         return false;
@@ -146,25 +205,47 @@ public class DevCardFacade extends AbstractFacade {
 
     /**
      * The {@code currentPlayer} uses the Year of Plenty development card.  The {@code currentPlayer} draws 2 resources of the {@code currentPlayer}'s choice
+     *
      * @param currentPlayer The player who is using their development card during their turn.
      * @param resourceType1 The first resource desired by the {@code currentPlayer}
      * @param resourceType2 The second resource desired by the {@code currentPlayer}
-     * @pre This method is called by {@link DevCardFacade#useDevCard(Player)} when the card to be used is a Year of Plenty card
-     *      The method {@link DevCardFacade#canUseYearOfPlentyCard(Player, ResourceType, ResourceType)} returns a true statement
+     * @pre This method is called by the controller when the card to be used is a Year of Plenty card
+     * {@code currentPlayer} is part of the current {@link ClientModel}
+     * {@code resourceType1} and {@code resourceType2} are valid {@link ResourceType}
+     * The method {@link DevCardFacade#canUseYearOfPlentyCard(Player, ResourceType, ResourceType)} returns a true statement
      * @post Draw 2 resource cards of the {@code currentPlayer}'s choice, as long as the cards are available
-     *       The card is discarded and cannot be used for the rest of the game
+     * The card is discarded and cannot be used for the rest of the game
      */
     public void useYearOfPlentyCard(@NotNull Player currentPlayer, @NotNull ResourceType resourceType1, @NotNull ResourceType resourceType2) {
 
     }
 
     /**
-     * The {@code currentPlayer} uses the Monopoly development card.  The {@code currentPlayer} declares one resource card and all other players give the {@code currentPlayer} all resources of that same resource
+     * The {@code currentPlayer} tries to use the Monopoly development card.
+     *
      * @param currentPlayer The player who is using their development card during their turn.
-     * @param monopolyType The resource type that the {@code currentPlayer} wants
-     * @pre This method is called by {@link DevCardFacade#useDevCard(Player)} when the card to be used is a Monopoly card
+     * @param monopolyType  The resource type that the {@code currentPlayer} wants
+     * @return true if the Monopoly card can be used; False if not
+     * @pre This method is called by the controller when the card to be used is a Monopoly card
+     * {@code currentPlayer} is part of the current {@link ClientModel}
+     * {@code monopolyType} is valid {@link ResourceType}
+     * @post None.
+     */
+    public boolean canUseMonopolyCard(@NotNull Player currentPlayer, @NotNull ResourceType monopolyType) {
+        return false;
+    }
+
+    /**
+     * The {@code currentPlayer} uses the Monopoly development card.  The {@code currentPlayer} declares one resource card and all other players give the {@code currentPlayer} all resources of that same resource
+     *
+     * @param currentPlayer The player who is using their development card during their turn.
+     * @param monopolyType  The resource type that the {@code currentPlayer} wants
+     * @pre This method is called by the controller when the card to be used is a Monopoly card
+     * {@code currentPlayer} is part of the current {@link ClientModel}
+     * {@code monopolyType} is valid {@link ResourceType}
+     * {@link DevCardFacade#canUseMonopolyCard(Player, ResourceType)} returns a true statement
      * @post The {@code currentPlayer} declares one resource card and all other players give the {@code currentPlayer} all resources of that same resource type
-     *       The card is discarded and cannot be used for the rest of the game
+     * The card is discarded and cannot be used for the rest of the game
      */
     public void useMonopolyCard(@NotNull Player currentPlayer, @NotNull ResourceType monopolyType) {
 

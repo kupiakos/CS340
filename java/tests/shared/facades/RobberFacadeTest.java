@@ -1,11 +1,14 @@
 package shared.facades;
 
 import client.game.GameManager;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
+import shared.definitions.TurnStatus;
 import shared.locations.HexLocation;
 import shared.locations.VertexDirection;
 import shared.locations.VertexLocation;
@@ -16,6 +19,8 @@ import shared.models.game.ResourceSet;
 import shared.serialization.ModelExample;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -28,25 +33,19 @@ public class RobberFacadeTest {
     private Player currentPlayer;
     private List<Player> listOfPlayers;
     private RobberFacade facade;
-    private HexLocation currentLocation;
     private GameMap gameMap;
-    private PlayerIndex index;
 
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();//EdgeLocationSerializerTest line 49
+//    @Rule
+//    public final ExpectedException exception = ExpectedException.none();//EdgeLocationSerializerTest line 49
 
-    @org.junit.Before
-    public void setup()
-    {
-        GameManager game = GameManager.getGame();
+    @Before
+    public void setup() {
         model = ModelExample.fullJsonModel();
-        game.setClientModel(model);
-        facade = game.getFacade().getRobber();
+        FacadeManager facadeManager = new FacadeManager(model);
+        facade = facadeManager.getRobber();
         listOfPlayers = model.getPlayers();
         gameMap = model.getMap();
         gameMap.setRobber(new HexLocation(-1, 1));
-        currentLocation = gameMap.getRobber();
-        //index = new PlayerIndex(4);
 
         Player player = listOfPlayers.get(0);
         player.getResources().setBrick(2);
@@ -54,9 +53,6 @@ public class RobberFacadeTest {
         player.getResources().setSheep(2);
         player.getResources().setWheat(2);
         player.getResources().setWood(2);
-        HexLocation hexLocation = new HexLocation(2, 0);
-        VertexLocation vertexLocation = new VertexLocation(hexLocation, VertexDirection.East);
-        //gameMap.addSettlement(vertexLocation, player);
 
         player = listOfPlayers.get(1);
         player.getResources().setBrick(0);
@@ -64,15 +60,13 @@ public class RobberFacadeTest {
         player.getResources().setSheep(0);
         player.getResources().setWheat(0);
         player.getResources().setWood(0);
-        vertexLocation = new VertexLocation(hexLocation, VertexDirection.NorthWest);
-        //gameMap.addSettlement(vertexLocation, );
 
         player = listOfPlayers.get(2);
-        player.getResources().setBrick(3);
         player.getResources().setOre(1);
+        player.getResources().setBrick(3);
         player.getResources().setSheep(2);
-        player.getResources().setWheat(1);
         player.getResources().setWood(2);
+        player.getResources().setWheat(1);
 
 
         player = listOfPlayers.get(3);
@@ -81,221 +75,155 @@ public class RobberFacadeTest {
         player.getResources().setSheep(0);
         player.getResources().setWheat(2);
         player.getResources().setWood(2);
-        vertexLocation = new VertexLocation(hexLocation, VertexDirection.SouthWest);
-        //gameMap.addSettlement(vertexLocation, player);
-        //gameMap.upgradeSettlement(vertexLocation, player);
 
         currentPlayer = listOfPlayers.get(0);
     }
 
     @Test
     public void shouldDiscardHalf() throws Exception {
-        Player player = null;
-        assertNull(player);
+        model.getTurnTracker().setStatus(TurnStatus.FIRST_ROUND);
+        assertFalse(facade.shouldDiscardHalf(listOfPlayers.get(0)));
 
-        player = listOfPlayers.get(0);
-        assertNotNull(player);
-        assertNotNull(player.getResources());
-        int bricks = player.getResources().getBrick();
-        int ores = player.getResources().getOre();
-        int grains = player.getResources().getWheat();
-        int wools = player.getResources().getSheep();
-        int woods = player.getResources().getWood();
-        int total = bricks + ores + grains + wools + woods;
-        assertTrue(total >= 8);
-
-        player = listOfPlayers.get(1);
-        assertNotNull(player);
-        assertNotNull(player.getResources());
-        bricks = player.getResources().getBrick();
-        ores = player.getResources().getOre();
-        grains = player.getResources().getWheat();
-        wools = player.getResources().getSheep();
-        woods = player.getResources().getWood();
-        total = bricks + ores + grains + wools + woods;
-        assertFalse(total >= 8);
-
-        player = listOfPlayers.get(2);
-        assertNotNull(player);
-        assertNotNull(player.getResources());
-        bricks = player.getResources().getBrick();
-        ores = player.getResources().getOre();
-        grains = player.getResources().getWheat();
-        wools = player.getResources().getSheep();
-        woods = player.getResources().getWood();
-        total = bricks + ores + grains + wools + woods;
-        assertTrue(total >= 8);
-
-        player = listOfPlayers.get(3);
-        assertNotNull(player);
-        assertNotNull(player.getResources());
-        bricks = player.getResources().getBrick();
-        ores = player.getResources().getOre();
-        grains = player.getResources().getWheat();
-        wools = player.getResources().getSheep();
-        woods = player.getResources().getWood();
-        total = bricks + ores + grains + wools + woods;
-        assertFalse(total >= 8);
+        model.getTurnTracker().setStatus(TurnStatus.DISCARDING);
+        assertFalse(facade.shouldDiscardHalf(null));
+        assertTrue(facade.shouldDiscardHalf(listOfPlayers.get(0)));
+        assertFalse(facade.shouldDiscardHalf(listOfPlayers.get(1)));
+        assertTrue(facade.shouldDiscardHalf(listOfPlayers.get(2)));
+        assertFalse(facade.shouldDiscardHalf(listOfPlayers.get(3)));
     }
 
     @Test
     public void canDiscard() throws Exception {
-        Player p = null;
-        ResourceSet discardSet = null;
-        assertNull(p);
-        assertNull(discardSet);
+        ResourceSet trueSet1 = new ResourceSet(1, 1, 1, 1, 1);
+        ResourceSet falseSet1 = new ResourceSet(3, 1, 1, 1, 1);
+        ResourceSet falseSet2 = new ResourceSet(1, 0, 1, 1, 1);
 
-        p = listOfPlayers.get(0);
-        discardSet = new ResourceSet(3, 1, 1, 1, 1);
-        assertFalse(discardSet.isSubset(p.getResources()));
+        //Pre-condition tests
+        model.getTurnTracker().setStatus(TurnStatus.FIRST_ROUND);
+        assertFalse(facade.canDiscard(trueSet1, listOfPlayers.get(0)));
+        assertFalse(facade.canDiscard(null, listOfPlayers.get(0)));
+        model.getTurnTracker().setStatus(TurnStatus.DISCARDING);
+        assertFalse(facade.canDiscard(null, listOfPlayers.get(0)));
+        assertFalse(facade.canDiscard(trueSet1, listOfPlayers.get(1)));
+        assertFalse(facade.canDiscard(trueSet1, listOfPlayers.get(3)));
 
-        discardSet = new ResourceSet(1, 1, 0, 1, 1);
-        assertTrue(discardSet.isSubset(p.getResources()));
-        int bricks = p.getResources().getBrick();
-        int ores = p.getResources().getOre();
-        int grains = p.getResources().getWheat();
-        int sheep = p.getResources().getSheep();
-        int woods = p.getResources().getWood();
-        int total = bricks + ores + grains + sheep + woods;
-        int half = total / 2;
-        assertEquals(5, half);
-        assertNotEquals(half, 4);
-        if (half == 4)
-        {
-            discard(discardSet);
-        }
+        //Subset tests
+        assertTrue(facade.canDiscard(trueSet1, listOfPlayers.get(0)));
+        assertFalse(facade.canDiscard(falseSet1, listOfPlayers.get(0)));
 
-        discardSet = new ResourceSet(1, 1, 1, 1, 1);
-        assertTrue(discardSet.isSubset(p.getResources()));
-        bricks = p.getResources().getBrick();
-        ores = p.getResources().getOre();
-        grains = p.getResources().getWheat();
-        sheep = p.getResources().getSheep();
-        woods = p.getResources().getWood();
-        total = bricks + ores + grains + sheep + woods;
-        half = total / 2;
-        assertEquals(half, 5);
-        if (half == 5)
-        {
-            discard(discardSet);
-        }
-
-        Player p2 = listOfPlayers.get(2);
-        ResourceSet discardSet2 = new ResourceSet(0, 1, 1, 1, 1);
-        assertTrue(discardSet2.isSubset(p2.getResources()));
-        bricks = p2.getResources().getBrick();
-        ores = p2.getResources().getOre();
-        grains = p2.getResources().getWheat();
-        sheep = p2.getResources().getSheep();
-        woods = p2.getResources().getWood();
-        total = bricks + ores + grains + sheep + woods;
-        half = total / 2;
-        assertNotEquals(half, 4);
+        //Rounding tests
+        assertFalse(facade.canDiscard(falseSet2, listOfPlayers.get(0)));
+        assertFalse(facade.canDiscard(falseSet2, listOfPlayers.get(2)));
+        assertTrue(facade.canDiscard(trueSet1, listOfPlayers.get(2)));
     }
 
-    //@Test
-    public void discard(ResourceSet discardSet) throws Exception {
-        Player p = null;
+    @Test
+    public void discard() throws Exception {
+        ResourceSet set = new ResourceSet(1, 1, 1, 1, 1);
+        model.getTurnTracker().setStatus(TurnStatus.FIRST_ROUND);
+        try {
+            facade.discard(set, listOfPlayers.get(0));
+            Assert.fail("The turn status is wrong");
+        } catch (IllegalArgumentException e) {
 
-        p = listOfPlayers.get(0);
-        assertNotNull(discardSet);
-        assertNotNull(p);
-        int bricks = p.getResources().getBrick();
-        int ores = p.getResources().getOre();
-        int grains = p.getResources().getWheat();
-        int wools = p.getResources().getSheep();
-        int woods = p.getResources().getWood();
-        bricks = bricks - discardSet.getBrick();
-        ores = ores - discardSet.getOre();
-        grains = grains - discardSet.getWheat();
-        wools = wools - discardSet.getSheep();
-        woods = woods - discardSet.getWood();
-        p.getResources().setBrick(bricks);
-        p.getResources().setOre(ores);
-        p.getResources().setWheat(grains);
-        p.getResources().setSheep(wools);
-        p.getResources().setWood(woods);
+        }
 
-        assertEquals(1, p.getResources().getBrick());
-        assertEquals(1, p.getResources().getOre());
-        assertEquals(1, p.getResources().getWheat());
-        assertEquals(1, p.getResources().getSheep());
-        assertEquals(1, p.getResources().getWood());
-
+        model.getTurnTracker().setStatus(TurnStatus.DISCARDING);
+        facade.discard(set, listOfPlayers.get(0));
+        ResourceSet confirm = new ResourceSet(1, 1, 1, 1, 1);
+        assertEquals(confirm, listOfPlayers.get(0).getResources());
+        facade.discard(set, listOfPlayers.get(2));
+        ResourceSet confirm2 = new ResourceSet(0, 2, 1, 1, 0);
+        assertEquals(confirm2, listOfPlayers.get(2).getResources());
     }
 
     @Test
     public void canMoveRobber() throws Exception {
-        HexLocation newLocation = null;
-        assertNull(newLocation);
-
-        newLocation = gameMap.getRobber();
-        assertNotNull(newLocation);
-        assertNotNull(currentLocation);
-        assertEquals(newLocation, currentLocation);//Robber cannot move to the same place
-        if (newLocation != currentLocation)
-        {
-            moveRobber(newLocation);
-        }
-
-        newLocation = new HexLocation(2, 2);
-        assertNotNull(newLocation);
-        assertNotNull(currentLocation);
-        assertNotEquals(newLocation, currentLocation);//Robber can move
-        if (newLocation != currentLocation)
-        {
-            moveRobber(newLocation);
-        }
+        HexLocation newLocation = new HexLocation(2, 2);
+        //Preconditions
+        model.getTurnTracker().setStatus(TurnStatus.DISCARDING);
+        assertFalse(facade.canMoveRobber(newLocation));
+        model.getTurnTracker().setStatus(TurnStatus.ROBBING);
+        assertFalse(facade.canMoveRobber(null));
+        //Are the positions the same?
+        assertFalse(facade.canMoveRobber(gameMap.getRobber()));
+        assertTrue(facade.canMoveRobber(newLocation));
     }
 
-    //@Test
-    public void moveRobber(HexLocation newLocation) throws Exception {
-        assertNotNull(newLocation);
-        assertNotNull(currentLocation);
-        assertNotEquals(newLocation, currentLocation);
-        gameMap.setRobber(newLocation);
+    @Test
+    public void moveRobber() throws Exception {
+        HexLocation newLocation = new HexLocation(2, 2);
+        //Preconditions
+        model.getTurnTracker().setStatus(TurnStatus.DISCARDING);
+        try {
+            facade.moveRobber(newLocation);
+        } catch (IllegalArgumentException e) {
+
+        }
+        model.getTurnTracker().setStatus(TurnStatus.ROBBING);
+        try {
+            facade.moveRobber(null);
+        } catch (IllegalArgumentException e) {
+
+        }
+        try {
+            facade.moveRobber(gameMap.getRobber());
+        } catch (IllegalArgumentException e) {
+
+        }
+        //Correct?
+        facade.moveRobber(newLocation);
         assertEquals(newLocation, gameMap.getRobber());
     }
 
     @Test
     public void canStealFrom() throws Exception {
-        Player p = null;
-        ResourceType resourceType = null;
-        assertNull(p);
-        assertNull(resourceType);
-        ResourceSet renew = new ResourceSet(2, 2, 2, 2, 2);
-        currentPlayer.setResources(renew);
-
-        p = listOfPlayers.get(1);
-        //Check if a players settlement is there; assertTrue
-        resourceType = ResourceType.BRICK;
-        assertNotNull(p);
-        assertNotNull(currentPlayer);
-        assertEquals(resourceType, ResourceType.BRICK);
-        int bricks = p.getResources().getBrick();
-        assertFalse(bricks > 0);
-        //Cannot steal a brick
-
-        p = listOfPlayers.get(2);
-        //There should be no settlement; assertFalse here
-
-        p = listOfPlayers.get(3);
-        //There should be a city; assertTrue
-        resourceType = ResourceType.ORE;
-        assertNotNull(p);
-        assertNotNull(currentPlayer);
-        assertEquals(resourceType, ResourceType.ORE);
-        int ore = p.getResources().getOre();
-        assertTrue(ore > 0);
-        steal(p, resourceType);
+        //Pre-conditions
+        PlayerIndex target = PlayerIndex.FIRST;
+        model.getTurnTracker().setStatus(TurnStatus.DISCARDING);
+        assertFalse(facade.canStealFrom(target, currentPlayer.getPlayerIndex())); //Turn status error
+        model.getTurnTracker().setStatus(TurnStatus.ROBBING);
+        assertFalse(facade.canStealFrom(target, currentPlayer.getPlayerIndex())); //Same player error
+        assertFalse(facade.canStealFrom(null, currentPlayer.getPlayerIndex()));   //Null
+        assertFalse(facade.canStealFrom(target, null));                           //Null
+        target = PlayerIndex.SECOND;
+        assertFalse(facade.canStealFrom(target, currentPlayer.getPlayerIndex())); //No resources
+        gameMap.setRobber(new HexLocation(0, -1));
+        //No settlement
+        target = PlayerIndex.THIRD;
+        assertFalse(facade.canStealFrom(target, currentPlayer.getPlayerIndex()));
+        //Settlement
+        target = PlayerIndex.FOURTH;
+        assertTrue(facade.canStealFrom(target, currentPlayer.getPlayerIndex()));
     }
 
-    //@Test
-    public void steal(Player p, ResourceType resourceType) throws Exception {
-        p.getResources().setOre(p.getResources().getOre() - 1);
-        assertEquals(p.getResources().getOre(), 2);
-        currentPlayer.getResources().setOre(currentPlayer.getResources().getOre() + 1);
-        assertEquals(currentPlayer.getResources().getOre(), 3);
+    @Test
+    public void steal() throws Exception {
+        PlayerIndex target = PlayerIndex.FIRST;
+        model.getTurnTracker().setStatus(TurnStatus.DISCARDING);
+        try {
+            facade.steal(target, currentPlayer.getPlayerIndex());
+        } catch (IllegalArgumentException e) {}
+        model.getTurnTracker().setStatus(TurnStatus.ROBBING);
+        try {
+            facade.steal(null, currentPlayer.getPlayerIndex());
+        } catch (IllegalArgumentException e) {}
+        try {
+            facade.steal(target, null);
+        } catch (IllegalArgumentException e) {}
+        try {
+            facade.steal(target, currentPlayer.getPlayerIndex());
+        } catch (IllegalArgumentException e) {}
+        target = PlayerIndex.SECOND;
+        try {
+            facade.steal(target, currentPlayer.getPlayerIndex());
+        } catch (IllegalArgumentException e) {}
+
+        target = PlayerIndex.FOURTH;
+        facade.steal(target, currentPlayer.getPlayerIndex());
+        assertEquals(6, model.getPlayer(target).getResources().getTotal());
+        assertEquals(11, currentPlayer.getResources().getTotal());
     }
+
 
 }

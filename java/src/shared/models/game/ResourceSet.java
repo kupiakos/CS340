@@ -74,7 +74,7 @@ public class ResourceSet extends CardSet<ResourceType> {
      */
     public static ResourceSet toNegative(@NotNull ResourceSet set) {
         Objects.requireNonNull(set);
-        ResourceSet result = new ResourceSet();
+        ResourceSet result = set.copy();
         result.toNegative();
         return result;
     }
