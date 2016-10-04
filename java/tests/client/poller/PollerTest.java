@@ -1,6 +1,7 @@
 package client.poller;
 
 import client.game.GameManager;
+import client.server.MockCM;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +20,6 @@ public class PollerTest {
 
     @Before
     public void setUp() throws Exception {
-        p = new Poller();
         gm = GameManager.getGame();
     }
 
@@ -32,9 +32,8 @@ public class PollerTest {
     @Test
     public void startPoller() throws Exception {
         assertNull(gm.getClientModel());
-        p.startPoller();
-        TimeUnit.SECONDS.sleep(5);
-        assertEquals(gm.getClientModel().getVersion(), -1);
+        gm.startPoller();
+        assertEquals(gm.getClientModel().getVersion(), 21);
     }
 
     /**
@@ -45,8 +44,8 @@ public class PollerTest {
      */
     @Test
     public void stopPoller() throws Exception {
-        assertNotNull(gm.getClientModel());
-        p.stopPoller();
+        gm.startPoller();
+        gm.stopPoller();
         gm.setClientModel(null);
         assertNull(gm.getClientModel());
     }
@@ -60,7 +59,8 @@ public class PollerTest {
     public void setClientModel() throws Exception {
         gm.setClientModel(null);
         assertNull(gm.getClientModel());
-        //TODO:: grab specific info from dummy server and check for it
+        gm.setClientModel(MockCM.fullJsonModel());
+        assertEquals(gm.getClientModel().getVersion(), 21);
     }
 
 }

@@ -2,6 +2,7 @@ package client.game;
 
 import client.data.PlayerInfo;
 import client.poller.Poller;
+import client.server.MockProxy;
 import shared.IServer;
 import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
@@ -75,7 +76,7 @@ public class GameManager extends Observable {
     public void startPoller() {
         if (poller == null) poller = new Poller();
 
-        poller.setClientModel(clientModel);
+        poller.setClientModel(getClientModel());
         poller.startPoller();
     }
 
@@ -105,6 +106,9 @@ public class GameManager extends Observable {
      * @post a server we can use
      */
     public IServer getServer() {
+        //TODO:: Change this to the real server
+        if (server == null) server = new MockProxy();
+
         return server;
     }
 
