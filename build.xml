@@ -63,6 +63,7 @@
 
 	<!-- TARGETS -->
 	<!-- ******* -->
+    <target name="test" depends="junit" />
 
 	<target name="server" description="Runs the demo server">
 		<java jar="${server.jar.file}" fork="true" dir="${demo.dir}">
@@ -120,7 +121,6 @@
 
 	</target>
 
-    <target name="test" depends="junit, clean" />
 
     <target name="compile" depends="clean, init" description="compile the source " >
         <javac srcdir="${java.src}" destdir="${java.build}" debug="true" includeantruntime="true">
