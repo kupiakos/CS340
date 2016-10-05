@@ -21,7 +21,7 @@ public class PlayerIndexTypeAdapter extends TypeAdapter<PlayerIndex> {
     @Override
     public PlayerIndex read(JsonReader jsonReader) throws IOException {
         if (jsonReader.peek() != JsonToken.NUMBER) {
-            return null;
+            throw new IllegalArgumentException("Illegal index for PlayerIndex");
         }
         int idx = jsonReader.nextInt();
         if (idx == -1) {
