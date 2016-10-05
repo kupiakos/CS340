@@ -31,7 +31,7 @@ public class PollerTest {
      */
     @Test
     public void startPoller() throws Exception {
-        assertNotNull(gm.getClientModel());
+        assertNull(gm.getClientModel());
         gm.startPoller();
         assertEquals(gm.getClientModel().getVersion(), 21);
     }
