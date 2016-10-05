@@ -1,4 +1,4 @@
-﻿<project name="Demo Server" default="server" basedir=".">
+<project name="DemoServer2" default="server" basedir=".">
 
 	<!-- PROPERTIES -->
 	<!-- ********** -->
@@ -40,6 +40,7 @@
 	<!-- Variables used for JUnit testing -->
 	<property name="java.test.report" location="${java.dir}/testreport" />
 	<property name="java.test" location="${java.dir}/tests" />
+	<!--<property name="java.test.formatter" location="${java.test}" />-->
 	<property name="java.build.test" location="${java.build}/tests" />
 
 	<!-- CLASSPATHS -->
@@ -62,6 +63,7 @@
 
 	<!-- TARGETS -->
 	<!-- ******* -->
+    <target name="test" depends="junit" />
 
 	<target name="server" description="Runs the demo server">
 		<java jar="${server.jar.file}" fork="true" dir="${demo.dir}">
@@ -119,17 +121,21 @@
 
 	</target>
 
+
+    <target name="compile" depends="clean, init" description="compile the source " >
+        <javac srcdir="${java.src}" destdir="${java.build}" debug="true" includeantruntime="true">
+            <classpath refid="java.lib.classpath" />
+        </javac>
+    </target>
+
+
 	<target name="clean" description="clean build files" >
 		<delete dir="${java.build}"/>
 		<delete dir="${java.dist}"/>
 		<delete dir="${java.test.report}" />
 	</target>
 
-	<target name="compile" depends="clean, init" description="compile the source " >
-		<javac srcdir="${java.src}" destdir="${java.build}" debug="true" includeantruntime="true">
-			<classpath refid="java.lib.classpath" />
-		</javac>
-	</target>
+
 
 	<target name="test-compile" depends="compile" description="compile the test source " >
 		<javac srcdir="${java.test}" destdir="${java.build.test}" includeantruntime="false">
@@ -191,19 +197,27 @@
 	<!-- Run the JUnit Tests -->
 	<!-- Output is XML, could also be plain-->
 	<target name="junit" depends="test-compile">
-		<junit printsummary="on" fork="true"> <!-- haltonfailure="yes"> -->
+        <junit printsummary="on" fork="on" haltonfailure="yes" showoutput="yes">
+        <!--<junit printsummary="off" fork="on"-->
+               <!--failureproperty="test.failed" showoutput="off" dir="out"-->
+               <!--outputtoformatters="false" filtertrace="on" >-->
+
 			<classpath>
 				<path refid="classpath.test"/>
 				<pathelement location="${java.build.test}"/>
 			</classpath>
+			<classpath refid="java.lib.classpath" />
 
-			<!--<formatter type="xml" />-->
-			<formatter type="plain" usefile="false" />
+			<formatter type="brief" usefile="false" />
+            <!--<formatter classname="java.test.formatter" usefile="false" />-->
+
+
 			<batchtest todir="${java.test.report}">
 				<fileset dir="${java.test}">
 					<include name="**/*Test*.java" />
 				</fileset>
 			</batchtest>
+
 		</junit>
 
 		<!-- generate report with junitreport -->
@@ -229,8 +243,9 @@
 
 	</target>
 
-	<target name="main" depends="compile, junit">
+	<target name="main" depends="compile, test">
 		<description>Main target</description>
 	</target>
 
 </project>
+ 
