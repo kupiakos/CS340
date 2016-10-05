@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/kupiakos/CS340.svg?branch=master)](https://travis-ci.org/kupiakos/CS340)
+
+[![Build Status](https://travis-ci.org/Audakel/CS340.svg?branch=master)](https://travis-ci.org/Audakel/CS340)
 
 Run the demo server using "ant server".  Then navigate to localhost:8081/ in 
 order to read the documentation.  The "Java docs" link takes you to documentation
