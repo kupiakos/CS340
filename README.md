@@ -30,12 +30,16 @@ Documentation".
 ###Branch Builds
 audakel 
 [![Build Status](https://travis-ci.org/audakel/CS340.svg?branch=master)](https://travis-ci.org/audakel/CS340)
+
 ldssky 
 [![Build Status](https://travis-ci.org/ldssky/CS340.svg?branch=master)](https://travis-ci.org/ldssky/CS340)
+
 kaiboy94 
 [![Build Status](https://travis-ci.org/kaiboy94/CS340.svg?branch=master)](https://travis-ci.org/kaiboy94/CS340)
+
 phhorton 
 [![Build Status](https://travis-ci.org/phhorton/CS340.svg?branch=master)](https://travis-ci.org/phhorton/CS340)
+
 
 
 
