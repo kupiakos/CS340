@@ -1,4 +1,4 @@
-﻿<project name="Demo Server" default="server" basedir=".">
+<project name="Demo Server" default="server" basedir=".">
 
 	<!-- PROPERTIES -->
 	<!-- ********** -->
@@ -120,6 +120,7 @@
 
 	</target>
 
+    <target name="test" depends="junit, clean" />
 
     <target name="compile" depends="clean, init" description="compile the source " >
         <javac srcdir="${java.src}" destdir="${java.build}" debug="true" includeantruntime="true">
@@ -242,7 +243,7 @@
 
 	</target>
 
-	<target name="main" depends="compile, junit">
+	<target name="main" depends="compile, test">
 		<description>Main target</description>
 	</target>
 
