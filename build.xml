@@ -1,4 +1,4 @@
-<project name="Demo Server" default="server" basedir=".">
+<project name="DemoServer" default="server" basedir=".">
 
 	<!-- PROPERTIES -->
 	<!-- ********** -->
