@@ -1,2 +1,4 @@
 language: java
 install: ant junit
+jdk:
+  - oraclejdk8
