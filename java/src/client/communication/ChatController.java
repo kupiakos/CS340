@@ -47,14 +47,14 @@ public class ChatController extends Controller implements IChatController, Obser
      */
     @Override
     public void sendMessage(String message) {
-        // TODO:: Fix this shiz
+        // TODO:: Fix this shiz - who sent the message??????
         PlayerIndex player = PlayerIndex.FIRST;
         SendChatAction chat = new SendChatAction();
         ChatFacade cf = GameManager.getGame().getFacade().getChat();
         IServer s = GameManager.getGame().getServer();
 
-        if (cf.canSendChat(new SendChatAction(message, player))) {
-            cf.sendChat(chat);
+        if (ChatFacade.canSendChat(new SendChatAction(message, player))) {
+            ChatFacade.sendChat(chat);
             try {
                 s.sendChat(chat);
             } catch (CommunicationException e) {

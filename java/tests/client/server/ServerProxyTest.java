@@ -3,7 +3,6 @@ package client.server;
 import client.game.GameManager;
 import org.junit.Test;
 import shared.definitions.AIType;
-import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.locations.*;
 import shared.models.game.AddAIRequest;
@@ -21,10 +20,10 @@ import shared.serialization.ModelExample;
 
 import javax.naming.CommunicationException;
 import javax.security.auth.login.CredentialNotFoundException;
-
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by elija on 9/29/2016.
@@ -108,7 +107,7 @@ public class ServerProxyTest {
         assertTrue(GameManager.getGame().getClientModel().getMap().getPlayerSettlements(player.getPlayerIndex()).size() == 1);
         assertTrue(GameManager.getGame().getClientModel().getMap().getPlayerCities(player.getPlayerIndex()).size() == 0);
         GameManager.getGame().setClientModel(server.buildCity(new BuildCityAction(new VertexLocation(new HexLocation(0, 0), VertexDirection.NorthEast), player.getPlayerIndex())));
-        assertTrue(GameManager.getGame().getClientModel().getMap().getPlayerCities(player.getPlayerIndex()).size()==1);
+        assertTrue(GameManager.getGame().getClientModel().getMap().getPlayerCities(player.getPlayerIndex()).size() == 1);
         assertTrue(GameManager.getGame().getClientModel().getMap().getPlayerSettlements(player.getPlayerIndex()).size()==0);
         assertTrue(server.offerTrade(new OfferTradeAction(GameManager.getGame().getClientModel().getPlayers().get(1).getPlayerIndex(), new ResourceSet(0, 0, 0, 1, 1), player.getPlayerIndex())) != null);
         assertTrue(server.maritimeTrade(new MaritimeTradeAction(ResourceType.ORE, 2, player.getPlayerIndex(), ResourceType.WOOD)) != null);

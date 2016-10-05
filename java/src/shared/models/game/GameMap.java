@@ -2,9 +2,8 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
-import shared.definitions.HexType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
@@ -14,6 +13,7 @@ import shared.utils.MapUtils;
 
 import javax.annotation.Generated;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Generated("net.kupiakos")
 public class GameMap {
@@ -78,10 +78,14 @@ public class GameMap {
         this.cities = cities;
     }
 
-    public class IllegalOperationException extends Exception {
-        public IllegalOperationException(String message) {
-            super(message);
-        }
+    private static <V> Map<VertexLocation, V> normalizeVertexMap(Map<VertexLocation, V> vMap) {
+        return vMap.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey().getNormalizedLocation(), e -> e.getValue()));
+    }
+
+    private static <V> Map<EdgeLocation, V> normalizeEdgeMap(Map<EdgeLocation, V> eMap) {
+        return eMap.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey().getNormalizedLocation(), e -> e.getValue()));
     }
 
     /**
@@ -107,6 +111,19 @@ public class GameMap {
     }
 
     /**
+     * Get the locations of the buildings (settlements and cities) owned by the given player.
+     *
+     * @param player the player whose buildings to retrieve, not null
+     * @return the set containing the location of each settlement or city owned by the player
+     */
+    @NotNull
+    public Set<VertexLocation> getPlayerBuildings(@NotNull PlayerIndex player) {
+        Set<VertexLocation> buildings = getPlayerSettlements(player);
+        buildings.addAll(getPlayerCities(player));
+        return buildings;
+    }
+
+    /**
      * Get all roads owned by the given player.
      *
      * @param player the player whose roads to retrieve, not null
@@ -115,6 +132,30 @@ public class GameMap {
     @NotNull
     public Set<EdgeLocation> getPlayerRoads(@NotNull PlayerIndex player) {
         return MapUtils.keysWithValue(roads, player);
+    }
+
+    /**
+     * Get the ports that a player has a building connected to.
+     *
+     * @param player the player whose connected ports to retrieve, not null
+     * @return the set containing every port connected to by the player
+     */
+    @NotNull
+    public Set<Port> getPlayerPorts(@NotNull PlayerIndex player) {
+        Set<VertexLocation> buildings = getPlayerBuildings(player);
+        return MapUtils.valuesWithKeyMatching(ports,
+                loc -> loc.getVerticesStream().anyMatch(buildings::contains));
+    }
+
+    /**
+     * Get the location of buildings attached to this hex.
+     * @param location the location of the hex
+     * @return a set of normalized vertex locations of the buildings
+     */
+    public Set<VertexLocation> getHexBuildings(@NotNull HexLocation location) {
+        return location.getVerticesStream()
+                .filter(v -> getBuildingOwner(v) != null)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -258,9 +299,9 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public void addSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTwoTurns) throws Exception {
+    public void addSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTwoTurns)  {
         if (!canAddSettlement(location, player, isFirstTwoTurns)) {
-            throw new IllegalOperationException("Can't add Settlement");
+            throw new IllegalArgumentException("Can't add Settlement");
         }
         location = location.getNormalizedLocation();
         settlements.put(location, player);
@@ -317,9 +358,9 @@ public class GameMap {
      * @pre {@link #canAddSettlement} returns true
      */
 
-    public void addRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player, @NotNull boolean isSetup) throws Exception {
+    public void addRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player, @NotNull boolean isSetup)  {
         if (!canAddRoad(location, player, isSetup)) {
-            throw new IllegalOperationException("Can't add road");
+            throw new IllegalArgumentException("Can't add road");
         }
         location = location.getNormalizedLocation();
         roads.put(location, player);
@@ -353,9 +394,9 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public void upgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) throws Exception {
+    public void upgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player)  {
         if (!canUpgradeSettlement(location, player)) {
-            throw new IllegalOperationException("Can't upgrade Settlement");
+            throw new IllegalArgumentException("Can't upgrade Settlement");
         }
         location = location.getNormalizedLocation();
         settlements.remove(location);
@@ -407,9 +448,9 @@ public class GameMap {
      */
     Set<EdgeLocation> getVertexEdges(VertexLocation vertex) {
         Set<EdgeLocation> edges = vertex.getEdges();
-        for(Iterator<EdgeLocation> itr = edges.iterator();itr.hasNext();){
+        for (Iterator<EdgeLocation> itr = edges.iterator(); itr.hasNext(); ) {
             EdgeLocation e = itr.next();
-            if ((Math.abs(e.getHexLoc().getX())==radius||Math.abs(e.getHexLoc().getY())==radius)||Math.abs(e.getHexLoc().getX()+e.getHexLoc().getY())==radius)
+            if ((Math.abs(e.getHexLoc().getX()) == radius || Math.abs(e.getHexLoc().getY()) == radius) || Math.abs(e.getHexLoc().getX() + e.getHexLoc().getY()) == radius)
                 itr.remove();
         }
         return edges;
@@ -433,15 +474,16 @@ public class GameMap {
 
     /**
      * Find the length of the longest connected road for the given player denoted by their {@link PlayerIndex}.
+     *
      * @param player
-     * @return  Greatest number of connected roads.
+     * @return Greatest number of connected roads.
      */
-    public int getPlayerLongestRoad(PlayerIndex player){
+    public int getPlayerLongestRoad(PlayerIndex player) {
         int max = 0;
-        HashSet<EdgeLocation> edges = (HashSet)getPlayerRoads(player);
-        for (EdgeLocation e:edges) {
-            int roadSize = getRoadSize(1,e,player);
-            if(roadSize>max)
+        HashSet<EdgeLocation> edges = (HashSet) getPlayerRoads(player);
+        for (EdgeLocation e : edges) {
+            int roadSize = getRoadSize(1, e, player);
+            if (roadSize > max)
                 max = roadSize;
         }
         return max;
@@ -449,27 +491,42 @@ public class GameMap {
 
     /**
      * Recursive method that finds the greatest number of connected roads for the given player with a starting location.
+     *
      * @param currentSize
      * @param edge
      * @param player
      * @return
      */
-    private int getRoadSize(int currentSize, EdgeLocation edge, PlayerIndex player){
-        HashSet<EdgeLocation> edges;
-        switch(edge.getDir()){
-            case North: edges = (HashSet)getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.NorthEast));break;
-            case NorthEast: edges = (HashSet)getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.East));break;
-            case SouthEast: edges = (HashSet)getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.SouthEast));break;
-            case South: edges = (HashSet)getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.SouthWest));break;
-            case SouthWest: edges = (HashSet)getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.West));break;
-            case NorthWest: edges = (HashSet)getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.NorthWest));break;
-            default: edges = new HashSet<>();break;
+    private int getRoadSize(int currentSize, EdgeLocation edge, PlayerIndex player) {
+        Set<EdgeLocation> edges;
+        switch (edge.getDir()) {
+            case North:
+                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.NorthEast));
+                break;
+            case NorthEast:
+                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.East));
+                break;
+            case SouthEast:
+                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.SouthEast));
+                break;
+            case South:
+                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.SouthWest));
+                break;
+            case SouthWest:
+                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.West));
+                break;
+            case NorthWest:
+                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.NorthWest));
+                break;
+            default:
+                edges = new HashSet<>();
+                break;
         }
-        for (EdgeLocation e:edges) {
-            if(e.equals(edge.getNormalizedLocation()))
+        for (EdgeLocation e : edges) {
+            if (e.equals(edge.getNormalizedLocation()))
                 continue;
-            else if(roads.get(e)==player)
-                return getRoadSize(currentSize+1,e,player);
+            else if (roads.get(e) == player)
+                return getRoadSize(currentSize + 1, e, player);
         }
         return currentSize;
     }
@@ -485,7 +542,7 @@ public class GameMap {
      * @param roads list of roads currently placed on the map
      */
     public void setRoads(@NotNull Map<EdgeLocation, PlayerIndex> roads) {
-        this.roads = roads;
+        this.roads = normalizeEdgeMap(roads);
     }
 
     public GameMap withRoads(@NotNull Map<EdgeLocation, PlayerIndex> roads) {
@@ -580,7 +637,7 @@ public class GameMap {
      * @param settlements list of settlements currently placed on the map
      */
     public void setSettlements(@NotNull Map<VertexLocation, PlayerIndex> settlements) {
-        this.settlements = settlements;
+        this.settlements = normalizeVertexMap(settlements);
     }
 
     public GameMap withSettlements(@NotNull Map<VertexLocation, PlayerIndex> settlements) {
@@ -599,7 +656,7 @@ public class GameMap {
      * @param cities list of cities currently placed on the map
      */
     public void setCities(@NotNull Map<VertexLocation, PlayerIndex> cities) {
-        this.cities = cities;
+        this.cities = normalizeVertexMap(cities);
     }
 
     public GameMap withCities(@NotNull Map<VertexLocation, PlayerIndex> cities) {

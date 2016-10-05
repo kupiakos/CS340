@@ -1,13 +1,11 @@
 package client.poller;
 
 import client.game.GameManager;
-
 import shared.models.game.ClientModel;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.naming.CommunicationException;
-import javax.swing.Timer;
+import javax.swing.*;
+import java.awt.event.ActionListener;
 
 /**
  * Will take care of contacting the server on regular intervals to check for game updates.

@@ -4,7 +4,6 @@ import client.base.Controller;
 import client.game.GameManager;
 import shared.IServer;
 import shared.definitions.PlayerIndex;
-import shared.definitions.TurnStatus;
 import shared.facades.TurnFacade;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;

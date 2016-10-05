@@ -2,8 +2,8 @@ package shared.models.game;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
 import shared.exceptions.JoinGameException;
 
@@ -99,11 +99,8 @@ public class ClientModel {
         return this.getPlayers().size();
     }
 
-    @Nullable
-    public Player getPlayer(PlayerIndex p) {
-        if (p.index() >= getPlayers().size()) {
-            return null;
-        }
+    @NotNull
+    public Player getPlayer(@NotNull PlayerIndex p) {
         return getPlayers().get(p.index());
     }
 
@@ -239,7 +236,7 @@ public class ClientModel {
     /**
      * @return The current trade offer, if there is one.
      */
-    @NotNull
+    @Nullable
     public TradeOffer getTradeOffer() {
         return tradeOffer;
     }
@@ -247,11 +244,11 @@ public class ClientModel {
     /**
      * @param tradeOffer the current trade offer, if there is one
      */
-    public void setTradeOffer(@NotNull TradeOffer tradeOffer) {
+    public void setTradeOffer(@Nullable TradeOffer tradeOffer) {
         this.tradeOffer = tradeOffer;
     }
 
-    public ClientModel withTradeOffer(@NotNull TradeOffer tradeOffer) {
+    public ClientModel withTradeOffer(@Nullable TradeOffer tradeOffer) {
         setTradeOffer(tradeOffer);
         return this;
     }

@@ -2,7 +2,7 @@ package shared.models.util;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Generated;
 import java.util.Objects;

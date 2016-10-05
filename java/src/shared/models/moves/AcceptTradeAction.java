@@ -2,7 +2,7 @@ package shared.models.moves;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 
 import javax.annotation.Generated;
@@ -21,7 +21,7 @@ public class AcceptTradeAction {
 
     @SerializedName("playerIndex")
     @Expose
-    private PlayerIndex playerIndex;
+    private PlayerIndex receiver;
 
 
     // CUSTOM CODE
@@ -34,12 +34,12 @@ public class AcceptTradeAction {
     }
 
     /**
-     * @param willAccept  Whether you accept the trade or not
-     * @param playerIndex Who's accepting / rejecting this trade
+     * @param willAccept Whether you accept the trade or not
+     * @param receiver   Who's accepting / rejecting this trade
      */
-    public AcceptTradeAction(boolean willAccept, PlayerIndex playerIndex) {
+    public AcceptTradeAction(boolean willAccept, PlayerIndex receiver) {
         this.willAccept = willAccept;
-        this.playerIndex = playerIndex;
+        this.receiver = receiver;
     }
 
     /**
@@ -72,19 +72,19 @@ public class AcceptTradeAction {
      * @return Who's accepting / rejecting this trade
      */
     @NotNull
-    public PlayerIndex getPlayerIndex() {
-        return playerIndex;
+    public PlayerIndex getReceiver() {
+        return receiver;
     }
 
     /**
-     * @param playerIndex Who's accepting / rejecting this trade
+     * @param receiver Who's accepting / rejecting this trade
      */
-    public void setPlayerIndex(@NotNull PlayerIndex playerIndex) {
-        this.playerIndex = playerIndex;
+    public void setReceiver(@NotNull PlayerIndex receiver) {
+        this.receiver = receiver;
     }
 
     public AcceptTradeAction withPlayerIndex(@NotNull PlayerIndex playerIndex) {
-        setPlayerIndex(playerIndex);
+        setReceiver(playerIndex);
         return this;
     }
 
@@ -93,7 +93,7 @@ public class AcceptTradeAction {
         return "AcceptTradeAction [" +
                 "type=" + TYPE +
                 ", willAccept=" + willAccept +
-                ", playerIndex=" + playerIndex +
+                ", receiver=" + receiver +
                 "]";
     }
 
@@ -109,7 +109,7 @@ public class AcceptTradeAction {
         return (
                 TYPE == other.TYPE &&
                         willAccept == other.willAccept &&
-                        Objects.equals(playerIndex, other.playerIndex)
+                        Objects.equals(receiver, other.receiver)
         );
     }
 }
