@@ -1,9 +1,11 @@
 package client.base;
 
+import java.util.Observer;
+
 /**
  * Base class for controllers
  */
-public abstract class Controller implements IController
+public abstract class Controller implements IController, Observer
 {
 	
 	private IView view;
