@@ -211,4 +211,5 @@ public class TradingFacadeTest {
         Assert.assertFalse(facade.canMaritimeTrade(second, ResourceType.BRICK, ResourceType.ORE));
     }
 
+    // TODO: Maritime Trade tests
 }

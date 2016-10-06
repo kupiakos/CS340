@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Philip on 9/26/2016.
  */
+@SuppressWarnings("ConstantConditions")
 public class RobberFacadeTest {
 
     private ClientModel model;
@@ -117,7 +118,7 @@ public class RobberFacadeTest {
             facade.discard(set, listOfPlayers.get(0));
             Assert.fail("The turn status is wrong");
         } catch (IllegalArgumentException e) {
-
+            // Successfully failed
         }
 
         model.getTurnTracker().setStatus(TurnStatus.DISCARDING);
@@ -149,19 +150,23 @@ public class RobberFacadeTest {
         model.getTurnTracker().setStatus(TurnStatus.DISCARDING);
         try {
             facade.moveRobber(newLocation);
+            Assert.fail("Did not fail when expected");
         } catch (IllegalArgumentException e) {
-
+            // Successfully failed
         }
         model.getTurnTracker().setStatus(TurnStatus.ROBBING);
         try {
+            //noinspection ConstantConditions
             facade.moveRobber(null);
+            Assert.fail("Did not fail when expected");
         } catch (IllegalArgumentException e) {
-
+            // Successfully failed
         }
         try {
             facade.moveRobber(gameMap.getRobber());
+            Assert.fail("Did not fail when expected");
         } catch (IllegalArgumentException e) {
-
+            // Successfully failed
         }
         //Correct?
         facade.moveRobber(newLocation);
@@ -195,21 +200,43 @@ public class RobberFacadeTest {
         model.getTurnTracker().setStatus(TurnStatus.DISCARDING);
         try {
             facade.steal(target, currentPlayer.getPlayerIndex());
-        } catch (IllegalArgumentException e) {}
+            Assert.fail("Did not fail when expected");
+
+        } catch (IllegalArgumentException e) {
+            // Successfully failed
+
+        }
+
         model.getTurnTracker().setStatus(TurnStatus.ROBBING);
         try {
             facade.steal(null, currentPlayer.getPlayerIndex());
-        } catch (IllegalArgumentException e) {}
+            Assert.fail("Did not fail when expected");
+        } catch (IllegalArgumentException e) {
+            // Successfully failed
+        }
+
         try {
             facade.steal(target, null);
-        } catch (IllegalArgumentException e) {}
+            Assert.fail("Did not fail when expected");
+        } catch (IllegalArgumentException e) {
+            // Successfully failed
+        }
+
         try {
             facade.steal(target, currentPlayer.getPlayerIndex());
-        } catch (IllegalArgumentException e) {}
+            Assert.fail("Did not fail when expected");
+        } catch (IllegalArgumentException e) {
+            // Successfully failed
+        }
+
         target = PlayerIndex.SECOND;
         try {
             facade.steal(target, currentPlayer.getPlayerIndex());
-        } catch (IllegalArgumentException e) {}
+            Assert.fail("Did not fail when expected");
+
+        } catch (IllegalArgumentException e) {
+            // Successfully failed
+        }
 
         target = PlayerIndex.FOURTH;
         facade.steal(target, currentPlayer.getPlayerIndex());
