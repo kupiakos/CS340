@@ -175,9 +175,11 @@ public class TurnFacade extends AbstractFacade {
         if (tt().getStatus() == ROLLING || tt().getStatus() == ROBBING) return false;
 
 
+        if (tt().getStatus() == DISCARDING ) tt().setStatus(ROBBING);
+
+
         if (tt().getStatus() == SECOND_ROUND) decrementTurn();
         else incrementTurn();
-
 
         // If we go to the last player
         if (tt().getCurrentTurn().index() > 3) {
