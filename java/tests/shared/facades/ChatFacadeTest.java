@@ -60,18 +60,20 @@ public class ChatFacadeTest {
      */
     @Test
     public void sendChat() throws Exception {
+//        GameManager.getGame().getClientModel().getChat().setLines(new ArrayList<MessageEntry>());
         SendChatAction c = new SendChatAction("", p.getPlayerIndex());
         SendChatAction c2 = new SendChatAction("why hello", null);
         SendChatAction c3 = new SendChatAction("Good day sir", p.getPlayerIndex());
 
         cf.sendChat(c);
         cf.sendChat(c2);
-        assertTrue(len == GameManager.getGame().getClientModel().getChat().getLines().size());
+        assertTrue(len == cf.getModel().getChat().getLines().size());
+        assertTrue(cf.canSendChat(c3));
         cf.sendChat(c3);
-        ArrayList<MessageEntry> clist = (ArrayList<MessageEntry>) GameManager.getGame().getClientModel().getChat().getLines();
-        assertFalse(len == clist.size());
-        MessageEntry c5 = clist.get(clist.size() - 1);
-        assertTrue(c5.getMessage().equals(c3.getContent()));
+        ArrayList<MessageEntry> clist = (ArrayList<MessageEntry>) cf.getModel().getChat().getLines();
+        assertTrue(1 == clist.size());
+        MessageEntry c4 = clist.get(clist.size() - 1);
+        assertTrue(c4.getMessage().equals(c3.getContent()));
     }
 
 }
