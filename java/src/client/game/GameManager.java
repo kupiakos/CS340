@@ -44,7 +44,7 @@ public class GameManager extends Observable {
      *
      * @post This provides valid operations on GameManager
      */
-    private GameManager() {
+    GameManager() {
 
     }
 
@@ -73,10 +73,10 @@ public class GameManager extends Observable {
     /**
      * Starts the Poller, creates one if needed
      */
-    public void startPoller() {
+    public void startPoller(ClientModel cm) {
         if (poller == null) poller = new Poller();
 
-        poller.setClientModel(getClientModel());
+        poller.setClientModel(cm);
         poller.startPoller();
     }
 

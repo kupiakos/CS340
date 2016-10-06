@@ -1,10 +1,10 @@
 package shared.facades;
 
 import client.game.GameManager;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import shared.definitions.PlayerIndex;
+import shared.models.game.ClientModel;
 import shared.models.game.MessageEntry;
 import shared.models.game.Player;
 import shared.models.moves.SendChatAction;
@@ -20,7 +20,9 @@ import static org.junit.Assert.*;
 public class ChatFacadeTest {
     private ChatFacade cf;
     private Player p;
-    private int len;
+    private int L; // length
+    private FacadeManager fm;
+    private ClientModel cm;
 
     /**
      * Inits the game and sets up a player and ChatFacade
@@ -29,10 +31,11 @@ public class ChatFacadeTest {
      */
     @Before
     public void setUp() throws Exception {
-        GameManager.getGame().setClientModel(ModelExample.fullJsonModel());
-        cf = GameManager.getGame().getFacade().getChat();
+        cm = ModelExample.fullJsonModel();
+        fm = new FacadeManager(cm);
+        cf = fm.getChat();
         p = ModelExample.fullJsonModel().getPlayer(PlayerIndex.FIRST);
-        len = GameManager.getGame().getClientModel().getChat().getLines().size();
+        L = cf.getModel().getChat().getLines().size();
     }
 
     /**
@@ -60,14 +63,13 @@ public class ChatFacadeTest {
      */
     @Test
     public void sendChat() throws Exception {
-//        GameManager.getGame().getClientModel().getChat().setLines(new ArrayList<MessageEntry>());
         SendChatAction c = new SendChatAction("", p.getPlayerIndex());
         SendChatAction c2 = new SendChatAction("why hello", null);
         SendChatAction c3 = new SendChatAction("Good day sir", p.getPlayerIndex());
 
         cf.sendChat(c);
         cf.sendChat(c2);
-        assertTrue(len == cf.getModel().getChat().getLines().size());
+        assertTrue(L == cf.getModel().getChat().getLines().size());
         assertTrue(cf.canSendChat(c3));
         cf.sendChat(c3);
         ArrayList<MessageEntry> clist = (ArrayList<MessageEntry>) cf.getModel().getChat().getLines();
