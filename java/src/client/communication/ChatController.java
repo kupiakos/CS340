@@ -3,6 +3,7 @@ package client.communication;
 import client.base.Controller;
 import client.base.IView;
 import client.game.GameManager;
+import org.jetbrains.annotations.NotNull;
 import shared.IServer;
 import shared.definitions.CatanColor;
 import shared.definitions.PlayerIndex;
@@ -24,13 +25,16 @@ import java.util.Observer;
  */
 public class ChatController extends Controller implements IChatController, Observer {
     /**
-     * Required constructor
+     * Required constructor, registers on the observable list
      *
      * @param view chat view
      */
     public ChatController(IView view) {
         super(view);
+        update(GameManager.getGame(), null);
+        GameManager.getGame().addObserver(this);
     }
+
 
     @Override
     public IChatView getView() {
@@ -46,14 +50,13 @@ public class ChatController extends Controller implements IChatController, Obser
      * @param message
      */
     @Override
-    public void sendMessage(String message) {
-        // TODO:: Fix this shiz - who sent the message??????
-        PlayerIndex player = PlayerIndex.FIRST;
-        SendChatAction chat = new SendChatAction();
+    public void sendMessage(@NotNull String message) {
+        PlayerIndex player = GameManager.getGame().getClientModel().getTurnTracker().getCurrentTurn();
+        SendChatAction chat = new SendChatAction(message, player);
         ChatFacade cf = GameManager.getGame().getFacade().getChat();
         IServer s = GameManager.getGame().getServer();
 
-        if (ChatFacade.canSendChat(new SendChatAction(message, player))) {
+        if (cf.canSendChat(chat)) {
             ChatFacade.sendChat(chat);
             try {
                 s.sendChat(chat);
@@ -79,17 +82,21 @@ public class ChatController extends Controller implements IChatController, Obser
 
         if (chats != null) {
             for (MessageEntry message : chats.getLines()) {
-                String m = message.getMessage();
-                String s = message.getSource();
+                String msg = message.getMessage();
+                String source = message.getSource();
 
                 CatanColor messageColor = null;
                 for (Player player : GameManager.getGame().getFacade().getClientModel().getPlayers()) {
-                    // TODO:: Set the chat color from who sent the message
+                    // Set the chat color from who sent the message
+                    if (player.getName().equals(source)){
+                        messageColor = player.getColor();
+                    }
                 }
-                // TODO:: Add new entries with the message and color
+                // Add new entries with the message and color
+                entries.add(new LogEntry(messageColor, msg));
             }
         }
-        // TODO:: Update the view with the new chats
-
+        // Update the view with the new chats
+        getView().setEntries(entries);
     }
 }
