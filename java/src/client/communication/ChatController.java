@@ -59,7 +59,7 @@ public class ChatController extends Controller implements IChatController, Obser
         IServer s = GameManager.getGame().getServer();
 
         if (cf.canSendChat(chat)) {
-            ChatFacade.sendChat(chat);
+            new ChatFacade(GameManager.getGame().getFacade()).sendChat(chat);
             try {
                 s.sendChat(chat);
             } catch (CommunicationException e) {
