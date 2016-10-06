@@ -26,17 +26,17 @@ public class ChatControllerTest {
         gm = GameManager.getGame();
         gm.setClientModel(MockCM.fullJsonModel());
         len = GameManager.getGame().getClientModel().getChat().getLines().size();
+        cc = new ChatController(new ChatView());
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void sendEmptyMessage(){
+        cc.sendMessage(null);
     }
 
     @Test
-    public void sendMessage() throws Exception {
-        cc = new ChatController(new ChatView());
+    public void sendMessage() {
         String m = "Good message";
-        try {
-            cc.sendMessage(null);
-            fail("Expected an IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-        }
         assertTrue(len == GameManager.getGame().getClientModel().getChat().getLines().size());
         cc.sendMessage(m);
         ArrayList<MessageEntry> clist = (ArrayList<MessageEntry>) GameManager.getGame().getClientModel().getChat().getLines();

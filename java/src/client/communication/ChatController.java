@@ -51,6 +51,8 @@ public class ChatController extends Controller implements IChatController, Obser
      */
     @Override
     public void sendMessage(@NotNull String message) {
+        if (message == null) throw new IllegalArgumentException();
+
         PlayerIndex player = GameManager.getGame().getClientModel().getTurnTracker().getCurrentTurn();
         SendChatAction chat = new SendChatAction(message, player);
         ChatFacade cf = GameManager.getGame().getFacade().getChat();
