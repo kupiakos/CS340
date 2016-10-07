@@ -3,6 +3,7 @@ package client.game;
 import client.data.PlayerInfo;
 import client.poller.Poller;
 import client.server.MockProxy;
+import client.utils.ServerAsyncHelper;
 import shared.IServer;
 import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
@@ -38,14 +39,15 @@ public class GameManager extends Observable {
      */
     private PlayerInfo playerInfo;
 
+    private ServerAsyncHelper async;
 
     /**
      * Init stuff for the game manager as needed
      *
      * @post This provides valid operations on GameManager
      */
-    GameManager() {
-
+    private GameManager() {
+        setAsync(new ServerAsyncHelper(this));
     }
 
 
@@ -59,6 +61,10 @@ public class GameManager extends Observable {
         return instance;
     }
 
+    public static void setInstance(GameManager sm) {
+        GameManager.instance = sm;
+    }
+
     /**
      * Lets you grab the facade for the game, allows access to the current games model
      *
@@ -68,7 +74,6 @@ public class GameManager extends Observable {
         if (facadeManager == null) facadeManager = new FacadeManager(clientModel);
         return facadeManager;
     }
-
 
     /**
      * Starts the Poller, creates one if needed
@@ -99,7 +104,6 @@ public class GameManager extends Observable {
         facadeManager.update(cm);
     }
 
-
     /**
      * Grabs a "server" for us so we can talk with the real server
      *
@@ -110,11 +114,6 @@ public class GameManager extends Observable {
         if (server == null) server = new MockProxy();
 
         return server;
-    }
-
-
-    public static void setInstance(GameManager sm) {
-        GameManager.instance = sm;
     }
 
     public Poller getPoller() {
@@ -139,5 +138,13 @@ public class GameManager extends Observable {
 
     public void setPlayerInfo(PlayerInfo playerInfo) {
         this.playerInfo = playerInfo;
+    }
+
+    public ServerAsyncHelper getAsync() {
+        return async;
+    }
+
+    public void setAsync(ServerAsyncHelper async) {
+        this.async = async;
     }
 }
