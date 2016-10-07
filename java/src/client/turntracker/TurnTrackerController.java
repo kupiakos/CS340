@@ -26,10 +26,10 @@ import static shared.definitions.TurnStatus.GAME_OVER;
 public class TurnTrackerController extends Controller implements ITurnTrackerController, Observer {
 
     public TurnTrackerController(ITurnTrackerView view) {
-
         super(view);
-
         initFromModel();
+        GameManager.getGame().addObserver(this);
+
     }
 
     /**
