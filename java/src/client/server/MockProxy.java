@@ -11,6 +11,7 @@ import shared.models.util.ChangeLogLevelRequest;
 
 import javax.naming.CommunicationException;
 import javax.security.auth.login.CredentialNotFoundException;
+import java.io.File;
 
 /**
  * Created by elijahgk on 9/12/2016.
@@ -82,7 +83,7 @@ public class MockProxy implements IServer {
      */
     @Override
     public ClientModel gameState(int version) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return MockCM.fullJsonModel();
     }
 
     /**

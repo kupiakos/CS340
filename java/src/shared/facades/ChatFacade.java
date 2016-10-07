@@ -37,9 +37,9 @@ public class ChatFacade extends AbstractFacade {
     /**
      * Sends a chat message to a {@link Player} by updating the message list in the model
      */
-    public static void sendChat(@NotNull SendChatAction c) {
+    public void sendChat(@NotNull SendChatAction c) {
         if (canSendChat(c)) {
-            GameManager.getGame().getClientModel().getChat().addMessage(c.asMessageEntry());
+            getModel().getChat().addMessage(c.asMessageEntry());
         }
     }
 }

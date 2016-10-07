@@ -5,6 +5,7 @@ import shared.models.game.ClientModel;
 
 import javax.naming.CommunicationException;
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
@@ -34,26 +35,41 @@ public class Poller {
      * @post This provides a timer that will poll the server
      */
     public Poller() {
+        // To init the poller go ahead and check for an update to start
+        checkForUpdate();
 
-        ActionListener poll = (ActionEvent) -> {
-            // Grab a game manager
-            GameManager gm = GameManager.getGame();
-            // Get our version number
-            int version = gm.getClientModel().getVersion();
-            // Call the server with the number
-            ClientModel response;
-            try {
-                response = gm.getServer().gameState(version);
-                // If new model
-                if (response != null) {
-                    // Update ours
-                    gm.setClientModel(response);
-                }
-            } catch (CommunicationException e) {
-                e.printStackTrace();
+        ActionListener poll = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                checkForUpdate();
             }
         };
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, poll);
+    }
+
+    private void checkForUpdate() {
+        // Grab a game manager
+        GameManager gm = GameManager.getGame();
+        // Get our version number
+        int version;
+        try {
+            version = gm.getClientModel().getVersion();
+        }
+        catch (Exception e){
+            version = 0;
+        }
+        // Call the server with the number
+        ClientModel response = null;
+        try {
+            response = gm.getServer().gameState(version);
+        } catch (CommunicationException e) {
+            e.printStackTrace();
+        }
+        // If new model
+        if (response != null) {
+            // Update ours
+            gm.setClientModel(response);
+        }
     }
 
 

@@ -2,6 +2,8 @@ package client.game;
 
 import client.data.PlayerInfo;
 import client.poller.Poller;
+import client.server.MockProxy;
+import client.utils.ServerAsyncHelper;
 import shared.IServer;
 import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
@@ -11,7 +13,7 @@ import java.util.Observable;
 /**
  * Manages a single game
  */
-public class GameManager extends Observable {
+public class GameManager extends Observable implements IGameManager{
     /**
      * Setting up the singleton for all to use
      */
@@ -37,14 +39,15 @@ public class GameManager extends Observable {
      */
     private PlayerInfo playerInfo;
 
+    private ServerAsyncHelper async;
 
     /**
      * Init stuff for the game manager as needed
      *
      * @post This provides valid operations on GameManager
      */
-    private GameManager() {
-
+    GameManager() {
+        setAsync(new ServerAsyncHelper(this));
     }
 
 
@@ -58,6 +61,10 @@ public class GameManager extends Observable {
         return instance;
     }
 
+    public static void setInstance(GameManager sm) {
+        GameManager.instance = sm;
+    }
+
     /**
      * Lets you grab the facade for the game, allows access to the current games model
      *
@@ -68,14 +75,14 @@ public class GameManager extends Observable {
         return facadeManager;
     }
 
-
     /**
      * Starts the Poller, creates one if needed
      */
-    public void startPoller() {
+    public void startPoller(ClientModel cm) {
         if (poller == null) poller = new Poller();
 
-        poller.setClientModel(clientModel);
+        poller.setClientModel(cm);
+
         poller.startPoller();
     }
 
@@ -98,19 +105,16 @@ public class GameManager extends Observable {
         facadeManager.update(cm);
     }
 
-
     /**
      * Grabs a "server" for us so we can talk with the real server
      *
      * @post a server we can use
      */
     public IServer getServer() {
+        //TODO:: Change this to the real server
+        if (server == null) server = new MockProxy();
+
         return server;
-    }
-
-
-    public static void setInstance(GameManager sm) {
-        GameManager.instance = sm;
     }
 
     public Poller getPoller() {
@@ -135,5 +139,13 @@ public class GameManager extends Observable {
 
     public void setPlayerInfo(PlayerInfo playerInfo) {
         this.playerInfo = playerInfo;
+    }
+
+    public ServerAsyncHelper getAsync() {
+        return async;
+    }
+
+    public void setAsync(ServerAsyncHelper async) {
+        this.async = async;
     }
 }
