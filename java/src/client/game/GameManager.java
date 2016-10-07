@@ -13,7 +13,7 @@ import java.util.Observable;
 /**
  * Manages a single game
  */
-public class GameManager extends Observable {
+public class GameManager extends Observable implements IGameManager{
     /**
      * Setting up the singleton for all to use
      */
@@ -46,13 +46,8 @@ public class GameManager extends Observable {
      *
      * @post This provides valid operations on GameManager
      */
-<<<<<<< HEAD
     GameManager() {
-
-=======
-    private GameManager() {
         setAsync(new ServerAsyncHelper(this));
->>>>>>> 745a642... Add default Controller base and ServerAsyncHelper
     }
 
 
