@@ -1,17 +1,13 @@
 package shared.facades;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import shared.definitions.DevCardType;
-import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.definitions.TurnStatus;
 import shared.models.game.ClientModel;
 import shared.models.game.DevCardSet;
 import shared.models.game.Player;
 import shared.models.game.ResourceSet;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by Philip on 9/17/2016.
@@ -57,10 +53,7 @@ public class DevCardFacade extends AbstractFacade {
             return false;
         }
         ResourceSet set = currentPlayer.getResources();
-        if (set.getOre() > 0 && set.getSheep() > 0 && set.getWheat() > 0) {
-            return true;
-        }
-        return false;
+        return set.getOre() > 0 && set.getSheep() > 0 && set.getWheat() > 0;
     }
 
     /**
@@ -107,10 +100,7 @@ public class DevCardFacade extends AbstractFacade {
         if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
             return false;
         }
-        if (currentPlayer.getOldDevCards().getSoldier() > 0) {
-            return true;
-        }
-        return false;
+        return currentPlayer.getOldDevCards().getSoldier() > 0;
     }
 
     /**
@@ -152,10 +142,7 @@ public class DevCardFacade extends AbstractFacade {
             return false;
         }
         int total = currentPlayer.getOldDevCards().getMonument() + currentPlayer.getNewDevCards().getMonument();
-        if (total > 0 && (currentPlayer.getVictoryPoints() + total) >= 10) {
-            return true;
-        }
-        return false;
+        return total > 0 && (currentPlayer.getVictoryPoints() + total) >= 10;
     }
 
     /**
