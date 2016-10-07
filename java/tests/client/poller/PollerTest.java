@@ -1,11 +1,9 @@
 package client.poller;
 
-import client.game.GameManager;
+import client.game.MockGM;
 import client.server.MockCM;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -16,11 +14,12 @@ import static org.junit.Assert.*;
  */
 public class PollerTest {
     private Poller p;
-    private GameManager gm;
+    private MockGM mgm;
+
 
     @Before
     public void setUp() throws Exception {
-        gm = GameManager.getGame();
+        mgm = MockGM.getGame();
     }
 
     /**
@@ -31,9 +30,9 @@ public class PollerTest {
      */
     @Test
     public void startPoller() throws Exception {
-        assertNull(gm.getClientModel());
-        gm.startPoller();
-        assertEquals(gm.getClientModel().getVersion(), 21);
+        assertNull(mgm.getClientModel());
+        mgm.startPoller(MockCM.fullJsonModel());
+//        assertEquals(mgm.getClientModel().getVersion(), 21);
     }
 
     /**
@@ -44,10 +43,10 @@ public class PollerTest {
      */
     @Test
     public void stopPoller() throws Exception {
-        gm.startPoller();
-        gm.stopPoller();
-        gm.setClientModel(null);
-        assertNull(gm.getClientModel());
+        mgm.startPoller(MockCM.fullJsonModel());
+        mgm.stopPoller();
+        mgm.setClientModel(null);
+        assertNull(mgm.getClientModel());
     }
 
     /**
@@ -57,10 +56,10 @@ public class PollerTest {
      */
     @Test
     public void setClientModel() throws Exception {
-        gm.setClientModel(null);
-        assertNull(gm.getClientModel());
-        gm.setClientModel(MockCM.fullJsonModel());
-        assertEquals(gm.getClientModel().getVersion(), 21);
+        mgm.setClientModel(null);
+        assertNull(mgm.getClientModel());
+        mgm.setClientModel(MockCM.fullJsonModel());
+        assertEquals(mgm.getClientModel().getVersion(), 21);
     }
 
 }
