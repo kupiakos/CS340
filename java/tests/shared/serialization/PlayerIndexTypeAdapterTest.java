@@ -43,10 +43,17 @@ public class PlayerIndexTypeAdapterTest {
 
     @Test
     public void deserializeNull() throws Exception {
-        PlayerIndex idx;
-        for (String test : new String[]{"-1", "null", "", Integer.toString(PlayerIndex.MAX_PLAYERS)}) {
-            idx = serializer.fromJson(test, PlayerIndex.class);
-            Assert.assertNull(idx);
+        // Nothing we can do about missing elements to throw that is scalable
+        for (String test : new String[]{"-1", ""}) {
+            Assert.assertNull(serializer.fromJson(test, PlayerIndex.class));
+        }
+        for (String test : new String[]{"null", "-2", Integer.toString(PlayerIndex.MAX_PLAYERS)}) {
+            try {
+                serializer.fromJson(test, PlayerIndex.class);
+                Assert.fail("Did not fail to parse '" + test + "'");
+            } catch (IllegalArgumentException e) {
+                // Successfully failed
+            }
         }
     }
 
