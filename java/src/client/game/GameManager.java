@@ -46,7 +46,7 @@ public class GameManager extends Observable {
      *
      * @post This provides valid operations on GameManager
      */
-    private GameManager() {
+    GameManager() {
         setAsync(new ServerAsyncHelper(this));
     }
 
