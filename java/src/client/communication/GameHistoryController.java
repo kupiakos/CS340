@@ -13,6 +13,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 
+
 /**
  * Game history controller implementation
  */
@@ -22,10 +23,12 @@ public class GameHistoryController extends Controller implements IGameHistoryCon
         super(view);
         initFromModel();
         GameManager.getGame().addObserver(this);
+
     }
 
     @Override
     public IGameHistoryView getView() {
+
         return (IGameHistoryView) super.getView();
     }
 
@@ -58,5 +61,6 @@ public class GameHistoryController extends Controller implements IGameHistoryCon
         }
         getView().setEntries(entries);
     }
+
 }
 
