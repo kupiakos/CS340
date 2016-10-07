@@ -13,11 +13,7 @@ import java.util.Observable;
 /**
  * Manages a single game
  */
-<<<<<<< HEAD
 public class GameManager extends Observable implements IGameManager{
-=======
-public class GameManager extends Observable {
->>>>>>> fa1e9e98a84160075e87f55cc38a2c603fb19105
     /**
      * Setting up the singleton for all to use
      */
