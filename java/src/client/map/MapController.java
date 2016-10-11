@@ -39,7 +39,7 @@ public class MapController extends Controller implements IMapController {
     }
 
     protected void initFromModel() {
-        updateFromModel(null);
+        updateFromModel(getModel());
     }
 
     @Override
@@ -107,27 +107,28 @@ public class MapController extends Controller implements IMapController {
     }
 
     public boolean canPlaceRoad(EdgeLocation edgeLoc) {
-
         return true;
     }
 
     public boolean canPlaceSettlement(VertexLocation vertLoc) {
-
         return true;
     }
 
     public boolean canPlaceCity(VertexLocation vertLoc) {
-
         return true;
     }
 
     public boolean canPlaceRobber(HexLocation hexLoc) {
-
         return true;
     }
 
     public void placeRoad(EdgeLocation edgeLoc) {
         getView().placeRoad(edgeLoc, CatanColor.ORANGE);
+        getFacade().getBuilding().buildRoad(
+                getModel().getPlayer(PlayerIndex.FIRST),
+                edgeLoc,
+                false,
+                false);
         // TODO: Adjust with current player, additional settings
         getAsync().runModelMethod(server::buildRoad, new BuildRoadAction(false, edgeLoc, PlayerIndex.FIRST))
                 .onError(e -> JOptionPane.showMessageDialog(null, "Failed to build Road: " + e.getMessage()))

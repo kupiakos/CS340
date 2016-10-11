@@ -1,6 +1,7 @@
 package client.poller;
 
 import client.game.GameManager;
+import client.game.IGameManager;
 import shared.models.game.ClientModel;
 
 import javax.naming.CommunicationException;
@@ -49,7 +50,7 @@ public class Poller {
 
     private void checkForUpdate() {
         // Grab a game manager
-        GameManager gm = GameManager.getGame();
+        IGameManager gm = GameManager.getGame();
         // Get our version number
         int version;
         try {

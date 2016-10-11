@@ -1,6 +1,5 @@
 package shared.facades;
 
-import client.game.GameManager;
 import org.junit.Before;
 import org.junit.Test;
 import shared.definitions.PlayerIndex;
@@ -28,15 +27,15 @@ public class DevCardFacadeTest {
     private DevCardFacade facade;
     private ResourcesFacade resFacade;
     private BuildingFacade buiFacade;
+    private FacadeManager facades;
 
     @Before
     public void setup() {
-        GameManager game = GameManager.getGame();
         model = ModelExample.fullJsonModel();
-        game.setClientModel(model);
-        facade = game.getFacade().getDevCards();
-        resFacade = game.getFacade().getResources();
-        buiFacade = game.getFacade().getBuilding();
+        facades = new FacadeManager(model);
+        facade = facades.getDevCards();
+        resFacade = facades.getResources();
+        buiFacade = facades.getBuilding();
         listOfPlayers = model.getPlayers();
         currentPlayer = listOfPlayers.get(0);
         ResourceSet resourceSet = new ResourceSet(1, 0, 1, 0, 1);
@@ -88,7 +87,7 @@ public class DevCardFacadeTest {
         listOfPlayers.get(2).setNewDevCards(new DevCardSet(1, 1, 2, 13, 1));
         assertFalse(facade.canBuyDevCard(model.getPlayer(PlayerIndex.FIRST)));
         listOfPlayers.get(2).setNewDevCards(new DevCardSet(0, 0, 0, 0, 0));
-//        assertTrue(facade.canBuyDevCard(model.getPlayer(PlayerIndex.FIRST)));
+//        assertTrue(facade.canBuyDevCard(model.getTurn(PlayerIndex.FIRST)));
     }
 
     @Test
