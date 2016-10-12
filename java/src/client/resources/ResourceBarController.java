@@ -30,7 +30,6 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 
 		super(view);
 		GameManager gameManager = GameManager.getGame();
-		clientModel = gameManager.getClientModel();
 		PlayerIndex currentPlayerIndex = clientModel.getTurnTracker().getCurrentTurn();
 		currentPlayer = clientModel.getPlayer(currentPlayerIndex);
 		buildingFacade = gameManager.getFacade().getBuilding();
@@ -56,7 +55,7 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 
 	@Override
 	public void buildRoad() {
-		executeElementAction(ResourceBarElement.ROAD);
+		executeElementAction(ResourceBarElement.ROAD); //calls mapcontroller.placeRoad
 	}
 
 	/**
@@ -102,6 +101,10 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 		}
 	}
 
+
+//	public void updateFromModel(ClientModel clientModel){
+//
+//	}
 	/**
 	 * updates the Resource Bar to match the contents of the player's hand in the model
 	 *

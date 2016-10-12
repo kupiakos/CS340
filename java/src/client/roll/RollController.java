@@ -1,6 +1,8 @@
 package client.roll;
 
-import client.base.*;
+import client.base.Controller;
+
+import java.util.Observable;
 
 
 /**
@@ -9,6 +11,11 @@ import client.base.*;
 public class RollController extends Controller implements IRollController {
 
 	private IRollResultView resultView;
+
+	@Override
+	public void update(Observable o, Object arg) {
+
+	}
 
 	/**
 	 * RollController constructor

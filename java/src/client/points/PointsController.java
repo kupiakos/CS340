@@ -1,6 +1,8 @@
 package client.points;
 
-import client.base.*;
+import client.base.Controller;
+
+import java.util.Observable;
 
 
 /**
@@ -9,7 +11,12 @@ import client.base.*;
 public class PointsController extends Controller implements IPointsController {
 
 	private IGameFinishedView finishedView;
-	
+
+	@Override
+	public void update(Observable o, Object arg) {
+
+	}
+
 	/**
 	 * PointsController constructor
 	 * 
