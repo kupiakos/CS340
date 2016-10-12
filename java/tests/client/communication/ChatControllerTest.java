@@ -37,7 +37,7 @@ public class ChatControllerTest {
         cc.setServer(gm.getServer());
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected=NullPointerException.class)
     public void sendEmptyMessage(){
         cc.sendMessage(null);
     }
