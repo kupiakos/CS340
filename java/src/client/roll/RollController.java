@@ -1,6 +1,9 @@
 package client.roll;
 
-import client.base.*;
+import client.base.Controller;
+import shared.models.game.ClientModel;
+
+import java.util.Observable;
 
 
 /**
@@ -9,6 +12,11 @@ import client.base.*;
 public class RollController extends Controller implements IRollController {
 
 	private IRollResultView resultView;
+
+	@Override
+	protected void updateFromModel(ClientModel model) {
+		// Do nothing by default, overridden by classes that need it
+	}
 
 	/**
 	 * RollController constructor

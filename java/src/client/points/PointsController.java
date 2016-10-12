@@ -1,6 +1,7 @@
 package client.points;
 
-import client.base.*;
+import client.base.Controller;
+import shared.models.game.ClientModel;
 
 
 /**
@@ -9,7 +10,12 @@ import client.base.*;
 public class PointsController extends Controller implements IPointsController {
 
 	private IGameFinishedView finishedView;
-	
+
+	@Override
+	protected void updateFromModel(ClientModel model) {
+		// Do nothing by default, overridden by classes that need it
+	}
+
 	/**
 	 * PointsController constructor
 	 * 
