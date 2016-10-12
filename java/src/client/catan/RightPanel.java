@@ -35,18 +35,8 @@ public class RightPanel extends JPanel {
         //
         playCardView = new PlayDevCardView();
         buyCardView = new BuyDevCardView();
-        IAction soldierAction = new IAction() {
-            @Override
-            public void execute() {
-                mapController.playSoldierCard();
-            }
-        };
-        IAction roadAction = new IAction() {
-            @Override
-            public void execute() {
-                mapController.playRoadBuildingCard();
-            }
-        };
+        IAction soldierAction = mapController::playSoldierCard;
+        IAction roadAction = mapController::playRoadBuildingCard;
         devCardController = new DevCardController(playCardView, buyCardView,
                 soldierAction, roadAction);
         playCardView.setController(devCardController);
@@ -73,19 +63,9 @@ public class RightPanel extends JPanel {
                 createStartMoveAction(mapController,
                         PieceType.CITY));
         resourceController.setElementAction(ResourceBarElement.BUY_CARD,
-                new IAction() {
-                    @Override
-                    public void execute() {
-                        devCardController.startBuyCard();
-                    }
-                });
+                devCardController::startBuyCard);
         resourceController.setElementAction(ResourceBarElement.PLAY_CARD,
-                new IAction() {
-                    @Override
-                    public void execute() {
-                        devCardController.startPlayCard();
-                    }
-                });
+                devCardController::startPlayCard);
         resourceView.setController(resourceController);
 
         this.add(pointsView);
@@ -95,14 +75,10 @@ public class RightPanel extends JPanel {
     private IAction createStartMoveAction(final IMapController mapController,
                                           final PieceType pieceType) {
 
-        return new IAction() {
-
-            @Override
-            public void execute() {
-                boolean isFree = false;
-                boolean allowDisconnected = false;
-                mapController.startMove(pieceType, isFree, allowDisconnected);
-            }
+        return () -> {
+            boolean isFree = false;
+            boolean allowDisconnected = false;
+            mapController.startMove(pieceType, isFree, allowDisconnected);
         };
     }
 

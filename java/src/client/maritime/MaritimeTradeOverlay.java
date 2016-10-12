@@ -6,7 +6,6 @@ import shared.definitions.ResourceType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -276,54 +275,45 @@ public class MaritimeTradeOverlay extends OverlayView implements IMaritimeTradeO
     }
 
     private void createListeners() {
-        actionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == tradeButton) {
-                    getController().makeTrade();
-                } else if (e.getSource() == cancelButton) {
-                    reset();//TODO Should I leave this in?  It just emptys the view and starts a new one. should the controller do that?
-                    getController().cancelTrade();
-                }
+        actionListener = e -> {
+            if (e.getSource() == tradeButton) {
+                getController().makeTrade();
+            } else if (e.getSource() == cancelButton) {
+                reset();//TODO Should I leave this in?  It just emptys the view and starts a new one. should the controller do that?
+                getController().cancelTrade();
             }
         };
-        giveActionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        giveActionListener = e -> {
 
-                if (e.getSource() == givereload) {
-                    getController().unsetGiveValue();
-                    hideGetOptions();
-                } else if (e.getSource() == givewood) {
-                    getController().setGiveResource(ResourceType.WOOD);
-                } else if (e.getSource() == givebrick) {
-                    getController().setGiveResource(ResourceType.BRICK);
-                } else if (e.getSource() == givesheep) {
-                    getController().setGiveResource(ResourceType.SHEEP);
-                } else if (e.getSource() == givewheat) {
-                    getController().setGiveResource(ResourceType.WHEAT);
-                } else if (e.getSource() == giveore) {
-                    getController().setGiveResource(ResourceType.ORE);
-                }
+            if (e.getSource() == givereload) {
+                getController().unsetGiveValue();
+                hideGetOptions();
+            } else if (e.getSource() == givewood) {
+                getController().setGiveResource(ResourceType.WOOD);
+            } else if (e.getSource() == givebrick) {
+                getController().setGiveResource(ResourceType.BRICK);
+            } else if (e.getSource() == givesheep) {
+                getController().setGiveResource(ResourceType.SHEEP);
+            } else if (e.getSource() == givewheat) {
+                getController().setGiveResource(ResourceType.WHEAT);
+            } else if (e.getSource() == giveore) {
+                getController().setGiveResource(ResourceType.ORE);
             }
         };
-        getActionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        getActionListener = e -> {
 
-                if (e.getSource() == getreload) {
-                    getController().unsetGetValue();
-                } else if (e.getSource() == getwood) {
-                    getController().setGetResource(ResourceType.WOOD);
-                } else if (e.getSource() == getbrick) {
-                    getController().setGetResource(ResourceType.BRICK);
-                } else if (e.getSource() == getsheep) {
-                    getController().setGetResource(ResourceType.SHEEP);
-                } else if (e.getSource() == getwheat) {
-                    getController().setGetResource(ResourceType.WHEAT);
-                } else if (e.getSource() == getore) {
-                    getController().setGetResource(ResourceType.ORE);
-                }
+            if (e.getSource() == getreload) {
+                getController().unsetGetValue();
+            } else if (e.getSource() == getwood) {
+                getController().setGetResource(ResourceType.WOOD);
+            } else if (e.getSource() == getbrick) {
+                getController().setGetResource(ResourceType.BRICK);
+            } else if (e.getSource() == getsheep) {
+                getController().setGetResource(ResourceType.SHEEP);
+            } else if (e.getSource() == getwheat) {
+                getController().setGetResource(ResourceType.WHEAT);
+            } else if (e.getSource() == getore) {
+                getController().setGetResource(ResourceType.ORE);
             }
         };
     }

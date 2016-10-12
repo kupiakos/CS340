@@ -4,7 +4,6 @@ import client.base.IAction;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
@@ -41,12 +40,7 @@ public class GameStatePanel extends JPanel {
             button.removeActionListener(listener);
         }
 
-        ActionListener actionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                action.execute();
-            }
-        };
+        ActionListener actionListener = e -> action.execute();
         button.addActionListener(actionListener);
     }
 }

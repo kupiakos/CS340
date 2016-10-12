@@ -7,8 +7,6 @@ import shared.definitions.DevCardType;
 import shared.definitions.ResourceType;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -249,12 +247,7 @@ class ButtonGroupPanel extends JPanel implements IButtonGroup {
     private ButtonGroupPanelListener listener;
 
     private ButtonGroup bg;
-    private ActionListener actionListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            notifySelectedButtonChanged();
-        }
-    };
+    private ActionListener actionListener = e -> notifySelectedButtonChanged();
 
     ButtonGroupPanel() {
         super();
@@ -452,16 +445,13 @@ class DevelopmentCardChooser extends ButtonGroupPanel {
         button.setVerticalTextPosition(AbstractButton.BOTTOM);
         button.setHorizontalTextPosition(AbstractButton.CENTER);
 
-        button.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg) {
+        button.addChangeListener(arg -> {
 
-                JToggleButton source = (JToggleButton) arg.getSource();
-                if (source.isSelected()) {
-                    source.setBorder(BorderFactory.createLineBorder(Color.black, 3));
-                } else {
-                    source.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
-                }
+            JToggleButton source = (JToggleButton) arg.getSource();
+            if (source.isSelected()) {
+                source.setBorder(BorderFactory.createLineBorder(Color.black, 3));
+            } else {
+                source.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
             }
         });
 

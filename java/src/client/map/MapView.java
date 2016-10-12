@@ -15,7 +15,6 @@ import shared.locations.VertexLocation;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
@@ -192,13 +191,7 @@ public class MapView extends PanelView implements IMapView {
         private JLabel label;
         private MapComponent map;
         private JButton cancelButton;
-        private ActionListener cancelButtonListener = new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                getController().cancelMove();
-            }
-        };
+        private ActionListener cancelButtonListener = e -> getController().cancelMove();
 
         public MapOverlay(MapComponent mainMap) {
 

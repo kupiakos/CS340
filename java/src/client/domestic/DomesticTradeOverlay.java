@@ -8,7 +8,6 @@ import shared.definitions.ResourceType;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -43,15 +42,10 @@ public class DomesticTradeOverlay extends OverlayView implements IDomesticTradeO
 
     private Map<ResourceType, JLabel> resourceCounts;
     private Map<ResourceType, ArrayList<JButton>> resourceButtonsMap;
-    private ActionListener playerSelectActionListener = new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JToggleButton button = (JToggleButton) e.getSource();
-            PlayerInfo pi = getPlayerByName(button.getText());
-            getController().setPlayerToTradeWith(pi.getPlayerIndex());
-        }
-
+    private ActionListener playerSelectActionListener = e -> {
+        JToggleButton button = (JToggleButton) e.getSource();
+        PlayerInfo pi = getPlayerByName(button.getText());
+        getController().setPlayerToTradeWith(pi.getPlayerIndex());
     };
 
     public DomesticTradeOverlay() {
@@ -107,24 +101,14 @@ public class DomesticTradeOverlay extends OverlayView implements IDomesticTradeO
         this.tradeButton.setFont(buttonFont);
         this.tradeButton.setEnabled(false);
         this.tradeButton.setAlignmentX(CENTER_ALIGNMENT);
-        this.tradeButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                getController().sendTradeOffer();
-            }
-        });
+        this.tradeButton.addActionListener(e -> getController().sendTradeOffer());
 
         this.cancelButton = new JButton("Cancel");
         FontUtils.setFont(this.cancelButton, BUTTON_TEXT_SIZE);
         this.cancelButton.setAlignmentX(CENTER_ALIGNMENT);
-        this.cancelButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                getController().cancelTrade();
+        this.cancelButton.addActionListener(e -> {
+            getController().cancelTrade();
 //				reset();// TODO, this may not be needed here
-            }
         });
 
         // setup user select
@@ -144,13 +128,7 @@ public class DomesticTradeOverlay extends OverlayView implements IDomesticTradeO
 
         JToggleButton noneToggle = new JToggleButton("None");
         noneToggle.setSelected(true);
-        noneToggle.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                getController().setPlayerToTradeWith(-1);
-            }
-        });
+        noneToggle.addActionListener(e -> getController().setPlayerToTradeWith(-1));
         noneToggle.setActionCommand("None");
         noneToggle.putClientProperty("JButton.buttonType", "segmented");
         noneToggle.putClientProperty("JButton.segmentPosition", "first");
@@ -190,14 +168,9 @@ public class DomesticTradeOverlay extends OverlayView implements IDomesticTradeO
             sendToggle.setActionCommand("send");
             sendToggle.putClientProperty("JButton.buttonType", "segmented");
             sendToggle.putClientProperty("JButton.segmentPosition", "first");
-            sendToggle.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    upDownPanelByResourceType.get(resourceType).setVisible(true);
-                    getController().setResourceToSend(resourceType);
-                }
-
+            sendToggle.addActionListener(e -> {
+                upDownPanelByResourceType.get(resourceType).setVisible(true);
+                getController().setResourceToSend(resourceType);
             });
             toggleButtonGroup.add(sendToggle);
 
@@ -207,15 +180,10 @@ public class DomesticTradeOverlay extends OverlayView implements IDomesticTradeO
             noneToggle.setActionCommand("none");
             noneToggle.putClientProperty("JButton.buttonType", "segmented");
             noneToggle.putClientProperty("JButton.segmentPosition", "middle");
-            noneToggle.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    upDownPanelByResourceType.get(resourceType).setVisible(false);
-                    resourceCounts.get(resourceType).setText("0");
-                    getController().unsetResource(resourceType);
-                }
-
+            noneToggle.addActionListener(e -> {
+                upDownPanelByResourceType.get(resourceType).setVisible(false);
+                resourceCounts.get(resourceType).setText("0");
+                getController().unsetResource(resourceType);
             });
             toggleButtonGroup.add(noneToggle);
 
@@ -223,14 +191,9 @@ public class DomesticTradeOverlay extends OverlayView implements IDomesticTradeO
             recieveToggle.setActionCommand("recieve");
             recieveToggle.putClientProperty("JButton.buttonType", "segmented");
             recieveToggle.putClientProperty("JButton.segmentPosition", "last");
-            recieveToggle.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    upDownPanelByResourceType.get(resourceType).setVisible(true);
-                    getController().setResourceToReceive(resourceType);
-                }
-
+            recieveToggle.addActionListener(e -> {
+                upDownPanelByResourceType.get(resourceType).setVisible(true);
+                getController().setResourceToReceive(resourceType);
             });
             toggleButtonGroup.add(recieveToggle);
 
@@ -279,31 +242,23 @@ public class DomesticTradeOverlay extends OverlayView implements IDomesticTradeO
             BufferedImage upImage = ImageIO.read(new File("images/misc/up.png"));
             upImage = this.getScaledImage(upImage, upDownButtonWidth, upDownButtonWidth);
             JButton upButton = new JButton(new ImageIcon(upImage));
-            upButton.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Integer currentAmount = Integer.parseInt(resourceCounts.get(resourceType).getText());
-                    getController().increaseResourceAmount(resourceType);
-                    currentAmount++;
-                    resourceCounts.get(resourceType).setText("" + currentAmount);
-                }
+            upButton.addActionListener(e -> {
+                Integer currentAmount = Integer.parseInt(resourceCounts.get(resourceType).getText());
+                getController().increaseResourceAmount(resourceType);
+                currentAmount++;
+                resourceCounts.get(resourceType).setText("" + currentAmount);
             });
             this.resourceButtonsMap.get(resourceType).add(upButton);
 
             BufferedImage downImage = ImageIO.read(new File("images/misc/down.png"));
             downImage = this.getScaledImage(downImage, upDownButtonWidth, upDownButtonWidth);
             JButton downButton = new JButton(new ImageIcon(downImage));
-            downButton.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Integer currentAmount = Integer.parseInt(resourceCounts.get(resourceType).getText());
-                    if (currentAmount > 0) {
-                        getController().decreaseResourceAmount(resourceType);
-                        currentAmount--;
-                        resourceCounts.get(resourceType).setText("" + currentAmount);
-                    }
+            downButton.addActionListener(e -> {
+                Integer currentAmount = Integer.parseInt(resourceCounts.get(resourceType).getText());
+                if (currentAmount > 0) {
+                    getController().decreaseResourceAmount(resourceType);
+                    currentAmount--;
+                    resourceCounts.get(resourceType).setText("" + currentAmount);
                 }
             });
             this.resourceButtonsMap.get(resourceType).add(downButton);

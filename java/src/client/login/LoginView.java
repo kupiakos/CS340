@@ -7,7 +7,6 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -27,12 +26,7 @@ public class LoginView extends OverlayView implements ILoginView {
 
     private SignInPanel signInPanel = null;
     private RegisterPanel registerPanel = null;
-    private ActionListener actionListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            getController().signIn();
-        }
-    };
+    private ActionListener actionListener = e -> getController().signIn();
 
     public LoginView() {
 
@@ -161,6 +155,7 @@ public class LoginView extends OverlayView implements ILoginView {
         private JTextField textFieldValidate = null;
         private Border originalBorder = null;
         private Border redBorder = null;
+
         public TextFieldValidator(JTextField textFieldValidate) {
             this.textFieldValidate = textFieldValidate;
             originalBorder = textFieldValidate.getBorder();
@@ -269,14 +264,7 @@ public class LoginView extends OverlayView implements ILoginView {
         }
 
         private void initEventListeners() {
-            btnSignIn.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    getController().signIn();
-                }
-
-            });
+            btnSignIn.addActionListener(e -> getController().signIn());
         }
     }
 
@@ -362,14 +350,7 @@ public class LoginView extends OverlayView implements ILoginView {
         }
 
         private void initEventListeners() {
-            btnRegister.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    getController().register();
-                }
-
-            });
+            btnRegister.addActionListener(e -> getController().register());
 
             //Code to check if the username length is correct!
             TextFieldValidator usernameValidator = new TextFieldValidator(txtUsername) {

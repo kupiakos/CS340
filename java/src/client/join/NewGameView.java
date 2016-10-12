@@ -5,7 +5,6 @@ import client.base.OverlayView;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
@@ -28,17 +27,14 @@ public class NewGameView extends OverlayView implements INewGameView {
     private JCheckBox chkRandNumbers = null;
     private JCheckBox chkRandHexes = null;
     private JCheckBox chkRandPorts = null;
-    private ActionListener actionListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+    private ActionListener actionListener = e -> {
 
-            if (e.getSource() == createButton) {
+        if (e.getSource() == createButton) {
 
-                getController().createNewGame();
-            } else if (e.getSource() == cancelButton) {
+            getController().createNewGame();
+        } else if (e.getSource() == cancelButton) {
 
-                getController().cancelCreateNewGame();
-            }
+            getController().cancelCreateNewGame();
         }
     };
 

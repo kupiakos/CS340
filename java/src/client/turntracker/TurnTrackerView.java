@@ -1,6 +1,5 @@
 package client.turntracker;
 
-import client.base.IAction;
 import client.base.IController;
 import client.base.PanelView;
 import client.catan.GameStatePanel;
@@ -60,12 +59,7 @@ public class TurnTrackerView extends PanelView implements ITurnTrackerView {
     @Override
     public void setController(IController controller) {
         super.setController(controller);
-        this.gameStatePanel.setButtonAction(new IAction() {
-            @Override
-            public void execute() {
-                getController().endTurn();
-            }
-        });
+        this.gameStatePanel.setButtonAction(() -> getController().endTurn());
     }
 
     @Override

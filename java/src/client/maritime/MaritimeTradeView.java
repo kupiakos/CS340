@@ -4,7 +4,6 @@ import client.base.PanelView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
@@ -15,13 +14,7 @@ import java.awt.event.ActionListener;
 public class MaritimeTradeView extends PanelView implements IMaritimeTradeView {
 
     private JButton button;
-    private ActionListener buttonListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            getController().startTrade();
-        }
-    };
+    private ActionListener buttonListener = e -> getController().startTrade();
 
     public MaritimeTradeView() {
 

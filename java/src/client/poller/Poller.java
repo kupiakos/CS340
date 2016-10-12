@@ -6,7 +6,6 @@ import shared.models.game.ClientModel;
 
 import javax.naming.CommunicationException;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
@@ -39,12 +38,7 @@ public class Poller {
         // To init the poller go ahead and check for an update to start
         checkForUpdate();
 
-        ActionListener poll = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                checkForUpdate();
-            }
-        };
+        ActionListener poll = e -> checkForUpdate();
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, poll);
     }
 
