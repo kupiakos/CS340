@@ -1,18 +1,14 @@
 package shared.facades;
 
-import client.game.GameManager;
 import org.junit.Before;
 import org.junit.Test;
-import shared.definitions.PlayerIndex;
 import shared.definitions.TurnStatus;
+import shared.models.game.ClientModel;
 import shared.models.game.Player;
 import shared.serialization.ModelExample;
 
-import static client.game.GameManager.*;
 import static org.junit.Assert.*;
 import static shared.definitions.PlayerIndex.*;
-import static shared.definitions.PlayerIndex.SECOND;
-import static shared.definitions.TurnStatus.PLAYING;
 import static shared.definitions.TurnStatus.ROLLING;
 
 
@@ -23,6 +19,7 @@ public class TurnFacadeTest {
     private TurnFacade tf;
     private Player p;
     private int len;
+    private ClientModel model;
 
     /**
      * Inits the game and sets up a player and turnFacade
@@ -31,19 +28,14 @@ public class TurnFacadeTest {
      */
     @Before
     public void setUp() throws Exception {
-        getGame().setClientModel(ModelExample.fullJsonModel());
-        p = ModelExample.fullJsonModel().getPlayer(FIRST);
+        model = ModelExample.fullJsonModel();
+        FacadeManager facades = new FacadeManager(model);
+        tf = facades.getTurn();
+        p = model.getPlayer(FIRST);
     }
-
-    private TurnFacade tf(){
-        return getGame().getFacade().getTurn();
-
-    }
-
 
     @Test
     public void endTurn() throws Exception {
-
 
     }
 
@@ -54,22 +46,22 @@ public class TurnFacadeTest {
      */
     @Test
     public void canEndTurn() throws Exception {
-        assertEquals(tf().getPhase(), TurnStatus.SECOND_ROUND);
-        getGame().getClientModel().getPlayer(p.getPlayerIndex()).setRoads(1);
-        getGame().getClientModel().getPlayer(p.getPlayerIndex()).setSettlements(1);
-        assertFalse(tf().canEndTurn(p.getPlayerIndex()));
-        getGame().getClientModel().getPlayer(p.getPlayerIndex()).setRoads(2);
-        getGame().getClientModel().getPlayer(p.getPlayerIndex()).setSettlements(2);
-        assertTrue(tf().canEndTurn(p.getPlayerIndex()));
-        tf().endTurn(p.getPlayerIndex());
-        assertEquals(tf().getPhase(), ROLLING);
-        assertEquals(getGame().getClientModel().getTurnTracker().getCurrentTurn(), FIRST);
+        assertEquals(tf.getPhase(), TurnStatus.SECOND_ROUND);
+        p.setRoads(1);
+        p.setSettlements(1);
+        assertFalse(tf.canEndTurn(p));
+        p.setRoads(2);
+        p.setSettlements(2);
+        assertTrue(tf.canEndTurn(p));
+        tf.endTurn(p);
+        assertEquals(tf.getPhase(), ROLLING);
+        assertEquals(model.getTurnTracker().getCurrentTurn(), FIRST);
     }
 
     @Test
     public void isPlayersTurn() throws Exception {
-        getGame().getClientModel().getTurnTracker().setCurrentTurn(FOURTH);
-        assertEquals(getGame().getClientModel().getTurnTracker().getCurrentTurn(), FOURTH);
+        model.getTurnTracker().setCurrentTurn(FOURTH);
+        assertEquals(model.getTurnTracker().getCurrentTurn(), FOURTH);
 
     }
 
@@ -85,7 +77,7 @@ public class TurnFacadeTest {
 
     @Test
     public void getPlayers() throws Exception {
-        assertEquals(getGame().getClientModel().getPlayerCount(), 4);
+        assertEquals(model.getPlayerCount(), 4);
     }
 
     @Test
@@ -95,14 +87,14 @@ public class TurnFacadeTest {
 
     @Test
     public void advanceTurnStatus() throws Exception {
-        getGame().getClientModel().getTurnTracker().setStatus(ROLLING);
-        getGame().getClientModel().getTurnTracker().setCurrentTurn(SECOND);
-        assertFalse(tf().advanceTurnStatus());
+        model.getTurnTracker().setStatus(ROLLING);
+        model.getTurnTracker().setCurrentTurn(SECOND);
+        tf.endTurn(p);
 
-//        getGame().getClientModel().getTurnTracker().setStatus(PLAYING);
-//        assertTrue(tf().advanceTurnStatus());
-//        assertEquals(tf().getPhase(), ROLLING);
-//        assertEquals(getGame().getClientModel().getTurnTracker().getCurrentTurn(), THIRD);
+//        model.getTurnTracker().setStatus(PLAYING);
+//        assertTrue(tf.advanceTurnStatus());
+//        assertEquals(tf.getPhase(), ROLLING);
+//        assertEquals(model.getTurnTracker().getCurrentTurn(), THIRD);
     }
 
     @Test
@@ -127,12 +119,12 @@ public class TurnFacadeTest {
 
     @Test
     public void isEndGame() throws Exception {
-        getGame().getClientModel().getPlayer(FIRST).setVictoryPoints(9);
-        tf().endGame();
-        assertFalse(tf().isEndGame());
-        getGame().getClientModel().getPlayer(FIRST).setVictoryPoints(11);
-        tf().endGame();
-        assertTrue(tf().isEndGame());
+        model.getPlayer(FIRST).setVictoryPoints(9);
+        tf.endGame();
+        assertFalse(tf.isEndGame());
+        model.getPlayer(FIRST).setVictoryPoints(11);
+        tf.endGame();
+        assertTrue(tf.isEndGame());
 
     }
 

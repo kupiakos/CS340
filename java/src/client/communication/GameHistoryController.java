@@ -3,15 +3,14 @@ package client.communication;
 import client.base.Controller;
 import client.game.GameManager;
 import shared.definitions.CatanColor;
+import shared.models.game.ClientModel;
 import shared.models.game.MessageEntry;
 import shared.models.game.MessageList;
 import shared.models.game.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.Observer;
-
 
 
 /**
@@ -22,27 +21,25 @@ public class GameHistoryController extends Controller implements IGameHistoryCon
     public GameHistoryController(IGameHistoryView view) {
         super(view);
         initFromModel();
-        GameManager.getGame().addObserver(this);
-
+        observeClientModel();
     }
 
     @Override
     public IGameHistoryView getView() {
-
         return (IGameHistoryView) super.getView();
     }
 
     private void initFromModel() {
-         List<LogEntry> entries = new ArrayList<LogEntry>();
-         entries.add(new LogEntry(CatanColor.BROWN, "This is a brown message"));
+        List<LogEntry> entries = new ArrayList<LogEntry>();
+        entries.add(new LogEntry(CatanColor.BROWN, "This is a brown message"));
 
         getView().setEntries(entries);
-        update(GameManager.getGame(), null);
+        updateFromModel(getModel());
     }
 
     @Override
-    public void update(Observable o, Object arg) {
-        MessageList log = GameManager.getGame().getClientModel().getLog();
+    public void updateFromModel(ClientModel model) {
+        MessageList log = model.getLog();
 
         ArrayList<LogEntry> entries = new ArrayList<>();
         if (log != null) {

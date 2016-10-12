@@ -1,6 +1,8 @@
 package shared.definitions;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -30,6 +32,8 @@ public enum PlayerIndex {
      * The fourth player
      */
     FOURTH(3);
+
+    public static final PlayerIndex LAST = FOURTH;
 
     public static final int MAX_PLAYERS = 4;
     private int playerIndex;
@@ -71,7 +75,25 @@ public enum PlayerIndex {
      *
      * @return a number 1-4
      */
+    @Contract(pure = true)
     public int index() {
         return playerIndex;
+    }
+
+    @Nullable
+    public PlayerIndex nextPlayer() {
+        if (index() + 1 >= MAX_PLAYERS) {
+            return null;
+        }
+        return fromInt(index() + 1);
+    }
+
+
+    @Nullable
+    public PlayerIndex previousPlayer() {
+        if (index() <= 0) {
+            return null;
+        }
+        return fromInt(index() - 1);
     }
 }
