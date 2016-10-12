@@ -57,14 +57,14 @@ public interface IGameManager {
 
     void setPoller(Poller p);
 
-    ClientModel getClientModel() ;
+    ClientModel getClientModel();
 
     void setClientModel(ClientModel cm);
 
     PlayerInfo getPlayerInfo();
 
     void setPlayerInfo(PlayerInfo playerInfo);
-    
+
 
     ServerAsyncHelper getAsync();
 

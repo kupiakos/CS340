@@ -2,13 +2,12 @@ package shared.locations;
 
 import com.google.gson.annotations.SerializedName;
 
-public enum EdgeDirection
-{
-	@SerializedName("NW")
-	NorthWest,
+public enum EdgeDirection {
+    @SerializedName("NW")
+    NorthWest,
 
     @SerializedName("N")
-	North,
+    North,
 
     @SerializedName("NE")
     NorthEast,
@@ -21,22 +20,20 @@ public enum EdgeDirection
 
     @SerializedName("SW")
     SouthWest;
-	
-	private EdgeDirection opposite;
-	
-	static
-	{
-		NorthWest.opposite = SouthEast;
-		North.opposite = South;
-		NorthEast.opposite = SouthWest;
-		SouthEast.opposite = NorthWest;
-		South.opposite = North;
-		SouthWest.opposite = NorthEast;
-	}
-	
-	public EdgeDirection getOppositeDirection()
-	{
-		return opposite;
-	}
+
+    static {
+        NorthWest.opposite = SouthEast;
+        North.opposite = South;
+        NorthEast.opposite = SouthWest;
+        SouthEast.opposite = NorthWest;
+        South.opposite = North;
+        SouthWest.opposite = NorthEast;
+    }
+
+    private EdgeDirection opposite;
+
+    public EdgeDirection getOppositeDirection() {
+        return opposite;
+    }
 }
 

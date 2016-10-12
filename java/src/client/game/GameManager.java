@@ -58,15 +58,6 @@ public class GameManager extends Observable implements IGameManager {
     }
 
     /**
-     * Get the player the client is currently playing as, <i>not</i> whose turn it is.
-     * @return
-     */
-    public Player getPlayer() {
-        return getClientModel().getPlayer(thisPlayerIndex);
-    }
-
-
-    /**
      * Lets you grab the game, allows communications to all the parts of the game
      *
      * @post gives a instance of the game
@@ -78,6 +69,15 @@ public class GameManager extends Observable implements IGameManager {
 
     public static void setInstance(IGameManager sm) {
         GameManager.instance = sm;
+    }
+
+    /**
+     * Get the player the client is currently playing as, <i>not</i> whose turn it is.
+     *
+     * @return
+     */
+    public Player getPlayer() {
+        return getClientModel().getPlayer(thisPlayerIndex);
     }
 
     /**

@@ -1,6 +1,5 @@
 package shared.facades;
 
-import client.game.GameManager;
 import org.jetbrains.annotations.NotNull;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
@@ -29,7 +28,7 @@ public class ChatFacade extends AbstractFacade {
      * @return whether the player can send any chat messages
      */
     public static boolean canSendChat(@NotNull SendChatAction c) {
-        return(c.getContent() != null
+        return (c.getContent() != null
                 && !c.getContent().isEmpty()
                 && c.getPlayerIndex() != null);
     }

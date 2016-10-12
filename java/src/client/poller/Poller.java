@@ -55,8 +55,7 @@ public class Poller {
         int version;
         try {
             version = gm.getClientModel().getVersion();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             version = 0;
         }
         // Call the server with the number

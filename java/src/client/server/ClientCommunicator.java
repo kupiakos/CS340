@@ -11,7 +11,7 @@ import java.net.URL;
  * ClientCommunicator receives calls from ServerProxy and submits those calls as HTTP requests to the Catan Server.
  * Package Private
  */
-class ClientCommunicator implements IClientCommunicator{
+class ClientCommunicator implements IClientCommunicator {
 
     private static ClientCommunicator SINGLETON = null;
     private String URLPrefix;

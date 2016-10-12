@@ -18,6 +18,8 @@ import java.awt.*;
 @SuppressWarnings("serial")
 public class TurnTrackerView extends PanelView implements ITurnTrackerView {
 
+    private final int NUM_PLAYERS = 4;
+    private final int FONT_SIZE = 13;
     private TitlePanel titlePanel;
     private GameStatePanel gameStatePanel;
     private JPanel[] playerPanel;
@@ -26,9 +28,6 @@ public class TurnTrackerView extends PanelView implements ITurnTrackerView {
     private JLabel[] playerArmy;
     private Image longestRoadImage;
     private Image largestArmyImage;
-
-    private final int NUM_PLAYERS = 4;
-    private final int FONT_SIZE = 13;
 
     public TurnTrackerView(TitlePanel titlePanel, GameStatePanel gameStatePanel) {
 

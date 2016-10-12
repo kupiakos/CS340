@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 /**
  * A safer representation of a specific player's index in a specific game.
+ *
  * @see #fromInt
  */
 public enum PlayerIndex {
@@ -44,8 +45,9 @@ public enum PlayerIndex {
 
     /**
      * Initializes an instance from a player's integer index.
-     *
+     * <p>
      * Index must be 0-3 for a valid player.
+     *
      * @param index the player index, in range [0, 3]
      * @return a {@link PlayerIndex} representing {@code index}
      * @throws IllegalArgumentException if index is not in range [0, 3]

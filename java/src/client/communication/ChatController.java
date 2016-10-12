@@ -80,7 +80,7 @@ public class ChatController extends Controller implements IChatController, Obser
                 CatanColor messageColor = null;
                 for (Player player : model.getPlayers()) {
                     // Set the chat color from who sent the message
-                    if (player.getName().equals(source)){
+                    if (player.getName().equals(source)) {
                         messageColor = player.getColor();
                     }
                 }

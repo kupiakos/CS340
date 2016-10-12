@@ -25,21 +25,25 @@ public class LoadGameRequest {
     }
 
     /**
-      * @param name The name of the saved game file that you want to load. (The game's ID is restored as well.)
+     * @param name The name of the saved game file that you want to load. (The game's ID is restored as well.)
      */
     public LoadGameRequest(String name) {
-            this.name = name;
+        this.name = name;
     }
 
     /**
      * @return The name of the saved game file that you want to load. (The game's ID is restored as well.)
      */
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
     /**
      * @param name The name of the saved game file that you want to load. (The game's ID is restored as well.)
      */
-    public void setName(@NotNull String name) { this.name = name; }
+    public void setName(@NotNull String name) {
+        this.name = name;
+    }
 
     public LoadGameRequest withName(@NotNull String name) {
         setName(name);
@@ -49,14 +53,14 @@ public class LoadGameRequest {
     @Override
     public String toString() {
         return "LoadGameRequest [" +
-            "name=" + name +
-            "]";
+                "name=" + name +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof LoadGameRequest) {
-            return equals((LoadGameRequest)other);
+            return equals((LoadGameRequest) other);
         }
         return false;
     }

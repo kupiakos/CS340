@@ -7,13 +7,12 @@ import java.awt.*;
 /**
  * The color of a {@link shared.models.game.Player Player} displayed to the user.
  */
-public enum CatanColor
-{
+public enum CatanColor {
     @SerializedName("Red")
-	RED(new Color(227, 66, 52)),
+    RED(new Color(227, 66, 52)),
 
     @SerializedName("Orange")
-	ORANGE(new Color(255, 165, 0)),
+    ORANGE(new Color(255, 165, 0)),
 
     @SerializedName("Yellow")
     YELLOW(new Color(253, 224, 105)),
@@ -35,16 +34,15 @@ public enum CatanColor
 
     @SerializedName("Brown")
     BROWN(new Color(161, 143, 112));
-	
-	private Color color;
+
+    private Color color;
 
     CatanColor(Color c) {
         color = c;
     }
 
-	public Color getJavaColor()
-	{
-		return color;
-	}
+    public Color getJavaColor() {
+        return color;
+    }
 }
 
