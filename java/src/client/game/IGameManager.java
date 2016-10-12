@@ -4,6 +4,7 @@ import client.data.PlayerInfo;
 import client.poller.Poller;
 import client.utils.ServerAsyncHelper;
 import shared.IServer;
+import shared.definitions.PlayerIndex;
 import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
 
@@ -72,4 +73,8 @@ public interface IGameManager {
     void addObserver(Observer o);
 
     void deleteObserver(Observer o);
+
+    public PlayerIndex getThisPlayerIndex();
+
+    public void setThisPlayerIndex(PlayerIndex thisPlayerIndex);
 }

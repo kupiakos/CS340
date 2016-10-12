@@ -5,8 +5,10 @@ import client.poller.Poller;
 import client.server.MockProxy;
 import client.utils.ServerAsyncHelper;
 import shared.IServer;
+import shared.definitions.PlayerIndex;
 import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
+import shared.models.game.Player;
 
 import java.util.Observable;
 
@@ -42,12 +44,25 @@ public class GameManager extends Observable implements IGameManager {
     private ServerAsyncHelper async;
 
     /**
+     * The PlayerIndex that this client is playing as
+     */
+    private PlayerIndex thisPlayerIndex;
+
+    /**
      * Init stuff for the game manager as needed
      *
      * @post This provides valid operations on GameManager
      */
     GameManager() {
         setAsync(new ServerAsyncHelper(this));
+    }
+
+    /**
+     * Get the player the client is currently playing as, <i>not</i> whose turn it is.
+     * @return
+     */
+    public Player getPlayer() {
+        return getClientModel().getPlayer(thisPlayerIndex);
     }
 
 
@@ -155,5 +170,13 @@ public class GameManager extends Observable implements IGameManager {
 
     public void setAsync(ServerAsyncHelper async) {
         this.async = async;
+    }
+
+    public PlayerIndex getThisPlayerIndex() {
+        return thisPlayerIndex;
+    }
+
+    public void setThisPlayerIndex(PlayerIndex thisPlayerIndex) {
+        this.thisPlayerIndex = thisPlayerIndex;
     }
 }
