@@ -1,8 +1,10 @@
 package client.base;
 
 import client.game.GameManager;
+import client.game.IGameManager;
 import client.utils.ServerAsyncHelper;
 import shared.IServer;
+import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
 
 import java.util.Observable;
@@ -16,7 +18,7 @@ public abstract class Controller implements IController, Observer {
     protected IServer server;
 
     private IView view;
-    private GameManager game;
+    private IGameManager game;
 
     protected Controller(IView view) {
         setView(view);
@@ -44,11 +46,15 @@ public abstract class Controller implements IController, Observer {
         return getGameManager().getClientModel();
     }
 
-    public GameManager getGameManager() {
+    protected FacadeManager getFacade() {
+        return getGameManager().getFacade();
+    }
+
+    public IGameManager getGameManager() {
         return game;
     }
 
-    public void setGameManager(GameManager game) {
+    public void setGameManager(IGameManager game) {
         this.game = game;
     }
 
@@ -59,8 +65,8 @@ public abstract class Controller implements IController, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if (o instanceof GameManager && arg instanceof ClientModel) {
-            setServer(((GameManager) o).getServer());
+        if (o instanceof IGameManager && arg instanceof ClientModel) {
+            setServer(((IGameManager) o).getServer());
             updateFromModel((ClientModel) arg);
         }
     }

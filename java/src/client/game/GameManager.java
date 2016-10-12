@@ -13,11 +13,11 @@ import java.util.Observable;
 /**
  * Manages a single game
  */
-public class GameManager extends Observable implements IGameManager{
+public class GameManager extends Observable implements IGameManager {
     /**
      * Setting up the singleton for all to use
      */
-    private static GameManager instance;
+    private static IGameManager instance;
     /**
      * The poller that the game will use
      */
@@ -56,12 +56,12 @@ public class GameManager extends Observable implements IGameManager{
      *
      * @post gives a instance of the game
      */
-    public static GameManager getGame() {
+    public static IGameManager getGame() {
         if (instance == null) instance = new GameManager();
         return instance;
     }
 
-    public static void setInstance(GameManager sm) {
+    public static void setInstance(IGameManager sm) {
         GameManager.instance = sm;
     }
 
@@ -103,6 +103,8 @@ public class GameManager extends Observable implements IGameManager{
     public void updateGameManager(ClientModel cm) {
         clientModel = cm;
         facadeManager.update(cm);
+        setChanged();
+        notifyObservers(cm);
     }
 
     /**
@@ -116,6 +118,12 @@ public class GameManager extends Observable implements IGameManager{
 
         return server;
     }
+
+    @Override
+    public void setServer(IServer server) {
+        this.server = server;
+    }
+
 
     public Poller getPoller() {
         return poller;

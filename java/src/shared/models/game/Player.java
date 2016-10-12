@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.CatanColor;
+import shared.definitions.Constants;
 import shared.definitions.PlayerIndex;
 
 import javax.annotation.Generated;
@@ -115,6 +116,10 @@ public class Player {
             this.settlements = settlements;
             this.playerID = playerID;
             this.playedDevCard = playedDevCard;
+    }
+
+    public boolean haveWon() {
+        return getVictoryPoints() >= Constants.WINNING_AMOUNT_VICTORY_POINTS;
     }
 
     /**
