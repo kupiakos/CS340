@@ -522,13 +522,18 @@ public class GameMap {
                 edges = new HashSet<>();
                 break;
         }
+        int max = currentSize;
         for (EdgeLocation e : edges) {
             if (e.equals(edge.getNormalizedLocation()))
                 continue;
-            else if (roads.get(e) == player)
-                return getRoadSize(currentSize + 1, e, player);
+            else if (roads.get(e) == player) {
+                int newSize = getRoadSize(currentSize + 1, e, player);
+                if (newSize>max){
+                    max = newSize;
+                }
+            }
         }
-        return currentSize;
+        return max;
     }
 
     /**
