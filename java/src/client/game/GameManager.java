@@ -13,7 +13,7 @@ import java.util.Observable;
 /**
  * Manages a single game
  */
-public class GameManager extends Observable {
+public class GameManager extends Observable implements IGameManager{
     /**
      * Setting up the singleton for all to use
      */
@@ -46,7 +46,7 @@ public class GameManager extends Observable {
      *
      * @post This provides valid operations on GameManager
      */
-    private GameManager() {
+    GameManager() {
         setAsync(new ServerAsyncHelper(this));
     }
 
@@ -78,10 +78,11 @@ public class GameManager extends Observable {
     /**
      * Starts the Poller, creates one if needed
      */
-    public void startPoller() {
+    public void startPoller(ClientModel cm) {
         if (poller == null) poller = new Poller();
 
-        poller.setClientModel(getClientModel());
+        poller.setClientModel(cm);
+
         poller.startPoller();
     }
 

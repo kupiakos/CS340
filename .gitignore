@@ -52,3 +52,10 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+${java.tmp.report}/
+${java.tmp.results}/
+build/
+java/build/
+java/module_phase_1.xml
+java/testreport/
+testreport/
