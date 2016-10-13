@@ -10,7 +10,6 @@ import shared.models.game.ClientModel;
 import shared.models.game.Player;
 import shared.models.game.ResourceSet;
 
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -165,9 +164,10 @@ public class RobberFacade extends AbstractFacade {
 
     /**
      * The {@code currentPlayer} steals one random resource card from {@code targetPlayer}
-     * @throws IllegalArgumentException
+     *
      * @param currentPlayer The {@link PlayerIndex} of the {@link Player} who wants to steal
      * @param targetPlayer  The {@link PlayerIndex} of the {@link Player} that the {@code currentPlayer} wants to take a resource card from
+     * @throws IllegalArgumentException
      * @pre The current state of the turn is {@link shared.definitions.TurnStatus#ROBBING} and this method is called by the controller after {@link RobberFacade#canStealFrom(PlayerIndex, PlayerIndex)} is called.
      * {@link RobberFacade#canStealFrom(PlayerIndex, PlayerIndex)} returns a true statement.
      * {@code currentPlayer} and {@code targetPlayer} are both valid (not null) and are both part of the current {@link ClientModel}.

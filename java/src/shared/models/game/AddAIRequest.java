@@ -26,22 +26,26 @@ public class AddAIRequest {
     }
 
     /**
-      * @param aIType Only strings returned by /game/listAI are valid.
+     * @param aIType Only strings returned by /game/listAI are valid.
      */
     public AddAIRequest(AIType aIType) {
-            this.aIType = aIType;
+        this.aIType = aIType;
     }
 
     /**
      * @return Only strings returned by /game/listAI are valid.
      */
     @NotNull
-    public AIType getAIType() { return aIType; }
+    public AIType getAIType() {
+        return aIType;
+    }
 
     /**
      * @param aIType Only strings returned by /game/listAI are valid.
      */
-    public void setAIType(@NotNull AIType aIType) { this.aIType = aIType; }
+    public void setAIType(@NotNull AIType aIType) {
+        this.aIType = aIType;
+    }
 
     public AddAIRequest withAIType(@NotNull AIType aIType) {
         setAIType(aIType);
@@ -51,14 +55,14 @@ public class AddAIRequest {
     @Override
     public String toString() {
         return "AddAIRequest [" +
-            "aIType=" + aIType +
-            "]";
+                "aIType=" + aIType +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof AddAIRequest) {
-            return equals((AddAIRequest)other);
+            return equals((AddAIRequest) other);
         }
         return false;
     }

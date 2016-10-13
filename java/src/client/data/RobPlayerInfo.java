@@ -11,27 +11,22 @@ package client.data;
  * <li>Color: Player's color (cannot be null)</li>
  * <li>NumCards: Number of development cards the player has (&gt;= 0)</li>
  * </ul>
- * 
  */
-public class RobPlayerInfo extends PlayerInfo
-{
-	
-	private int numCards;
-	
-	public RobPlayerInfo()
-	{
-		super();
-	}
-	
-	public int getNumCards()
-	{
-		return numCards;
-	}
-	
-	public void setNumCards(int numCards)
-	{
-		this.numCards = numCards;
-	}
-	
+public class RobPlayerInfo extends PlayerInfo {
+
+    private int numCards;
+
+    public RobPlayerInfo() {
+        super();
+    }
+
+    public int getNumCards() {
+        return numCards;
+    }
+
+    public void setNumCards(int numCards) {
+        this.numCards = numCards;
+    }
+
 }
 

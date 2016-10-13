@@ -105,8 +105,9 @@ public class DevCardFacade extends AbstractFacade {
 
     /**
      * The {@code currentPlayer} uses the Soldier development card
-     * @throws IllegalArgumentException
+     *
      * @param currentPlayer The player who is using their development card during their turn.
+     * @throws IllegalArgumentException
      * @pre This method is called by the controller when the card to be used is a Soldier card
      * {@code currentPlayer} is part of the current {@link ClientModel}
      * {@link DevCardFacade#canUseSoldierCard(Player)} returns a true statement

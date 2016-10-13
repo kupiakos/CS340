@@ -39,69 +39,88 @@ public class TurnTracker {
     }
 
     /**
-      * @param longestRoad The index of who has the longest road
-      * @param currentTurn Who's turn it is (0-3)
-      * @param status What's happening now
-      * @param largestArmy The index of who has the biggest army (3 or more)
+     * @param longestRoad The index of who has the longest road
+     * @param currentTurn Who's turn it is (0-3)
+     * @param status      What's happening now
+     * @param largestArmy The index of who has the biggest army (3 or more)
      */
     public TurnTracker(PlayerIndex longestRoad, PlayerIndex currentTurn, TurnStatus status, PlayerIndex largestArmy) {
-            this.longestRoad = longestRoad;
-            this.currentTurn = currentTurn;
-            this.status = status;
-            this.largestArmy = largestArmy;
+        this.longestRoad = longestRoad;
+        this.currentTurn = currentTurn;
+        this.status = status;
+        this.largestArmy = largestArmy;
     }
 
     /**
      * @return The index of who has the longest road
      */
-    public PlayerIndex getLongestRoad() { return longestRoad; }
+    public PlayerIndex getLongestRoad() {
+        return longestRoad;
+    }
 
     /**
      * @param longestRoad The index of who has the longest road
      */
-    public void setLongestRoad(@NotNull PlayerIndex longestRoad) { this.longestRoad = longestRoad; }
+    public void setLongestRoad(@NotNull PlayerIndex longestRoad) {
+        this.longestRoad = longestRoad;
+    }
 
     public TurnTracker withLongestRoad(@NotNull PlayerIndex longestRoad) {
         setLongestRoad(longestRoad);
         return this;
     }
+
     /**
      * @return Who's turn it is (0-3)
      */
-    public PlayerIndex getCurrentTurn() { return currentTurn; }
+    public PlayerIndex getCurrentTurn() {
+        return currentTurn;
+    }
 
     /**
      * @param currentTurn Who's turn it is (0-3)
      */
-    public void setCurrentTurn(@NotNull PlayerIndex currentTurn) { this.currentTurn = currentTurn; }
+    public void setCurrentTurn(@NotNull PlayerIndex currentTurn) {
+        this.currentTurn = currentTurn;
+    }
 
     public TurnTracker withCurrentTurn(@NotNull PlayerIndex currentTurn) {
         setCurrentTurn(currentTurn);
         return this;
     }
+
     /**
      * @return What's happening now
      */
-    public TurnStatus getStatus() { return status; }
+    public TurnStatus getStatus() {
+        return status;
+    }
 
     /**
      * @param status What's happening now
      */
-    public void setStatus(@NotNull TurnStatus status) { this.status = status; }
+    public void setStatus(@NotNull TurnStatus status) {
+        this.status = status;
+    }
 
     public TurnTracker withStatus(@NotNull TurnStatus status) {
         setStatus(status);
         return this;
     }
+
     /**
      * @return The index of who has the biggest army (3 or more)
      */
-    public PlayerIndex getLargestArmy() { return largestArmy; }
+    public PlayerIndex getLargestArmy() {
+        return largestArmy;
+    }
 
     /**
      * @param largestArmy The index of who has the biggest army (3 or more)
      */
-    public void setLargestArmy(@NotNull PlayerIndex largestArmy) { this.largestArmy = largestArmy; }
+    public void setLargestArmy(@NotNull PlayerIndex largestArmy) {
+        this.largestArmy = largestArmy;
+    }
 
     public TurnTracker withLargestArmy(@NotNull PlayerIndex largestArmy) {
         setLargestArmy(largestArmy);
@@ -111,17 +130,17 @@ public class TurnTracker {
     @Override
     public String toString() {
         return "TurnTracker [" +
-            "longestRoad=" + longestRoad +
-            ", currentTurn=" + currentTurn +
-            ", status=" + status +
-            ", largestArmy=" + largestArmy +
-            "]";
+                "longestRoad=" + longestRoad +
+                ", currentTurn=" + currentTurn +
+                ", status=" + status +
+                ", largestArmy=" + largestArmy +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof TurnTracker) {
-            return equals((TurnTracker)other);
+            return equals((TurnTracker) other);
         }
         return false;
     }

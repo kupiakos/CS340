@@ -28,10 +28,10 @@ public class MessageList {
     }
 
     /**
-      * @param lines The lines
+     * @param lines The lines
      */
     public MessageList(List<MessageEntry> lines) {
-            this.lines = lines;
+        this.lines = lines;
     }
 
     /**
@@ -46,10 +46,13 @@ public class MessageList {
     /**
      * @param lines The lines
      */
-    public void setLines(@NotNull List<MessageEntry> lines) { this.lines = lines; }
+    public void setLines(@NotNull List<MessageEntry> lines) {
+        this.lines = lines;
+    }
 
     /**
      * Adds just one message to the list, creates a new one if needed
+     *
      * @param lines
      */
     public void addMessage(@NotNull MessageEntry line) {
@@ -75,14 +78,14 @@ public class MessageList {
     @Override
     public String toString() {
         return "MessageList [" +
-            "lines=" + lines +
-            "]";
+                "lines=" + lines +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof MessageList) {
-            return equals((MessageList)other);
+            return equals((MessageList) other);
         }
         return false;
     }

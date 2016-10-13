@@ -321,7 +321,6 @@ public class ClientModel {
     }
 
 
-
     @Override
     public String toString() {
         return "ClientModel [" +

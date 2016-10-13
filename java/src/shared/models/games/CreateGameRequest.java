@@ -40,69 +40,88 @@ public class CreateGameRequest {
     }
 
     /**
-      * @param randomTiles whether the tiles should be randomly placed
-      * @param randomPorts whether the port should be randomly placed
-      * @param randomNumbers whether the numbers should be randomly placed
-      * @param name The name of the game
+     * @param randomTiles   whether the tiles should be randomly placed
+     * @param randomPorts   whether the port should be randomly placed
+     * @param randomNumbers whether the numbers should be randomly placed
+     * @param name          The name of the game
      */
     public CreateGameRequest(boolean randomTiles, boolean randomPorts, boolean randomNumbers, String name) {
-            this.randomTiles = randomTiles;
-            this.randomPorts = randomPorts;
-            this.randomNumbers = randomNumbers;
-            this.name = name;
+        this.randomTiles = randomTiles;
+        this.randomPorts = randomPorts;
+        this.randomNumbers = randomNumbers;
+        this.name = name;
     }
 
     /**
      * @return whether the tiles should be randomly placed
      */
-    public boolean isRandomTiles() { return randomTiles; }
+    public boolean isRandomTiles() {
+        return randomTiles;
+    }
 
     /**
      * @param randomTiles whether the tiles should be randomly placed
      */
-    public void setRandomTiles(boolean randomTiles) { this.randomTiles = randomTiles; }
+    public void setRandomTiles(boolean randomTiles) {
+        this.randomTiles = randomTiles;
+    }
 
     public CreateGameRequest withRandomTiles(boolean randomTiles) {
         setRandomTiles(randomTiles);
         return this;
     }
+
     /**
      * @return whether the port should be randomly placed
      */
-    public boolean isRandomPorts() { return randomPorts; }
+    public boolean isRandomPorts() {
+        return randomPorts;
+    }
 
     /**
      * @param randomPorts whether the port should be randomly placed
      */
-    public void setRandomPorts(boolean randomPorts) { this.randomPorts = randomPorts; }
+    public void setRandomPorts(boolean randomPorts) {
+        this.randomPorts = randomPorts;
+    }
 
     public CreateGameRequest withRandomPorts(boolean randomPorts) {
         setRandomPorts(randomPorts);
         return this;
     }
+
     /**
      * @return whether the numbers should be randomly placed
      */
-    public boolean isRandomNumbers() { return randomNumbers; }
+    public boolean isRandomNumbers() {
+        return randomNumbers;
+    }
 
     /**
      * @param randomNumbers whether the numbers should be randomly placed
      */
-    public void setRandomNumbers(boolean randomNumbers) { this.randomNumbers = randomNumbers; }
+    public void setRandomNumbers(boolean randomNumbers) {
+        this.randomNumbers = randomNumbers;
+    }
 
     public CreateGameRequest withRandomNumbers(boolean randomNumbers) {
         setRandomNumbers(randomNumbers);
         return this;
     }
+
     /**
      * @return The name of the game
      */
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
     /**
      * @param name The name of the game
      */
-    public void setName(@NotNull String name) { this.name = name; }
+    public void setName(@NotNull String name) {
+        this.name = name;
+    }
 
     public CreateGameRequest withName(@NotNull String name) {
         setName(name);
@@ -112,27 +131,27 @@ public class CreateGameRequest {
     @Override
     public String toString() {
         return "CreateGameRequest [" +
-            "randomTiles=" + randomTiles +
-            ", randomPorts=" + randomPorts +
-            ", randomNumbers=" + randomNumbers +
-            ", name=" + name +
-            "]";
+                "randomTiles=" + randomTiles +
+                ", randomPorts=" + randomPorts +
+                ", randomNumbers=" + randomNumbers +
+                ", name=" + name +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof CreateGameRequest) {
-            return equals((CreateGameRequest)other);
+            return equals((CreateGameRequest) other);
         }
         return false;
     }
 
     public boolean equals(CreateGameRequest other) {
         return (
-            randomTiles == other.randomTiles &&
-            randomPorts == other.randomPorts &&
-            randomNumbers == other.randomNumbers &&
-                    Objects.equals(name, other.name)
+                randomTiles == other.randomTiles &&
+                        randomPorts == other.randomPorts &&
+                        randomNumbers == other.randomNumbers &&
+                        Objects.equals(name, other.name)
         );
     }
 }
