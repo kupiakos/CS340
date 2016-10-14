@@ -17,7 +17,7 @@ class ClientCommunicator implements IClientCommunicator {
     private String URLPrefix;
 
     private ClientCommunicator() {
-        URLPrefix = "localhost:8081";
+        URLPrefix = "http://localhost:8081";
     }
 
 
@@ -50,6 +50,7 @@ class ClientCommunicator implements IClientCommunicator {
             URL url = new URL(URLPrefix + URLSuffix);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(requestMethod);
+            connection.setDoOutput(true);
             DataOutputStream output = new DataOutputStream(connection.getOutputStream());
             output.writeBytes(requestBody);
             output.close();
