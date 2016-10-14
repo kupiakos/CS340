@@ -5,10 +5,6 @@ import com.google.gson.JsonParser;
 import shared.models.game.ClientModel;
 import shared.serialization.ModelSerializer;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import shared.models.game.ClientModel;
-
 public class MockCM {
     public static final String fullJson = "{\n" +
             "  \"deck\": {\n" +

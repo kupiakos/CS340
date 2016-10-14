@@ -1,6 +1,5 @@
 package client.turntracker;
 
-import client.base.IAction;
 import client.base.IController;
 import client.base.PanelView;
 import client.catan.GameStatePanel;
@@ -18,6 +17,8 @@ import java.awt.*;
 @SuppressWarnings("serial")
 public class TurnTrackerView extends PanelView implements ITurnTrackerView {
 
+    private final int NUM_PLAYERS = 4;
+    private final int FONT_SIZE = 13;
     private TitlePanel titlePanel;
     private GameStatePanel gameStatePanel;
     private JPanel[] playerPanel;
@@ -26,9 +27,6 @@ public class TurnTrackerView extends PanelView implements ITurnTrackerView {
     private JLabel[] playerArmy;
     private Image longestRoadImage;
     private Image largestArmyImage;
-
-    private final int NUM_PLAYERS = 4;
-    private final int FONT_SIZE = 13;
 
     public TurnTrackerView(TitlePanel titlePanel, GameStatePanel gameStatePanel) {
 
@@ -61,12 +59,7 @@ public class TurnTrackerView extends PanelView implements ITurnTrackerView {
     @Override
     public void setController(IController controller) {
         super.setController(controller);
-        this.gameStatePanel.setButtonAction(new IAction() {
-            @Override
-            public void execute() {
-                getController().endTurn();
-            }
-        });
+        this.gameStatePanel.setButtonAction(() -> getController().endTurn());
     }
 
     @Override

@@ -2,7 +2,6 @@ package client.utils;
 
 import client.base.IAction;
 import client.game.GameManager;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import shared.models.game.ClientModel;

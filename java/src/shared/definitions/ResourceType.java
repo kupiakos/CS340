@@ -6,13 +6,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-public enum ResourceType
-{
+public enum ResourceType {
     @SerializedName("wood")
-	WOOD,
+    WOOD,
 
     @SerializedName("brick")
-	BRICK,
+    BRICK,
 
     @SerializedName("sheep")
     SHEEP,

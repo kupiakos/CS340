@@ -1,8 +1,8 @@
 package client.discard;
 
-import shared.definitions.*;
-import client.base.*;
-import client.misc.*;
+import client.base.Controller;
+import client.misc.IWaitView;
+import shared.definitions.ResourceType;
 
 
 /**
@@ -10,44 +10,44 @@ import client.misc.*;
  */
 public class DiscardController extends Controller implements IDiscardController {
 
-	private IWaitView waitView;
-	
-	/**
-	 * DiscardController constructor
-	 * 
-	 * @param view View displayed to let the user select cards to discard
-	 * @param waitView View displayed to notify the user that they are waiting for other players to discard
-	 */
-	public DiscardController(IDiscardView view, IWaitView waitView) {
-		
-		super(view);
-		
-		this.waitView = waitView;
-	}
+    private IWaitView waitView;
 
-	public IDiscardView getDiscardView() {
-		return (IDiscardView)super.getView();
-	}
-	
-	public IWaitView getWaitView() {
-		return waitView;
-	}
+    /**
+     * DiscardController constructor
+     *
+     * @param view     View displayed to let the user select cards to discard
+     * @param waitView View displayed to notify the user that they are waiting for other players to discard
+     */
+    public DiscardController(IDiscardView view, IWaitView waitView) {
 
-	@Override
-	public void increaseAmount(ResourceType resource) {
-		
-	}
+        super(view);
 
-	@Override
-	public void decreaseAmount(ResourceType resource) {
-		
-	}
+        this.waitView = waitView;
+    }
 
-	@Override
-	public void discard() {
-		
-		getDiscardView().closeModal();
-	}
+    public IDiscardView getDiscardView() {
+        return (IDiscardView) super.getView();
+    }
+
+    public IWaitView getWaitView() {
+        return waitView;
+    }
+
+    @Override
+    public void increaseAmount(ResourceType resource) {
+
+    }
+
+    @Override
+    public void decreaseAmount(ResourceType resource) {
+
+    }
+
+    @Override
+    public void discard() {
+
+        getDiscardView().closeModal();
+    }
 
 }
 
