@@ -1,8 +1,7 @@
 package client.roll;
 
 import client.base.Controller;
-
-import java.util.Observable;
+import shared.models.game.ClientModel;
 
 
 /**
@@ -10,42 +9,43 @@ import java.util.Observable;
  */
 public class RollController extends Controller implements IRollController {
 
-	private IRollResultView resultView;
+    private IRollResultView resultView;
 
-	@Override
-	public void update(Observable o, Object arg) {
+    /**
+     * RollController constructor
+     *
+     * @param view       Roll view
+     * @param resultView Roll result view
+     */
+    public RollController(IRollView view, IRollResultView resultView) {
 
-	}
+        super(view);
 
-	/**
-	 * RollController constructor
-	 * 
-	 * @param view Roll view
-	 * @param resultView Roll result view
-	 */
-	public RollController(IRollView view, IRollResultView resultView) {
+        setResultView(resultView);
+    }
 
-		super(view);
-		
-		setResultView(resultView);
-	}
-	
-	public IRollResultView getResultView() {
-		return resultView;
-	}
-	public void setResultView(IRollResultView resultView) {
-		this.resultView = resultView;
-	}
+    @Override
+    protected void updateFromModel(ClientModel model) {
+        // Do nothing by default, overridden by classes that need it
+    }
 
-	public IRollView getRollView() {
-		return (IRollView)getView();
-	}
-	
-	@Override
-	public void rollDice() {
+    public IRollResultView getResultView() {
+        return resultView;
+    }
 
-		getResultView().showModal();
-	}
+    public void setResultView(IRollResultView resultView) {
+        this.resultView = resultView;
+    }
+
+    public IRollView getRollView() {
+        return (IRollView) getView();
+    }
+
+    @Override
+    public void rollDice() {
+
+        getResultView().showModal();
+    }
 
 }
 

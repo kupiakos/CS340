@@ -2,24 +2,18 @@ package client.game;
 
 import client.data.PlayerInfo;
 import client.poller.Poller;
-import client.server.MockProxy;
 import client.utils.ServerAsyncHelper;
 import shared.IServer;
+import shared.definitions.PlayerIndex;
 import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
+
+import java.util.Observer;
 
 /**
  * @author audakel on 10/6/16.
  */
-interface IGameManager {
-    /**
-     * Lets you grab the game, allows communications to all the parts of the game
-     *
-     * @post gives a instance of the game
-     */
-    static GameManager getGame() {
-        return null;
-    }
+public interface IGameManager {
 
     static void setInstance(GameManager sm) {
 
@@ -57,20 +51,30 @@ interface IGameManager {
      */
     IServer getServer();
 
+    void setServer(IServer server);
+
     Poller getPoller();
 
     void setPoller(Poller p);
 
-    ClientModel getClientModel() ;
+    ClientModel getClientModel();
 
     void setClientModel(ClientModel cm);
 
     PlayerInfo getPlayerInfo();
 
     void setPlayerInfo(PlayerInfo playerInfo);
-    
+
 
     ServerAsyncHelper getAsync();
 
     void setAsync(ServerAsyncHelper async);
+
+    void addObserver(Observer o);
+
+    void deleteObserver(Observer o);
+
+    public PlayerIndex getThisPlayerIndex();
+
+    public void setThisPlayerIndex(PlayerIndex thisPlayerIndex);
 }

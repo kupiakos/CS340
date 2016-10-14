@@ -4,24 +4,23 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-public enum PortType
-{
-	@SerializedName("wood")
-	WOOD,
+public enum PortType {
+    @SerializedName("wood")
+    WOOD,
 
-	@SerializedName("brick")
-	BRICK,
+    @SerializedName("brick")
+    BRICK,
 
-	@SerializedName("sheep")
-	SHEEP,
+    @SerializedName("sheep")
+    SHEEP,
 
-	@SerializedName("wheat")
-	WHEAT,
+    @SerializedName("wheat")
+    WHEAT,
 
-	@SerializedName("ore")
-	ORE,
+    @SerializedName("ore")
+    ORE,
 
-	@SerializedName("three")
+    @SerializedName("three")
     THREE;
 
     /**

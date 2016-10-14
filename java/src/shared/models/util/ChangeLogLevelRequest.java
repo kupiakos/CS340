@@ -25,21 +25,25 @@ public class ChangeLogLevelRequest {
     }
 
     /**
-      * @param logLevel The server's new log level.  The following values are allowed: ALL, SEVERE, WARNING ,INFO, CONFIG, FINE, FINER, FINEST, OFF
+     * @param logLevel The server's new log level.  The following values are allowed: ALL, SEVERE, WARNING ,INFO, CONFIG, FINE, FINER, FINEST, OFF
      */
     public ChangeLogLevelRequest(String logLevel) {
-            this.logLevel = logLevel;
+        this.logLevel = logLevel;
     }
 
     /**
      * @return The server's new log level.  The following values are allowed: ALL, SEVERE, WARNING ,INFO, CONFIG, FINE, FINER, FINEST, OFF
      */
-    public String getLogLevel() { return logLevel; }
+    public String getLogLevel() {
+        return logLevel;
+    }
 
     /**
      * @param logLevel The server's new log level.  The following values are allowed: ALL, SEVERE, WARNING ,INFO, CONFIG, FINE, FINER, FINEST, OFF
      */
-    public void setLogLevel(@NotNull String logLevel) { this.logLevel = logLevel; }
+    public void setLogLevel(@NotNull String logLevel) {
+        this.logLevel = logLevel;
+    }
 
     public ChangeLogLevelRequest withLogLevel(@NotNull String logLevel) {
         setLogLevel(logLevel);
@@ -49,14 +53,14 @@ public class ChangeLogLevelRequest {
     @Override
     public String toString() {
         return "ChangeLogLevelRequest [" +
-            "logLevel=" + logLevel +
-            "]";
+                "logLevel=" + logLevel +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof ChangeLogLevelRequest) {
-            return equals((ChangeLogLevelRequest)other);
+            return equals((ChangeLogLevelRequest) other);
         }
         return false;
     }

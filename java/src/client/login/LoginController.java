@@ -1,14 +1,13 @@
 package client.login;
 
-import client.base.*;
-import client.misc.*;
+import client.base.Controller;
+import client.base.IAction;
+import client.misc.IMessageView;
+import client.server.ServerProxy;
+import client.utils.ServerAsyncHelper;
+import shared.models.user.Credentials;
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
-import java.lang.reflect.*;
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
+import javax.security.auth.login.CredentialNotFoundException;
 
 
 /**
@@ -16,78 +15,118 @@ import com.google.gson.reflect.TypeToken;
  */
 public class LoginController extends Controller implements ILoginController {
 
-	private IMessageView messageView;
-	private IAction loginAction;
-	
-	/**
-	 * LoginController constructor
-	 * 
-	 * @param view Login view
-	 * @param messageView Message view (used to display error messages that occur during the login process)
-	 */
-	public LoginController(ILoginView view, IMessageView messageView) {
+    private IMessageView messageView;
+    private IAction loginAction;
 
-		super(view);
-		
-		this.messageView = messageView;
-	}
-	
-	public ILoginView getLoginView() {
-		
-		return (ILoginView)super.getView();
-	}
-	
-	public IMessageView getMessageView() {
-		
-		return messageView;
-	}
-	
-	/**
-	 * Sets the action to be executed when the user logs in
-	 * 
-	 * @param value The action to be executed when the user logs in
-	 */
-	public void setLoginAction(IAction value) {
-		
-		loginAction = value;
-	}
-	
-	/**
-	 * Returns the action to be executed when the user logs in
-	 * 
-	 * @return The action to be executed when the user logs in
-	 */
-	public IAction getLoginAction() {
-		
-		return loginAction;
-	}
+    /**
+     * LoginController constructor
+     *
+     * @param view        Login view
+     * @param messageView Message view (used to display error messages that occur during the login process)
+     */
+    public LoginController(ILoginView view, IMessageView messageView) {
 
-	@Override
-	public void start() {
-		
-		getLoginView().showModal();
-	}
+        super(view);
+        this.server = new ServerProxy();
+        this.messageView = messageView;
+    }
 
-	@Override
-	public void signIn() {
-		
-		// TODO: log in user
-		
+    public ILoginView getLoginView() {
 
-		// If log in succeeded
-		getLoginView().closeModal();
-		loginAction.execute();
-	}
+        return (ILoginView) super.getView();
+    }
 
-	@Override
-	public void register() {
-		
-		// TODO: register new user (which, if successful, also logs them in)
-		
-		// If register succeeded
-		getLoginView().closeModal();
-		loginAction.execute();
-	}
+    public IMessageView getMessageView() {
+
+        return messageView;
+    }
+
+    /**
+     * Returns the action to be executed when the user logs in
+     *
+     * @return The action to be executed when the user logs in
+     */
+    public IAction getLoginAction() {
+
+        return loginAction;
+    }
+
+    /**
+     * Sets the action to be executed when the user logs in
+     *
+     * @param value The action to be executed when the user logs in
+     */
+    public void setLoginAction(IAction value) {
+
+        loginAction = value;
+    }
+
+    @Override
+    public void start() {
+
+        getLoginView().showModal();
+    }
+
+    @Override
+    public void signIn() {
+        // TODO: log in user
+        String username = getLoginView().getLoginUsername();
+        String password = getLoginView().getLoginPassword();
+        Credentials credentials = new Credentials(password,username);
+        getAsync().runMethod(server::login,credentials)
+                .onError(e->displayLoginError(e))
+                .onSuccess(()->{System.out.println("login successful");
+                    getLoginView().closeModal();})
+                .start();
+    }
+
+    @Override
+    public void register() {
+
+        // TODO: register new user (which, if successful, also logs them in)
+
+        String username = getLoginView().getRegisterUsername();
+        String password = getLoginView().getRegisterPassword();
+        Credentials credentials = new Credentials(password,username);
+        getAsync().runMethod(server::register,credentials)
+                .onError(e->displayRegistrationError(e))
+                .onSuccess(()-> {
+                    System.out.println("registration successful");
+                    login(credentials);
+                })
+                .start();
+    }
+
+    private void login(Credentials credentials){
+        getAsync().runMethod(server::login,credentials)
+                .onError(e->displayRegistrationError(e))
+                .onSuccess(()-> {
+                    System.out.println("post-registration login successful");
+                    getLoginView().closeModal();})
+                .start();
+    }
+
+    void displayLoginError(Exception e){
+        messageView.setTitle("Login Error");
+        if(e.getClass()== CredentialNotFoundException.class){
+            messageView.setMessage("USERNAME AND/OR PASSWORD NOT FOUND.");
+        }
+        else{
+            messageView.setMessage("LOGIN ERROR ON SERVER.");
+        }
+        messageView.showModal();
+    }
+
+    void displayRegistrationError(Exception e){
+        messageView.setTitle("Registration Error");
+        if(e.getClass()== CredentialNotFoundException.class){
+            messageView.setMessage("USERNAME AND/OR PASSWORD NOT VALID OR ALREADY REGISTERED.");
+        }
+        else{
+            messageView.setMessage("REGISTRATION ERROR ON SERVER.");
+        }
+        messageView.showModal();
+    }
 
 }
 

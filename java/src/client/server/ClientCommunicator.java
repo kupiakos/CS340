@@ -11,13 +11,13 @@ import java.net.URL;
  * ClientCommunicator receives calls from ServerProxy and submits those calls as HTTP requests to the Catan Server.
  * Package Private
  */
-class ClientCommunicator implements IClientCommunicator{
+class ClientCommunicator implements IClientCommunicator {
 
     private static ClientCommunicator SINGLETON = null;
     private String URLPrefix;
 
     private ClientCommunicator() {
-        URLPrefix = "localhost:8081";
+        URLPrefix = "http://localhost:8081";
     }
 
 
@@ -50,6 +50,7 @@ class ClientCommunicator implements IClientCommunicator{
             URL url = new URL(URLPrefix + URLSuffix);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(requestMethod);
+            connection.setDoOutput(true);
             DataOutputStream output = new DataOutputStream(connection.getOutputStream());
             output.writeBytes(requestBody);
             output.close();

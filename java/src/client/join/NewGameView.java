@@ -1,19 +1,18 @@
 package client.join;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import client.base.OverlayView;
 
-import client.base.*;
+import javax.swing.*;
 import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.event.ActionListener;
 
 /**
  * Implementation for the new game view, which lets the user enter parameters
  * for a new game
  */
 @SuppressWarnings("serial")
-public class NewGameView extends OverlayView implements INewGameView
-{
+public class NewGameView extends OverlayView implements INewGameView {
 
     private final int LABEL_TEXT_SIZE = 40;
     private final int BUTTON_TEXT_SIZE = 28;
@@ -23,14 +22,23 @@ public class NewGameView extends OverlayView implements INewGameView
     private JButton createButton = null;
     private JButton cancelButton = null;
     private JPanel buttonPanel = null;
-    
+
     private JTextField txtTitle = null;
     private JCheckBox chkRandNumbers = null;
     private JCheckBox chkRandHexes = null;
     private JCheckBox chkRandPorts = null;
+    private ActionListener actionListener = e -> {
 
-    public NewGameView()
-    {
+        if (e.getSource() == createButton) {
+
+            getController().createNewGame();
+        } else if (e.getSource() == cancelButton) {
+
+            getController().cancelCreateNewGame();
+        }
+    };
+
+    public NewGameView() {
 
         this.setOpaque(true);
         this.setLayout(new BorderLayout());
@@ -43,7 +51,7 @@ public class NewGameView extends OverlayView implements INewGameView
         this.add(lblNewGameSettings, BorderLayout.PAGE_START);
 
         this.add(initInternalComponents(), BorderLayout.CENTER);
-        
+
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(actionListener);
         Font buttonFont = cancelButton.getFont();
@@ -57,35 +65,33 @@ public class NewGameView extends OverlayView implements INewGameView
         buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.add(createButton);
-        buttonPanel.add(cancelButton);        
-        this.add(buttonPanel, BorderLayout.SOUTH);                
+        buttonPanel.add(cancelButton);
+        this.add(buttonPanel, BorderLayout.SOUTH);
     }
-    
-    private JComponent initInternalComponents()
-    {
+
+    private JComponent initInternalComponents() {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-        
+
         JLabel lblTitle = new JLabel("Title:");
         txtTitle = new JTextField();
         chkRandNumbers = new JCheckBox("Randomly place Numbers");
         chkRandHexes = new JCheckBox("Randomly place Hexes");
         chkRandPorts = new JCheckBox("Use Random ports");
-        
-        
+
+
         mainPanel.add(lblTitle);
         mainPanel.add(txtTitle);
         mainPanel.add(chkRandNumbers);
         mainPanel.add(chkRandHexes);
-        mainPanel.add(chkRandPorts);   
-        
+        mainPanel.add(chkRandPorts);
+
         mainPanel.setBorder(createBufferBorder());
-        
-        return mainPanel;        
+
+        return mainPanel;
     }
-    
-    private Border createBufferBorder()
-    {
+
+    private Border createBufferBorder() {
         final int BUFFER_SPACE = 7;
         Border innerBuffer = BorderFactory.createEmptyBorder(BUFFER_SPACE, BUFFER_SPACE, BUFFER_SPACE, BUFFER_SPACE);
         Border outerBuffer = BorderFactory.createEmptyBorder(BUFFER_SPACE, BUFFER_SPACE, BUFFER_SPACE, BUFFER_SPACE);
@@ -97,78 +103,50 @@ public class NewGameView extends OverlayView implements INewGameView
         return wholeCompound;
     }
 
-    private ActionListener actionListener = new ActionListener()
-    {
-        @Override
-        public void actionPerformed(ActionEvent e)
-        {
-
-            if (e.getSource() == createButton)
-            {
-
-                getController().createNewGame();
-            }
-            else if (e.getSource() == cancelButton)
-            {
-
-                getController().cancelCreateNewGame();
-            }
-        }
-    };
-
     @Override
-    public IJoinGameController getController()
-    {
+    public IJoinGameController getController() {
 
         return (IJoinGameController) super.getController();
     }
 
     @Override
-    public void setTitle(String value)
-    {
-        this.txtTitle.setText(value);
-    }
-
-    @Override
-    public String getTitle()
-    {
+    public String getTitle() {
         return txtTitle.getText();
     }
 
     @Override
-    public void setRandomlyPlaceNumbers(boolean value)
-    {
-        chkRandNumbers.setSelected(value);
+    public void setTitle(String value) {
+        this.txtTitle.setText(value);
     }
 
     @Override
-    public boolean getRandomlyPlaceNumbers()
-    {
+    public boolean getRandomlyPlaceNumbers() {
         return chkRandNumbers.isSelected();
     }
 
     @Override
-    public void setRandomlyPlaceHexes(boolean value)
-    {
-        chkRandHexes.setSelected(value);
+    public void setRandomlyPlaceNumbers(boolean value) {
+        chkRandNumbers.setSelected(value);
     }
 
     @Override
-    public boolean getRandomlyPlaceHexes()
-    {
+    public boolean getRandomlyPlaceHexes() {
         return chkRandHexes.isSelected();
     }
 
     @Override
-    public void setUseRandomPorts(boolean value)
-    {
-        chkRandPorts.setSelected(value);
+    public void setRandomlyPlaceHexes(boolean value) {
+        chkRandHexes.setSelected(value);
     }
 
     @Override
-    public boolean getUseRandomPorts()
-    {
+    public boolean getUseRandomPorts() {
         return chkRandPorts.isSelected();
+    }
+
+    @Override
+    public void setUseRandomPorts(boolean value) {
+        chkRandPorts.setSelected(value);
     }
 
 }
