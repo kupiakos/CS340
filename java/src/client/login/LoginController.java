@@ -3,6 +3,11 @@ package client.login;
 import client.base.Controller;
 import client.base.IAction;
 import client.misc.IMessageView;
+import client.server.ServerProxy;
+import client.utils.ServerAsyncHelper;
+import shared.models.user.Credentials;
+
+import javax.security.auth.login.CredentialNotFoundException;
 
 
 /**
@@ -22,7 +27,7 @@ public class LoginController extends Controller implements ILoginController {
     public LoginController(ILoginView view, IMessageView messageView) {
 
         super(view);
-
+        this.server = new ServerProxy();
         this.messageView = messageView;
     }
 
@@ -64,13 +69,15 @@ public class LoginController extends Controller implements ILoginController {
 
     @Override
     public void signIn() {
-
         // TODO: log in user
-
-
-        // If log in succeeded
-        getLoginView().closeModal();
-        loginAction.execute();
+        String username = getLoginView().getLoginUsername();
+        String password = getLoginView().getLoginPassword();
+        Credentials credentials = new Credentials(password,username);
+        getAsync().runMethod(server::login,credentials)
+                .onError(e->displayLoginError(e))
+                .onSuccess(()->{System.out.println("login successful");
+                    getLoginView().closeModal();})
+                .start();
     }
 
     @Override
@@ -78,9 +85,47 @@ public class LoginController extends Controller implements ILoginController {
 
         // TODO: register new user (which, if successful, also logs them in)
 
-        // If register succeeded
-        getLoginView().closeModal();
-        loginAction.execute();
+        String username = getLoginView().getRegisterUsername();
+        String password = getLoginView().getRegisterPassword();
+        Credentials credentials = new Credentials(password,username);
+        getAsync().runMethod(server::register,credentials)
+                .onError(e->displayRegistrationError(e))
+                .onSuccess(()-> {
+                    System.out.println("registration successful");
+                    login(credentials);
+                })
+                .start();
+    }
+
+    private void login(Credentials credentials){
+        getAsync().runMethod(server::login,credentials)
+                .onError(e->displayRegistrationError(e))
+                .onSuccess(()-> {
+                    System.out.println("post-registration login successful");
+                    getLoginView().closeModal();})
+                .start();
+    }
+
+    void displayLoginError(Exception e){
+        messageView.setTitle("Login Error");
+        if(e.getClass()== CredentialNotFoundException.class){
+            messageView.setMessage("USERNAME AND/OR PASSWORD NOT FOUND.");
+        }
+        else{
+            messageView.setMessage("LOGIN ERROR ON SERVER.");
+        }
+        messageView.showModal();
+    }
+
+    void displayRegistrationError(Exception e){
+        messageView.setTitle("Registration Error");
+        if(e.getClass()== CredentialNotFoundException.class){
+            messageView.setMessage("USERNAME AND/OR PASSWORD NOT VALID OR ALREADY REGISTERED.");
+        }
+        else{
+            messageView.setMessage("REGISTRATION ERROR ON SERVER.");
+        }
+        messageView.showModal();
     }
 
 }
