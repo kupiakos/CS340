@@ -1,7 +1,7 @@
 package client.utils;
 
 import client.base.IAction;
-import client.game.GameManager;
+import client.game.IGameManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import shared.models.game.ClientModel;
@@ -9,9 +9,9 @@ import shared.models.game.ClientModel;
 import java.util.function.Consumer;
 
 public class ServerAsyncHelper {
-    private GameManager gameManager;
+    private IGameManager gameManager;
 
-    public ServerAsyncHelper(GameManager gameManager) {
+    public ServerAsyncHelper(IGameManager gameManager) {
         this.gameManager = gameManager;
     }
 
