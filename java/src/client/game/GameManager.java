@@ -55,6 +55,7 @@ public class GameManager extends Observable implements IGameManager {
      */
     GameManager() {
         setAsync(new ServerAsyncHelper(this));
+        playerInfo = new PlayerInfo();
     }
 
     /**
