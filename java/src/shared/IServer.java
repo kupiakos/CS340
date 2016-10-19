@@ -1,10 +1,12 @@
 package shared;
 
+import client.data.*;
 import org.jetbrains.annotations.NotNull;
 import shared.exceptions.JoinGameException;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.games.*;
+import shared.models.games.GameInfo;
 import shared.models.moves.*;
 import shared.models.user.Credentials;
 import shared.models.util.ChangeLogLevelRequest;
@@ -48,7 +50,7 @@ public interface IServer {
      * @pre None
      * @post None
      */
-    GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException;
+    client.data.GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException;
 
     /**
      * Creates a new game on the server

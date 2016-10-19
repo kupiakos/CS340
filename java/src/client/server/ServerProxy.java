@@ -1,10 +1,12 @@
 package client.server;
 
+import client.data.*;
 import org.jetbrains.annotations.NotNull;
 import shared.IServer;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.games.*;
+import shared.models.games.GameInfo;
 import shared.models.moves.*;
 import shared.models.user.Credentials;
 import shared.models.util.ChangeLogLevelRequest;
@@ -66,10 +68,10 @@ public class ServerProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException {
-        GameInfo[] games = null;
+    public client.data.GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException {
+        client.data.GameInfo[] games = null;
         String list = cc.sendHTTPRequest("/games/list", "", "GET");
-        games = ModelSerializer.getInstance().fromJson(list, GameInfo[].class);
+        games = ModelSerializer.getInstance().fromJson(list, client.data.GameInfo[].class);
         return games;
     }
 
