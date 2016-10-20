@@ -2,9 +2,9 @@ package client.join;
 
 import client.base.Controller;
 import client.base.IAction;
-import client.data.GameInfo;
 import client.misc.IMessageView;
 import shared.definitions.CatanColor;
+import shared.models.games.GameInfo;
 
 
 /**
@@ -56,7 +56,6 @@ public class JoinGameController extends Controller implements IJoinGameControlle
      * @param value The action to be executed when the user joins a game
      */
     public void setJoinAction(IAction value) {
-
         joinAction = value;
     }
 
@@ -92,7 +91,6 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 
     @Override
     public void start() {
-
         getJoinGameView().showModal();
     }
 

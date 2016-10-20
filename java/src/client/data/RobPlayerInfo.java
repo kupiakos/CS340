@@ -1,5 +1,7 @@
 package client.data;
 
+import shared.models.games.PlayerInfo;
+
 /**
  * Used to pass player information into the rob view<br>
  * <br>

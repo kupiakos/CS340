@@ -2,7 +2,6 @@ package client.communication;
 
 import client.base.Controller;
 import client.base.IView;
-import client.game.GameManager;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.CatanColor;
 import shared.definitions.PlayerIndex;
@@ -14,7 +13,6 @@ import shared.models.game.Player;
 import shared.models.moves.SendChatAction;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Observer;
 
 /**
@@ -49,27 +47,21 @@ public class ChatController extends Controller implements IChatController, Obser
      */
     @Override
     public void sendMessage(@NotNull String message) {
-        Objects.requireNonNull(message);
         PlayerIndex player = getModel().getTurnTracker().getCurrentTurn();
         SendChatAction chat = new SendChatAction(message, player);
         ChatFacade cf = getFacade().getChat();
 
-        if (ChatFacade.canSendChat(chat)) {
+        if (cf.canSendChat(chat)) {
             cf.sendChat(chat);
             getAsync().runModelMethod(server::sendChat, chat)
                     .onError(Throwable::printStackTrace)
                     .start();
         }
-        String x = "hello";
-        switch (x) {
-            case "hello":
-                break;
-        }
     }
 
     @Override
     public void updateFromModel(ClientModel model) {
-        MessageList chats = GameManager.getGame().getClientModel().getChat();
+        MessageList chats = model.getChat();
         ArrayList<LogEntry> entries = new ArrayList<>();
 
         if (chats != null) {

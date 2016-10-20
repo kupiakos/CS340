@@ -1,12 +1,10 @@
 package client.server;
 
-import client.data.*;
 import org.jetbrains.annotations.NotNull;
 import shared.IServer;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.games.*;
-import shared.models.games.GameInfo;
 import shared.models.moves.*;
 import shared.models.user.Credentials;
 import shared.models.util.ChangeLogLevelRequest;
@@ -43,8 +41,8 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public client.data.GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException {
-        return new client.data.GameInfo[0];
+    public GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException {
+        return new GameInfo[0];
     }
 
     /**
