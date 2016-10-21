@@ -3,11 +3,13 @@ package client.join;
 import client.base.OverlayView;
 import client.data.GameInfo;
 import client.data.PlayerInfo;
+import shared.models.game.Player;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * Implementation for the join game view, which lets the user select a game to
@@ -121,14 +123,21 @@ public class JoinGameView extends OverlayView implements IJoinGameView {
                 JLabel tmp2 = new JLabel(game.getTitle());
                 tmp2.setFont(labelFont);
                 gamePanel.add(tmp2);
-                String players = String.valueOf(game.getPlayers().size()) + "/4 : ";
+                String players = "";
                 for (int j = 0; j < game.getPlayers().size(); j++) {
-                    if (j < game.getPlayers().size() - 1) {
+                    if(game.getPlayers().get(j).getId()==-1){
+                        ArrayList<PlayerInfo> tempPlayers = new ArrayList<>(game.getPlayers());
+                        tempPlayers.remove(j);
+                        j--;
+                        game.setPlayers(tempPlayers);
+                    }
+                    else if (j < game.getPlayers().size() - 1) {
                         players = players + game.getPlayers().get(j).getName() + ", ";
                     } else {
                         players = players + game.getPlayers().get(j).getName();
                     }
                 }
+                players = String.valueOf(game.getPlayers().size()) + "/4 : " + players;
                 JLabel tmp3 = new JLabel(players);
                 tmp3.setFont(labelFont);
                 gamePanel.add(tmp3);
