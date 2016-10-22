@@ -1,11 +1,11 @@
 package client.poller;
 
 import client.game.GameManager;
+import client.game.IGameManager;
 import shared.models.game.ClientModel;
 
 import javax.naming.CommunicationException;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
@@ -38,24 +38,18 @@ public class Poller {
         // To init the poller go ahead and check for an update to start
         checkForUpdate();
 
-        ActionListener poll = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                checkForUpdate();
-            }
-        };
+        ActionListener poll = e -> checkForUpdate();
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, poll);
     }
 
     private void checkForUpdate() {
         // Grab a game manager
-        GameManager gm = GameManager.getGame();
+        IGameManager gm = GameManager.getGame();
         // Get our version number
         int version;
         try {
             version = gm.getClientModel().getVersion();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             version = 0;
         }
         // Call the server with the number

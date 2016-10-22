@@ -34,53 +34,67 @@ public class TradeOffer {
     }
 
     /**
-      * @param receiver The index of the person the trade was offered to.
-      * @param offer Positive numbers are resources being offered. Negative are resources being asked for.
-      * @param sender The index of the person offering the trade
+     * @param receiver The index of the person the trade was offered to.
+     * @param offer    Positive numbers are resources being offered. Negative are resources being asked for.
+     * @param sender   The index of the person offering the trade
      */
     public TradeOffer(PlayerIndex receiver, ResourceSet offer, PlayerIndex sender) {
-            this.receiver = receiver;
-            this.offer = offer;
-            this.sender = sender;
+        this.receiver = receiver;
+        this.offer = offer;
+        this.sender = sender;
     }
 
     /**
      * @return The index of the person the trade was offered to.
      */
-    public PlayerIndex getReceiver() { return receiver; }
+    public PlayerIndex getReceiver() {
+        return receiver;
+    }
 
     /**
      * @param receiver The index of the person the trade was offered to.
      */
-    public void setReceiver(@NotNull PlayerIndex receiver) { this.receiver = receiver; }
+    public void setReceiver(@NotNull PlayerIndex receiver) {
+        this.receiver = receiver;
+    }
 
     public TradeOffer withReceiver(@NotNull PlayerIndex receiver) {
         setReceiver(receiver);
         return this;
     }
+
     /**
      * @return Positive numbers are resources being offered. Negative are resources being asked for.
      */
-    public ResourceSet getOffer() { return offer; }
+    public ResourceSet getOffer() {
+        return offer;
+    }
 
     /**
      * @param offer Positive numbers are resources being offered. Negative are resources being asked for.
      */
-    public void setOffer(@NotNull ResourceSet offer) { this.offer = offer; }
+    public void setOffer(@NotNull ResourceSet offer) {
+        this.offer = offer;
+    }
 
     public TradeOffer withOffer(@NotNull ResourceSet offer) {
         setOffer(offer);
         return this;
     }
+
     /**
      * @return The index of the person offering the trade
      */
-    public PlayerIndex getSender() { return sender; }
+    public PlayerIndex getSender() {
+        return sender;
+    }
 
     /**
      * @param sender The index of the person offering the trade
      */
-    public void setSender(@NotNull PlayerIndex sender) { this.sender = sender; }
+    public void setSender(@NotNull PlayerIndex sender) {
+        this.sender = sender;
+    }
 
     public TradeOffer withSender(@NotNull PlayerIndex sender) {
         setSender(sender);
@@ -90,16 +104,16 @@ public class TradeOffer {
     @Override
     public String toString() {
         return "TradeOffer [" +
-            "receiver=" + receiver +
-            ", offer=" + offer +
-            ", sender=" + sender +
-            "]";
+                "receiver=" + receiver +
+                ", offer=" + offer +
+                ", sender=" + sender +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof TradeOffer) {
-            return equals((TradeOffer)other);
+            return equals((TradeOffer) other);
         }
         return false;
     }

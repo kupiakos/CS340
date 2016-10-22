@@ -6,8 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * The type of resources a hex can be.
  * Affects both the appearance and what resources are received.
  */
-public enum HexType
-{
+public enum HexType {
     @SerializedName("wood")
     WOOD(ResourceType.WOOD),
 
@@ -37,9 +36,10 @@ public enum HexType
 
     /**
      * Gets the type of resource that would be retrieved from this type of hex, may be null.
-     *
+     * <p>
      * If a resource would not be returned from this type of hex,
      * like a {@link #DESERT desert} or {@link #WATER water} hex.
+     *
      * @return the type of resource associated, or null if none
      */
     public ResourceType getResource() {

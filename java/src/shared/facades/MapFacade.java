@@ -75,12 +75,13 @@ public class MapFacade extends AbstractFacade {
 
     /**
      * Returns the player who currently has the longest road.
+     *
      * @return
      */
-    public PlayerIndex findLongestRoad(){
-        for (Player p: getModel().getPlayers()) {
+    public PlayerIndex findLongestRoad() {
+        for (Player p : getModel().getPlayers()) {
             int roadSize = map.getPlayerLongestRoad(p.getPlayerIndex());
-            if(roadSize>longestRoadLength){
+            if (roadSize > longestRoadLength) {
                 longestRoadLength = roadSize;
                 logestRoadOwner = p.getPlayerIndex();
             }

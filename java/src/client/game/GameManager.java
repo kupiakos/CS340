@@ -1,23 +1,25 @@
 package client.game;
 
-import client.data.PlayerInfo;
 import client.poller.Poller;
 import client.server.MockProxy;
 import client.utils.ServerAsyncHelper;
 import shared.IServer;
+import shared.definitions.PlayerIndex;
 import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
+import shared.models.game.Player;
+import shared.models.games.PlayerInfo;
 
 import java.util.Observable;
 
 /**
  * Manages a single game
  */
-public class GameManager extends Observable implements IGameManager{
+public class GameManager extends Observable implements IGameManager {
     /**
      * Setting up the singleton for all to use
      */
-    private static GameManager instance;
+    private static IGameManager instance;
     /**
      * The poller that the game will use
      */
@@ -42,27 +44,41 @@ public class GameManager extends Observable implements IGameManager{
     private ServerAsyncHelper async;
 
     /**
+     * The PlayerIndex that this client is playing as
+     */
+    private PlayerIndex thisPlayerIndex;
+
+    /**
      * Init stuff for the game manager as needed
      *
      * @post This provides valid operations on GameManager
      */
     GameManager() {
         setAsync(new ServerAsyncHelper(this));
+        playerInfo = new PlayerInfo();
     }
-
 
     /**
      * Lets you grab the game, allows communications to all the parts of the game
      *
      * @post gives a instance of the game
      */
-    public static GameManager getGame() {
+    public static IGameManager getGame() {
         if (instance == null) instance = new GameManager();
         return instance;
     }
 
-    public static void setInstance(GameManager sm) {
+    public static void setInstance(IGameManager sm) {
         GameManager.instance = sm;
+    }
+
+    /**
+     * Get the player the client is currently playing as, <i>not</i> whose turn it is.
+     *
+     * @return
+     */
+    public Player getPlayer() {
+        return getClientModel().getPlayer(thisPlayerIndex);
     }
 
     /**
@@ -103,6 +119,8 @@ public class GameManager extends Observable implements IGameManager{
     public void updateGameManager(ClientModel cm) {
         clientModel = cm;
         facadeManager.update(cm);
+        setChanged();
+        notifyObservers(cm);
     }
 
     /**
@@ -116,6 +134,12 @@ public class GameManager extends Observable implements IGameManager{
 
         return server;
     }
+
+    @Override
+    public void setServer(IServer server) {
+        this.server = server;
+    }
+
 
     public Poller getPoller() {
         return poller;
@@ -147,5 +171,13 @@ public class GameManager extends Observable implements IGameManager{
 
     public void setAsync(ServerAsyncHelper async) {
         this.async = async;
+    }
+
+    public PlayerIndex getThisPlayerIndex() {
+        return thisPlayerIndex;
+    }
+
+    public void setThisPlayerIndex(PlayerIndex thisPlayerIndex) {
+        this.thisPlayerIndex = thisPlayerIndex;
     }
 }

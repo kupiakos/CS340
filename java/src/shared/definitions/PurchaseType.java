@@ -23,6 +23,7 @@ public enum PurchaseType {
 
     /**
      * What this item would cost if purchased.
+     *
      * @return the list of resources required
      */
     public ResourceSet purchaseCost() {

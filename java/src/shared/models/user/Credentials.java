@@ -29,38 +29,47 @@ public class Credentials {
     }
 
     /**
-      * @param password The password
-      * @param username The username
+     * @param password The password
+     * @param username The username
      */
     public Credentials(String password, String username) {
-            this.password = password;
-            this.username = username;
+        this.password = password;
+        this.username = username;
     }
 
     /**
      * @return The password
      */
     @NotNull
-    public String getPassword() { return password; }
+    public String getPassword() {
+        return password;
+    }
 
     /**
      * @param password The password
      */
-    public void setPassword(@NotNull String password) { this.password = password; }
+    public void setPassword(@NotNull String password) {
+        this.password = password;
+    }
 
     public Credentials withPassword(@NotNull String password) {
         setPassword(password);
         return this;
     }
+
     /**
      * @return The username
      */
-    public String getUsername() { return username; }
+    public String getUsername() {
+        return username;
+    }
 
     /**
      * @param username The username
      */
-    public void setUsername(@NotNull String username) { this.username = username; }
+    public void setUsername(@NotNull String username) {
+        this.username = username;
+    }
 
     public Credentials withUsername(@NotNull String username) {
         setUsername(username);
@@ -70,15 +79,15 @@ public class Credentials {
     @Override
     public String toString() {
         return "Credentials [" +
-            "password=" + password +
-            ", username=" + username +
-            "]";
+                "password=" + password +
+                ", username=" + username +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof Credentials) {
-            return equals((Credentials)other);
+            return equals((Credentials) other);
         }
         return false;
     }

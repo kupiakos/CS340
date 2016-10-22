@@ -2,20 +2,17 @@ package client.communication;
 
 import client.base.Controller;
 import client.base.IView;
-import client.game.GameManager;
 import org.jetbrains.annotations.NotNull;
-import shared.IServer;
 import shared.definitions.CatanColor;
 import shared.definitions.PlayerIndex;
 import shared.facades.ChatFacade;
+import shared.models.game.ClientModel;
 import shared.models.game.MessageEntry;
 import shared.models.game.MessageList;
 import shared.models.game.Player;
 import shared.models.moves.SendChatAction;
 
-import javax.naming.CommunicationException;
 import java.util.ArrayList;
-import java.util.Observable;
 import java.util.Observer;
 
 /**
@@ -31,8 +28,7 @@ public class ChatController extends Controller implements IChatController, Obser
      */
     public ChatController(IView view) {
         super(view);
-        update(GameManager.getGame(), null);
-        GameManager.getGame().addObserver(this);
+        observeClientModel();
     }
 
 
@@ -51,35 +47,21 @@ public class ChatController extends Controller implements IChatController, Obser
      */
     @Override
     public void sendMessage(@NotNull String message) {
-        if (message == null) throw new IllegalArgumentException();
-
-        PlayerIndex player = GameManager.getGame().getClientModel().getTurnTracker().getCurrentTurn();
+        PlayerIndex player = getModel().getTurnTracker().getCurrentTurn();
         SendChatAction chat = new SendChatAction(message, player);
-        ChatFacade cf = GameManager.getGame().getFacade().getChat();
-        IServer s = GameManager.getGame().getServer();
+        ChatFacade cf = getFacade().getChat();
 
         if (cf.canSendChat(chat)) {
-            new ChatFacade(GameManager.getGame().getFacade()).sendChat(chat);
-            try {
-                s.sendChat(chat);
-            } catch (CommunicationException e) {
-                e.printStackTrace();
-            }
+            cf.sendChat(chat);
+            getAsync().runModelMethod(server::sendChat, chat)
+                    .onError(Throwable::printStackTrace)
+                    .start();
         }
     }
 
-    /**
-     * Checks the game manager for chats, if there are non null chats, it cycles through
-     * and updates the players with the new messages
-     * <p>
-     * {@inheritDoc}
-     *
-     * @param observable
-     * @param o
-     */
     @Override
-    public void update(Observable observable, Object o) {
-        MessageList chats = GameManager.getGame().getClientModel().getChat();
+    public void updateFromModel(ClientModel model) {
+        MessageList chats = model.getChat();
         ArrayList<LogEntry> entries = new ArrayList<>();
 
         if (chats != null) {
@@ -88,9 +70,9 @@ public class ChatController extends Controller implements IChatController, Obser
                 String source = message.getSource();
 
                 CatanColor messageColor = null;
-                for (Player player : GameManager.getGame().getFacade().getClientModel().getPlayers()) {
+                for (Player player : model.getPlayers()) {
                     // Set the chat color from who sent the message
-                    if (player.getName().equals(source)){
+                    if (player.getName().equals(source)) {
                         messageColor = player.getColor();
                     }
                 }

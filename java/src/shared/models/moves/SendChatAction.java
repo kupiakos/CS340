@@ -115,6 +115,7 @@ public class SendChatAction {
 
     /**
      * Converter that lets us change btwn chats and messages.... not sure why both are needed
+     *
      * @return new MessageEntry
      */
     public MessageEntry asMessageEntry() {

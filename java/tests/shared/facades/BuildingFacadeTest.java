@@ -1,7 +1,6 @@
 package shared.facades;
 
 
-import client.game.GameManager;
 import shared.locations.*;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
@@ -20,14 +19,13 @@ import static org.junit.Assert.assertTrue;
 public class BuildingFacadeTest {
     private BuildingFacade facade;
     private Player player;
+    private FacadeManager facades;
 
     @org.junit.Before
     public void setup() {
         ClientModel model = ModelExample.fullJsonModel();
-        GameManager game = GameManager.getGame();
-        game.setClientModel(model);
-        game.getFacade();
-        facade = game.getFacade().getBuilding();
+        facades = new FacadeManager(model);
+        facade = facades.getBuilding();
         ArrayList<Player> players = (ArrayList<Player>) model.getPlayers();
         player = players.get(0);
     }

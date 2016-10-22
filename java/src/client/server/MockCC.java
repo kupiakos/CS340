@@ -1,10 +1,12 @@
 package client.server;
 
-import client.game.GameManager;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.game.MessageEntry;
-import shared.models.games.*;
+import shared.models.games.CreateGameRequest;
+import shared.models.games.JoinGameRequest;
+import shared.models.games.LoadGameRequest;
+import shared.models.games.SaveGameRequest;
 import shared.models.moves.*;
 import shared.models.user.Credentials;
 import shared.models.util.ChangeLogLevelRequest;
@@ -20,8 +22,8 @@ import java.util.List;
  */
 public class MockCC implements IClientCommunicator {
 
-    private ClientModel cm;
     private static MockCC mockCC;
+    private ClientModel cm;
 
     public static MockCC initialize(ClientModel cm) {
         if (MockCC.mockCC == null) {
@@ -164,7 +166,7 @@ public class MockCC implements IClientCommunicator {
         List<MessageEntry> messages = new ArrayList<>();
         for (String command : commands) messages.add(new MessageEntry("", command));
         cm.getLog().setLines(messages);
-        return ModelSerializer.getInstance().toJson(cm,ClientModel.class);
+        return ModelSerializer.getInstance().toJson(cm, ClientModel.class);
     }
 
     private String listAI() {
@@ -203,20 +205,20 @@ public class MockCC implements IClientCommunicator {
 
     private String buildRoad(String requestBody) {
         BuildRoadAction buildRoad = ModelSerializer.getInstance().fromJson(requestBody, BuildRoadAction.class);
-        cm.getMap().getRoads().put(buildRoad.getRoadLocation(),buildRoad.getPlayerIndex());
+        cm.getMap().getRoads().put(buildRoad.getRoadLocation(), buildRoad.getPlayerIndex());
         return ModelSerializer.getInstance().toJson(cm, ClientModel.class);
     }
 
     private String buildSettlement(String requestBody) {
         BuildSettlementAction buildSettlement = ModelSerializer.getInstance().fromJson(requestBody, BuildSettlementAction.class);
-        cm.getMap().getSettlements().put(buildSettlement.getVertexLocation(),buildSettlement.getPlayerIndex());
+        cm.getMap().getSettlements().put(buildSettlement.getVertexLocation(), buildSettlement.getPlayerIndex());
         return ModelSerializer.getInstance().toJson(cm, ClientModel.class);
     }
 
     private String buildCity(String requestBody) {
         BuildCityAction buildCity = ModelSerializer.getInstance().fromJson(requestBody, BuildCityAction.class);
         try {
-            cm.getMap().upgradeSettlement(buildCity.getVertexLocation(),buildCity.getPlayerIndex());
+            cm.getMap().upgradeSettlement(buildCity.getVertexLocation(), buildCity.getPlayerIndex());
         } catch (Exception e) {
             e.printStackTrace();
         }

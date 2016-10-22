@@ -29,37 +29,46 @@ public class MessageEntry {
     }
 
     /**
-      * @param source The source
-      * @param message The message
+     * @param source  The source
+     * @param message The message
      */
     public MessageEntry(String source, String message) {
-            this.source = source;
-            this.message = message;
+        this.source = source;
+        this.message = message;
     }
 
     /**
      * @return The source
      */
-    public String getSource() { return source; }
+    public String getSource() {
+        return source;
+    }
 
     /**
      * @param source The source
      */
-    public void setSource(@NotNull String source) { this.source = source; }
+    public void setSource(@NotNull String source) {
+        this.source = source;
+    }
 
     public MessageEntry withSource(@NotNull String source) {
         setSource(source);
         return this;
     }
+
     /**
      * @return The message
      */
-    public String getMessage() { return message; }
+    public String getMessage() {
+        return message;
+    }
 
     /**
      * @param message The message
      */
-    public void setMessage(@NotNull String message) { this.message = message; }
+    public void setMessage(@NotNull String message) {
+        this.message = message;
+    }
 
     public MessageEntry withMessage(@NotNull String message) {
         setMessage(message);
@@ -69,15 +78,15 @@ public class MessageEntry {
     @Override
     public String toString() {
         return "MessageLine [" +
-            "source=" + source +
-            ", message=" + message +
-            "]";
+                "source=" + source +
+                ", message=" + message +
+                "]";
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof MessageEntry) {
-            return equals((MessageEntry)other);
+            return equals((MessageEntry) other);
         }
         return false;
     }

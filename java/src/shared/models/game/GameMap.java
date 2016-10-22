@@ -149,6 +149,7 @@ public class GameMap {
 
     /**
      * Get the location of buildings attached to this hex.
+     *
      * @param location the location of the hex
      * @return a set of normalized vertex locations of the buildings
      */
@@ -299,7 +300,7 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public void addSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTwoTurns)  {
+    public void addSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTwoTurns) {
         if (!canAddSettlement(location, player, isFirstTwoTurns)) {
             throw new IllegalArgumentException("Can't add Settlement");
         }
@@ -358,7 +359,7 @@ public class GameMap {
      * @pre {@link #canAddSettlement} returns true
      */
 
-    public void addRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player, @NotNull boolean isSetup)  {
+    public void addRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player, @NotNull boolean isSetup) {
         if (!canAddRoad(location, player, isSetup)) {
             throw new IllegalArgumentException("Can't add road");
         }
@@ -394,7 +395,7 @@ public class GameMap {
      * @throws IllegalArgumentException if the precondition is violated
      * @pre {@link #canAddSettlement} returns true
      */
-    public void upgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player)  {
+    public void upgradeSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player) {
         if (!canUpgradeSettlement(location, player)) {
             throw new IllegalArgumentException("Can't upgrade Settlement");
         }
@@ -522,13 +523,18 @@ public class GameMap {
                 edges = new HashSet<>();
                 break;
         }
+        int max = currentSize;
         for (EdgeLocation e : edges) {
             if (e.equals(edge.getNormalizedLocation()))
                 continue;
-            else if (roads.get(e) == player)
-                return getRoadSize(currentSize + 1, e, player);
+            else if (roads.get(e) == player) {
+                int newSize = getRoadSize(currentSize + 1, e, player);
+                if (newSize > max) {
+                    max = newSize;
+                }
+            }
         }
-        return currentSize;
+        return max;
     }
 
     /**

@@ -1,8 +1,7 @@
 package client.utils;
 
 import client.base.IAction;
-import client.game.GameManager;
-
+import client.game.IGameManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import shared.models.game.ClientModel;
@@ -10,22 +9,30 @@ import shared.models.game.ClientModel;
 import java.util.function.Consumer;
 
 public class ServerAsyncHelper {
-    private GameManager gameManager;
+    private IGameManager gameManager;
 
-    public ServerAsyncHelper(GameManager gameManager) {
+    public ServerAsyncHelper(IGameManager gameManager) {
         this.gameManager = gameManager;
     }
 
-    public <T, R> Runner<T, R> runMethod(ThrowingFunction<T, R> runFunc, T arg) {
-        return new Runner<T, R>(runFunc, arg);
+    public <T, R> Future<T, R> runMethod(ThrowingFunction<T, R> runFunc, T arg) {
+        return new Future<>(runFunc, arg);
     }
 
-    public <T> VoidRunner<T> runMethod(ThrowingConsumer<T> runFunc, T arg) {
-        return new VoidRunner<T>(runFunc, arg);
+    public <T> VoidFuture<T> runMethod(ThrowingConsumer<T> runFunc, T arg) {
+        return new VoidFuture<>(runFunc, arg);
     }
 
-    public <T> ClientModelRunner<T> runModelMethod(@NotNull ThrowingFunction<T, ClientModel> runFunc, T arg) {
-        return new ClientModelRunner<T>(runFunc, arg);
+    public <R> NoArgFuture<R> runMethod(ThrowingSupplier<R> runFunc) {
+        return new NoArgFuture<>(runFunc);
+    }
+
+    public <T> ClientModelFuture<T> runModelMethod(@NotNull ThrowingFunction<T, ClientModel> runFunc, T arg) {
+        return new ClientModelFuture<>(runFunc, arg);
+    }
+
+    public interface ThrowingSupplier<R> {
+        R get() throws Exception;
     }
 
     public interface ThrowingFunction<T, R> {
@@ -36,33 +43,73 @@ public class ServerAsyncHelper {
         void execute(T arg) throws Exception;
     }
 
-    public abstract class BaseRunner<RunType, SuccessType> extends Thread {
+    public abstract class BaseFuture<RunType, SuccessType> extends Thread {
         protected RunType runFunc;
         protected SuccessType successFunc;
         protected Consumer<Exception> failFunc;
 
-        public BaseRunner(@NotNull RunType runFunc) {
+        public BaseFuture(@NotNull RunType runFunc) {
             this.runFunc = runFunc;
         }
 
         @NotNull
-        public BaseRunner<RunType, SuccessType> onSuccess(@Nullable SuccessType successFunc) {
+        public BaseFuture<RunType, SuccessType> onSuccess(@Nullable SuccessType successFunc) {
             this.successFunc = successFunc;
             return this;
         }
 
         @NotNull
-        public BaseRunner<RunType, SuccessType> onError(@Nullable Consumer<Exception> failFunc) {
+        public BaseFuture<RunType, SuccessType> onError(@Nullable Consumer<Exception> failFunc) {
             this.failFunc = failFunc;
             return this;
         }
     }
 
-    public class VoidRunner<T> extends BaseRunner<ThrowingConsumer<T>, IAction> {
-        private boolean hasResult;
+    public class NoArgFuture<R> extends BaseFuture<ThrowingSupplier<R>, Consumer<R>> {
+        boolean hasResult = false;
+        R result;
+        Exception exception;
+
+        public NoArgFuture(@NotNull ThrowingSupplier<R> runFunc) {
+            super(runFunc);
+        }
+
+        @Override
+        public void run() {
+            try {
+                result = runFunc.get();
+                hasResult = true;
+                if (successFunc != null) {
+                    successFunc.accept(result);
+                }
+            } catch (Exception e) {
+                exception = e;
+                hasResult = true;
+                if (failFunc != null) {
+                    failFunc.accept(e);
+                }
+            }
+        }
+
+        public R get() throws Exception {
+            if (isAlive()) {
+                join();
+            }
+            if (exception != null) {
+                throw exception;
+            }
+            if (hasResult) {
+                return result;
+            }
+            throw new IllegalThreadStateException();
+        }
+    }
+
+    public class VoidFuture<T> extends BaseFuture<ThrowingConsumer<T>, IAction> {
+        Exception exception;
         private T arg;
 
-        public VoidRunner(@NotNull ThrowingConsumer<T> runFunc, T arg) {
+        public VoidFuture(@NotNull ThrowingConsumer<T> runFunc, T arg) {
             super(runFunc);
             this.arg = arg;
         }
@@ -80,13 +127,24 @@ public class ServerAsyncHelper {
                 }
             }
         }
+
+        public void get() throws Exception {
+            if (isAlive()) {
+                join();
+            }
+            if (exception != null) {
+                throw exception;
+            }
+        }
     }
 
-    public class Runner<T, R> extends BaseRunner<ThrowingFunction<T, R>, Consumer<R>> {
+    public class Future<T, R> extends BaseFuture<ThrowingFunction<T, R>, Consumer<R>> {
         protected T arg;
-        private boolean hasResult;
+        boolean hasResult = false;
+        R result;
+        Exception exception;
 
-        public Runner(@NotNull ThrowingFunction<T, R> runFunc, T arg) {
+        public Future(@NotNull ThrowingFunction<T, R> runFunc, T arg) {
             super(runFunc);
             this.arg = arg;
         }
@@ -94,27 +152,43 @@ public class ServerAsyncHelper {
         @Override
         public void run() {
             try {
-                R result = runFunc.apply(arg);
+                result = runFunc.apply(arg);
+                hasResult = true;
                 if (successFunc != null) {
                     successFunc.accept(result);
                 }
             } catch (Exception e) {
+                exception = e;
+                hasResult = true;
                 if (failFunc != null) {
                     failFunc.accept(e);
                 }
             }
         }
+
+        public R get() throws Exception {
+            if (isAlive()) {
+                join();
+            }
+            if (exception != null) {
+                throw exception;
+            }
+            if (hasResult) {
+                return result;
+            }
+            throw new IllegalThreadStateException();
+        }
     }
 
-    public class ClientModelRunner<T> extends Runner<T, ClientModel> {
+    public class ClientModelFuture<T> extends Future<T, ClientModel> {
 
-        public ClientModelRunner(@NotNull ThrowingFunction<T, ClientModel> runFunc, T arg) {
+        public ClientModelFuture(@NotNull ThrowingFunction<T, ClientModel> runFunc, T arg) {
             super(runFunc, arg);
             onSuccess(model -> gameManager.setClientModel(model));
         }
 
         @NotNull
-        public ClientModelRunner<T> onSuccess(@Nullable IAction successFunc) {
+        public ClientModelFuture<T> onSuccess(@Nullable IAction successFunc) {
             onError(e -> System.out.println(e.getMessage() + " Hello world!"));
             onSuccess(model -> {
                 gameManager.setClientModel(model);
@@ -127,7 +201,7 @@ public class ServerAsyncHelper {
 
         // Prevent problems with ordering of .onSuccess, .onError
         @NotNull
-        public ClientModelRunner<T> onError(@Nullable Consumer<Exception> failFunc) {
+        public ClientModelFuture<T> onError(@Nullable Consumer<Exception> failFunc) {
             super.onError(failFunc);
             return this;
         }
