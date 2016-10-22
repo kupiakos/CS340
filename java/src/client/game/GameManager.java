@@ -1,6 +1,5 @@
 package client.game;
 
-import client.data.PlayerInfo;
 import client.poller.Poller;
 import client.server.MockProxy;
 import client.utils.ServerAsyncHelper;
@@ -9,6 +8,7 @@ import shared.definitions.PlayerIndex;
 import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
+import shared.models.games.PlayerInfo;
 
 import java.util.Observable;
 
@@ -55,6 +55,7 @@ public class GameManager extends Observable implements IGameManager {
      */
     GameManager() {
         setAsync(new ServerAsyncHelper(this));
+        playerInfo = new PlayerInfo();
     }
 
     /**

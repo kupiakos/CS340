@@ -2,6 +2,7 @@ package client.login;
 
 import client.base.IController;
 
+
 /**
  * Interface for the login controller
  */

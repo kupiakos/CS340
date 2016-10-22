@@ -2,6 +2,10 @@ package client.login;
 
 import client.base.Controller;
 import client.base.IAction;
+import client.join.IJoinGameController;
+import client.join.IJoinGameView;
+import client.join.JoinGameController;
+import client.join.JoinGameView;
 import client.misc.IMessageView;
 import client.server.ServerProxy;
 import client.utils.ServerAsyncHelper;
@@ -14,7 +18,6 @@ import javax.security.auth.login.CredentialNotFoundException;
  * Implementation for the login controller
  */
 public class LoginController extends Controller implements ILoginController {
-
     private IMessageView messageView;
     private IAction loginAction;
 
@@ -63,7 +66,6 @@ public class LoginController extends Controller implements ILoginController {
 
     @Override
     public void start() {
-
         getLoginView().showModal();
     }
 
@@ -72,11 +74,19 @@ public class LoginController extends Controller implements ILoginController {
         // TODO: log in user
         String username = getLoginView().getLoginUsername();
         String password = getLoginView().getLoginPassword();
-        Credentials credentials = new Credentials(password,username);
-        getAsync().runMethod(server::login,credentials)
-                .onError(e->displayLoginError(e))
-                .onSuccess(()->{System.out.println("login successful");
-                    getLoginView().closeModal();})
+        if (!validateUsername(username) || !validatePassword(password)) {
+            displayInvalidTextError();
+            return;
+        }
+        Credentials credentials = new Credentials(password, username);
+        getAsync().runMethod(server::login, credentials)
+                .onError(e -> displayLoginError(e))
+                .onSuccess(() -> {
+                    System.out.println("login successful");
+                    getLoginView().closeModal();
+                    getGameManager().getPlayerInfo().setName(credentials.getUsername());
+                    loginAction.execute();
+                })
                 .start();
     }
 
@@ -87,42 +97,86 @@ public class LoginController extends Controller implements ILoginController {
 
         String username = getLoginView().getRegisterUsername();
         String password = getLoginView().getRegisterPassword();
-        Credentials credentials = new Credentials(password,username);
-        getAsync().runMethod(server::register,credentials)
-                .onError(e->displayRegistrationError(e))
-                .onSuccess(()-> {
+        if (!validateUsername(username) || !validatePassword(password)) {
+            displayInvalidTextError();
+            return;
+        }
+        Credentials credentials = new Credentials(password, username);
+        getAsync().runMethod(server::register, credentials)
+                .onError(e -> displayRegistrationError(e))
+                .onSuccess(() -> {
                     System.out.println("registration successful");
                     login(credentials);
                 })
                 .start();
     }
 
-    private void login(Credentials credentials){
-        getAsync().runMethod(server::login,credentials)
-                .onError(e->displayRegistrationError(e))
-                .onSuccess(()-> {
+    private void login(Credentials credentials) {
+        getAsync().runMethod(server::login, credentials)
+                .onError(e -> displayRegistrationError(e))
+                .onSuccess(() -> {
                     System.out.println("post-registration login successful");
-                    getLoginView().closeModal();})
+                    getLoginView().closeModal();
+                    getGameManager().getPlayerInfo().setName(credentials.getUsername());
+                    loginAction.execute();
+                })
                 .start();
     }
 
-    void displayLoginError(Exception e){
-        messageView.setTitle("Login Error");
-        if(e.getClass()== CredentialNotFoundException.class){
-            messageView.setMessage("USERNAME AND/OR PASSWORD NOT FOUND.");
+    public boolean validateUsername(String username) {
+        final int MIN_UNAME_LENGTH = 3;
+        final int MAX_UNAME_LENGTH = 7;
+        if (username.length() < MIN_UNAME_LENGTH
+                || username.length() > MAX_UNAME_LENGTH) {
+            return false;
+        } else {
+            for (char c : username.toCharArray()) {
+                if (!Character.isLetterOrDigit(c)
+                        && c != '_' && c != '-') {
+                    return false;
+                }
+            }
         }
-        else{
+        return true;
+    }
+
+    public boolean validatePassword(String input) {
+        final int MIN_PASS_LENGTH = 5;
+        if (input.length() < MIN_PASS_LENGTH) {
+            return false;
+        } else {
+            for (char c : input.toCharArray()) {
+                if (!Character.isLetterOrDigit(c)
+                        && c != '_' && c != '-') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    void displayInvalidTextError() {
+        messageView.setTitle("Invalid Credentials Error");
+        messageView.setMessage("Either your username or password did not meet credential requirements.\nA username must be between 3 and 7 characters.\nA password must be at least 5 characters and must be composed of alphanumeric characters, underscores or hyphens");
+        messageView.showModal();
+    }
+
+    void displayLoginError(Exception e) {
+        messageView.setTitle("Login Error");
+        if (e.getClass() == CredentialNotFoundException.class) {
+            messageView.setMessage("USERNAME AND/OR PASSWORD NOT FOUND.");
+        } else {
             messageView.setMessage("LOGIN ERROR ON SERVER.");
         }
         messageView.showModal();
     }
 
-    void displayRegistrationError(Exception e){
+    void displayRegistrationError(Exception e) {
         messageView.setTitle("Registration Error");
-        if(e.getClass()== CredentialNotFoundException.class){
+        if (e.getClass() == CredentialNotFoundException.class) {
             messageView.setMessage("USERNAME AND/OR PASSWORD NOT VALID OR ALREADY REGISTERED.");
-        }
-        else{
+        } else {
             messageView.setMessage("REGISTRATION ERROR ON SERVER.");
         }
         messageView.showModal();

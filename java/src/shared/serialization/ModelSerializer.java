@@ -7,6 +7,7 @@ import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 import shared.locations.VertexLocation;
 import shared.models.game.GameMap;
+import shared.models.games.GameInfo;
 
 import java.io.Reader;
 import java.lang.reflect.Type;
@@ -23,6 +24,7 @@ public class ModelSerializer {
         builder.registerTypeAdapter(EdgeLocation.class, new EdgeLocationSerializer());
         builder.registerTypeAdapter(VertexLocation.class, new VertexLocationSerializer());
         builder.registerTypeAdapter(GameMap.class, new GameMapSerializer());
+        builder.registerTypeAdapter(GameInfo.class, new GameInfoSerializer());
 
         gson = builder.create();
     }

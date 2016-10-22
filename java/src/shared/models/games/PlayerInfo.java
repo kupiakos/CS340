@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.CatanColor;
+import shared.definitions.PlayerIndex;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -14,21 +15,17 @@ import java.util.Objects;
 @Generated("net.kupiakos")
 public class PlayerInfo {
 
+    private transient PlayerIndex playerIndex;
+
     @SerializedName("color")
     @Expose
     private CatanColor color;
-
     @SerializedName("name")
     @Expose
     private String name;
-
     @SerializedName("id")
     @Expose
     private int id;
-
-
-    // CUSTOM CODE
-    // END CUSTOM CODE
 
     /**
      * No args constructor for use in serialization
@@ -45,6 +42,18 @@ public class PlayerInfo {
         this.color = color;
         this.name = name;
         this.id = id;
+    }
+
+
+    // CUSTOM CODE
+    // END CUSTOM CODE
+
+    public PlayerIndex getPlayerIndex() {
+        return playerIndex;
+    }
+
+    public void setPlayerIndex(PlayerIndex playerIndex) {
+        this.playerIndex = playerIndex;
     }
 
     /**
@@ -110,6 +119,7 @@ public class PlayerInfo {
                 "color=" + color +
                 ", name=" + name +
                 ", id=" + id +
+                ", playerIndex=" + playerIndex +
                 "]";
     }
 
@@ -124,6 +134,7 @@ public class PlayerInfo {
     public boolean equals(PlayerInfo other) {
         return (
                 Objects.equals(color, other.color) &&
+                        playerIndex == other.playerIndex &&
                         Objects.equals(name, other.name) &&
                         id == other.id
         );
