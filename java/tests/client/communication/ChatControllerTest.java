@@ -26,6 +26,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 /**
@@ -81,8 +82,18 @@ public class ChatControllerTest {
         when(chatFacade.canSendChat(any(SendChatAction.class))).thenReturn(true);
         cc.sendMessage(m);
         verify(async).runModelMethod(
+                // any() is used as you can't properly compare lambdas
                 any(),
                 eq(new SendChatAction(m, PlayerIndex.FIRST)));
+    }
+
+    @Test
+    public void sendBadMessage() {
+        // We're not testing the ChatFacade code, we're unit testing sendMessage.
+        String m = "Bad Message";
+        when(chatFacade.canSendChat(any(SendChatAction.class))).thenReturn(false);
+        cc.sendMessage(m);
+        verifyZeroInteractions(async);
     }
 
     @Test
