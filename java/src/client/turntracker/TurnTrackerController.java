@@ -3,6 +3,7 @@ package client.turntracker;
 import client.base.Controller;
 import client.game.GameManager;
 import shared.IServer;
+import shared.definitions.CatanColor;
 import shared.definitions.PlayerIndex;
 import shared.facades.TurnFacade;
 import shared.models.game.ClientModel;
@@ -11,6 +12,7 @@ import shared.models.game.TurnTracker;
 import shared.models.moves.FinishMoveAction;
 
 import javax.naming.CommunicationException;
+import java.awt.*;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -68,13 +70,22 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
      * Gets the correct color of the players whos turn it is, also inits all the players
      */
     private void initFromModel() {
-        getView().setLocalPlayerColor(GameManager.getGame().getPlayerInfo().getColor());
-        List<Player> players = GameManager.getGame().getClientModel().getPlayers();
+        CatanColor color;
+        List<Player> players = null;
+        try{
+            color = GameManager.getGame().getPlayerInfo().getColor();
+            getView().setLocalPlayerColor(color);
+            players = GameManager.getGame().getClientModel().getPlayers();
 
-        for (Player p : players) {
-            if (p == null) continue;
-            getView().initializePlayer(p.getPlayerID(), p.getName(), p.getColor());
+            for (Player p : players) {
+                if (p == null) continue;
+                getView().initializePlayer(p.getPlayerID(), p.getName(), p.getColor());
+            }
         }
+        catch (Exception e){
+
+        }
+
     }
 
     /**
