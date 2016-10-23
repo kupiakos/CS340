@@ -58,6 +58,7 @@ public class GameManager extends Observable implements IGameManager {
      * @post This provides valid operations on GameManager
      */
     GameManager() {
+        clientModel = new ClientModel();
         setAsync(new ServerAsyncHelper(this));
         playerInfo = new PlayerInfo();
         facadeManager = new FacadeManager(clientModel);
