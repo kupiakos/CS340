@@ -6,6 +6,7 @@ import client.utils.ServerAsyncHelper;
 import shared.IServer;
 import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
+import shared.models.game.Player;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -44,6 +45,10 @@ public abstract class Controller implements IController, Observer {
 
     protected ClientModel getModel() {
         return getGameManager().getClientModel();
+    }
+
+    protected Player getPlayer() {
+        return getGameManager().getPlayer();
     }
 
     protected FacadeManager getFacade() {
