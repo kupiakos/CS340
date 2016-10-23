@@ -6,6 +6,7 @@ import shared.IServer;
 import shared.definitions.PlayerIndex;
 import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
+import shared.models.game.Player;
 import shared.models.games.PlayerInfo;
 
 import java.util.Observer;
@@ -65,6 +66,7 @@ public interface IGameManager {
 
     void setPlayerInfo(PlayerInfo playerInfo);
 
+    Player getPlayer();
 
     ServerAsyncHelper getAsync();
 

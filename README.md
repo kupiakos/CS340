@@ -31,13 +31,13 @@ Documentation".
 [audakel](https://github.com/audakel/CS340)
 [![Build Status](https://travis-ci.org/Audakel/CS340.svg?branch=master)](https://travis-ci.org/Audakel/CS340)
 
-[ldssky](https://github.com/audakel/CS340)
+[ldssky](https://github.com/ldssky/CS340)
 [![Build Status](https://travis-ci.org/ldssky/CS340.svg?branch=master)](https://travis-ci.org/ldssky/CS340)
 
-[kaiboy94](https://github.com/audakel/CS340)
+[kaiboy94](https://github.com/kaiboy94/CS340)
 [![Build Status](https://travis-ci.org/kaiboy94/CS340.svg?branch=master)](https://travis-ci.org/kaiboy94/CS340)
 
-[phhorton](https://github.com/audakel/CS340)
+[phhorton](https://github.com/phhorton/CS340)
 [![Build Status](https://travis-ci.org/phhorton/CS340.svg?branch=master)](https://travis-ci.org/phhorton/CS340)
 
 

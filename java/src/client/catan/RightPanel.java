@@ -11,6 +11,7 @@ import client.points.PointsView;
 import client.resources.ResourceBarController;
 import client.resources.ResourceBarElement;
 import client.resources.ResourceBarView;
+import org.jetbrains.annotations.NotNull;
 import shared.definitions.PieceType;
 
 import javax.swing.*;
@@ -72,14 +73,11 @@ public class RightPanel extends JPanel {
         this.add(resourceView);
     }
 
+    @NotNull
     private IAction createStartMoveAction(final IMapController mapController,
                                           final PieceType pieceType) {
 
-        return () -> {
-            boolean isFree = false;
-            boolean allowDisconnected = false;
-            mapController.startMove(pieceType, isFree, allowDisconnected);
-        };
+        return () -> mapController.startMove(pieceType);
     }
 
 }

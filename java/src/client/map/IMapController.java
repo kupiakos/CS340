@@ -90,14 +90,8 @@ public interface IMapController extends IController {
      * (road, city, or settlement)
      *
      * @param pieceType         The type of piece to be placed
-     * @param isFree            true if the piece should not cost the player resources, false
-     *                          otherwise. Set to true during initial setup and when a road
-     *                          building card is played.
-     * @param allowDisconnected true if the piece can be disconnected, false otherwise. Set to
-     *                          true only during initial setup.
      */
-    void startMove(PieceType pieceType, boolean isFree,
-                   boolean allowDisconnected);
+    void startMove(PieceType pieceType);
 
     /**
      * This method is called from the modal map overlay when the cancel button
