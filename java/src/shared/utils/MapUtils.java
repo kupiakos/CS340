@@ -111,15 +111,34 @@ public class MapUtils {
     }
 
     public static <K, V> AbstractMap.SimpleImmutableEntry<K, V> createEntry(K key, V value) {
-        return new AbstractMap.SimpleImmutableEntry<K, V>(key, value);
+        return new AbstractMap.SimpleImmutableEntry<>(key, value);
     }
 
     public static <K, V> Map<K, V> mergeMaps(Map<K, V> m1,
                                              Map<K, V> m2,
                                              BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
-        Map<K, V> result = new HashMap<K, V>(m1);
+        Map<K, V> result = new HashMap<>(m1);
         m2.forEach((k, v) -> result.merge(k, v, remappingFunction));
         return result;
     }
 
+    /**
+     * Computes the difference between two maps.
+     * <p>
+     * Not intended to be used with null keys or values.
+     *
+     * @param left  the map to treat as the "left" map for purposes of comparison
+     * @param right the map to treat as the "right" map for purposes of comparison
+     * @return the difference between the two maps
+     */
+    public static <K, V> Map<K, V> difference(Map<K, V> left, Map<K, V> right) {
+        Map<K, V> result = new HashMap<>();
+        left.entrySet().stream()
+                .filter(entry -> !(
+                        right.containsKey(entry.getKey()) &&
+                                Objects.equals(entry.getValue(), right.get(entry.getKey()))
+                ))
+                .forEach(entry -> result.put(entry.getKey(), entry.getValue()));
+        return result;
+    }
 }

@@ -76,6 +76,7 @@ public class RightPanel extends JPanel {
                                           final PieceType pieceType) {
 
         return () -> {
+            // TODO: Probably move this logic into one of the controllers
             boolean isFree = false;
             boolean allowDisconnected = false;
             mapController.startMove(pieceType, isFree, allowDisconnected);

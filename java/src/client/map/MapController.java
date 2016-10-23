@@ -2,13 +2,26 @@ package client.map;
 
 import client.base.Controller;
 import client.data.RobPlayerInfo;
-import shared.definitions.*;
-import shared.locations.*;
+import client.devcards.DevCardController;
+import client.resources.ResourceBarController;
+import shared.definitions.CatanColor;
+import shared.definitions.PieceType;
+import shared.definitions.PlayerIndex;
+import shared.locations.EdgeLocation;
+import shared.locations.HexLocation;
+import shared.locations.VertexLocation;
 import shared.models.game.ClientModel;
+import shared.models.game.GameMap;
+import shared.models.game.Player;
+import shared.models.moves.BuildCityAction;
 import shared.models.moves.BuildRoadAction;
+import shared.models.moves.BuildSettlementAction;
+import shared.models.moves.RobPlayerAction;
+import shared.utils.MapUtils;
 
-import javax.swing.*;
-import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -16,6 +29,8 @@ import java.util.Random;
  */
 public class MapController extends Controller implements IMapController {
 
+    private static final Logger LOGGER = Logger.getLogger(MapController.class.getSimpleName());
+    private GameMap prevMap = new GameMap();
     private IRobView robView;
 
     public MapController(IMapView view, IRobView robView) {
@@ -43,134 +58,235 @@ public class MapController extends Controller implements IMapController {
     }
 
     @Override
-    protected void updateFromModel(ClientModel model) {
-        Random rand = new Random();
+    protected synchronized void updateFromModel(ClientModel model) {
+        GameMap curMap = model.getMap();
+        if ((prevMap == curMap) || curMap.equals(prevMap)) {
+            LOGGER.fine("Skipping map update as it is the same");
+            return;
+        }
+        LOGGER.info("Updating map...");
+        IMapView view = getView();
 
-        for (int x = 0; x <= 3; ++x) {
+        // It seems that right now, there's no way to clear the MapView or
+        // remove any placed item. Not sure how e.g. communication errors
+        // are supposed to be handled properly with that.
 
-            int maxY = 3 - x;
-            for (int y = -3; y <= maxY; ++y) {
-                int r = rand.nextInt(HexType.values().length);
-                HexType hexType = HexType.values()[r];
-                HexLocation hexLoc = new HexLocation(x, y);
-                getView().addHex(hexLoc, hexType);
-                getView().placeRoad(new EdgeLocation(hexLoc, EdgeDirection.NorthWest),
-                        CatanColor.RED);
-                getView().placeRoad(new EdgeLocation(hexLoc, EdgeDirection.SouthWest),
-                        CatanColor.BLUE);
-                getView().placeRoad(new EdgeLocation(hexLoc, EdgeDirection.South),
-                        CatanColor.ORANGE);
-                getView().placeSettlement(new VertexLocation(hexLoc, VertexDirection.NorthWest), CatanColor.GREEN);
-                getView().placeCity(new VertexLocation(hexLoc, VertexDirection.NorthEast), CatanColor.PURPLE);
-            }
+        // This could possibly be made more efficient.
+        // The MapComponent is already *horrifically* inefficient, however
+        // (such as performing a complete redraw every time the mouse is moved)
 
-            if (x != 0) {
-                int minY = x - 3;
-                for (int y = minY; y <= 3; ++y) {
-                    int r = rand.nextInt(HexType.values().length);
-                    HexType hexType = HexType.values()[r];
-                    HexLocation hexLoc = new HexLocation(-x, y);
-                    getView().addHex(hexLoc, hexType);
-                    getView().placeRoad(new EdgeLocation(hexLoc, EdgeDirection.NorthWest),
-                            CatanColor.RED);
-                    getView().placeRoad(new EdgeLocation(hexLoc, EdgeDirection.SouthWest),
-                            CatanColor.BLUE);
-                    getView().placeRoad(new EdgeLocation(hexLoc, EdgeDirection.South),
-                            CatanColor.ORANGE);
-                    getView().placeSettlement(new VertexLocation(hexLoc, VertexDirection.NorthWest), CatanColor.GREEN);
-                    getView().placeCity(new VertexLocation(hexLoc, VertexDirection.NorthEast), CatanColor.PURPLE);
-                }
-            }
+        Map<PlayerIndex, CatanColor> colors = new HashMap<>();
+        for (Player p : model.getPlayers()) {
+            colors.put(p.getPlayerIndex(), p.getColor());
         }
 
-        PortType portType = PortType.BRICK;
-        getView().addPort(new EdgeLocation(new HexLocation(0, 3), EdgeDirection.North), portType);
-        getView().addPort(new EdgeLocation(new HexLocation(0, -3), EdgeDirection.South), portType);
-        getView().addPort(new EdgeLocation(new HexLocation(-3, 3), EdgeDirection.NorthEast), portType);
-        getView().addPort(new EdgeLocation(new HexLocation(-3, 0), EdgeDirection.SouthEast), portType);
-        getView().addPort(new EdgeLocation(new HexLocation(3, -3), EdgeDirection.SouthWest), portType);
-        getView().addPort(new EdgeLocation(new HexLocation(3, 0), EdgeDirection.NorthWest), portType);
+        LOGGER.fine("Updating hexes...");
+        MapUtils.difference(curMap.getHexes(), prevMap.getHexes())
+                .forEach((loc, hex) -> {
+                    LOGGER.finer(() -> "New hex: " + hex);
+                    view.addHex(loc, hex.getResource());
+                    view.addNumber(loc, hex.getNumber());
+                });
 
-        getView().placeRobber(new HexLocation(0, 0));
+        LOGGER.fine("Robber: " + curMap.getRobber());
+        view.placeRobber(curMap.getRobber());
 
-        getView().addNumber(new HexLocation(-2, 0), 2);
-        getView().addNumber(new HexLocation(-2, 1), 3);
-        getView().addNumber(new HexLocation(-2, 2), 4);
-        getView().addNumber(new HexLocation(-1, 0), 5);
-        getView().addNumber(new HexLocation(-1, 1), 6);
-        getView().addNumber(new HexLocation(1, -1), 8);
-        getView().addNumber(new HexLocation(1, 0), 9);
-        getView().addNumber(new HexLocation(2, -2), 10);
-        getView().addNumber(new HexLocation(2, -1), 11);
-        getView().addNumber(new HexLocation(2, 0), 12);
+        LOGGER.fine("Updating ports...");
+        MapUtils.difference(curMap.getPorts(), prevMap.getPorts())
+                .forEach((loc, port) -> {
+                    LOGGER.finer(() -> "New port: " + port);
+                    view.addPort(new EdgeLocation(port.getLocation(), port.getDirection()),
+                            port.getPortType());
+                });
 
+        LOGGER.fine("Updating settlements...");
+        MapUtils.difference(curMap.getSettlements(), prevMap.getSettlements())
+                .forEach((loc, index) -> {
+                    LOGGER.finer(() -> "New settlement at " + loc + " belonging to " + index);
+                    view.placeSettlement(loc, colors.get(index));
+                });
+
+
+        LOGGER.fine("Updating cities...");
+        MapUtils.difference(curMap.getCities(), prevMap.getCities())
+                .forEach((loc, index) -> {
+                    LOGGER.finer(() -> "New city at " + loc + " belonging to " + index);
+                    view.placeCity(loc, colors.get(index));
+                });
+
+        LOGGER.fine("Updating roads...");
+        MapUtils.difference(curMap.getRoads(), prevMap.getRoads())
+                .forEach((loc, index) -> {
+                    LOGGER.finer(() -> "New road at " + loc + " belonging to " + index);
+                    view.placeRoad(loc, colors.get(index));
+                });
+        prevMap = curMap;
     }
 
+    /**
+     * Called by {@link MapComponent#mouseAdapter} (and indirectly by {@link MapView#overlayController}
+     * to show visual cues when placing a road.
+     *
+     * @param edgeLoc The proposed road location
+     * @return true if the road can be placed at edgeLoc, false otherwise
+     */
     public boolean canPlaceRoad(EdgeLocation edgeLoc) {
+        // Needs more information than the edgeLoc!
+        // Also need info on whether it's the first few turns, etc.
         return true;
     }
 
+    /**
+     * @see #canPlaceRoad
+     */
     public boolean canPlaceSettlement(VertexLocation vertLoc) {
         return true;
     }
 
+    /**
+     * @see #canPlaceRoad
+     */
     public boolean canPlaceCity(VertexLocation vertLoc) {
         return true;
     }
 
+    /**
+     * @see #canPlaceRoad
+     */
     public boolean canPlaceRobber(HexLocation hexLoc) {
         return true;
     }
 
+    /**
+     * What happens to get to this point:
+     * <p>
+     * {@link #startMove} is called.
+     * <p>
+     * {@link MapView#startDrop} opens a
+     * new {@link MapView.MapOverlay}, which is a view.
+     * This is given the special controller {@link MapView#overlayController}.
+     * <p>
+     * It also keeps an additional internal {@link MapComponent}
+     * which is the half of the map view which actually handles user input.
+     * In {@link MapView.MapOverlay#MapOverlay}, it sets the {@link MapView.MapOverlay#mainMap}
+     * controller to the special controller.
+     * <p>
+     * The "place a road" modal is shown and the user can place one (or possibly cancel).
+     * Once a location is chosen and the user clicks,
+     * the {@link MapComponent#mouseAdapter}'s {@link java.awt.event.MouseAdapter#mouseClicked}
+     * calls its controller's {@link IMapController#placeRoad} function.
+     * In the end, this will call the special {@link MapView#overlayController}'s.
+     * <p>
+     * That then cancels any drops in the overlay, closes the modal,
+     * and uses its parent's view's {@link MapView#getController} to get the actual map controller,
+     * which then calls this function. Whew.
+     */
     public void placeRoad(EdgeLocation edgeLoc) {
-        getView().placeRoad(edgeLoc, CatanColor.ORANGE);
-        getFacade().getBuilding().buildRoad(
-                getModel().getPlayer(PlayerIndex.FIRST),
-                edgeLoc,
-                false,
-                false);
-        // TODO: Adjust with current player, additional settings
-        getAsync().runModelMethod(server::buildRoad, new BuildRoadAction(false, edgeLoc, PlayerIndex.FIRST))
-                .onError(e -> JOptionPane.showMessageDialog(null, "Failed to build Road: " + e.getMessage()))
-                .onSuccess(() -> System.out.println("Congratulations, I built a road!"))
+        getView().placeRoad(edgeLoc, getPlayer().getColor());
+//        boolean setupTurn = getModel().getTurnTracker().getStatus().
+        getAsync().runModelMethod(server::buildRoad,
+                new BuildRoadAction(false, edgeLoc, getPlayer().getPlayerIndex()))
+                .onError(e -> LOGGER.severe("Failed to place road: " + e.getMessage()))
                 .start();
     }
 
+    /**
+     * @see #placeRoad
+     */
     public void placeSettlement(VertexLocation vertLoc) {
-
-        getView().placeSettlement(vertLoc, CatanColor.ORANGE);
+        getView().placeSettlement(vertLoc, getPlayer().getColor());
+        getAsync().runModelMethod(server::buildSettlement,
+                new BuildSettlementAction(false, vertLoc, getPlayer().getPlayerIndex()))
+                .onError(e -> LOGGER.severe("Failed to place settlement: " + e.getMessage()))
+                .start();
     }
 
+    /**
+     * @see #placeRoad
+     */
     public void placeCity(VertexLocation vertLoc) {
-
-        getView().placeCity(vertLoc, CatanColor.ORANGE);
+        getView().placeCity(vertLoc, getPlayer().getColor());
+        getAsync().runModelMethod(server::buildCity,
+                new BuildCityAction(vertLoc, getPlayer().getPlayerIndex()))
+                .onError(e -> LOGGER.severe("Failed to place city: " + e.getMessage()))
+                .start();
     }
 
+    /**
+     * This is only for visuals.
+     * Since placing the robber and stealing is a single call to the server,
+     * actually placing the robber is done in robPlayer.
+     *
+     * @see #placeRoad
+     */
     public void placeRobber(HexLocation hexLoc) {
-
         getView().placeRobber(hexLoc);
-
         getRobView().showModal();
     }
 
+    /**
+     * This is called by other controllers, which must call the view.
+     * <p>
+     * User selects a resource card in the {@link client.resources.ResourceBarView}.
+     * <p>
+     * The equivalent function e.g. {@link ResourceBarController#buildRoad} is called.
+     * {@link client.resources.ResourceBarController#executeElementAction}
+     * <p>
+     * The action created by {@link client.catan.RightPanel#RightPanel} and
+     * {@link client.catan.RightPanel#createStartMoveAction} is called.
+     * <p>
+     * This function is called.
+     * <p>
+     * How startMove with robbing is called is unknown.
+     * It looks like it may be completely controlled by the MapController possibly.
+     * Somehow the {@link client.roll.RollController} will need to be involved.
+     */
     public void startMove(PieceType pieceType, boolean isFree, boolean allowDisconnected) {
+        // There doesn't seem to be a known way to transfer the parameters so placeCity, etc. are called correctly.
+        // Class fields could work?
         getView().startDrop(pieceType, CatanColor.ORANGE, true);
     }
 
+    /**
+     * User presses cancel in the {@link client.map.MapView.MapOverlay}
+     * {@link client.map.MapView#overlayController} cancelMove
+     * this function
+     */
     public void cancelMove() {
-
+        // Unlike startMove, this is called *by* the view.
     }
 
+    /**
+     * {@link client.devcards.PlayDevCardView#btnGrpPnlListener}
+     * plays a soldier card when selected in the modal.
+     * <p>
+     * It calls {@link DevCardController#playSoldierCard},
+     * which then calls this function with an action created
+     * in {@link client.catan.RightPanel#RightPanel}.
+     */
     public void playSoldierCard() {
 
     }
 
+    /**
+     * @see #playSoldierCard
+     */
     public void playRoadBuildingCard() {
 
     }
 
+    /**
+     * TODO: More research
+     * @see RobView#actionListener
+     */
     public void robPlayer(RobPlayerInfo victim) {
-
+        getAsync().runModelMethod(server::robPlayer,
+                new RobPlayerAction(
+                        getModel().getMap().getRobber(),
+                        getPlayer().getPlayerIndex(),
+                        victim.getPlayerIndex().index()))
+                .onError(e -> LOGGER.severe("Failed to rob player: " + e.getMessage()))
+                .start();
     }
 
 }
