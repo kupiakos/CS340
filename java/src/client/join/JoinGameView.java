@@ -1,9 +1,9 @@
 package client.join;
 
 import client.base.OverlayView;
-import client.data.GameInfo;
-import client.data.PlayerInfo;
 import shared.models.game.Player;
+import shared.models.games.GameInfo;
+import shared.models.games.PlayerInfo;
 
 import javax.swing.*;
 import java.awt.*;

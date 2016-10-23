@@ -43,8 +43,8 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public client.data.GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException {
-        return new client.data.GameInfo[0];
+    public GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException {
+        return new GameInfo[0];
     }
 
     /**

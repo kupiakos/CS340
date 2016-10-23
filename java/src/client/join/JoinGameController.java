@@ -2,16 +2,19 @@ package client.join;
 
 import client.base.Controller;
 import client.base.IAction;
-import client.data.GameInfo;
 import client.game.GameManager;
 import client.misc.IMessageView;
 import client.server.ServerProxy;
 import shared.definitions.CatanColor;
+import shared.models.game.Player;
 import shared.models.games.CreateGameRequest;
+import shared.models.games.GameInfo;
 import shared.models.games.JoinGameRequest;
+import shared.models.games.PlayerInfo;
 import shared.models.user.Credentials;
 
 import javax.swing.*;
+import java.util.List;
 
 
 /**
@@ -166,7 +169,6 @@ public class JoinGameController extends Controller implements IJoinGameControlle
         JoinGameRequest joinGameRequest = new JoinGameRequest(color.toString().toLowerCase(), selectedGame.getId());
         getAsync().runMethod(server::joinGame, joinGameRequest)
                 .onSuccess(() -> {
-                    getGameManager().getPlayerInfo().setPlayerIndex(selectedGame.getPlayers().size());
                     getGameManager().getPlayerInfo().setColor(color);
                     getJoinGameView().closeModal();
                     joinAction.execute();

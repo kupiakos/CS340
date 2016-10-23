@@ -34,7 +34,7 @@ public class GameHistoryController extends Controller implements IGameHistoryCon
         entries.add(new LogEntry(CatanColor.BROWN, "This is a brown message"));
 
         getView().setEntries(entries);
-        updateFromModel(getModel());
+        //updateFromModel(getModel());
     }
 
     @Override

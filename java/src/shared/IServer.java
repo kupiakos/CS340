@@ -50,7 +50,7 @@ public interface IServer {
      * @pre None
      * @post None
      */
-    client.data.GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException;
+    GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException;
 
     /**
      * Creates a new game on the server

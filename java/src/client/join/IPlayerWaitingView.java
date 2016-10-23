@@ -1,7 +1,7 @@
 package client.join;
 
 import client.base.IOverlayView;
-import client.data.PlayerInfo;
+import shared.models.games.PlayerInfo;
 
 /**
  * Interface for the player waiting view, which is displayed when the user is

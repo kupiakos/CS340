@@ -27,7 +27,7 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 
     public TurnTrackerController(ITurnTrackerView view) {
         super(view);
-        initFromModel();
+        //initFromModel();
         GameManager.getGame().addObserver(this);
 
     }
