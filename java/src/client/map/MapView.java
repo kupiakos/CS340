@@ -78,8 +78,7 @@ public class MapView extends PanelView implements IMapView {
         }
 
         @Override
-        public void startMove(PieceType pieceType, boolean isFree,
-                              boolean allowDisconnected) {
+        public void startMove(PieceType pieceType) {
             assert false;
         }
 
