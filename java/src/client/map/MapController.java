@@ -12,6 +12,7 @@ import shared.locations.HexLocation;
 import shared.locations.VertexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.GameMap;
+import shared.models.game.Hex;
 import shared.models.game.Player;
 import shared.models.moves.BuildCityAction;
 import shared.models.moves.BuildRoadAction;
@@ -19,7 +20,9 @@ import shared.models.moves.BuildSettlementAction;
 import shared.models.moves.RobPlayerAction;
 import shared.utils.MapUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -40,8 +43,8 @@ public class MapController extends Controller implements IMapController {
         observeClientModel();
     }
 
+    @Override
     public IMapView getView() {
-
         return (IMapView) super.getView();
     }
 
@@ -130,31 +133,53 @@ public class MapController extends Controller implements IMapController {
      * @param edgeLoc The proposed road location
      * @return true if the road can be placed at edgeLoc, false otherwise
      */
+    @Override
     public boolean canPlaceRoad(EdgeLocation edgeLoc) {
         // Needs more information than the edgeLoc!
         // Also need info on whether it's the first few turns, etc.
-        return true;
+        return getModel().getMap().canAddRoad(
+                edgeLoc,
+                getPlayer().getPlayerIndex(),
+                getFacade().getTurn().isSetup()
+        );
     }
 
     /**
      * @see #canPlaceRoad
      */
+    @Override
     public boolean canPlaceSettlement(VertexLocation vertLoc) {
-        return true;
+        // GameMap's canAddSettlement as this function should not
+        // have been able to be called without affording resources, etc.
+        return getModel().getMap().canAddSettlement(
+                vertLoc,
+                getPlayer().getPlayerIndex(),
+                getFacade().getTurn().isSetup()
+        );
     }
 
     /**
      * @see #canPlaceRoad
      */
+    @Override
     public boolean canPlaceCity(VertexLocation vertLoc) {
-        return true;
+        return getModel().getMap().canUpgradeSettlement(
+                vertLoc,
+                getPlayer().getPlayerIndex()
+        );
     }
 
     /**
      * @see #canPlaceRoad
      */
+    @Override
     public boolean canPlaceRobber(HexLocation hexLoc) {
-        return true;
+        // TODO: Switch this to robber facade after fixes
+        Hex targetHex = getModel().getMap().getHex(hexLoc);
+        return (targetHex != null &&
+                targetHex.getResource().isLand() &&
+                !hexLoc.equals(getModel().getMap().getRobber())
+        );
     }
 
     /**
@@ -181,11 +206,15 @@ public class MapController extends Controller implements IMapController {
      * and uses its parent's view's {@link MapView#getController} to get the actual map controller,
      * which then calls this function. Whew.
      */
+    @Override
     public void placeRoad(EdgeLocation edgeLoc) {
         getView().placeRoad(edgeLoc, getPlayer().getColor());
-//        boolean setupTurn = getModel().getTurnTracker().getStatus().
+//        getFacade().getBuilding().buildRoad(getPlayer(), edgeLoc, );
         getAsync().runModelMethod(server::buildRoad,
-                new BuildRoadAction(false, edgeLoc, getPlayer().getPlayerIndex()))
+                new BuildRoadAction(
+                        getFacade().getTurn().isSetup(),
+                        edgeLoc,
+                        getPlayer().getPlayerIndex()))
                 .onError(e -> LOGGER.severe("Failed to place road: " + e.getMessage()))
                 .start();
     }
@@ -193,10 +222,14 @@ public class MapController extends Controller implements IMapController {
     /**
      * @see #placeRoad
      */
+    @Override
     public void placeSettlement(VertexLocation vertLoc) {
         getView().placeSettlement(vertLoc, getPlayer().getColor());
         getAsync().runModelMethod(server::buildSettlement,
-                new BuildSettlementAction(false, vertLoc, getPlayer().getPlayerIndex()))
+                new BuildSettlementAction(
+                        getFacade().getTurn().isSetup(),
+                        vertLoc,
+                        getPlayer().getPlayerIndex()))
                 .onError(e -> LOGGER.severe("Failed to place settlement: " + e.getMessage()))
                 .start();
     }
@@ -204,6 +237,7 @@ public class MapController extends Controller implements IMapController {
     /**
      * @see #placeRoad
      */
+    @Override
     public void placeCity(VertexLocation vertLoc) {
         getView().placeCity(vertLoc, getPlayer().getColor());
         getAsync().runModelMethod(server::buildCity,
@@ -213,15 +247,35 @@ public class MapController extends Controller implements IMapController {
     }
 
     /**
-     * This is only for visuals.
      * Since placing the robber and stealing is a single call to the server,
-     * actually placing the robber is done in robPlayer.
+     * all server communication is done in {@link #robPlayer}.
+     * <p>
+     * We need to open the robber modal to choose what to steal.
      *
      * @see #placeRoad
      */
+    @Override
     public void placeRobber(HexLocation hexLoc) {
+        getFacade().getTurn().startRobbing();
+        getModel().getMap().setRobber(hexLoc);
         getView().placeRobber(hexLoc);
-        getRobView().showModal();
+
+        List<RobPlayerInfo> robPlayerInfos = new ArrayList<>();
+        for (Player p : getModel().getPlayers()) {
+            if (p == null ||
+                    p.getPlayerIndex() == getPlayer().getPlayerIndex() ||
+                    p.getResources().getTotal() == 0) {
+                continue;
+            }
+            robPlayerInfos.add(new RobPlayerInfo(p));
+        }
+        // TODO: Discover how moving the robber with no robbing candidates is supposed to work.
+        if (robPlayerInfos.size() != 0) {
+            getRobView().setPlayers(
+                    robPlayerInfos.toArray(new RobPlayerInfo[robPlayerInfos.size()])
+            );
+            getRobView().showModal();
+        }
     }
 
     /**
@@ -241,10 +295,11 @@ public class MapController extends Controller implements IMapController {
      * It looks like it may be completely controlled by the MapController possibly.
      * Somehow the {@link client.roll.RollController} will need to be involved.
      */
-    public void startMove(PieceType pieceType, boolean isFree, boolean allowDisconnected) {
+    @Override
+    public void startMove(PieceType pieceType) {
         // There doesn't seem to be a known way to transfer the parameters so placeCity, etc. are called correctly.
         // Class fields could work?
-        getView().startDrop(pieceType, CatanColor.ORANGE, true);
+        getView().startDrop(pieceType, getPlayer().getColor(), true);
     }
 
     /**
@@ -252,6 +307,7 @@ public class MapController extends Controller implements IMapController {
      * {@link client.map.MapView#overlayController} cancelMove
      * this function
      */
+    @Override
     public void cancelMove() {
         // Unlike startMove, this is called *by* the view.
     }
@@ -263,22 +319,37 @@ public class MapController extends Controller implements IMapController {
      * It calls {@link DevCardController#playSoldierCard},
      * which then calls this function with an action created
      * in {@link client.catan.RightPanel#RightPanel}.
+     * <p>
+     * Robber placement should be initiated.
      */
+    @Override
     public void playSoldierCard() {
-
+        getView().startDrop(PieceType.ROBBER, getPlayer().getColor(), false);
     }
 
     /**
      * @see #playSoldierCard
      */
+    @Override
     public void playRoadBuildingCard() {
-
+        // TODO: Identify situations when requiring placing two roads is impossible, and preclude card.
+        // TODO: Identify if startDrop (OverlayView.showModal) is blocking or not.
+        getView().startDrop(PieceType.ROAD, getPlayer().getColor(), false);
+        getView().startDrop(PieceType.ROAD, getPlayer().getColor(), false);
     }
 
     /**
-     * TODO: More research
+     * First, {@link #placeRobber} is called to physically move the robber.
+     * Then, the robber view (modal) is shown.
+     * <p>
+     * When a player to rob is selected with a button click, this is called.
+     * <p>
+     * If this is being interpreted correctly,
+     * the new robber location has already been chosen at this point.
+     *
      * @see RobView#actionListener
      */
+    @Override
     public void robPlayer(RobPlayerInfo victim) {
         getAsync().runModelMethod(server::robPlayer,
                 new RobPlayerAction(
