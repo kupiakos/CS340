@@ -29,7 +29,6 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 
     public TurnTrackerController(ITurnTrackerView view) {
         super(view);
-        initFromModel();
         GameManager.getGame().addObserver(this);
 
     }
@@ -70,20 +69,13 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
      * Gets the correct color of the players whos turn it is, also inits all the players
      */
     private void initFromModel() {
-        CatanColor color;
-        List<Player> players = null;
-        try{
-            color = GameManager.getGame().getPlayerInfo().getColor();
-            getView().setLocalPlayerColor(color);
-            players = GameManager.getGame().getClientModel().getPlayers();
+        List<Player> players = GameManager.getGame().getClientModel().getPlayers();
+        CatanColor color = GameManager.getGame().getPlayerInfo().getColor();
+        getView().setLocalPlayerColor(color);
 
-            for (Player p : players) {
-                if (p == null) continue;
-                getView().initializePlayer(p.getPlayerID(), p.getName(), p.getColor());
-            }
-        }
-        catch (Exception e){
-
+        for (Player p : players) {
+            if (p == null) continue;
+            getView().initializePlayer(p.getPlayerID(), p.getName(), p.getColor());
         }
 
     }
@@ -98,6 +90,8 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
      */
     @Override
     public void update(Observable observable, Object o) {
+        initFromModel();
+
         ClientModel cm = GameManager.getGame().getClientModel();
         TurnTracker tt = GameManager.getGame().getClientModel().getTurnTracker();
 
