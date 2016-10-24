@@ -89,7 +89,7 @@ public interface IMapController extends IController {
      * This method is called when the user requests to place a piece on the map
      * (road, city, or settlement)
      *
-     * @param pieceType         The type of piece to be placed
+     * @param pieceType The type of piece to be placed
      */
     void startMove(PieceType pieceType);
 
