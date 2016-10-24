@@ -73,7 +73,7 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 
         for (Player p : players) {
             if (p == null) continue;
-            getView().initializePlayer(p.getPlayerID(), p.getName(), p.getColor());
+            getView().initializePlayer(p.getPlayerIndex().index(), p.getName(), p.getColor());
         }
 
     }
