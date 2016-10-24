@@ -40,7 +40,7 @@ public class Hex {
     /**
      * @param number   What number is on this tile. It's omitted if this is a desert hex.
      * @param location The location
-     * @param resource What resource this tile gives - it's only here if the tile is not desert.
+     * @param resource What resource this tile gives.
      */
     public Hex(int number, HexLocation location, HexType resource) {
         this.number = number;
@@ -87,14 +87,14 @@ public class Hex {
     }
 
     /**
-     * @return What resource this tile gives - it's only here if the tile is not desert.
+     * @return What resource this tile gives.
      */
     public HexType getResource() {
         return resource;
     }
 
     /**
-     * @param resource What resource this tile gives - it's only here if the tile is not desert.
+     * @param resource What resource this tile gives.
      */
     public void setResource(@NotNull HexType resource) {
         this.resource = resource;

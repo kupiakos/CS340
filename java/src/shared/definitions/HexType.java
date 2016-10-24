@@ -26,7 +26,12 @@ public enum HexType {
     DESERT(null),
 
     @SerializedName("water")
-    WATER(null);
+    WATER(null) {
+        @Override
+        public boolean isLand() {
+            return false;
+        }
+    };
 
     private ResourceType resource;
 
@@ -44,6 +49,10 @@ public enum HexType {
      */
     public ResourceType getResource() {
         return this.resource;
+    }
+
+    public boolean isLand() {
+        return true;
     }
 }
 

@@ -1,5 +1,7 @@
 package client.data;
 
+import shared.definitions.CatanColor;
+import shared.models.game.Player;
 import shared.models.games.PlayerInfo;
 
 /**
@@ -15,11 +17,19 @@ import shared.models.games.PlayerInfo;
  * </ul>
  */
 public class RobPlayerInfo extends PlayerInfo {
-
     private int numCards;
 
     public RobPlayerInfo() {
         super();
+    }
+
+    public RobPlayerInfo(CatanColor color, String name, int id, int numCards) {
+        super(color, name, id);
+        setNumCards(numCards);
+    }
+
+    public RobPlayerInfo(Player p) {
+        this(p.getColor(), p.getName(), p.getPlayerID(), p.getResources().getTotal());
     }
 
     public int getNumCards() {

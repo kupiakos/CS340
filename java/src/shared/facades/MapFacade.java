@@ -16,7 +16,7 @@ import shared.models.game.Player;
 public class MapFacade extends AbstractFacade {
 
     private int longestRoadLength;
-    private PlayerIndex logestRoadOwner;
+    private PlayerIndex longestRoadOwner;
 
     /**
      * Constructor. Requires a valid game model to work.
@@ -79,10 +79,10 @@ public class MapFacade extends AbstractFacade {
             int roadSize = getMap().getPlayerLongestRoad(p.getPlayerIndex());
             if (roadSize > getLongestRoadLength()) {
                 longestRoadLength = roadSize;
-                logestRoadOwner = p.getPlayerIndex();
+                longestRoadOwner = p.getPlayerIndex();
             }
         }
-        return getLogestRoadOwner();
+        return getLongestRoadOwner();
     }
 
     /**
@@ -168,11 +168,11 @@ public class MapFacade extends AbstractFacade {
         return getModel().getMap();
     }
 
-    public int getLongestRoadLength() {
+    private int getLongestRoadLength() {
         return longestRoadLength;
     }
 
-    public PlayerIndex getLogestRoadOwner() {
-        return logestRoadOwner;
+    private PlayerIndex getLongestRoadOwner() {
+        return longestRoadOwner;
     }
 }
