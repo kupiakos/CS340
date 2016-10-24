@@ -2,6 +2,7 @@ package client.roll;
 
 import client.base.Controller;
 import shared.models.game.ClientModel;
+import shared.models.moves.RollNumberAction;
 
 
 /**
@@ -20,11 +21,28 @@ public class RollController extends Controller implements IRollController {
     public RollController(IRollView view, IRollResultView resultView) {
         super(view);
         setResultView(resultView);
+        initFromModel();
         observeClientModel();
+    }
+
+    private void initFromModel() {
+        updateFromModel(getModel());
     }
 
     @Override
     protected void updateFromModel(ClientModel model) {
+        //String beginTimerMessage = "Rolling automatically in... " + 5 + " seconds";
+//        getRollView().setMessage(beginTimerMessage);
+//        getRollView().showModal();
+//
+//        int timer = 5;
+//        for(int i = 0; i < timer; i++) { //implement timer
+//            String message = "Rolling automatically in... " + timer + " seconds";
+//            getRollView().setMessage(message);
+//        }
+//
+//            getRollView().closeModal();
+//        rollDice();
     }
 
     public IRollResultView getResultView() {
@@ -41,26 +59,16 @@ public class RollController extends Controller implements IRollController {
 
     @Override
     public void rollDice() {
-//        String beginTimerMessage = "Rolling automatically in... " + 5 + " seconds";
-//        getRollView().setMessage(beginTimerMessage);
-//        getRollView().showModal();
-//
-//        int timer = 5;
-//        for(int i = 0; i < timer; i++) { //implement timer
-//            String message = "Rolling automatically in... " + timer + " seconds";
-//            getRollView().setMessage(message);
-//        }
-//
-//        if(timer == 0) {
-//            getRollView().closeModal();
-
-        int rollValue = 0;
         int random1 = 1 + (int) (Math.random() * ((6 - 1) + 1));
         int random2 = 1 + (int) (Math.random() * ((6 - 1) + 1));
-        rollValue = random1 + random2;
+        int rollValue = random1 + random2;
+
+        RollNumberAction roll = new RollNumberAction(rollValue, getPlayer().getPlayerIndex());
+        getAsync().runModelMethod(server::rollNumber, roll)
+                .onError(Throwable::printStackTrace)
+                .start();
         getResultView().setRollValue(rollValue);
         getResultView().showModal();
-//        }
     }
 
 }
