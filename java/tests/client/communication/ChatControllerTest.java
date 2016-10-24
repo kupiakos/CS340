@@ -1,40 +1,72 @@
 package client.communication;
 
-import client.game.GameManager;
 import client.game.IGameManager;
+import client.game.MockGM;
 import client.server.MockCM;
 import client.server.MockProxy;
-import org.junit.Assert;
+import client.utils.MockServerAsyncHelper;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import shared.facades.FacadeManager;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import shared.definitions.CatanColor;
+import shared.definitions.PlayerIndex;
+import shared.facades.ChatFacade;
 import shared.models.game.ClientModel;
 import shared.models.game.MessageEntry;
+import shared.models.game.MessageList;
+import shared.models.moves.SendChatAction;
 
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * @author audakel on 10/5/16.
  */
 public class ChatControllerTest {
+
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+
+    @Spy
+    private MockServerAsyncHelper async;
+
+    private MockProxy mockProxy;
+
+    @Mock
+    private ChatFacade chatFacade;
+
+    @Mock
+    private IChatView chatView;
+
     private IGameManager gm;
     private ChatController cc;
-    private int len;
-    private FacadeManager facades;
+
+    private ClientModel model;
 
 
     @Before
     public void setUp() throws Exception {
-        ClientModel model = MockCM.fullJsonModel();
-        gm = GameManager.getGame();
+        model = MockCM.fullJsonModel();
+        model.getTurnTracker().setCurrentTurn(PlayerIndex.FIRST);
+        gm = new MockGM();
+        gm.setAsync(async);
         gm.setClientModel(model);
-        gm.setServer(new MockProxy());
-        facades = gm.getFacade();
-        len = facades.getClientModel().getChat().getLines().size();
-        cc = new ChatController(new ChatView());
+        mockProxy = new MockProxy();
+        gm.setServer(mockProxy);
+        gm.getFacade().setChat(chatFacade);
+        cc = new ChatController(chatView);
         cc.setServer(gm.getServer());
+        cc.setGameManager(gm);
     }
 
     // TODO: Identify cause of difference in IntelliJ vs. Ant.
@@ -47,24 +79,35 @@ public class ChatControllerTest {
     @Test
     public void sendMessage() {
         String m = "Good message";
-        assertEquals(len, facades.getClientModel().getChat().getLines().size());
-        cc.setGameManager(gm);
+        when(chatFacade.canSendChat(any(SendChatAction.class))).thenReturn(true);
         cc.sendMessage(m);
-        // TODO: Multithreaded testing
-//        List<MessageEntry> clist = gm.getClientModel().getChat().getLines();
-//        assertNotEquals(len, clist.size());
-//        MessageEntry c5 = clist.get(clist.size() - 1);
-//        assertEquals(m, c5.getMessage());
+        verify(async).runModelMethod(
+                // any() is used as you can't properly compare lambdas
+                any(),
+                eq(new SendChatAction(m, PlayerIndex.FIRST)));
+    }
+
+    @Test
+    public void sendBadMessage() {
+        // We're not testing the ChatFacade code, we're unit testing sendMessage.
+        String m = "Bad Message";
+        when(chatFacade.canSendChat(any(SendChatAction.class))).thenReturn(false);
+        cc.sendMessage(m);
+        verifyZeroInteractions(async);
     }
 
     @Test
     public void update() throws Exception {
-//        cc.sendMessage("uno");
-//        cc.sendMessage("dos");
-//        cc.sendMessage("tres");
-//        cc.update(new Observable(), null);
-
-
+        List<LogEntry> entries = Arrays.asList(
+                new LogEntry(CatanColor.PURPLE, "hello"),
+                new LogEntry(CatanColor.GREEN, "world")
+        );
+        model.setChat(new MessageList(Arrays.asList(
+                new MessageEntry("alyssa", "hello"),
+                new MessageEntry("Quinn", "world")
+        )));
+        cc.updateFromModel(model);
+        verify(chatView).setEntries(entries);
     }
 
 }

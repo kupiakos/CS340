@@ -17,7 +17,13 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 
     public ResourceBarController(IResourceBarView view) {
         super(view);
+        initFromModel();
+        observeClientModel();
         elementActions = new HashMap<ResourceBarElement, IAction>();
+    }
+
+    protected void initFromModel() {
+        updateFromModel(getModel());
     }
 
     @Override
@@ -38,7 +44,7 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 
     @Override
     public void buildRoad() {
-        executeElementAction(ResourceBarElement.ROAD); //calls mapcontroller.placeRoad
+        executeElementAction(ResourceBarElement.ROAD);
     }
 
     /**
@@ -47,6 +53,7 @@ public class ResourceBarController extends Controller implements IResourceBarCon
      */
     @Override
     public void buildSettlement() {
+
         executeElementAction(ResourceBarElement.SETTLEMENT);
     }
 
@@ -73,7 +80,6 @@ public class ResourceBarController extends Controller implements IResourceBarCon
     public void playCard() {
         executeElementAction(ResourceBarElement.PLAY_CARD);
     }
-    //play roadBuilder
 
     private void executeElementAction(ResourceBarElement element) {
 
@@ -89,39 +95,44 @@ public class ResourceBarController extends Controller implements IResourceBarCon
      */
     @Override
     public void updateFromModel(ClientModel model) {
-//		int settlements = currentPlayer.getSettlements();
+
+//        Player player = ;
+//        DevCardFacade devCardFacade = getFacade().getDevCards();
+//        ResourcesFacade resourcesFacade = getFacade().getResources();
+//
+//        int brick = player.getResources().getBrick();
+//        getView().setElementAmount(ResourceBarElement.BRICK, brick);
+//        int ore = player.getResources().getOre();
+//        getView().setElementAmount(ResourceBarElement.ORE, ore);
+//        int sheep = player.getResources().getSheep();
+//        getView().setElementAmount(ResourceBarElement.SHEEP, sheep);
+//        int wood = player.getResources().getWood();
+//        getView().setElementAmount(ResourceBarElement.WOOD, wood);
+//        int wheat = player.getResources().getWheat();
+//        getView().setElementAmount(ResourceBarElement.WHEAT, wheat);
+//
+//        int roads = player.getRoads();
+//        getView().setElementAmount(ResourceBarElement.ROAD, roads);
+//        getView().setElementEnabled(ResourceBarElement.ROAD, resourcesFacade.canPurchaseItem(player, PurchaseType.ROAD));
+//
+//        int settlements = player.getSettlements();
 //		getView().setElementAmount(ResourceBarElement.SETTLEMENT, settlements);
-//		if(buildingFacade.canBuildSettlement(currentPlayer,) && its the current person's turn') {
-//			getView().setElementEnabled(ResourceBarElement.SETTLEMENT, true);
-//		}
-//		else {
-//			getView().setElementEnabled(ResourceBarElement.SETTLEMENT, false);
-//		}
+//        getView().setElementEnabled(ResourceBarElement.SETTLEMENT, resourcesFacade.canPurchaseItem(player, PurchaseType.SETTLEMENT));
 //
-//		int cities = currentPlayer.getCities();
+//		int cities = player.getCities();
 //		getView().setElementAmount(ResourceBarElement.CITY, cities);
-//		if(buildingFacade.canBuildCity(currentPlayer, ) && its the current person's turn') {
-//			getView().setElementEnabled(ResourceBarElement.CITY, true);
-//		}
-//		else {
-//			getView().setElementEnabled(ResourceBarElement.CITY, false);
-//		}
-//
-//		if(its the players turn){
+//        getView().setElementEnabled(ResourceBarElement.CITY, resourcesFacade.canPurchaseItem(player, PurchaseType.CITY));
+
+//        if(its the players turn){
 //			getView().setElementEnabled(ResourceBarElement.PLAY_CARD, true);
 //		}
 //		else {
 //			getView().setElementEnabled(ResourceBarElement.PLAY_CARD, false);
 //		}
 //		//get old or new dev cards?
-//		int roadBuilder = currentPlayer.getNewDevCards().getRoadBuilding();
-//		getView().setElementAmount(ResourceBarElement, roadBuilder)
-//		if(devCardFacade.canUseRoadBuildingCard(currentPlayer)) {
-//			getView().setElementEnabled(ResourceBarElement, true);
-//		}
-//		else {
-//			getView().setElementEnabled(ResourceBarElement., false);
-//		}
+//		int roadBuilder = player.getNewDevCards().getRoadBuilding();
+//		getView().setElementAmount(ResourceBarElement.ROAD, roadBuilder);
+//        getView().setElementEnabled(ResourceBarElement.CITY, resourcesFacade.canPurchaseItem(player, PurchaseType.CITY));
 
     }
 }
