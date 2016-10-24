@@ -1,6 +1,7 @@
 package client.join;
 
 import client.base.Controller;
+import client.poller.Poller;
 import client.server.ServerProxy;
 import shared.definitions.AIType;
 import shared.models.game.AddAIRequest;
@@ -22,8 +23,6 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
 
     public PlayerWaitingController(IPlayerWaitingView view) {
         super(view);
-        setServer(new ServerProxy());
-        observeClientModel();
     }
 
     @Override
@@ -34,6 +33,9 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
 
     @Override
     public void start() {
+        setServer(getGameManager().getServer());
+        getGameManager().setPoller(new Poller());
+        //getGameManager().getPoller().startPoller();
         ActionListener pollGames = e -> updatePlayers();
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, pollGames);
         updatePlayers();
@@ -51,6 +53,7 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
         getAsync().runMethod(server::listOfGames)
                 .onSuccess(games -> SwingUtilities.invokeLater(() -> {
                     GameInfo game = games[JoinGameController.selectedGame.getId()];
+                    JoinGameController.selectedGame = game;
                     PlayerInfo[] playerArray = Arrays.copyOf(game.getPlayers().toArray(), game.getPlayers().size(), PlayerInfo[].class);
                     getView().setPlayers(playerArray);
                     if (playerArray.length >= 4) {
@@ -79,11 +82,6 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
                 }))
                 .onError(e -> displayError("Error adding AI", e.getMessage()))
                 .start();
-    }
-
-    @Override
-    protected void updateFromModel(ClientModel cm) {
-        updatePlayers();
     }
 
     private void displayError(String title, String message) {

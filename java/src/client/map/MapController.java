@@ -39,7 +39,6 @@ public class MapController extends Controller implements IMapController {
     public MapController(IMapView view, IRobView robView) {
         super(view);
         setRobView(robView);
-        initFromModel();
         observeClientModel();
     }
 

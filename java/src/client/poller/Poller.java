@@ -62,7 +62,7 @@ public class Poller {
         // If new model
         if (response != null) {
             // Update ours
-            gm.setClientModel(response);
+            gm.updateGameManager(response);
         }
     }
 

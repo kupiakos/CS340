@@ -25,7 +25,6 @@ public class LoginController extends Controller implements ILoginController {
     public LoginController(ILoginView view, IMessageView messageView) {
 
         super(view);
-        this.server = new ServerProxy();
         this.messageView = messageView;
     }
 
@@ -61,6 +60,8 @@ public class LoginController extends Controller implements ILoginController {
 
     @Override
     public void start() {
+        getGameManager().setServer(new ServerProxy());
+        this.server = getGameManager().getServer();
         getLoginView().showModal();
     }
 

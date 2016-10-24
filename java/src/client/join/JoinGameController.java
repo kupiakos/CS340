@@ -5,6 +5,7 @@ import client.base.IAction;
 import client.misc.IMessageView;
 import client.server.ServerProxy;
 import shared.definitions.CatanColor;
+import shared.definitions.PlayerIndex;
 import shared.models.games.CreateGameRequest;
 import shared.models.games.GameInfo;
 import shared.models.games.JoinGameRequest;
@@ -42,7 +43,6 @@ public class JoinGameController extends Controller implements IJoinGameControlle
         setNewGameView(newGameView);
         setSelectColorView(selectColorView);
         setMessageView(messageView);
-        setServer(new ServerProxy());
         selectedGame = null;
     }
 
@@ -103,6 +103,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 
     @Override
     public void start() {
+        setServer(getGameManager().getServer());
         ActionListener pollGames = e -> reloadGamesList();
         mTimer = new javax.swing.Timer(SERVER_CONTACT_INTERVAL, pollGames);
         getJoinGameView().showModal();
@@ -175,6 +176,16 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                 .onSuccess(() -> {
                     getGameManager().getPlayerInfo().setColor(color);
                     System.out.println(selectedGame.getPlayers().size());
+                    for (int i = 0; i < selectedGame.getPlayers().size(); i++) {
+                        if (selectedGame.getPlayers().get(i).getId() == getGameManager().getPlayerInfo().getId()) {
+                            getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(i));
+                            getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(i));
+                            break;
+                        } else if (i == selectedGame.getPlayers().size() - 1) {
+                            getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(i + 1));
+                            getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(i+1));
+                        }
+                    }
                     mTimer.stop();
                     getSelectColorView().closeModal();
                     getJoinGameView().closeModal();
