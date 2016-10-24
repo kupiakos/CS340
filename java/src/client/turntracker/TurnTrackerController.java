@@ -12,6 +12,7 @@ import shared.models.moves.FinishMoveAction;
 
 import javax.naming.CommunicationException;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import static shared.definitions.Constants.END_GAME_MSG;
@@ -113,9 +114,9 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
             getView().updatePlayer(
                     p.getPlayerIndex().index(),
                     p.getVictoryPoints(),
-                    currentTurn.equals(index), // booleans on card status
-                    largestArmy.equals(index),
-                    longestRoad.equals(index)
+                    Objects.equals(index, currentTurn),     // booleans on card status
+                    Objects.equals(index, largestArmy),
+                    Objects.equals(index, longestRoad)
             );
         }
 
