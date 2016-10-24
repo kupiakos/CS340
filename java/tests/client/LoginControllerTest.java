@@ -5,6 +5,8 @@ import client.login.ILoginView;
 import client.login.LoginController;
 import client.misc.IMessageView;
 import client.utils.ServerAsyncHelper;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
 import shared.IServer;
 import shared.models.user.Credentials;
@@ -23,7 +25,7 @@ public class LoginControllerTest {
     private ILoginView mockLoginView;
     private IMessageView mockMessageView;
 
-    @org.junit.Before
+    @Before
     public void initialize() {
         mockLoginView = mock(ILoginView.class);
         mockMessageView = mock(IMessageView.class);
@@ -32,7 +34,7 @@ public class LoginControllerTest {
         controller.setGameManager(mockManager);
     }
 
-    @org.junit.Test
+    @Test
     public void registerTest() throws Exception{
         Credentials credentials1 = new Credentials("1234567", "Jimbo");
         Credentials credentials2 = new Credentials("I AM", "Batman");
