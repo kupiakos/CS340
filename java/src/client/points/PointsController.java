@@ -32,8 +32,15 @@ public class PointsController extends Controller implements IPointsController {
 
     @Override
     protected void updateFromModel(ClientModel model) {
-        Player player = getGameManager().getPlayer();
+        Player player = getPlayer();
+
+        PlayerIndex longestRoad = model.getTurnTracker().getLongestRoad();
+        Player longestRoadPlayer = model.getPlayer(longestRoad);
+
         int points = player.getVictoryPoints();
+        if (player.equals(longestRoadPlayer)) {
+            points += 2;
+        }
         getPointsView().setPoints(points);
 
         PlayerIndex winnerIndex = model.getWinner();

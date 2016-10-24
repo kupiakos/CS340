@@ -106,7 +106,7 @@ public class ResourceBarController extends Controller implements IResourceBarCon
     @Override
     public void updateFromModel(ClientModel model) {
 
-        Player player = getGameManager().getPlayer();
+        Player player = getPlayer();
         ResourcesFacade resourcesFacade = getFacade().getResources();
 
         int brick = player.getResources().getBrick();
