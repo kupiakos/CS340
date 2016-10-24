@@ -55,15 +55,6 @@ class ClientCommunicator implements IClientCommunicator {
             URL url = new URL(URLPrefix + URLSuffix);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(requestMethod);
-            /*if (msCookieManager.getCookieStore().getCookies().size() > 0) {
-                String cookiesToAdd ="";
-                for(HttpCookie c:msCookieManager.getCookieStore().getCookies()){
-                    cookiesToAdd += c.toString();
-                    if(c!=msCookieManager.getCookieStore().getCookies().get(msCookieManager.getCookieStore().getCookies().size()-1))
-                        cookiesToAdd += "; ";
-                }
-                connection.setRequestProperty("Cookie",cookiesToAdd);
-            }*/
             connection.setDoOutput(true);
             DataOutputStream output = new DataOutputStream(connection.getOutputStream());
             output.writeBytes(requestBody);
