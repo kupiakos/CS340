@@ -1,8 +1,8 @@
 package client.join;
 
 import client.base.OverlayView;
-import client.data.PlayerInfo;
 import client.utils.FontUtils;
+import shared.models.games.PlayerInfo;
 
 import javax.swing.*;
 import java.awt.*;

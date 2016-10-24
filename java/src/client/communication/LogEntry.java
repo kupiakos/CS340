@@ -2,6 +2,8 @@ package client.communication;
 
 import shared.definitions.CatanColor;
 
+import java.util.Objects;
+
 /**
  * Message (or entry) displayed in the LogComponent
  */
@@ -36,6 +38,18 @@ public class LogEntry {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof LogEntry) {
+            return equals((LogEntry)o);
+        }
+        return false;
+    }
+
+    public boolean equals(LogEntry o) {
+        return color == o.color && Objects.equals(message, o.message);
     }
 
 }

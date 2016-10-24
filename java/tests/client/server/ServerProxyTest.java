@@ -45,19 +45,19 @@ public class ServerProxyTest {
 
     @Test(expected = CredentialNotFoundException.class)
     public void testBadLogin() throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
-        Credentials credentials = new Credentials("joe", "username");
+        Credentials credentials = new Credentials("joe", "user");
         server.login(credentials);
     }
 
     @Test(expected = CredentialNotFoundException.class)
     public void testBadRegister() throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
-        Credentials credentials = new Credentials("password", "username");
+        Credentials credentials = new Credentials("password", "user");
         server.register(credentials);
     }
 
     @Test
     public void testUserCommands() throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
-        server.login(new Credentials("password", "username"));
+        server.login(new Credentials("password", "user"));
         server.register(new Credentials("123456", "harold74"));
     }
 

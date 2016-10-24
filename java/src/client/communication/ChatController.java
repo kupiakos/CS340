@@ -2,7 +2,6 @@ package client.communication;
 
 import client.base.Controller;
 import client.base.IView;
-import client.game.GameManager;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.CatanColor;
 import shared.definitions.PlayerIndex;
@@ -14,15 +13,17 @@ import shared.models.game.Player;
 import shared.models.moves.SendChatAction;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Observer;
+import java.util.logging.Logger;
 
 /**
  * Controls all the interaction between the fascade, server, and UI for chatting
  *
  * @author audakel on 9/24/16.
  */
-public class ChatController extends Controller implements IChatController, Observer {
+public class ChatController extends Controller implements IChatController {
+    private static final Logger LOGGER = Logger.getLogger(ChatController.class.getSimpleName());
+
     /**
      * Required constructor, registers on the observable list
      *
@@ -49,30 +50,27 @@ public class ChatController extends Controller implements IChatController, Obser
      */
     @Override
     public void sendMessage(@NotNull String message) {
-        Objects.requireNonNull(message);
         PlayerIndex player = getModel().getTurnTracker().getCurrentTurn();
         SendChatAction chat = new SendChatAction(message, player);
         ChatFacade cf = getFacade().getChat();
 
-        if (ChatFacade.canSendChat(chat)) {
+        if (cf.canSendChat(chat)) {
+            LOGGER.info("sent chat: " + chat);
             cf.sendChat(chat);
             getAsync().runModelMethod(server::sendChat, chat)
                     .onError(Throwable::printStackTrace)
                     .start();
         }
-        String x = "hello";
-        switch (x) {
-            case "hello":
-                break;
-        }
     }
 
     @Override
     public void updateFromModel(ClientModel model) {
-        MessageList chats = GameManager.getGame().getClientModel().getChat();
+        MessageList chats = model.getChat();
         ArrayList<LogEntry> entries = new ArrayList<>();
 
         if (chats != null) {
+            LOGGER.fine("Updating chats...");
+
             for (MessageEntry message : chats.getLines()) {
                 String msg = message.getMessage();
                 String source = message.getSource();

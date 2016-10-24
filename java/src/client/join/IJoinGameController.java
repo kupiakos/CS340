@@ -1,8 +1,8 @@
 package client.join;
 
 import client.base.IController;
-import client.data.GameInfo;
 import shared.definitions.CatanColor;
+import shared.models.games.GameInfo;
 
 /**
  * Interface for the join game controller

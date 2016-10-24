@@ -1,8 +1,8 @@
 package client.domestic;
 
 import client.base.IOverlayView;
-import client.data.PlayerInfo;
 import shared.definitions.ResourceType;
+import shared.models.games.PlayerInfo;
 
 /**
  * Implementation of the domestic trade overlay, which allows the user to

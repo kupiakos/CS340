@@ -15,7 +15,7 @@ public class MockGM extends GameManager {
      *
      * @post This provides valid operations on GameManager
      */
-    private MockGM() {
+    public MockGM() {
         super();
     }
 

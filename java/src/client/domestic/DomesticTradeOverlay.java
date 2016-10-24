@@ -1,9 +1,9 @@
 package client.domestic;
 
 import client.base.OverlayView;
-import client.data.PlayerInfo;
 import client.utils.FontUtils;
 import shared.definitions.ResourceType;
+import shared.models.games.PlayerInfo;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -45,7 +45,9 @@ public class DomesticTradeOverlay extends OverlayView implements IDomesticTradeO
     private ActionListener playerSelectActionListener = e -> {
         JToggleButton button = (JToggleButton) e.getSource();
         PlayerInfo pi = getPlayerByName(button.getText());
-        getController().setPlayerToTradeWith(pi.getPlayerIndex());
+        if (pi != null) {
+            getController().setPlayerToTradeWith(pi.getPlayerIndex().index());
+        }
     };
 
     public DomesticTradeOverlay() {

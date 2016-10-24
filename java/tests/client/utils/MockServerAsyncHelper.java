@@ -10,6 +10,10 @@ import java.util.function.Consumer;
 
 public class MockServerAsyncHelper extends ServerAsyncHelper {
 
+    public MockServerAsyncHelper() {
+        super(null);
+    }
+
     public MockServerAsyncHelper(IGameManager gameManager) {
         super(gameManager);
     }
