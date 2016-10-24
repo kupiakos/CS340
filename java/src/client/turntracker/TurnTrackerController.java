@@ -1,8 +1,8 @@
 package client.turntracker;
 
 import client.base.Controller;
-import client.game.GameManager;
 import shared.IServer;
+import shared.definitions.CatanColor;
 import shared.definitions.PlayerIndex;
 import shared.facades.TurnFacade;
 import shared.models.game.ClientModel;
@@ -12,8 +12,7 @@ import shared.models.moves.FinishMoveAction;
 
 import javax.naming.CommunicationException;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.logging.Logger;
 
 import static shared.definitions.Constants.END_GAME_MSG;
 import static shared.definitions.Constants.WINNING_AMOUNT_VICTORY_POINTS;
@@ -23,13 +22,12 @@ import static shared.definitions.TurnStatus.GAME_OVER;
 /**
  * Implementation for the turn tracker controller
  */
-public class TurnTrackerController extends Controller implements ITurnTrackerController, Observer {
+public class TurnTrackerController extends Controller implements ITurnTrackerController {
+    private static final Logger LOGGER = Logger.getLogger(TurnTracker.class.getSimpleName());
 
     public TurnTrackerController(ITurnTrackerView view) {
         super(view);
-        initFromModel();
-        GameManager.getGame().addObserver(this);
-
+        observeClientModel();
     }
 
     /**
@@ -47,7 +45,6 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
      */
     @Override
     public void endTurn() {
-        // TODO:: Fix this shiz for da real playas
         FinishMoveAction action = new FinishMoveAction();
         TurnFacade tf = getFacade().getTurn();
         Player player = tf.getCurrentPlayer();
@@ -57,6 +54,8 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
             tf.endTurn(player);
             try {
                 s.finishTurn(action);
+                LOGGER.info(player.getName() + "'s turn ended");
+
             } catch (CommunicationException e) {
                 e.printStackTrace();
             }
@@ -67,28 +66,29 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
     /**
      * Gets the correct color of the players whos turn it is, also inits all the players
      */
-    private void initFromModel() {
-        getView().setLocalPlayerColor(GameManager.getGame().getPlayerInfo().getColor());
-        List<Player> players = GameManager.getGame().getClientModel().getPlayers();
+    private void initFromModel(ClientModel model) {
+        List<Player> players = model.getPlayers();
+        CatanColor color = getPlayer().getColor();
+        getView().setLocalPlayerColor(color);
 
         for (Player p : players) {
             if (p == null) continue;
             getView().initializePlayer(p.getPlayerID(), p.getName(), p.getColor());
         }
+
     }
 
     /**
      * Talks to the game view to update players current score cards, winner status.
      * Calls {@code getView()} for each player to access all the needed UI interfaces and
      * set the correct info for the player
-     *
-     * @param observable
-     * @param o
      */
     @Override
-    public void update(Observable observable, Object o) {
-        ClientModel cm = GameManager.getGame().getClientModel();
-        TurnTracker tt = GameManager.getGame().getClientModel().getTurnTracker();
+    protected void updateFromModel(ClientModel model) {
+        initFromModel(model);
+
+        ClientModel cm = model;
+        TurnTracker tt = model.getTurnTracker();
 
         PlayerIndex largestArmy = tt.getLargestArmy();
         PlayerIndex longestRoad = tt.getLongestRoad();
@@ -107,6 +107,7 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
                 gameOver = true;
                 winnerIndex = p.getPlayerIndex();
             }
+            LOGGER.fine("Updating score cards for " + p.getName());
 
             index = p.getPlayerIndex();
             getView().updatePlayer(
@@ -119,7 +120,8 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
         }
 
         if (gameOver) {
-            GameManager.getGame().getFacade().getTurn().setPhase(GAME_OVER);
+            LOGGER.info("Game over");
+            getFacade().getTurn().setPhase(GAME_OVER);
             getView().updateGameState(END_GAME_MSG, false);
         }
     }

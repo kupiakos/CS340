@@ -39,7 +39,7 @@ public class ServerProxy implements IServer {
         try {
             cc.sendHTTPRequest("/user/login", requestBody, "POST");
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals("400")) {
+            if (e.getMessage().contains("400")) {
                 throw new CredentialNotFoundException("Username or password were not recognized.");
             } else {
                 throw new IllegalArgumentException(e.getMessage());
@@ -56,7 +56,7 @@ public class ServerProxy implements IServer {
         try {
             cc.sendHTTPRequest("/user/register", requestBody, "POST");
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals("400")) {
+            if (e.getMessage().contains("400")) {
                 throw new CredentialNotFoundException("Invalid username or password.");
             } else throw new IllegalArgumentException(e.getMessage());
         }

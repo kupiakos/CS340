@@ -2,13 +2,8 @@ package client.login;
 
 import client.base.Controller;
 import client.base.IAction;
-import client.join.IJoinGameController;
-import client.join.IJoinGameView;
-import client.join.JoinGameController;
-import client.join.JoinGameView;
 import client.misc.IMessageView;
 import client.server.ServerProxy;
-import client.utils.ServerAsyncHelper;
 import shared.models.user.Credentials;
 
 import javax.security.auth.login.CredentialNotFoundException;
@@ -167,7 +162,7 @@ public class LoginController extends Controller implements ILoginController {
         if (e.getClass() == CredentialNotFoundException.class) {
             messageView.setMessage("USERNAME AND/OR PASSWORD NOT FOUND.");
         } else {
-            messageView.setMessage("LOGIN ERROR ON SERVER.");
+            messageView.setMessage("LOGIN ERROR ON SERVER. ERROR: " + e.getMessage());
         }
         messageView.showModal();
     }

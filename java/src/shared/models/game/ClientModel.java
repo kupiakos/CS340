@@ -93,6 +93,7 @@ public class ClientModel {
         this.log = log;
     }
 
+
     // CUSTOM CODE
     @NotNull
     public int getPlayerCount() {

@@ -1,7 +1,6 @@
 package client.communication;
 
 import client.base.Controller;
-import client.game.GameManager;
 import shared.definitions.CatanColor;
 import shared.models.game.ClientModel;
 import shared.models.game.MessageEntry;
@@ -10,13 +9,14 @@ import shared.models.game.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observer;
+import java.util.logging.Logger;
 
 
 /**
  * Game history controller implementation
  */
-public class GameHistoryController extends Controller implements IGameHistoryController, Observer {
+public class GameHistoryController extends Controller implements IGameHistoryController {
+    private static final Logger LOGGER = Logger.getLogger(GameHistoryController.class.getSimpleName());
 
     public GameHistoryController(IGameHistoryView view) {
         super(view);
@@ -43,12 +43,14 @@ public class GameHistoryController extends Controller implements IGameHistoryCon
 
         ArrayList<LogEntry> entries = new ArrayList<>();
         if (log != null) {
+            LOGGER.fine("Updating game history");
+
             for (MessageEntry logMember : log.getLines()) {
                 String m = logMember.getMessage();
                 String s = logMember.getSource();
 
                 CatanColor messageColor = null;
-                for (Player player : GameManager.getGame().getClientModel().getPlayers()) {
+                for (Player player : getModel().getPlayers()) {
                     if (player.getName().equals(s)) {
                         messageColor = player.getColor();
                     }
