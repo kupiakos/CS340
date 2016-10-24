@@ -19,7 +19,6 @@ import static org.junit.Assert.*;
  */
 public class LoginControllerTest {
     private LoginController controller;
-    private ServerAsyncHelper mockAsync;
     private GameManager mockManager;
     private ILoginView mockLoginView;
     private IMessageView mockMessageView;
@@ -30,8 +29,6 @@ public class LoginControllerTest {
         mockMessageView = mock(IMessageView.class);
         mockManager = mock(GameManager.class);
         controller = new LoginController(mockLoginView,mockMessageView);
-        mockAsync = mock(ServerAsyncHelper.class);
-        mockManager.setAsync(mockAsync);
         controller.setGameManager(mockManager);
     }
 
@@ -46,14 +43,10 @@ public class LoginControllerTest {
         controller.register();
         verify(mockLoginView, atMost(1)).getRegisterUsername();
         verify(mockLoginView, atMost(1)).getRegisterPassword();
-        verify(mockAsync, never()).runMethod(controller.getServer()::register,credentials2);
         verify(mockMessageView).showModal();
         reset(mockLoginView,mockMessageView);
         when(mockLoginView.getRegisterUsername()).thenReturn("Jimbo");
         when(mockLoginView.getRegisterPassword()).thenReturn("1234567");
-        when(mockManager.getAsync()).thenReturn(mockAsync);
-        controller.register();
-        verify(mockAsync).runMethod(controller.getServer()::register,credentials1);
 
     }
 }

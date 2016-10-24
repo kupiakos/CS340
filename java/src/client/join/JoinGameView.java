@@ -45,7 +45,7 @@ public class JoinGameView extends OverlayView implements IJoinGameView {
             if (e.getSource() == createButton) {
                 getController().startCreateNewGame();
             } else if (e.getSource() == tempJoinButton) {
-                getController().startJoinGame(null);
+                //getController().startJoinGame(null);
             } else {
                 try {
                     //System.out.println(e.getActionCommand());
@@ -124,12 +124,7 @@ public class JoinGameView extends OverlayView implements IJoinGameView {
                 gamePanel.add(tmp2);
                 String players = "";
                 for (int j = 0; j < game.getPlayers().size(); j++) {
-                    if (game.getPlayers().get(j).getId() == -1) {
-                        ArrayList<PlayerInfo> tempPlayers = new ArrayList<>(game.getPlayers());
-                        tempPlayers.remove(j);
-                        j--;
-                        game.setPlayers(tempPlayers);
-                    } else if (j < game.getPlayers().size() - 1) {
+                    if (j < game.getPlayers().size() - 1) {
                         players = players + game.getPlayers().get(j).getName() + ", ";
                     } else {
                         players = players + game.getPlayers().get(j).getName();
