@@ -175,6 +175,38 @@ public class TradingFacade extends AbstractFacade {
     }
 
     /**
+     * Determines whether a player can perform any maritime trade at all.
+     * <p>
+     * It must be the player's turn.
+     *
+     * @param player         the player that wants to perform the trade, not null
+     * @return true if the player can maritime trade with these conditions; false otherwise
+     */
+    public boolean canMaritimeTrade(@NotNull Player player) {
+        if (player.getResources().isEmpty() ||
+                getModel().getTurnTracker().getStatus() != TurnStatus.PLAYING ||
+                !getFacades().getTurn().isPlayersTurn(player)) {
+            return false;
+        }
+        for (ResourceType inputResource : ResourceType.values()) {
+            int ratio = maritimeTradeRatio(player, inputResource);
+            if (player.getResources().getOfType(inputResource) < ratio) {
+                continue;
+            }
+
+            for (ResourceType outputResource : ResourceType.values()) {
+                if (inputResource == outputResource) {
+                    continue;
+                }
+                if (getModel().getBank().getOfType(outputResource) > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Determines whether a player can perform a maritime trade with the given resource.
      * <p>
      * It must be the player's turn.
@@ -192,8 +224,8 @@ public class TradingFacade extends AbstractFacade {
         int ratio = maritimeTradeRatio(player, inputResource);
         return inputResource != outputResource &&
                 getModel().getTurnTracker().getStatus() == TurnStatus.PLAYING &&
-                player.getResources().getOfType(inputResource) > 0 &&
-                getModel().getBank().getOfType(outputResource) >= ratio &&
+                player.getResources().getOfType(inputResource) >= ratio &&
+                getModel().getBank().getOfType(outputResource) > 0 &&
                 getFacades().getTurn().isPlayersTurn(player);
     }
 
@@ -216,7 +248,7 @@ public class TradingFacade extends AbstractFacade {
         }
         int ratio = maritimeTradeRatio(player, inputResource);
         ResourcesFacade resources = getFacades().getResources();
-        resources.returnToBank(player, new ResourceSet(inputResource, 1));
-        resources.receiveFromBank(player, new ResourceSet(outputResource, ratio));
+        resources.returnToBank(player, new ResourceSet(inputResource, ratio));
+        resources.receiveFromBank(player, new ResourceSet(outputResource, 1));
     }
 }
