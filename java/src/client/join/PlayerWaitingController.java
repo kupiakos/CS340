@@ -12,6 +12,7 @@ import shared.models.games.PlayerInfo;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -34,8 +35,7 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
     @Override
     public void start() {
         setServer(getGameManager().getServer());
-        getGameManager().setPoller(new Poller());
-        //getGameManager().getPoller().startPoller();
+        getGameManager().startPoller();
         ActionListener pollGames = e -> updatePlayers();
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, pollGames);
         updatePlayers();
@@ -54,9 +54,9 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
                 .onSuccess(games -> SwingUtilities.invokeLater(() -> {
                     GameInfo game = games[JoinGameController.selectedGame.getId()];
                     JoinGameController.selectedGame = game;
-                    PlayerInfo[] playerArray = Arrays.copyOf(game.getPlayers().toArray(), game.getPlayers().size(), PlayerInfo[].class);
-                    getView().setPlayers(playerArray);
-                    if (playerArray.length >= 4) {
+                    List<PlayerInfo> players = game.getPlayers();
+                    getView().setPlayers(players.toArray(new PlayerInfo[players.size()]));
+                    if (players.size() >= 4) {
                         //Let's start this thing!
                         mTimer.stop();
                         getView().closeModal();

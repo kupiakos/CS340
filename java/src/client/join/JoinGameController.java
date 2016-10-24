@@ -6,6 +6,7 @@ import client.misc.IMessageView;
 import client.server.ServerProxy;
 import shared.definitions.CatanColor;
 import shared.definitions.PlayerIndex;
+import shared.models.game.Player;
 import shared.models.games.CreateGameRequest;
 import shared.models.games.GameInfo;
 import shared.models.games.JoinGameRequest;
@@ -13,6 +14,7 @@ import shared.models.games.PlayerInfo;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 
 /**
@@ -175,6 +177,15 @@ public class JoinGameController extends Controller implements IJoinGameControlle
         getAsync().runMethod(server::joinGame, joinGameRequest)
                 .onSuccess(() -> {
                     getGameManager().getPlayerInfo().setColor(color);
+//                    getAsync().runMethod(server::listOfGames)
+//                            .onSuccess(games -> {
+//                                selectedGame = Arrays.stream(games)
+//                                        .filter(gi -> gi.getId() == selectedGame.getId())
+//                                        .findFirst().orElse(null);
+//                                for (PlayerInfo p : selectedGame.getPlayers()) {
+//
+//                                }
+//                            });
                     System.out.println(selectedGame.getPlayers().size());
                     for (int i = 0; i < selectedGame.getPlayers().size(); i++) {
                         if (selectedGame.getPlayers().get(i).getId() == getGameManager().getPlayerInfo().getId()) {

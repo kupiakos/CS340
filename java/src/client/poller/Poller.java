@@ -20,10 +20,8 @@ public class Poller {
      * Timer to run poller
      */
     private Timer mTimer;
-    /**
-     * Game model on clients side for version
-     */
-    private ClientModel mClientModel;
+
+    private IGameManager gameManager;
 
 
     /**
@@ -34,9 +32,10 @@ public class Poller {
      *
      * @post This provides a timer that will poll the server
      */
-    public Poller() {
+    public Poller(IGameManager gameManager) {
         // To init the poller go ahead and check for an update to start
         checkForUpdate();
+        this.gameManager = gameManager;
 
         ActionListener poll = e -> checkForUpdate();
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, poll);
@@ -44,7 +43,7 @@ public class Poller {
 
     private void checkForUpdate() {
         // Grab a game manager
-        IGameManager gm = GameManager.getGame();
+        IGameManager gm = getGameManager();
         // Get our version number
         int version;
         try {
@@ -87,14 +86,11 @@ public class Poller {
     }
 
 
-    /**
-     * Adds the game model we will use, so we have access to the version
-     *
-     * @param cm a ClientModel
-     */
-    public void setClientModel(ClientModel cm) {
-        mClientModel = cm;
+    public IGameManager getGameManager() {
+        return gameManager;
     }
 
-
+    public void setGameManager(IGameManager gameManager) {
+        this.gameManager = gameManager;
+    }
 }

@@ -95,11 +95,8 @@ public class GameManager extends Observable implements IGameManager {
     /**
      * Starts the Poller, creates one if needed
      */
-    public void startPoller(ClientModel cm) {
-        if (poller == null) poller = new Poller();
-
-        poller.setClientModel(cm);
-
+    public void startPoller() {
+        if (poller == null) poller = new Poller(this);
         poller.startPoller();
     }
 
