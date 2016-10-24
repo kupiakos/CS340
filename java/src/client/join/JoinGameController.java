@@ -26,7 +26,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
     private ISelectColorView selectColorView;
     private IMessageView messageView;
     private IAction joinAction;
-    private GameInfo selectedGame;
+    public static GameInfo selectedGame;
 
     /**
      * JoinGameController constructor
@@ -155,6 +155,13 @@ public class JoinGameController extends Controller implements IJoinGameControlle
     @Override
     public void startJoinGame(GameInfo game) {
         selectedGame = game;
+        for(CatanColor c: CatanColor.values()){
+            getSelectColorView().setColorEnabled(c,true);
+        }
+        for(PlayerInfo p : selectedGame.getPlayers()){
+            if(p.getId()!=getGameManager().getPlayerInfo().getId())
+                getSelectColorView().setColorEnabled(p.getColor(),false);
+        }
         getSelectColorView().showModal();
     }
 
@@ -170,6 +177,8 @@ public class JoinGameController extends Controller implements IJoinGameControlle
         getAsync().runMethod(server::joinGame, joinGameRequest)
                 .onSuccess(() -> {
                     getGameManager().getPlayerInfo().setColor(color);
+                    System.out.println(selectedGame.getPlayers().size());
+                    getSelectColorView().closeModal();
                     getJoinGameView().closeModal();
                     joinAction.execute();
                 })

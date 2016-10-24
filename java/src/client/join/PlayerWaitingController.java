@@ -44,13 +44,13 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
     private void updatePlayers(){
         getAsync().runMethod(server::listOfGames)
                 .onSuccess(games -> SwingUtilities.invokeLater(() -> {
-                    for(GameInfo g : games){
-                        for(PlayerInfo p : g.getPlayers()){
-                            if(p.getId() == getGameManager().getPlayerInfo().getId()){
-                                getView().setPlayers(Arrays.copyOf(g.getPlayers().toArray(),g.getPlayers().size(),PlayerInfo[].class));
-                                break;
-                            }
-                        }
+                    GameInfo game = games[JoinGameController.selectedGame.getId()];
+                    PlayerInfo[] playerArray = Arrays.copyOf(game.getPlayers().toArray(),game.getPlayers().size(),PlayerInfo[].class);
+                    getView().setPlayers(playerArray);
+                    if(playerArray.length>=4){
+                        //Let's start this thing!
+                        getView().closeModal();
+                        return;
                     }
                     getView().showModal();
                 }))
@@ -62,7 +62,7 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
     public void addAI() {
         AddAIRequest ai = new AddAIRequest(AIType.LARGEST_ARMY);
         for(AIType t : AIType.values()){
-            if(getView().getSelectedAI() == t.toString())
+            if(getView().getSelectedAI().equals(t.toString()))
                 ai = new AddAIRequest(t);
         }
         getAsync().runMethod(server::addAI, ai)
@@ -79,7 +79,7 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
         updatePlayers();
     }
 
-    public void displayError(String title, String message) {
+    private void displayError(String title, String message) {
         System.out.print(title+'\n'+message+'\n');
     }
 
