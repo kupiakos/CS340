@@ -8,6 +8,7 @@ import shared.definitions.TurnStatus;
 import shared.models.game.*;
 import shared.models.moves.OfferTradeAction;
 
+import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -159,13 +160,13 @@ public class TradingFacade extends AbstractFacade {
      * <p>
      * Depending on the player's harbor configuration, this returns 2-4.
      *
-     * @param player       the player to check for, not null
-     * @param resourceType the type of resource to check, not null
+     * @param player   the player to check for, not null
+     * @param giveType the type of resource to check, not null
      * @return the best trade ratio available to the player for the given resource type, 2-4
      */
-    public int maritimeTradeRatio(@NotNull Player player, @NotNull ResourceType resourceType) {
+    public int maritimeTradeRatio(@NotNull Player player, @NotNull ResourceType giveType) {
         Set<Port> ports = getModel().getMap().getPlayerPorts(player.getPlayerIndex());
-        if (ports.stream().anyMatch(p -> p.getPortType().getResource() == resourceType)) {
+        if (ports.stream().anyMatch(p -> p.getPortType().getResource() == giveType)) {
             return 2;
         }
         if (ports.stream().anyMatch(p -> p.getPortType() == PortType.THREE)) {
@@ -179,7 +180,7 @@ public class TradingFacade extends AbstractFacade {
      * <p>
      * It must be the player's turn.
      *
-     * @param player         the player that wants to perform the trade, not null
+     * @param player the player that wants to perform the trade, not null
      * @return true if the player can maritime trade with these conditions; false otherwise
      */
     public boolean canMaritimeTrade(@NotNull Player player) {
@@ -207,25 +208,58 @@ public class TradingFacade extends AbstractFacade {
     }
 
     /**
+     * Determines which resources a player could theoretically send to the bank in a maritime trade.
+     * <p>
+     * Basically, it's every resource in the player's hand that is at least the trade ratio.
+     *
+     * @param player  the player that wants to perform the trade, not null
+     * @param getType the type of resource the player is receiving, or null if none chosen
+     * @return the types of resources that could theoretically be received by the player
+     */
+    public ResourceType[] maritimeSendOptions(@NotNull Player player, @Nullable ResourceType getType) {
+        return Arrays.stream(ResourceType.values())
+                .filter(r -> r != getType)
+                .filter(r -> player.getResources().getOfType(r) >= maritimeTradeRatio(player, r))
+                .toArray(ResourceType[]::new);
+    }
+
+    /**
+     * Determines which resources a player could theoretically receive from the bank in a maritime trade.
+     * <p>
+     * Basically, it's every resource from the bank that's not run out.
+     *
+     * @param player   the player that wants to perform the trade, not null
+     * @param giveType the type of resource the player is giving, or null if none chosen
+     * @return the types of resources that could theoretically be received by the player
+     */
+    public ResourceType[] maritimeReceiveOptions(@NotNull Player player, @Nullable ResourceType giveType) {
+        return Arrays.stream(ResourceType.values())
+                .filter(r -> r != giveType)
+                .filter(r -> player.getResources().getOfType(r) >= maritimeTradeRatio(player, r))
+                .toArray(ResourceType[]::new);
+    }
+
+
+    /**
      * Determines whether a player can perform a maritime trade with the given resource.
      * <p>
      * It must be the player's turn.
      *
-     * @param player         the player that wants to perform the trade, not null
-     * @param inputResource  the type of resource to trade with, not null
-     * @param outputResource the type of resource to trade for, not null
+     * @param player   the player that wants to perform the trade, not null
+     * @param giveType the type of resource to trade with, not null
+     * @param getType  the type of resource to trade for, not null
      * @return true if the player can maritime trade with these conditions; false otherwise
      * @pre {@code ratio} is equal to the value returned by {@link #maritimeTradeRatio}
      * @post None.
      */
     public boolean canMaritimeTrade(@NotNull Player player,
-                                    @NotNull ResourceType inputResource,
-                                    @NotNull ResourceType outputResource) {
-        int ratio = maritimeTradeRatio(player, inputResource);
-        return inputResource != outputResource &&
+                                    @NotNull ResourceType giveType,
+                                    @NotNull ResourceType getType) {
+        int ratio = maritimeTradeRatio(player, giveType);
+        return giveType != getType &&
                 getModel().getTurnTracker().getStatus() == TurnStatus.PLAYING &&
-                player.getResources().getOfType(inputResource) >= ratio &&
-                getModel().getBank().getOfType(outputResource) > 0 &&
+                player.getResources().getOfType(giveType) >= ratio &&
+                getModel().getBank().getOfType(getType) > 0 &&
                 getFacades().getTurn().isPlayersTurn(player);
     }
 
@@ -234,21 +268,21 @@ public class TradingFacade extends AbstractFacade {
      * <p>
      * It must be the player's turn, and at the ratio desired must be valid.
      *
-     * @param player         the player that wants to perform the trade, not null
-     * @param inputResource  the type of resource to trade with, not null
-     * @param outputResource the type of resource to trade for, not null
+     * @param player   the player that wants to perform the trade, not null
+     * @param giveType the type of resource to trade with, not null
+     * @param getType  the type of resource to trade for, not null
      * @pre {@link #canMaritimeTrade} returns true.
      * @post the user trades {@code ratio} of the {@code resourceType} for 1
      */
     public void maritimeTrade(@NotNull Player player,
-                              @NotNull ResourceType inputResource,
-                              @NotNull ResourceType outputResource) {
-        if (!canMaritimeTrade(player, inputResource, outputResource)) {
+                              @NotNull ResourceType giveType,
+                              @NotNull ResourceType getType) {
+        if (!canMaritimeTrade(player, giveType, getType)) {
             throw new IllegalArgumentException("Invalid maritime trade!");
         }
-        int ratio = maritimeTradeRatio(player, inputResource);
+        int ratio = maritimeTradeRatio(player, giveType);
         ResourcesFacade resources = getFacades().getResources();
-        resources.returnToBank(player, new ResourceSet(inputResource, ratio));
-        resources.receiveFromBank(player, new ResourceSet(outputResource, 1));
+        resources.returnToBank(player, new ResourceSet(giveType, ratio));
+        resources.receiveFromBank(player, new ResourceSet(getType, 1));
     }
 }
