@@ -13,7 +13,6 @@ import shared.models.game.Player;
 import shared.models.moves.SendChatAction;
 
 import java.util.ArrayList;
-import java.util.Observer;
 import java.util.logging.Logger;
 
 /**
