@@ -43,7 +43,7 @@ public class LogEntry {
     @Override
     public boolean equals(Object o) {
         if (o instanceof LogEntry) {
-            return equals((LogEntry)o);
+            return equals((LogEntry) o);
         }
         return false;
     }

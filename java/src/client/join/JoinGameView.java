@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * Implementation for the join game view, which lets the user select a game to
@@ -44,7 +45,7 @@ public class JoinGameView extends OverlayView implements IJoinGameView {
             if (e.getSource() == createButton) {
                 getController().startCreateNewGame();
             } else if (e.getSource() == tempJoinButton) {
-                getController().startJoinGame(null);
+                //getController().startJoinGame(null);
             } else {
                 try {
                     //System.out.println(e.getActionCommand());
@@ -121,7 +122,7 @@ public class JoinGameView extends OverlayView implements IJoinGameView {
                 JLabel tmp2 = new JLabel(game.getTitle());
                 tmp2.setFont(labelFont);
                 gamePanel.add(tmp2);
-                String players = String.valueOf(game.getPlayers().size()) + "/4 : ";
+                String players = "";
                 for (int j = 0; j < game.getPlayers().size(); j++) {
                     if (j < game.getPlayers().size() - 1) {
                         players = players + game.getPlayers().get(j).getName() + ", ";
@@ -129,6 +130,7 @@ public class JoinGameView extends OverlayView implements IJoinGameView {
                         players = players + game.getPlayers().get(j).getName();
                     }
                 }
+                players = String.valueOf(game.getPlayers().size()) + "/4 : " + players;
                 JLabel tmp3 = new JLabel(players);
                 tmp3.setFont(labelFont);
                 gamePanel.add(tmp3);

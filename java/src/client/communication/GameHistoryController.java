@@ -9,7 +9,10 @@ import shared.models.game.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Observer;
+=======
+>>>>>>> 70ccf053eaf1bf2fa94236c3558003e74eb0c7fa
 import java.util.logging.Logger;
 
 

@@ -12,8 +12,6 @@ import shared.models.moves.FinishMoveAction;
 
 import javax.naming.CommunicationException;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.logging.Logger;
 
 import static shared.definitions.Constants.END_GAME_MSG;
@@ -84,7 +82,6 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
      * Talks to the game view to update players current score cards, winner status.
      * Calls {@code getView()} for each player to access all the needed UI interfaces and
      * set the correct info for the player
-     *
      */
     @Override
     protected void updateFromModel(ClientModel model) {

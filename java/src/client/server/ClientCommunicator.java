@@ -1,10 +1,12 @@
 package client.server;
 
+import client.game.GameManager;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import javax.naming.CommunicationException;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 
 /**
  * Created by elijahgk on 9/12/2016.
@@ -15,9 +17,12 @@ class ClientCommunicator implements IClientCommunicator {
 
     private static ClientCommunicator SINGLETON = null;
     private String URLPrefix;
+    private static java.net.CookieManager cookieManager = new java.net.CookieManager();
 
     private ClientCommunicator() {
         URLPrefix = "http://localhost:8081";
+        CookieHandler.setDefault(cookieManager);
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
     }
 
 
@@ -26,7 +31,7 @@ class ClientCommunicator implements IClientCommunicator {
      *
      * @return {@link ClientCommunicator} SINGLETON.
      */
-    public static ClientCommunicator getSingleton() {
+    static ClientCommunicator getSingleton() {
         if (SINGLETON == null) {
             SINGLETON = new ClientCommunicator();
             return SINGLETON;
@@ -54,7 +59,6 @@ class ClientCommunicator implements IClientCommunicator {
             DataOutputStream output = new DataOutputStream(connection.getOutputStream());
             output.writeBytes(requestBody);
             output.close();
-
             int responseCode = connection.getResponseCode();
             StringBuilder response = new StringBuilder();
 
@@ -63,6 +67,10 @@ class ClientCommunicator implements IClientCommunicator {
                     InputStream input = connection.getInputStream();
                     BufferedReader rd = new BufferedReader(new InputStreamReader(input));
                     String line;
+                    if (URLSuffix.equals("/user/login")) {
+                        JsonObject obj = (JsonObject) new JsonParser().parse(URLDecoder.decode(cookieManager.getCookieStore().getCookies().get(0).getValue(), "UTF-8"));
+                        GameManager.getGame().getPlayerInfo().setId(obj.get("playerID").getAsInt());
+                    }
                     while ((line = rd.readLine()) != null) {
                         response.append(line);
                         response.append('\r');
@@ -71,7 +79,13 @@ class ClientCommunicator implements IClientCommunicator {
                     connection.disconnect();
                     return response.toString();
                 case 400:
-                    response.append("400");
+                    response.append("400 - ");
+                    InputStream error = connection.getErrorStream();
+                    rd = new BufferedReader(new InputStreamReader(error));
+                    while ((line = rd.readLine()) != null) {
+                        response.append(line);
+                        response.append('\r');
+                    }
                     throw new IllegalArgumentException(response.toString());
                 default:
                     response.append("{\"error\":\"SendHTTPRequest responded with an unhandled error resulting from response code: ").append(responseCode).append("\"");
