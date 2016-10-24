@@ -14,13 +14,16 @@ import shared.models.moves.SendChatAction;
 
 import java.util.ArrayList;
 import java.util.Observer;
+import java.util.logging.Logger;
 
 /**
  * Controls all the interaction between the fascade, server, and UI for chatting
  *
  * @author audakel on 9/24/16.
  */
-public class ChatController extends Controller implements IChatController, Observer {
+public class ChatController extends Controller implements IChatController {
+    private static final Logger LOGGER = Logger.getLogger(ChatController.class.getSimpleName());
+
     /**
      * Required constructor, registers on the observable list
      *
@@ -52,6 +55,7 @@ public class ChatController extends Controller implements IChatController, Obser
         ChatFacade cf = getFacade().getChat();
 
         if (cf.canSendChat(chat)) {
+            LOGGER.info("sent chat: " + chat);
             cf.sendChat(chat);
             getAsync().runModelMethod(server::sendChat, chat)
                     .onError(Throwable::printStackTrace)
@@ -65,6 +69,8 @@ public class ChatController extends Controller implements IChatController, Obser
         ArrayList<LogEntry> entries = new ArrayList<>();
 
         if (chats != null) {
+            LOGGER.fine("Updating chats...");
+
             for (MessageEntry message : chats.getLines()) {
                 String msg = message.getMessage();
                 String source = message.getSource();
