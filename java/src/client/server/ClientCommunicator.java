@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import javax.naming.CommunicationException;
 import java.io.*;
 import java.net.*;
-import java.util.List;
 
 /**
  * Created by elijahgk on 9/12/2016.
@@ -18,12 +17,12 @@ class ClientCommunicator implements IClientCommunicator {
 
     private static ClientCommunicator SINGLETON = null;
     private String URLPrefix;
-    private String cookie;
-    static java.net.CookieManager msCookieManager = new java.net.CookieManager();
+    private static java.net.CookieManager cookieManager = new java.net.CookieManager();
 
     private ClientCommunicator() {
         URLPrefix = "http://localhost:8081";
-        cookie = "";
+        CookieHandler.setDefault(cookieManager);
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
     }
 
 
@@ -32,7 +31,7 @@ class ClientCommunicator implements IClientCommunicator {
      *
      * @return {@link ClientCommunicator} SINGLETON.
      */
-    public static ClientCommunicator getSingleton() {
+    static ClientCommunicator getSingleton() {
         if (SINGLETON == null) {
             SINGLETON = new ClientCommunicator();
             return SINGLETON;
@@ -56,15 +55,15 @@ class ClientCommunicator implements IClientCommunicator {
             URL url = new URL(URLPrefix + URLSuffix);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(requestMethod);
-            if (msCookieManager.getCookieStore().getCookies().size() > 0) {
+            /*if (msCookieManager.getCookieStore().getCookies().size() > 0) {
                 String cookiesToAdd ="";
                 for(HttpCookie c:msCookieManager.getCookieStore().getCookies()){
                     cookiesToAdd += c.toString();
                     if(c!=msCookieManager.getCookieStore().getCookies().get(msCookieManager.getCookieStore().getCookies().size()-1))
-                        cookiesToAdd += ';';
+                        cookiesToAdd += "; ";
                 }
                 connection.setRequestProperty("Cookie",cookiesToAdd);
-            }
+            }*/
             connection.setDoOutput(true);
             DataOutputStream output = new DataOutputStream(connection.getOutputStream());
             output.writeBytes(requestBody);
@@ -77,15 +76,9 @@ class ClientCommunicator implements IClientCommunicator {
                     InputStream input = connection.getInputStream();
                     BufferedReader rd = new BufferedReader(new InputStreamReader(input));
                     String line;
-                    if (connection.getHeaderField("Set-cookie") != null) {
-                        List<String> cookieHeaders = connection.getHeaderFields().get("Set-cookie");
-                        for(String c : cookieHeaders){
-                            msCookieManager.getCookieStore().add(null,HttpCookie.parse(c).get(0));
-                        }
-                        if(URLSuffix == "/user/login"){
-                            JsonObject obj = (JsonObject) new JsonParser().parse(URLDecoder.decode(msCookieManager.getCookieStore().getCookies().get(0).getValue(), "UTF-8"));
-                            GameManager.getGame().getPlayerInfo().setId(obj.get("playerID").getAsInt());
-                        }
+                    if (URLSuffix.equals("/user/login")) {
+                        JsonObject obj = (JsonObject) new JsonParser().parse(URLDecoder.decode(cookieManager.getCookieStore().getCookies().get(0).getValue(), "UTF-8"));
+                        GameManager.getGame().getPlayerInfo().setId(obj.get("playerID").getAsInt());
                     }
                     while ((line = rd.readLine()) != null) {
                         response.append(line);
@@ -98,7 +91,6 @@ class ClientCommunicator implements IClientCommunicator {
                     response.append("400 - ");
                     InputStream error = connection.getErrorStream();
                     rd = new BufferedReader(new InputStreamReader(error));
-                    line = "";
                     while ((line = rd.readLine()) != null) {
                         response.append(line);
                         response.append('\r');

@@ -9,6 +9,7 @@ import shared.models.games.GameInfo;
 import shared.models.games.PlayerInfo;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 
@@ -16,6 +17,8 @@ import java.util.Arrays;
  * Implementation for the player waiting controller
  */
 public class PlayerWaitingController extends Controller implements IPlayerWaitingController {
+    private final int SERVER_CONTACT_INTERVAL = 1000;
+    private Timer mTimer;
 
     public PlayerWaitingController(IPlayerWaitingView view) {
         super(view);
@@ -31,6 +34,8 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
 
     @Override
     public void start() {
+        ActionListener pollGames = e->updatePlayers();
+        mTimer = new Timer(SERVER_CONTACT_INTERVAL, pollGames);
         updatePlayers();
         getAsync().runMethod(server::listAI)
                 .onSuccess(AI -> SwingUtilities.invokeLater(() -> {
@@ -39,6 +44,7 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
                 }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of AI Types.\rError message: " + e.getMessage()))
                 .start();
+        mTimer.start();
     }
 
     private void updatePlayers(){
@@ -49,6 +55,7 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
                     getView().setPlayers(playerArray);
                     if(playerArray.length>=4){
                         //Let's start this thing!
+                        mTimer.stop();
                         getView().closeModal();
                         return;
                     }
