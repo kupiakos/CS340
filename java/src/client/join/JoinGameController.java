@@ -103,7 +103,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 
     @Override
     public void start() {
-        ActionListener pollGames = e->reloadGamesList();
+        ActionListener pollGames = e -> reloadGamesList();
         mTimer = new javax.swing.Timer(SERVER_CONTACT_INTERVAL, pollGames);
         getJoinGameView().showModal();
         reloadGamesList();
@@ -114,7 +114,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
         getAsync().runMethod(server::listOfGames)
                 .onSuccess(games -> SwingUtilities.invokeLater(() -> {
                     getJoinGameView().setGames(games, getGameManager().getPlayerInfo());
-                    if(!getNewGameView().isModalShowing()&&!getSelectColorView().isModalShowing())
+                    if (!getNewGameView().isModalShowing() && !getSelectColorView().isModalShowing())
                         getJoinGameView().showModal();
                 }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\rError message: " + e.getMessage()))
@@ -152,12 +152,12 @@ public class JoinGameController extends Controller implements IJoinGameControlle
     @Override
     public void startJoinGame(GameInfo game) {
         selectedGame = game;
-        for(CatanColor c: CatanColor.values()){
-            getSelectColorView().setColorEnabled(c,true);
+        for (CatanColor c : CatanColor.values()) {
+            getSelectColorView().setColorEnabled(c, true);
         }
-        for(PlayerInfo p : selectedGame.getPlayers()){
-            if(p.getId()!=getGameManager().getPlayerInfo().getId())
-                getSelectColorView().setColorEnabled(p.getColor(),false);
+        for (PlayerInfo p : selectedGame.getPlayers()) {
+            if (p.getId() != getGameManager().getPlayerInfo().getId())
+                getSelectColorView().setColorEnabled(p.getColor(), false);
         }
         getSelectColorView().showModal();
     }

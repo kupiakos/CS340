@@ -34,7 +34,7 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
 
     @Override
     public void start() {
-        ActionListener pollGames = e->updatePlayers();
+        ActionListener pollGames = e -> updatePlayers();
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, pollGames);
         updatePlayers();
         getAsync().runMethod(server::listAI)
@@ -47,13 +47,13 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
         mTimer.start();
     }
 
-    private void updatePlayers(){
+    private void updatePlayers() {
         getAsync().runMethod(server::listOfGames)
                 .onSuccess(games -> SwingUtilities.invokeLater(() -> {
                     GameInfo game = games[JoinGameController.selectedGame.getId()];
-                    PlayerInfo[] playerArray = Arrays.copyOf(game.getPlayers().toArray(),game.getPlayers().size(),PlayerInfo[].class);
+                    PlayerInfo[] playerArray = Arrays.copyOf(game.getPlayers().toArray(), game.getPlayers().size(), PlayerInfo[].class);
                     getView().setPlayers(playerArray);
-                    if(playerArray.length>=4){
+                    if (playerArray.length >= 4) {
                         //Let's start this thing!
                         mTimer.stop();
                         getView().closeModal();
@@ -68,26 +68,26 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
     @Override
     public void addAI() {
         AddAIRequest ai = new AddAIRequest(AIType.LARGEST_ARMY);
-        for(AIType t : AIType.values()){
-            if(getView().getSelectedAI().equals(t.toString()))
+        for (AIType t : AIType.values()) {
+            if (getView().getSelectedAI().equals(t.toString()))
                 ai = new AddAIRequest(t);
         }
         getAsync().runMethod(server::addAI, ai)
-                .onSuccess(()->SwingUtilities.invokeLater(()->{
+                .onSuccess(() -> SwingUtilities.invokeLater(() -> {
                     updatePlayers();
                     getView().showModal();
                 }))
-                .onError(e->displayError("Error adding AI",e.getMessage()))
+                .onError(e -> displayError("Error adding AI", e.getMessage()))
                 .start();
     }
 
     @Override
-    protected void updateFromModel(ClientModel cm){
+    protected void updateFromModel(ClientModel cm) {
         updatePlayers();
     }
 
     private void displayError(String title, String message) {
-        System.out.print(title+'\n'+message+'\n');
+        System.out.print(title + '\n' + message + '\n');
     }
 
 }

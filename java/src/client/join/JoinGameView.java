@@ -1,7 +1,6 @@
 package client.join;
 
 import client.base.OverlayView;
-import shared.models.game.Player;
 import shared.models.games.GameInfo;
 import shared.models.games.PlayerInfo;
 
@@ -125,13 +124,12 @@ public class JoinGameView extends OverlayView implements IJoinGameView {
                 gamePanel.add(tmp2);
                 String players = "";
                 for (int j = 0; j < game.getPlayers().size(); j++) {
-                    if(game.getPlayers().get(j).getId()==-1){
+                    if (game.getPlayers().get(j).getId() == -1) {
                         ArrayList<PlayerInfo> tempPlayers = new ArrayList<>(game.getPlayers());
                         tempPlayers.remove(j);
                         j--;
                         game.setPlayers(tempPlayers);
-                    }
-                    else if (j < game.getPlayers().size() - 1) {
+                    } else if (j < game.getPlayers().size() - 1) {
                         players = players + game.getPlayers().get(j).getName() + ", ";
                     } else {
                         players = players + game.getPlayers().get(j).getName();
