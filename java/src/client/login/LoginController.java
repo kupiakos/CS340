@@ -167,7 +167,7 @@ public class LoginController extends Controller implements ILoginController {
         if (e.getClass() == CredentialNotFoundException.class) {
             messageView.setMessage("USERNAME AND/OR PASSWORD NOT FOUND.");
         } else {
-            messageView.setMessage("LOGIN ERROR ON SERVER.");
+            messageView.setMessage("LOGIN ERROR ON SERVER. ERROR: " + e.getMessage());
         }
         messageView.showModal();
     }

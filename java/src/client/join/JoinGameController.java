@@ -2,16 +2,16 @@ package client.join;
 
 import client.base.Controller;
 import client.base.IAction;
-import client.data.GameInfo;
-import client.game.GameManager;
 import client.misc.IMessageView;
 import client.server.ServerProxy;
 import shared.definitions.CatanColor;
 import shared.models.games.CreateGameRequest;
+import shared.models.games.GameInfo;
 import shared.models.games.JoinGameRequest;
-import shared.models.user.Credentials;
+import shared.models.games.PlayerInfo;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 
 
 /**
@@ -23,7 +23,9 @@ public class JoinGameController extends Controller implements IJoinGameControlle
     private ISelectColorView selectColorView;
     private IMessageView messageView;
     private IAction joinAction;
-    private GameInfo selectedGame;
+    private final int SERVER_CONTACT_INTERVAL = 1000;
+    private javax.swing.Timer mTimer;
+    public static GameInfo selectedGame;
 
     /**
      * JoinGameController constructor
@@ -101,21 +103,19 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 
     @Override
     public void start() {
-        getAsync().runMethod(server::listOfGames)
-                .onSuccess(games -> SwingUtilities.invokeLater(() -> {
-                    getJoinGameView().setGames(games, getGameManager().getPlayerInfo());
-                    getJoinGameView().showModal();
-                }))
-                .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\rError message: " + e.getMessage()))
-                .start();
-
+        ActionListener pollGames = e->reloadGamesList();
+        mTimer = new javax.swing.Timer(SERVER_CONTACT_INTERVAL, pollGames);
+        getJoinGameView().showModal();
+        reloadGamesList();
+        mTimer.start();
     }
 
     public void reloadGamesList() {
         getAsync().runMethod(server::listOfGames)
                 .onSuccess(games -> SwingUtilities.invokeLater(() -> {
                     getJoinGameView().setGames(games, getGameManager().getPlayerInfo());
-                    getJoinGameView().showModal();
+                    if(!getNewGameView().isModalShowing()&&!getSelectColorView().isModalShowing())
+                        getJoinGameView().showModal();
                 }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\rError message: " + e.getMessage()))
                 .start();
@@ -152,6 +152,13 @@ public class JoinGameController extends Controller implements IJoinGameControlle
     @Override
     public void startJoinGame(GameInfo game) {
         selectedGame = game;
+        for(CatanColor c: CatanColor.values()){
+            getSelectColorView().setColorEnabled(c,true);
+        }
+        for(PlayerInfo p : selectedGame.getPlayers()){
+            if(p.getId()!=getGameManager().getPlayerInfo().getId())
+                getSelectColorView().setColorEnabled(p.getColor(),false);
+        }
         getSelectColorView().showModal();
     }
 
@@ -166,8 +173,10 @@ public class JoinGameController extends Controller implements IJoinGameControlle
         JoinGameRequest joinGameRequest = new JoinGameRequest(color.toString().toLowerCase(), selectedGame.getId());
         getAsync().runMethod(server::joinGame, joinGameRequest)
                 .onSuccess(() -> {
-                    getGameManager().getPlayerInfo().setPlayerIndex(selectedGame.getPlayers().size());
                     getGameManager().getPlayerInfo().setColor(color);
+                    System.out.println(selectedGame.getPlayers().size());
+                    mTimer.stop();
+                    getSelectColorView().closeModal();
                     getJoinGameView().closeModal();
                     joinAction.execute();
                 })

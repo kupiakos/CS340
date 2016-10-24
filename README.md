@@ -28,16 +28,16 @@ with additional details being provide in the document titled "Server Web API
 Documentation".
 
 ###Branch Builds
-[audakel](https://github.com/audakel/CS340)
+audakel 
 [![Build Status](https://travis-ci.org/Audakel/CS340.svg?branch=master)](https://travis-ci.org/Audakel/CS340)
 
-[ldssky](https://github.com/ldssky/CS340)
+ldssky 
 [![Build Status](https://travis-ci.org/ldssky/CS340.svg?branch=master)](https://travis-ci.org/ldssky/CS340)
 
-[kaiboy94](https://github.com/kaiboy94/CS340)
+kaiboy94 
 [![Build Status](https://travis-ci.org/kaiboy94/CS340.svg?branch=master)](https://travis-ci.org/kaiboy94/CS340)
 
-[phhorton](https://github.com/phhorton/CS340)
+phhorton 
 [![Build Status](https://travis-ci.org/phhorton/CS340.svg?branch=master)](https://travis-ci.org/phhorton/CS340)
 
 
