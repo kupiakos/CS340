@@ -106,14 +106,14 @@ public class MockCC implements IClientCommunicator {
 
     private String login(String requestBody) {
         Credentials credentials = ModelSerializer.getInstance().fromJson(requestBody, Credentials.class);
-        if (credentials.getUsername().equals("username") && credentials.getPassword().equals("password")) {
+        if (credentials.getUsername().equals("user") && credentials.getPassword().equals("password")) {
             return "";
         } else throw new IllegalArgumentException("400");
     }
 
     private String register(String requestBody) {
         Credentials credentials = ModelSerializer.getInstance().fromJson(requestBody, Credentials.class);
-        if (!credentials.getUsername().equals("username")) {
+        if (!credentials.getUsername().equals("user")) {
             return "";
         } else throw new IllegalArgumentException("400");
     }

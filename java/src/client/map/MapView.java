@@ -55,41 +55,35 @@ public class MapView extends PanelView implements IMapView {
 
         @Override
         public void placeRoad(EdgeLocation edgeLoc) {
-
             closeModal();
             getController().placeRoad(edgeLoc);
         }
 
         @Override
         public void placeSettlement(VertexLocation vertLoc) {
-
             closeModal();
             getController().placeSettlement(vertLoc);
         }
 
         @Override
         public void placeCity(VertexLocation vertLoc) {
-
             closeModal();
             getController().placeCity(vertLoc);
         }
 
         @Override
         public void placeRobber(HexLocation hexLoc) {
-
             closeModal();
             getController().placeRobber(hexLoc);
         }
 
         @Override
-        public void startMove(PieceType pieceType, boolean isFree,
-                              boolean allowDisconnected) {
+        public void startMove(PieceType pieceType) {
             assert false;
         }
 
         @Override
         public void cancelMove() {
-
             closeModal();
             getController().cancelMove();
         }
@@ -116,11 +110,8 @@ public class MapView extends PanelView implements IMapView {
     };
 
     public MapView() {
-
         this.setLayout(new BorderLayout());
-
         map = new MapComponent();
-
         this.add(map, BorderLayout.CENTER);
     }
 
@@ -131,9 +122,7 @@ public class MapView extends PanelView implements IMapView {
 
     @Override
     public void setController(IController controller) {
-
         super.setController(controller);
-
         map.setController(controller);
     }
 
@@ -194,9 +183,7 @@ public class MapView extends PanelView implements IMapView {
         private ActionListener cancelButtonListener = e -> getController().cancelMove();
 
         public MapOverlay(MapComponent mainMap) {
-
             super();
-
             this.mainMap = mainMap;
         }
 
@@ -249,7 +236,6 @@ public class MapView extends PanelView implements IMapView {
         }
 
         public void cancelDrop() {
-
             map.cancelDrop();
         }
 

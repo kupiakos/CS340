@@ -34,9 +34,8 @@ public enum PlayerIndex {
      */
     FOURTH(3);
 
-    public static final PlayerIndex LAST = FOURTH;
-
     public static final int MAX_PLAYERS = 4;
+    public static final PlayerIndex LAST = fromInt(MAX_PLAYERS - 1);
     private int playerIndex;
 
     PlayerIndex(int index) {

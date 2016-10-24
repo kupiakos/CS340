@@ -172,6 +172,11 @@ public abstract class CardSet<CardType extends Enum<?>> {
         );
     }
 
+    /**
+     * Get the total number of all cards in this set
+     *
+     * @return
+     */
     public int getTotal() {
         return getTypes().mapToInt(this::getOfType).sum();
     }

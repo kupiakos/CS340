@@ -1,12 +1,13 @@
 package client.game;
 
-import client.data.PlayerInfo;
 import client.poller.Poller;
 import client.utils.ServerAsyncHelper;
 import shared.IServer;
 import shared.definitions.PlayerIndex;
 import shared.facades.FacadeManager;
 import shared.models.game.ClientModel;
+import shared.models.game.Player;
+import shared.models.games.PlayerInfo;
 
 import java.util.Observer;
 
@@ -65,6 +66,7 @@ public interface IGameManager {
 
     void setPlayerInfo(PlayerInfo playerInfo);
 
+    Player getPlayer();
 
     ServerAsyncHelper getAsync();
 
@@ -74,7 +76,7 @@ public interface IGameManager {
 
     void deleteObserver(Observer o);
 
-    public PlayerIndex getThisPlayerIndex();
+    PlayerIndex getThisPlayerIndex();
 
-    public void setThisPlayerIndex(PlayerIndex thisPlayerIndex);
+    void setThisPlayerIndex(PlayerIndex thisPlayerIndex);
 }
