@@ -39,6 +39,16 @@ public class PointsController extends Controller implements IPointsController {
         if (player.equals(longestRoadPlayer)) {
             points += 2;
         }
+
+        Player largestArmyPlayer = null;
+        PlayerIndex largestArmy = model.getTurnTracker().getLargestArmy();
+        if (largestArmy != null) {
+            largestArmyPlayer = model.getPlayer(largestArmy);
+        }
+
+        if (player.equals(largestArmyPlayer)) {
+            points += 2;
+        }
         getPointsView().setPoints(points);
 
         PlayerIndex winnerIndex = model.getWinner();
