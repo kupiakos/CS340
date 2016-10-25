@@ -15,6 +15,7 @@ public class PointsController extends Controller implements IPointsController {
 
     private IGameFinishedView finishedView;
     private boolean isLongestRoadPlayer;
+    private boolean isLargestArmyPlayer;
 
     /**
      * PointsController constructor
@@ -26,6 +27,7 @@ public class PointsController extends Controller implements IPointsController {
         super(view);
         setFinishedView(finishedView);
         isLongestRoadPlayer = false;
+        isLargestArmyPlayer = false;
         observeClientModel();
     }
 
@@ -40,6 +42,7 @@ public class PointsController extends Controller implements IPointsController {
         }
 
         int points = player.getVictoryPoints();
+
         if (Objects.equals(player, longestRoadPlayer) && !isLongestRoadPlayer) {
             points += 2;
             isLongestRoadPlayer = true;
@@ -56,9 +59,16 @@ public class PointsController extends Controller implements IPointsController {
             largestArmyPlayer = model.getPlayer(largestArmy);
         }
 
-        if (player.equals(largestArmyPlayer)) {
+        if (Objects.equals(player, largestArmyPlayer) && !isLargestArmyPlayer) {
             points += 2;
+            isLargestArmyPlayer = true;
+        } else {
+            if (isLargestArmyPlayer) {
+                points -= 2;
+            }
+            isLargestArmyPlayer = false;
         }
+
         getPointsView().setPoints(points);
 
         PlayerIndex winnerIndex = model.getWinner();
