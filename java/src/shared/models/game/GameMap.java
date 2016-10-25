@@ -326,17 +326,15 @@ public class GameMap {
         Set<VertexLocation> vertices = location.getConnectedVertices();
         boolean hasAdjacentRoad = false;
         boolean hasAdjacentBuilding = false;
-        if(!hexes.containsKey(location.getHexLoc())){
+        if (!hexes.containsKey(location.getHexLoc())) {
             if (hexes.containsKey(location.getHexLoc().getNeighborLoc(location.getDir()))) {
                 if (hexes.get(location.getHexLoc().getNeighborLoc(location.getDir())).getResource() == HexType.WATER) {
                     return false;
                 }
-            }
-            else{
+            } else {
                 return false;
             }
-        }
-        else if (hexes.get(location.getHexLoc()).getResource() == HexType.WATER) {
+        } else if (hexes.get(location.getHexLoc()).getResource() == HexType.WATER) {
             if (hexes.containsKey(location.getHexLoc().getNeighborLoc(location.getDir()))) {
                 if (hexes.get(location.getHexLoc().getNeighborLoc(location.getDir())).getResource() == HexType.WATER) {
                     return false;
@@ -366,11 +364,9 @@ public class GameMap {
                 }
             }
         }
-        if (!hasAdjacentRoad && !isSetup)
+        if (!hasAdjacentRoad && !isSetup && !hasAdjacentBuilding)
             return false;
         else if (isSetup && hasAdjacentRoad)
-            return false;
-        else if(!hasAdjacentBuilding)
             return false;
         return true;
     }
