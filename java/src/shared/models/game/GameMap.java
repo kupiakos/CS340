@@ -325,6 +325,9 @@ public class GameMap {
             return false;
         Set<VertexLocation> vertices = location.getConnectedVertices();
         boolean hasAdjacentRoad = false;
+        if (!hexes.containsKey(location.getHexLoc())) {
+            return false;
+        }
         if (hexes.get(location.getHexLoc()).getResource() == HexType.WATER) {
             if (hexes.containsKey(location.getHexLoc().getNeighborLoc(location.getDir()))) {
                 if (hexes.get(location.getHexLoc().getNeighborLoc(location.getDir())).getResource() == HexType.WATER) {
