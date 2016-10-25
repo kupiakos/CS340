@@ -21,13 +21,8 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 
     public ResourceBarController(IResourceBarView view) {
         super(view);
-        initFromModel();
         observeClientModel();
         elementActions = new HashMap<ResourceBarElement, IAction>();
-    }
-
-    protected void initFromModel() {
-        updateFromModel(getModel());
     }
 
     @Override

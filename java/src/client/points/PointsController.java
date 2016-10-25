@@ -22,12 +22,7 @@ public class PointsController extends Controller implements IPointsController {
     public PointsController(IPointsView view, IGameFinishedView finishedView) {
         super(view);
         setFinishedView(finishedView);
-        initFromModel();
         observeClientModel();
-    }
-
-    private void initFromModel() {
-        updateFromModel(getModel());
     }
 
     @Override
@@ -44,7 +39,7 @@ public class PointsController extends Controller implements IPointsController {
         getPointsView().setPoints(points);
 
         PlayerIndex winnerIndex = model.getWinner();
-        if (winnerIndex.index() != -1) {
+        if (winnerIndex != null) {
             Player winner = model.getPlayer(winnerIndex);
             boolean isLocalPlayer = false;
             if (player.equals(winner)) {
