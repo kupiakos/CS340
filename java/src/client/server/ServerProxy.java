@@ -22,8 +22,8 @@ public class ServerProxy implements IServer {
 
     private IClientCommunicator cc;
 
-    public ServerProxy() {
-        cc = ClientCommunicator.getSingleton();
+    public ServerProxy(String host, String port) {
+        cc = ClientCommunicator.getSingleton(host, port);
     }
 
     public void setMockCC(ClientModel cm) {

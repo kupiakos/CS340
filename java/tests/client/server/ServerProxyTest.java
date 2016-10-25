@@ -33,7 +33,7 @@ public class ServerProxyTest {
     private ServerProxy server;
 
     public ServerProxyTest() {
-        server = new ServerProxy();
+        server = new ServerProxy("localhost", "8881");
     }
 
     @org.junit.Before

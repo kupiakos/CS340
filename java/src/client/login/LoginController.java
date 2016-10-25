@@ -60,7 +60,10 @@ public class LoginController extends Controller implements ILoginController {
 
     @Override
     public void start() {
-        getGameManager().setServer(new ServerProxy());
+        getGameManager().setServer(new ServerProxy(
+                getGameManager().getHost(),
+                getGameManager().getPort()
+        ));
         this.server = getGameManager().getServer();
         getLoginView().showModal();
     }

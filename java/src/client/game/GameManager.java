@@ -2,6 +2,7 @@ package client.game;
 
 import client.poller.Poller;
 import client.server.MockProxy;
+import client.server.ServerProxy;
 import client.utils.ServerAsyncHelper;
 import shared.IServer;
 import shared.definitions.PlayerIndex;
@@ -47,6 +48,14 @@ public class GameManager extends Observable implements IGameManager {
      * The PlayerIndex that this client is playing as
      */
     private PlayerIndex thisPlayerIndex;
+    /**
+     * Port that was passed in from the command line
+     */
+    private String port;
+    /**
+     * Host that was passed in from command line i.e. localhost
+     */
+    private String host;
 
     /**
      * Init stuff for the game manager as needed
@@ -131,7 +140,7 @@ public class GameManager extends Observable implements IGameManager {
      */
     public IServer getServer() {
         //TODO:: Change this to the real server
-        if (server == null) server = new MockProxy();
+        if (server == null) server = new ServerProxy(host, port);
 
         return server;
     }
@@ -181,5 +190,21 @@ public class GameManager extends Observable implements IGameManager {
 
     public void setThisPlayerIndex(PlayerIndex thisPlayerIndex) {
         this.thisPlayerIndex = thisPlayerIndex;
+    }
+
+    @Override
+    public void setHostPort(String host, String port) {
+        this.host = host;
+        this.port = port;
+    }
+
+    @Override
+    public String getHost() {
+        return host;
+    }
+
+    @Override
+    public String getPort() {
+        return port;
     }
 }
