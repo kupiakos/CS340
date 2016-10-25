@@ -30,13 +30,14 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
 
     @Override
     public void start() {
+        getView().showModal();
         setServer(getGameManager().getServer());
         ActionListener pollGames = e -> updatePlayers();
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, pollGames);
-        updatePlayers();
         getAsync().runMethod(server::listAI)
                 .onSuccess(AI -> SwingUtilities.invokeLater(() -> {
                     getView().setAIChoices(AI);
+                    updatePlayers();
                 }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of AI Types.\rError message: " + e.getMessage()))
                 .start();
@@ -58,8 +59,7 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
                         return;
                     }
                     //TODO fix this whack redrawing process.
-                    if(!getView().isModalShowing())
-                        getView().closeModal();
+                    getView().closeModal();
                     getView().showModal();
                 }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\rError message: " + e.getMessage()))

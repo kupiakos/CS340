@@ -111,8 +111,8 @@ public class BuildingFacade extends AbstractFacade {
             System.err.println("Player tried to build a city without being able to.");
         }
         player.setCities(player.getCities() - 1);
+        player.setSettlements(player.getSettlements() + 1);
         resource.purchaseItem(player, PurchaseType.CITY);
-        return;
     }
 
     /**
