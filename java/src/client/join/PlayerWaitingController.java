@@ -1,17 +1,13 @@
 package client.join;
 
 import client.base.Controller;
-import client.poller.Poller;
-import client.server.ServerProxy;
 import shared.definitions.AIType;
 import shared.models.game.AddAIRequest;
-import shared.models.game.ClientModel;
 import shared.models.games.GameInfo;
 import shared.models.games.PlayerInfo;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -35,7 +31,6 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
     @Override
     public void start() {
         setServer(getGameManager().getServer());
-        getGameManager().startPoller();
         ActionListener pollGames = e -> updatePlayers();
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, pollGames);
         updatePlayers();
@@ -60,9 +55,9 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
                         //Let's start this thing!
                         mTimer.stop();
                         getView().closeModal();
+                        getGameManager().startPoller();
                         return;
                     }
-                    getView().showModal();
                 }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\rError message: " + e.getMessage()))
                 .start();

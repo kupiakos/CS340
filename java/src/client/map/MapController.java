@@ -88,7 +88,10 @@ public class MapController extends Controller implements IMapController {
                 .forEach((loc, hex) -> {
                     LOGGER.finer(() -> "New hex: " + hex);
                     view.addHex(loc, hex.getResource());
-                    view.addNumber(loc, hex.getNumber());
+                    int num = hex.getNumber();
+                    if (num > 0 && num < 12) {
+                        view.addNumber(loc, hex.getNumber());
+                    }
                 });
 
         LOGGER.fine("Robber: " + curMap.getRobber());
