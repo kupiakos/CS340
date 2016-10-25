@@ -1,25 +1,21 @@
 package client.map;
 
 import client.base.Controller;
+import client.base.IAction;
 import client.data.RobPlayerInfo;
 import client.devcards.DevCardController;
 import client.resources.ResourceBarController;
-import shared.definitions.CatanColor;
-import shared.definitions.PieceType;
-import shared.definitions.PlayerIndex;
-import shared.locations.EdgeLocation;
-import shared.locations.HexLocation;
-import shared.locations.VertexLocation;
+import shared.definitions.*;
+import shared.facades.TurnFacade;
+import shared.locations.*;
 import shared.models.game.ClientModel;
 import shared.models.game.GameMap;
 import shared.models.game.Hex;
 import shared.models.game.Player;
-import shared.models.moves.BuildCityAction;
-import shared.models.moves.BuildRoadAction;
-import shared.models.moves.BuildSettlementAction;
-import shared.models.moves.RobPlayerAction;
+import shared.models.moves.*;
 import shared.utils.MapUtils;
 
+import javax.naming.CommunicationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,13 +29,14 @@ import java.util.logging.Logger;
 public class MapController extends Controller implements IMapController {
 
     private static final Logger LOGGER = Logger.getLogger(MapController.class.getSimpleName());
+    private IAction onBuildAction;
+    private boolean activeBuild = false;
     private GameMap prevMap = new GameMap();
     private IRobView robView;
 
     public MapController(IMapView view, IRobView robView) {
         super(view);
         setRobView(robView);
-        initFromModel();
         observeClientModel();
     }
 
@@ -84,11 +81,20 @@ public class MapController extends Controller implements IMapController {
         }
 
         LOGGER.fine("Updating hexes...");
+        if (prevMap.getHexes().isEmpty()) {
+            for (HexLocation loc : getFacade().getMap().getOceanBorder(curMap.getRadius())) {
+                LOGGER.finer(() -> "New water hex:" + loc);
+                view.addHex(loc, HexType.WATER);
+            }
+        }
         MapUtils.difference(curMap.getHexes(), prevMap.getHexes())
                 .forEach((loc, hex) -> {
                     LOGGER.finer(() -> "New hex: " + hex);
                     view.addHex(loc, hex.getResource());
-                    view.addNumber(loc, hex.getNumber());
+                    int num = hex.getNumber();
+                    if (num > 0 && num < 12) {
+                        view.addNumber(loc, hex.getNumber());
+                    }
                 });
 
         LOGGER.fine("Robber: " + curMap.getRobber());
@@ -124,6 +130,29 @@ public class MapController extends Controller implements IMapController {
                     view.placeRoad(loc, colors.get(index));
                 });
         prevMap = curMap;
+
+        TurnFacade turn = getFacade().getTurn();
+        if (turn.isSetup() && turn.isPlayersTurn(getPlayer()) && onBuildAction == null) {
+            PieceType needToBuild = null;
+            int settlements = getPlayer().getSettlements();
+            int roads = getPlayer().getRoads();
+            TurnStatus status = getFacade().getTurn().getPhase();
+            onBuildAction = () -> {};
+            int round = status == TurnStatus.FIRST_ROUND ? 0 : 1;
+            if (settlements >= Constants.START_SETTLEMENTS - round) {
+                needToBuild = PieceType.SETTLEMENT;
+            } else if (roads >= Constants.START_ROADS - round) {
+                needToBuild = PieceType.ROAD;
+                onBuildAction = () -> {
+                    getAsync().runModelMethod(server::finishTurn, new FinishMoveAction(getPlayer().getPlayerIndex()))
+                            .onError(e -> LOGGER.severe("failed to finish first turn " + e.getMessage()))
+                            .start();
+                };
+            }
+            if (needToBuild != null) {
+                startMove(needToBuild);
+            }
+        }
     }
 
     /**
@@ -216,6 +245,12 @@ public class MapController extends Controller implements IMapController {
                         edgeLoc,
                         getPlayer().getPlayerIndex()))
                 .onError(e -> LOGGER.severe("Failed to place road: " + e.getMessage()))
+                .onSuccess(() -> {
+                    if (onBuildAction != null) {
+                        onBuildAction.execute();
+                        onBuildAction = null;
+                    }
+                })
                 .start();
     }
 
@@ -231,6 +266,12 @@ public class MapController extends Controller implements IMapController {
                         vertLoc,
                         getPlayer().getPlayerIndex()))
                 .onError(e -> LOGGER.severe("Failed to place settlement: " + e.getMessage()))
+                .onSuccess(() -> {
+                    if (onBuildAction != null) {
+                        onBuildAction.execute();
+                        onBuildAction = null;
+                    }
+                })
                 .start();
     }
 
@@ -243,6 +284,12 @@ public class MapController extends Controller implements IMapController {
         getAsync().runModelMethod(server::buildCity,
                 new BuildCityAction(vertLoc, getPlayer().getPlayerIndex()))
                 .onError(e -> LOGGER.severe("Failed to place city: " + e.getMessage()))
+                .onSuccess(() -> {
+                    if (onBuildAction != null) {
+                        onBuildAction.execute();
+                        onBuildAction = null;
+                    }
+                })
                 .start();
     }
 
@@ -299,7 +346,7 @@ public class MapController extends Controller implements IMapController {
     public void startMove(PieceType pieceType) {
         // There doesn't seem to be a known way to transfer the parameters so placeCity, etc. are called correctly.
         // Class fields could work?
-        getView().startDrop(pieceType, getPlayer().getColor(), true);
+        getView().startDrop(pieceType, getPlayer().getColor(), getFacade().getTurn().isSetup());
     }
 
     /**

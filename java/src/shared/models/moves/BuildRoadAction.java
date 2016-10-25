@@ -14,7 +14,7 @@ public class BuildRoadAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String TYPE = "BuildRoad";
+    private final String TYPE = "buildRoad";
     @SerializedName("free")
     @Expose
     private boolean free;

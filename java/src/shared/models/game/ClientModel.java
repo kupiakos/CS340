@@ -269,6 +269,7 @@ public class ClientModel {
      * @param players The {@link Player}s currently playing this game
      */
     public void setPlayers(@NotNull List<Player> players) {
+        players.removeIf(e -> e == null);
         this.players = players;
     }
 

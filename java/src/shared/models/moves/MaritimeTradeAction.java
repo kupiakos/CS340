@@ -14,7 +14,7 @@ public class MaritimeTradeAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String TYPE = "MaritimeTrade";
+    private final String TYPE = "maritimeTrade";
     @SerializedName("outputResource")
     @Expose
     private ResourceType outputResource;

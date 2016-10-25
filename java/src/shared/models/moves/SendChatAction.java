@@ -14,7 +14,7 @@ public class SendChatAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String TYPE = "SendChat";
+    private final String TYPE = "sendChat";
 
     @SerializedName("content")
     @Expose

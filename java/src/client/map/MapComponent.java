@@ -745,6 +745,13 @@ public class MapComponent extends JComponent {
                     (int) (hexCorner.getX() + HEX_IMAGE_WIDTH),
                     (int) (hexCorner.getY() + HEX_IMAGE_HEIGHT), 0, 0,
                     HEX_IMAGE_WIDTH, HEX_IMAGE_HEIGHT, null);
+
+//            Use this to draw the positions of the tiles
+//            g2.setFont(new Font("Sans serif", Font.PLAIN, 48));
+//            g2.setColor(Color.BLACK);
+//            g2.drawString(
+//                    String.format("(%d, %d)", entry.getKey().getX(), entry.getKey().getY()),
+//                    (int) (hexCenter.getX() - 30), (int) (hexCenter.getY()));
         }
     }
 

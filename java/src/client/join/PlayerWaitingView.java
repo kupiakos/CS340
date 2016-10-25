@@ -145,6 +145,7 @@ public class PlayerWaitingView extends OverlayView implements IPlayerWaitingView
             Dimension maxSize = new Dimension(Short.MAX_VALUE, 10);
             center.add(new Box.Filler(minSize, prefSize, maxSize));
         }
+        this.repaint();
     }
 
     @Override
