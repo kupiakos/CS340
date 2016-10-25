@@ -271,20 +271,20 @@ public class GameMap {
             if(!hexes.containsKey(location.getHexLoc())){
                 if (hexes.containsKey(location.getHexLoc().getNeighborLoc(edge.getDir()))) {
                     if (hexes.get(location.getHexLoc().getNeighborLoc(edge.getDir())).getResource() == HexType.WATER) {
-                        return false;
+                        continue;
                     }
                 }
                 else{
-                    return false;
+                    continue;
                 }
             }
             else if (hexes.get(location.getHexLoc()).getResource() == HexType.WATER) {
                 if (hexes.containsKey(location.getHexLoc().getNeighborLoc(edge.getDir()))) {
                     if (hexes.get(location.getHexLoc().getNeighborLoc(edge.getDir())).getResource() == HexType.WATER) {
-                        return false;
+                        continue;
                     }
                 } else {
-                    return false;
+                    continue;
                 }
             }
             if (getRoadOwner(edge) == player) {
