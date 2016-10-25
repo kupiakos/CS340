@@ -46,17 +46,16 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
      */
     @Override
     public void endTurn() {
-        FinishMoveAction action = new FinishMoveAction();
         TurnFacade tf = getFacade().getTurn();
         Player player = tf.getCurrentPlayer();
         IServer s = getServer();
+        FinishMoveAction action = new FinishMoveAction(player.getPlayerIndex());
 
         if (tf.canEndTurn(player)) {
             tf.endTurn(player);
             try {
                 s.finishTurn(action);
                 LOGGER.info(player.getName() + "'s turn ended");
-
             } catch (CommunicationException e) {
                 e.printStackTrace();
             }
@@ -90,6 +89,7 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 
         ClientModel cm = model;
         TurnTracker tt = model.getTurnTracker();
+        TurnFacade turns = getFacade().getTurn();
 
         PlayerIndex largestArmy = tt.getLargestArmy();
         PlayerIndex longestRoad = tt.getLongestRoad();
@@ -98,6 +98,16 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
         PlayerIndex winnerIndex = null;
         PlayerIndex index;
         boolean gameOver = false;
+
+        if (turns.isPlayersTurn(getPlayer())) {
+            if (turns.canEndTurn(getPlayer())) {
+                getView().updateGameState("End Turn", true);
+            } else {
+                getView().updateGameState("Complete other actions", false);
+            }
+        } else {
+            getView().updateGameState("Waiting for other Players", false);
+        }
 
         // update each player
         for (Player p : players) {

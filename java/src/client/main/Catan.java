@@ -1,6 +1,7 @@
 package client.main;
 
 import client.catan.CatanPanel;
+import client.game.GameManager;
 import client.join.*;
 import client.login.LoginController;
 import client.login.LoginView;
@@ -30,6 +31,9 @@ public class Catan extends JFrame {
     }
 
     public static void main(final String[] args) {
+        assert(args.length == 2);
+        GameManager.getGame().setHostPort(args[0],args[1]);
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {

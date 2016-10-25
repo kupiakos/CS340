@@ -7,7 +7,6 @@ import shared.models.game.Player;
 
 import java.util.Objects;
 
-
 /**
  * Implementation for the points controller
  */
