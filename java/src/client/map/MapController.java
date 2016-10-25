@@ -4,9 +4,7 @@ import client.base.Controller;
 import client.data.RobPlayerInfo;
 import client.devcards.DevCardController;
 import client.resources.ResourceBarController;
-import shared.definitions.CatanColor;
-import shared.definitions.PieceType;
-import shared.definitions.PlayerIndex;
+import shared.definitions.*;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
 import shared.locations.VertexLocation;
@@ -79,11 +77,16 @@ public class MapController extends Controller implements IMapController {
 
         Map<PlayerIndex, CatanColor> colors = new HashMap<>();
         for (Player p : model.getPlayers()) {
-            if(p!=null)
-                colors.put(p.getPlayerIndex(), p.getColor());
+            colors.put(p.getPlayerIndex(), p.getColor());
         }
 
         LOGGER.fine("Updating hexes...");
+        if (prevMap.getHexes().isEmpty()) {
+            for (HexLocation loc : getFacade().getMap().getOceanBorder(curMap.getRadius())) {
+                LOGGER.finer(() -> "New water hex:" + loc);
+                view.addHex(loc, HexType.WATER);
+            }
+        }
         MapUtils.difference(curMap.getHexes(), prevMap.getHexes())
                 .forEach((loc, hex) -> {
                     LOGGER.finer(() -> "New hex: " + hex);
@@ -127,6 +130,10 @@ public class MapController extends Controller implements IMapController {
                     view.placeRoad(loc, colors.get(index));
                 });
         prevMap = curMap;
+
+        if (getFacade().getTurn().getPhase() == TurnStatus.FIRST_ROUND) {
+
+        }
     }
 
     /**
