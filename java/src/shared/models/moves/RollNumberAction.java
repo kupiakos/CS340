@@ -13,7 +13,7 @@ public class RollNumberAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String TYPE = "RollNumber";
+    private final String TYPE = "rollNumber";
     @SerializedName("number")
     @Expose
     private int number;

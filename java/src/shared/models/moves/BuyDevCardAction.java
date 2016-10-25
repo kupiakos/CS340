@@ -13,7 +13,7 @@ public class BuyDevCardAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String TYPE = "BuyDevCard";
+    private final String TYPE = "buyDevCard";
 
     @SerializedName("playerIndex")
     @Expose

@@ -14,7 +14,7 @@ public class BuildCityAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String TYPE = "BuildCity";
+    private final String TYPE = "buildCity";
 
     @SerializedName("vertexLocation")
     @Expose

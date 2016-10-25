@@ -13,7 +13,7 @@ public class FinishMoveAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String TYPE = "FinishTurn";
+    private final String TYPE = "finishTurn";
 
     @SerializedName("playerIndex")
     @Expose

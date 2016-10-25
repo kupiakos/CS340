@@ -14,7 +14,7 @@ public class BuildSettlementAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String TYPE = "BuildSettlement";
+    private final String TYPE = "buildSettlement";
 
     @SerializedName("free")
     @Expose
