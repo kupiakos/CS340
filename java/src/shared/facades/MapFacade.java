@@ -10,6 +10,9 @@ import shared.models.game.ClientModel;
 import shared.models.game.GameMap;
 import shared.models.game.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This facade creates an interface to communicate with the underlying map sub-model.
  */
@@ -174,5 +177,28 @@ public class MapFacade extends AbstractFacade {
 
     private PlayerIndex getLongestRoadOwner() {
         return longestRoadOwner;
+    }
+
+    public List<HexLocation> getOceanBorder(int radius) {
+        List<HexLocation> locs = new ArrayList<>();
+        for (int i = 0; i < radius + 1; ++i) {
+            // Western border
+            locs.add(new HexLocation(-radius, i));
+            // Eastern border
+            locs.add(new HexLocation(radius, -i));
+        }
+        for (int i = 0; i < radius; ++i) {
+            // Southwestern border
+            locs.add(new HexLocation(-i, radius));
+            // Northeastern border
+            locs.add(new HexLocation(i, -radius));
+        }
+        for (int i = 1; i < radius; ++i) {
+            // Southeastern border
+            locs.add(new HexLocation(i, radius - i));
+            // Northwestern border
+            locs.add(new HexLocation(-i, i - radius));
+        }
+        return locs;
     }
 }

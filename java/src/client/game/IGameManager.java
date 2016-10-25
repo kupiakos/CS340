@@ -30,7 +30,7 @@ public interface IGameManager {
     /**
      * Starts the Poller, creates one if needed
      */
-    void startPoller(ClientModel cm);
+    void startPoller();
 
     /**
      * Stops the Poller

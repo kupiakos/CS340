@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import shared.definitions.HexType;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
@@ -324,6 +325,15 @@ public class GameMap {
             return false;
         Set<VertexLocation> vertices = location.getConnectedVertices();
         boolean hasAdjacentRoad = false;
+        if (hexes.get(location.getHexLoc()).getResource() == HexType.WATER) {
+            if (hexes.containsKey(location.getHexLoc().getNeighborLoc(location.getDir()))) {
+                if (hexes.get(location.getHexLoc().getNeighborLoc(location.getDir())).getResource() == HexType.WATER) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
         for (VertexLocation v : vertices) {
             HashSet<EdgeLocation> edges = (HashSet) getVertexEdges(v);
             if (hasBuilding(v)) {
@@ -468,9 +478,9 @@ public class GameMap {
         HashSet<EdgeLocation> edges = (HashSet) getVertexEdges(v);
         for (EdgeLocation e : edges) {
             if (roads.containsKey(e))
-                return false;
+                return true;
         }
-        return true;
+        return false;
     }
 
     /**

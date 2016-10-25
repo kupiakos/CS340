@@ -3,8 +3,8 @@ package client.join;
 import client.base.Controller;
 import client.base.IAction;
 import client.misc.IMessageView;
-import client.server.ServerProxy;
 import shared.definitions.CatanColor;
+import shared.definitions.PlayerIndex;
 import shared.models.games.CreateGameRequest;
 import shared.models.games.GameInfo;
 import shared.models.games.JoinGameRequest;
@@ -42,7 +42,6 @@ public class JoinGameController extends Controller implements IJoinGameControlle
         setNewGameView(newGameView);
         setSelectColorView(selectColorView);
         setMessageView(messageView);
-        setServer(new ServerProxy());
         selectedGame = null;
     }
 
@@ -103,9 +102,10 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 
     @Override
     public void start() {
+        getJoinGameView().showModal();
+        setServer(getGameManager().getServer());
         ActionListener pollGames = e -> reloadGamesList();
         mTimer = new javax.swing.Timer(SERVER_CONTACT_INTERVAL, pollGames);
-        getJoinGameView().showModal();
         reloadGamesList();
         mTimer.start();
     }
@@ -114,8 +114,11 @@ public class JoinGameController extends Controller implements IJoinGameControlle
         getAsync().runMethod(server::listOfGames)
                 .onSuccess(games -> SwingUtilities.invokeLater(() -> {
                     getJoinGameView().setGames(games, getGameManager().getPlayerInfo());
-                    if (!getNewGameView().isModalShowing() && !getSelectColorView().isModalShowing())
+                    if (!getNewGameView().isModalShowing() && !getSelectColorView().isModalShowing()) {
+                        //TODO fix this whack redrawing stuff
+                        getJoinGameView().closeModal();
                         getJoinGameView().showModal();
+                    }
                 }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\rError message: " + e.getMessage()))
                 .start();
@@ -141,9 +144,9 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 
         CreateGameRequest newGame = new CreateGameRequest(getNewGameView().getRandomlyPlaceHexes(), getNewGameView().getUseRandomPorts(), getNewGameView().getRandomlyPlaceNumbers(), getNewGameView().getTitle());
         getAsync().runMethod(server::createGame, newGame)
-                .onSuccess(() -> {
+                .onSuccess(() -> SwingUtilities.invokeLater(() -> {
                     reloadGamesList();
-                })
+                }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot create a new game.\rError Message: " + e.getMessage()))
                 .start();
         getNewGameView().closeModal();
@@ -172,16 +175,32 @@ public class JoinGameController extends Controller implements IJoinGameControlle
     public void joinGame(CatanColor color) {
         JoinGameRequest joinGameRequest = new JoinGameRequest(color.toString().toLowerCase(), selectedGame.getId());
         getAsync().runMethod(server::joinGame, joinGameRequest)
-                .onSuccess(() -> {
+                .onSuccess(() -> SwingUtilities.invokeLater(() -> {
                     getGameManager().getPlayerInfo().setColor(color);
                     System.out.println(selectedGame.getPlayers().size());
+                    if (selectedGame.getPlayers().size() != 0) {
+                        for (int i = 0; i < selectedGame.getPlayers().size(); i++) {
+                            if (selectedGame.getPlayers().get(i).getId() == getGameManager().getPlayerInfo().getId()) {
+                                getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(i));
+                                getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(i));
+                                break;
+                            } else if (i == selectedGame.getPlayers().size() - 1) {
+                                getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(i + 1));
+                                getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(i + 1));
+                            }
+                        }
+                    } else {
+                        getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(0));
+                        getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(0));
+                    }
                     mTimer.stop();
                     getSelectColorView().closeModal();
                     getJoinGameView().closeModal();
                     joinAction.execute();
-                })
+                }))
                 .onError(e -> {
                     displayError("Error", "Cannot join game.\rError Message: " + e.getMessage());
+                    e.printStackTrace();
                     selectedGame = null;
                 })
                 .start();
