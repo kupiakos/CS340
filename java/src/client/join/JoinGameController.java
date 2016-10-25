@@ -102,6 +102,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 
     @Override
     public void start() {
+        getJoinGameView().showModal();
         setServer(getGameManager().getServer());
         ActionListener pollGames = e -> reloadGamesList();
         mTimer = new javax.swing.Timer(SERVER_CONTACT_INTERVAL, pollGames);
@@ -115,8 +116,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                     getJoinGameView().setGames(games, getGameManager().getPlayerInfo());
                     if (!getNewGameView().isModalShowing() && !getSelectColorView().isModalShowing()) {
                         //TODO fix this whack redrawing stuff
-                        if(!getJoinGameView().isModalShowing())
-                            getJoinGameView().closeModal();
+                        getJoinGameView().closeModal();
                         getJoinGameView().showModal();
                     }
                 }))

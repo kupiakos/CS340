@@ -468,9 +468,9 @@ public class GameMap {
         HashSet<EdgeLocation> edges = (HashSet) getVertexEdges(v);
         for (EdgeLocation e : edges) {
             if (roads.containsKey(e))
-                return false;
+                return true;
         }
-        return true;
+        return false;
     }
 
     /**
