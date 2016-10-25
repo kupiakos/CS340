@@ -5,6 +5,8 @@ import shared.definitions.PlayerIndex;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
 
+import java.util.Objects;
+
 
 /**
  * Implementation for the points controller
@@ -12,6 +14,7 @@ import shared.models.game.Player;
 public class PointsController extends Controller implements IPointsController {
 
     private IGameFinishedView finishedView;
+    private boolean isLongestRoadPlayer;
 
     /**
      * PointsController constructor
@@ -22,6 +25,7 @@ public class PointsController extends Controller implements IPointsController {
     public PointsController(IPointsView view, IGameFinishedView finishedView) {
         super(view);
         setFinishedView(finishedView);
+        isLongestRoadPlayer = false;
         observeClientModel();
     }
 
@@ -36,8 +40,14 @@ public class PointsController extends Controller implements IPointsController {
         }
 
         int points = player.getVictoryPoints();
-        if (player.equals(longestRoadPlayer)) {
+        if (Objects.equals(player, longestRoadPlayer) && !isLongestRoadPlayer) {
             points += 2;
+            isLongestRoadPlayer = true;
+        } else {
+            if (isLongestRoadPlayer) {
+                points -= 2;
+            }
+            isLongestRoadPlayer = false;
         }
 
         Player largestArmyPlayer = null;
