@@ -7,7 +7,9 @@ import client.devcards.DevCardController;
 import client.resources.ResourceBarController;
 import shared.definitions.*;
 import shared.facades.TurnFacade;
-import shared.locations.*;
+import shared.locations.EdgeLocation;
+import shared.locations.HexLocation;
+import shared.locations.VertexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.GameMap;
 import shared.models.game.Hex;
@@ -15,7 +17,6 @@ import shared.models.game.Player;
 import shared.models.moves.*;
 import shared.utils.MapUtils;
 
-import javax.naming.CommunicationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,13 +58,8 @@ public class MapController extends Controller implements IMapController {
         updateFromModel(getModel());
     }
 
-    @Override
-    protected synchronized void updateFromModel(ClientModel model) {
+    private void updateMap(ClientModel model) {
         GameMap curMap = model.getMap();
-        if ((prevMap == curMap) || curMap.equals(prevMap)) {
-            LOGGER.fine("Skipping map update as it is the same");
-            return;
-        }
         LOGGER.info("Updating map...");
         IMapView view = getView();
 
@@ -131,13 +127,26 @@ public class MapController extends Controller implements IMapController {
                 });
         prevMap = curMap;
 
+    }
+
+
+    @Override
+    protected synchronized void updateFromModel(ClientModel model) {
+        GameMap curMap = model.getMap();
+        if ((prevMap == curMap) || curMap.equals(prevMap)) {
+            LOGGER.fine("Skipping map update as it is the same");
+        } else {
+            updateMap(model);
+        }
+
         TurnFacade turn = getFacade().getTurn();
         if (turn.isSetup() && turn.isPlayersTurn(getPlayer()) && onBuildAction == null) {
             PieceType needToBuild = null;
             int settlements = getPlayer().getSettlements();
             int roads = getPlayer().getRoads();
             TurnStatus status = getFacade().getTurn().getPhase();
-            onBuildAction = () -> {};
+            onBuildAction = () -> {
+            };
             int round = status == TurnStatus.FIRST_ROUND ? 0 : 1;
             if (settlements >= Constants.START_SETTLEMENTS - round) {
                 needToBuild = PieceType.SETTLEMENT;
@@ -145,6 +154,7 @@ public class MapController extends Controller implements IMapController {
                 needToBuild = PieceType.ROAD;
                 onBuildAction = () -> {
                     getAsync().runModelMethod(server::finishTurn, new FinishMoveAction(getPlayer().getPlayerIndex()))
+                            .onSuccess(() -> onBuildAction = null)
                             .onError(e -> LOGGER.severe("failed to finish first turn " + e.getMessage()))
                             .start();
                 };

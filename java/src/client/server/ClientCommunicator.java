@@ -19,8 +19,8 @@ class ClientCommunicator implements IClientCommunicator {
     private String URLPrefix;
     private static java.net.CookieManager cookieManager = new java.net.CookieManager();
 
-    private ClientCommunicator() {
-        URLPrefix = "http://localhost:8081";
+    private ClientCommunicator(String host, String port) {
+        URLPrefix = "http://" + host + ":" + port;
         CookieHandler.setDefault(cookieManager);
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
     }
@@ -31,9 +31,9 @@ class ClientCommunicator implements IClientCommunicator {
      *
      * @return {@link ClientCommunicator} SINGLETON.
      */
-    static ClientCommunicator getSingleton() {
+    static ClientCommunicator getSingleton(String host, String port) {
         if (SINGLETON == null) {
-            SINGLETON = new ClientCommunicator();
+            SINGLETON = new ClientCommunicator(host, port);
             return SINGLETON;
         }
         return SINGLETON;

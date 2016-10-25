@@ -79,4 +79,10 @@ public interface IGameManager {
     PlayerIndex getThisPlayerIndex();
 
     void setThisPlayerIndex(PlayerIndex thisPlayerIndex);
+
+    void setHostPort(String arg, String arg1);
+
+    String getHost();
+
+    String getPort();
 }
