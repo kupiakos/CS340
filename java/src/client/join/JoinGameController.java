@@ -3,10 +3,8 @@ package client.join;
 import client.base.Controller;
 import client.base.IAction;
 import client.misc.IMessageView;
-import client.server.ServerProxy;
 import shared.definitions.CatanColor;
 import shared.definitions.PlayerIndex;
-import shared.models.game.Player;
 import shared.models.games.CreateGameRequest;
 import shared.models.games.GameInfo;
 import shared.models.games.JoinGameRequest;
@@ -14,7 +12,6 @@ import shared.models.games.PlayerInfo;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 
 /**
@@ -117,8 +114,11 @@ public class JoinGameController extends Controller implements IJoinGameControlle
         getAsync().runMethod(server::listOfGames)
                 .onSuccess(games -> SwingUtilities.invokeLater(() -> {
                     getJoinGameView().setGames(games, getGameManager().getPlayerInfo());
-                    if (!getNewGameView().isModalShowing() && !getSelectColorView().isModalShowing())
+                    if (!getNewGameView().isModalShowing() && !getSelectColorView().isModalShowing()) {
+                        //TODO fix this whack redrawing stuff
+                        getJoinGameView().closeModal();
                         getJoinGameView().showModal();
+                    }
                 }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\rError message: " + e.getMessage()))
                 .start();
@@ -144,9 +144,9 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 
         CreateGameRequest newGame = new CreateGameRequest(getNewGameView().getRandomlyPlaceHexes(), getNewGameView().getUseRandomPorts(), getNewGameView().getRandomlyPlaceNumbers(), getNewGameView().getTitle());
         getAsync().runMethod(server::createGame, newGame)
-                .onSuccess(() -> {
+                .onSuccess(() -> SwingUtilities.invokeLater(() -> {
                     reloadGamesList();
-                })
+                }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot create a new game.\rError Message: " + e.getMessage()))
                 .start();
         getNewGameView().closeModal();
@@ -175,19 +175,10 @@ public class JoinGameController extends Controller implements IJoinGameControlle
     public void joinGame(CatanColor color) {
         JoinGameRequest joinGameRequest = new JoinGameRequest(color.toString().toLowerCase(), selectedGame.getId());
         getAsync().runMethod(server::joinGame, joinGameRequest)
-                .onSuccess(() -> {
+                .onSuccess(() -> SwingUtilities.invokeLater(() -> {
                     getGameManager().getPlayerInfo().setColor(color);
-//                    getAsync().runMethod(server::listOfGames)
-//                            .onSuccess(games -> {
-//                                selectedGame = Arrays.stream(games)
-//                                        .filter(gi -> gi.getId() == selectedGame.getId())
-//                                        .findFirst().orElse(null);
-//                                for (PlayerInfo p : selectedGame.getPlayers()) {
-//
-//                                }
-//                            });
                     System.out.println(selectedGame.getPlayers().size());
-                    if(selectedGame.getPlayers().size()!=0) {
+                    if (selectedGame.getPlayers().size() != 0) {
                         for (int i = 0; i < selectedGame.getPlayers().size(); i++) {
                             if (selectedGame.getPlayers().get(i).getId() == getGameManager().getPlayerInfo().getId()) {
                                 getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(i));
@@ -198,8 +189,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                                 getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(i + 1));
                             }
                         }
-                    }
-                    else{
+                    } else {
                         getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(0));
                         getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(0));
                     }
@@ -207,7 +197,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                     getSelectColorView().closeModal();
                     getJoinGameView().closeModal();
                     joinAction.execute();
-                })
+                }))
                 .onError(e -> {
                     displayError("Error", "Cannot join game.\rError Message: " + e.getMessage());
                     e.printStackTrace();

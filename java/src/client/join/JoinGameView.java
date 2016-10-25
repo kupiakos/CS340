@@ -169,6 +169,7 @@ public class JoinGameView extends OverlayView implements IJoinGameView {
         this.add(buttonPanel, BorderLayout.SOUTH);
     }
 
+
     @Override
     public IJoinGameController getController() {
         return (IJoinGameController) super.getController();
