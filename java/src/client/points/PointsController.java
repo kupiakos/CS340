@@ -29,8 +29,11 @@ public class PointsController extends Controller implements IPointsController {
     protected void updateFromModel(ClientModel model) {
         Player player = getPlayer();
 
+        Player longestRoadPlayer = null;
         PlayerIndex longestRoad = model.getTurnTracker().getLongestRoad();
-        Player longestRoadPlayer = model.getPlayer(longestRoad);
+        if (longestRoad != null) {
+            longestRoadPlayer = model.getPlayer(longestRoad);
+        }
 
         int points = player.getVictoryPoints();
         if (player.equals(longestRoadPlayer)) {
