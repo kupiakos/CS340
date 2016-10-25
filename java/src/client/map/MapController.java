@@ -79,7 +79,8 @@ public class MapController extends Controller implements IMapController {
 
         Map<PlayerIndex, CatanColor> colors = new HashMap<>();
         for (Player p : model.getPlayers()) {
-            colors.put(p.getPlayerIndex(), p.getColor());
+            if(p!=null)
+                colors.put(p.getPlayerIndex(), p.getColor());
         }
 
         LOGGER.fine("Updating hexes...");

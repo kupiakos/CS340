@@ -187,15 +187,21 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 //                                }
 //                            });
                     System.out.println(selectedGame.getPlayers().size());
-                    for (int i = 0; i < selectedGame.getPlayers().size(); i++) {
-                        if (selectedGame.getPlayers().get(i).getId() == getGameManager().getPlayerInfo().getId()) {
-                            getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(i));
-                            getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(i));
-                            break;
-                        } else if (i == selectedGame.getPlayers().size() - 1) {
-                            getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(i + 1));
-                            getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(i+1));
+                    if(selectedGame.getPlayers().size()!=0) {
+                        for (int i = 0; i < selectedGame.getPlayers().size(); i++) {
+                            if (selectedGame.getPlayers().get(i).getId() == getGameManager().getPlayerInfo().getId()) {
+                                getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(i));
+                                getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(i));
+                                break;
+                            } else if (i == selectedGame.getPlayers().size() - 1) {
+                                getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(i + 1));
+                                getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(i + 1));
+                            }
                         }
+                    }
+                    else{
+                        getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(0));
+                        getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(0));
                     }
                     mTimer.stop();
                     getSelectColorView().closeModal();

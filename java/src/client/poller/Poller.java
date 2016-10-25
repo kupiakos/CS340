@@ -34,8 +34,8 @@ public class Poller {
      */
     public Poller(IGameManager gameManager) {
         // To init the poller go ahead and check for an update to start
-        checkForUpdate();
         this.gameManager = gameManager;
+        checkForUpdate();
 
         ActionListener poll = e -> checkForUpdate();
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, poll);
