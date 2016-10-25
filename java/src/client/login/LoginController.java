@@ -94,19 +94,16 @@ public class LoginController extends Controller implements ILoginController {
         String password = getLoginView().getRegisterPassword();
         String password2 = getLoginView().getRegisterPasswordRepeat();
         if (!validateUsername(username) && !validatePassword(password)) {
-            displayInvalidTextError("Invalid username and password","Neither your username or you password match requirements\nA username must be between 3 and 7 characters.\nA password must be at least 5 characters and must be composed of alphanumeric characters, underscores or hyphens");
+            displayInvalidTextError("Invalid username and password", "Neither your username or you password match requirements\nA username must be between 3 and 7 characters.\nA password must be at least 5 characters and must be composed of alphanumeric characters, underscores or hyphens");
             return;
-        }
-        else if(!validateUsername(username)){
-            displayInvalidTextError("Invalid username","Your requested username does not match requirements.\nA username must be between 3 and 7 characters.");
+        } else if (!validateUsername(username)) {
+            displayInvalidTextError("Invalid username", "Your requested username does not match requirements.\nA username must be between 3 and 7 characters.");
             return;
-        }
-        else if(!validatePassword(password)){
-            displayInvalidTextError("Invalid password","Your requested password does not match requirements.\nA password must be at least 5 characters and must be composed of alphanumeric characters, underscores or hyphens");
+        } else if (!validatePassword(password)) {
+            displayInvalidTextError("Invalid password", "Your requested password does not match requirements.\nA password must be at least 5 characters and must be composed of alphanumeric characters, underscores or hyphens");
             return;
-        }
-        else if(!password.equals(password2)){
-            displayInvalidTextError("Passwords do not match","Please be sure your passwords match, in order to register.");
+        } else if (!password.equals(password2)) {
+            displayInvalidTextError("Passwords do not match", "Please be sure your passwords match, in order to register.");
             return;
         }
         Credentials credentials = new Credentials(password, username);
@@ -163,7 +160,7 @@ public class LoginController extends Controller implements ILoginController {
         return true;
     }
 
-    void displayInvalidTextError(String title, String message){
+    void displayInvalidTextError(String title, String message) {
         messageView.setTitle(title);
         messageView.setMessage(message);
         messageView.showModal();

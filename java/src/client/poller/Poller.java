@@ -1,6 +1,5 @@
 package client.poller;
 
-import client.game.GameManager;
 import client.game.IGameManager;
 import shared.models.game.ClientModel;
 

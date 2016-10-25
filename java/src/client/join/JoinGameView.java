@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 /**
  * Implementation for the join game view, which lets the user select a game to
@@ -43,8 +42,7 @@ public class JoinGameView extends OverlayView implements IJoinGameView {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == createButton) {
                 getController().startCreateNewGame();
-            }
-            else {
+            } else {
                 try {
                     //System.out.println(e.getActionCommand());
                     int gameId = Integer.parseInt(e.getActionCommand());
