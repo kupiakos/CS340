@@ -54,9 +54,9 @@ public class GameManager extends Observable implements IGameManager {
      * @post This provides valid operations on GameManager
      */
     GameManager() {
-        clientModel = new ClientModel();
         setAsync(new ServerAsyncHelper(this));
         playerInfo = new PlayerInfo();
+        facadeManager = new FacadeManager(clientModel);
     }
 
     /**
@@ -95,11 +95,8 @@ public class GameManager extends Observable implements IGameManager {
     /**
      * Starts the Poller, creates one if needed
      */
-    public void startPoller(ClientModel cm) {
-        if (poller == null) poller = new Poller();
-
-        poller.setClientModel(cm);
-
+    public void startPoller() {
+        if (poller == null) poller = new Poller(this);
         poller.startPoller();
     }
 
@@ -120,6 +117,9 @@ public class GameManager extends Observable implements IGameManager {
     public void updateGameManager(ClientModel cm) {
         clientModel = cm;
         facadeManager.update(cm);
+        if (cm == null) {
+            return;
+        }
         setChanged();
         notifyObservers(cm);
     }

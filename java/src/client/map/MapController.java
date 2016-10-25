@@ -4,9 +4,7 @@ import client.base.Controller;
 import client.data.RobPlayerInfo;
 import client.devcards.DevCardController;
 import client.resources.ResourceBarController;
-import shared.definitions.CatanColor;
-import shared.definitions.PieceType;
-import shared.definitions.PlayerIndex;
+import shared.definitions.*;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
 import shared.locations.VertexLocation;
@@ -39,7 +37,6 @@ public class MapController extends Controller implements IMapController {
     public MapController(IMapView view, IRobView robView) {
         super(view);
         setRobView(robView);
-        initFromModel();
         observeClientModel();
     }
 
@@ -84,11 +81,20 @@ public class MapController extends Controller implements IMapController {
         }
 
         LOGGER.fine("Updating hexes...");
+        if (prevMap.getHexes().isEmpty()) {
+            for (HexLocation loc : getFacade().getMap().getOceanBorder(curMap.getRadius())) {
+                LOGGER.finer(() -> "New water hex:" + loc);
+                view.addHex(loc, HexType.WATER);
+            }
+        }
         MapUtils.difference(curMap.getHexes(), prevMap.getHexes())
                 .forEach((loc, hex) -> {
                     LOGGER.finer(() -> "New hex: " + hex);
                     view.addHex(loc, hex.getResource());
-                    view.addNumber(loc, hex.getNumber());
+                    int num = hex.getNumber();
+                    if (num > 0 && num < 12) {
+                        view.addNumber(loc, hex.getNumber());
+                    }
                 });
 
         LOGGER.fine("Robber: " + curMap.getRobber());
@@ -124,6 +130,10 @@ public class MapController extends Controller implements IMapController {
                     view.placeRoad(loc, colors.get(index));
                 });
         prevMap = curMap;
+
+        if (getFacade().getTurn().getPhase() == TurnStatus.FIRST_ROUND) {
+
+        }
     }
 
     /**

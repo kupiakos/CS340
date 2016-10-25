@@ -24,7 +24,6 @@ public class GameHistoryController extends Controller implements IGameHistoryCon
 
     public GameHistoryController(IGameHistoryView view) {
         super(view);
-        initFromModel();
         observeClientModel();
     }
 

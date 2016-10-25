@@ -20,11 +20,11 @@ Run your client using "ant our-client".
 Test the client using "ant test".
 
 ###Examples
-There are example JSON files under the 'sample' folder.  These are examples 
-of the JSON objects used to make requests to the server, and to return the 
+There are example JSON files under the 'sample' folder.  These are examples
+of the JSON objects used to make requests to the server, and to return the
 game state (i.e., client model) to the client.  You can also see the syntax
 for the server's JSON inputs and outputs on the server's Swagger page,
-with additional details being provide in the document titled "Server Web API 
+with additional details being provide in the document titled "Server Web API
 Documentation".
 
 ###Branch Builds
