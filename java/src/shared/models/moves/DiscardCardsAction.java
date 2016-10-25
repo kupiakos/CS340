@@ -14,7 +14,7 @@ public class DiscardCardsAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String TYPE = "DiscardCards";
+    private final String TYPE = "discardCards";
 
     @SerializedName("discardedCards")
     @Expose
