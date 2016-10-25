@@ -30,7 +30,6 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
 
     @Override
     public void start() {
-        getView().showModal();
         setServer(getGameManager().getServer());
         ActionListener pollGames = e -> updatePlayers();
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, pollGames);
@@ -59,7 +58,8 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
                         return;
                     }
                     //TODO fix this whack redrawing process.
-                    getView().closeModal();
+                    if(!getView().isModalShowing())
+                        getView().closeModal();
                     getView().showModal();
                 }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\rError message: " + e.getMessage()))
