@@ -3,6 +3,7 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
 import shared.definitions.TurnStatus;
 
@@ -54,6 +55,7 @@ public class TurnTracker {
     /**
      * @return The index of who has the longest road
      */
+    @Nullable
     public PlayerIndex getLongestRoad() {
         return longestRoad;
     }
@@ -61,11 +63,11 @@ public class TurnTracker {
     /**
      * @param longestRoad The index of who has the longest road
      */
-    public void setLongestRoad(@NotNull PlayerIndex longestRoad) {
+    public void setLongestRoad(@Nullable PlayerIndex longestRoad) {
         this.longestRoad = longestRoad;
     }
 
-    public TurnTracker withLongestRoad(@NotNull PlayerIndex longestRoad) {
+    public TurnTracker withLongestRoad(@Nullable PlayerIndex longestRoad) {
         setLongestRoad(longestRoad);
         return this;
     }
@@ -111,6 +113,7 @@ public class TurnTracker {
     /**
      * @return The index of who has the biggest army (3 or more)
      */
+    @Nullable
     public PlayerIndex getLargestArmy() {
         return largestArmy;
     }
@@ -118,11 +121,11 @@ public class TurnTracker {
     /**
      * @param largestArmy The index of who has the biggest army (3 or more)
      */
-    public void setLargestArmy(@NotNull PlayerIndex largestArmy) {
+    public void setLargestArmy(@Nullable PlayerIndex largestArmy) {
         this.largestArmy = largestArmy;
     }
 
-    public TurnTracker withLargestArmy(@NotNull PlayerIndex largestArmy) {
+    public TurnTracker withLargestArmy(@Nullable PlayerIndex largestArmy) {
         setLargestArmy(largestArmy);
         return this;
     }

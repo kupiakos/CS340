@@ -14,7 +14,7 @@ public class RobPlayerAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String TYPE = "RobPlayer";
+    private final String TYPE = "robPlayer";
 
     @SerializedName("location")
     @Expose

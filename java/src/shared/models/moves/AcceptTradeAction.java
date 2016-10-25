@@ -13,7 +13,7 @@ public class AcceptTradeAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String TYPE = "AcceptTrade";
+    private final String TYPE = "acceptTrade";
 
     @SerializedName("willAccept")
     @Expose

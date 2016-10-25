@@ -14,7 +14,7 @@ public class OfferTradeAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
-    private final String TYPE = "OfferTrade";
+    private final String TYPE = "offerTrade";
 
     @SerializedName("receiver")
     @Expose
