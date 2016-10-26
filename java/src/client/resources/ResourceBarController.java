@@ -21,7 +21,6 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 
     public ResourceBarController(IResourceBarView view) {
         super(view);
-        observeClientModel();
         elementActions = new HashMap<ResourceBarElement, IAction>();
     }
 
@@ -41,13 +40,9 @@ public class ResourceBarController extends Controller implements IResourceBarCon
         elementActions.put(element, action);
     }
 
-    /**
-     * Called when the user presses the enabled build road button.
-     * Activates the modal to display, so that it can then build a road
-     */
     @Override
     public void buildRoad() {
-        executeElementAction(ResourceBarElement.ROAD);
+        executeElementAction(ResourceBarElement.ROAD); //calls mapcontroller.placeRoad
     }
 
     /**
@@ -68,10 +63,6 @@ public class ResourceBarController extends Controller implements IResourceBarCon
         executeElementAction(ResourceBarElement.CITY);
     }
 
-    /**
-     * Called when the user presses the enabled buy card button.
-     * Activates the modal to display, so that it can then buy a card
-     */
     @Override
     public void buyCard() {
         executeElementAction(ResourceBarElement.BUY_CARD);
@@ -85,6 +76,7 @@ public class ResourceBarController extends Controller implements IResourceBarCon
     public void playCard() {
         executeElementAction(ResourceBarElement.PLAY_CARD);
     }
+    //play roadBuilder
 
     private void executeElementAction(ResourceBarElement element) {
 
@@ -101,7 +93,7 @@ public class ResourceBarController extends Controller implements IResourceBarCon
     @Override
     public void updateFromModel(ClientModel model) {
 
-        Player player = getPlayer();
+        Player player = getGameManager().getPlayer();
         ResourcesFacade resourcesFacade = getFacade().getResources();
 
         int brick = player.getResources().getBrick();
@@ -140,7 +132,6 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 
         int soldiers = player.getSoldiers();
         getView().setElementAmount(ResourceBarElement.SOLDIERS, soldiers);
-
     }
 }
 

@@ -39,11 +39,11 @@ public class RobberFacade extends AbstractFacade {
      * The current state of the turn is {@link shared.definitions.TurnStatus#ROBBING} and this method is called by the controller.
      * @post None.
      */
-    public boolean shouldDiscardHalf(@NotNull Player player) {
-        if (getFacades().getTurn().getPhase() != TurnStatus.DISCARDING) {
+    public boolean shouldDiscardHalf(Player player) {
+        if (player == null) {
             return false;
         }
-        if (player == null) {
+        if (getFacades().getTurn().getPhase() != TurnStatus.DISCARDING) {
             return false;
         }
         int total = player.getResources().getTotal();
@@ -66,12 +66,13 @@ public class RobberFacade extends AbstractFacade {
      * @post If returns false, sends an error message of the problem
      * If returns true, this method does nothing more
      */
-    public boolean canDiscard(@NotNull ResourceSet resourceDiscard, @NotNull Player player) {
+    public boolean canDiscard(ResourceSet resourceDiscard, Player player) {
         if (!shouldDiscardHalf(player) || resourceDiscard == null) {
             return false;
         }
-        int half = (int) Math.ceil(player.getResources().getTotal() / 2.0);
-        if (half != resourceDiscard.getTotal()) {
+        double isHalf = player.getResources().getTotal() / 2.0;
+        int testHalf = (int) isHalf; //It is intended to round down
+        if (testHalf != resourceDiscard.getTotal()) {
             return false;
         }
         return true;
@@ -95,6 +96,12 @@ public class RobberFacade extends AbstractFacade {
         player.getResources().setBrick(player.getResources().getBrick() - resourceDiscard.getBrick());
         player.getResources().setSheep(player.getResources().getSheep() - resourceDiscard.getSheep());
         player.getResources().setWood(player.getResources().getWood() - resourceDiscard.getWood());
+
+        getModel().getBank().setOre(getModel().getBank().getOre() + resourceDiscard.getOre());
+        getModel().getBank().setWheat(getModel().getBank().getWheat() + resourceDiscard.getWheat());
+        getModel().getBank().setBrick(getModel().getBank().getBrick() + resourceDiscard.getBrick());
+        getModel().getBank().setSheep(getModel().getBank().getSheep() + resourceDiscard.getSheep());
+        getModel().getBank().setWood(getModel().getBank().getWood() + resourceDiscard.getWood());
     }
 
     /**
@@ -107,7 +114,7 @@ public class RobberFacade extends AbstractFacade {
      * This method is called by the controller.
      * @post None.
      */
-    public boolean canMoveRobber(@NotNull HexLocation newLocation) {
+    public boolean canMoveRobber(HexLocation newLocation) {
         if (newLocation == null || getFacades().getTurn().getPhase() != TurnStatus.ROBBING) {
             return false;
         }
