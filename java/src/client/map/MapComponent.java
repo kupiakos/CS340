@@ -732,7 +732,6 @@ public class MapComponent extends JComponent {
 
     private void drawHexes(Graphics2D g2) {
         for (Map.Entry<HexLocation, HexType> entry : hexes.entrySet()) {
-
             BufferedImage hexImage = getHexImage(entry.getValue());
 
             Point2D hexCenter = getHexPoint(entry.getKey());
@@ -745,24 +744,25 @@ public class MapComponent extends JComponent {
                     (int) (hexCorner.getX() + HEX_IMAGE_WIDTH),
                     (int) (hexCorner.getY() + HEX_IMAGE_HEIGHT), 0, 0,
                     HEX_IMAGE_WIDTH, HEX_IMAGE_HEIGHT, null);
-
-//            Use this to draw the positions of the tiles
-//            g2.setFont(new Font("Sans serif", Font.PLAIN, 48));
-//            g2.setColor(Color.BLACK);
-//            g2.drawString(
-//                    String.format("(%d, %d)", entry.getKey().getX(), entry.getKey().getY()),
-//                    (int) (hexCenter.getX() - 30), (int) (hexCenter.getY()));
         }
     }
 
+    private void drawPosition(Graphics2D g2, HexLocation loc) {
+        Point2D hexCenter = getHexPoint(loc);
+        g2.setFont(new Font("Sans serif", Font.PLAIN, 48));
+        g2.setColor(Color.BLACK);
+        g2.drawString(
+                String.format("(%d, %d)", loc.getX(), loc.getY()),
+                (int) (hexCenter.getX() - 30), (int) (hexCenter.getY()));
+    }
+
+
     private void drawNumbers(Graphics2D g2) {
         for (Map.Entry<HexLocation, Integer> entry : numbers.entrySet()) {
-
             BufferedImage numImage = getNumberImage(entry.getValue());
-
             Point2D hexCenter = getHexPoint(entry.getKey());
-
             drawImage(g2, numImage, hexCenter);
+//            drawPosition(g2, entry.getKey());
         }
     }
 
