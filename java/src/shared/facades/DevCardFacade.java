@@ -5,13 +5,10 @@ import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.definitions.TurnStatus;
-import shared.locations.HexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.DevCardSet;
 import shared.models.game.Player;
 import shared.models.game.ResourceSet;
-
-import java.util.Objects;
 
 /**
  * Created by Philip on 9/17/2016.
@@ -50,7 +47,7 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer == null) {
             return false;
         }
-        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || !getFacades().getTurn().isPlayersTurn(currentPlayer)) {
             return false;
         }
         DevCardSet all = new DevCardSet();
@@ -93,6 +90,15 @@ public class DevCardFacade extends AbstractFacade {
         currentPlayer.getNewDevCards().setOfType(randomType, currentPlayer.getNewDevCards().getOfType(randomType) + 1);
     }
 
+    public boolean canUseDevCard(@NotNull Player currentPlayer) {
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING ||
+                !getFacades().getTurn().isPlayersTurn(currentPlayer) ||
+                currentPlayer.hasPlayedDevCard()) {
+            return false;
+        }
+        return !currentPlayer.getOldDevCards().isEmpty();
+    }
+
     /**
      * The {@code currentPlayer} attempts to use the Soldier development card
      *
@@ -108,10 +114,10 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer == null) {
             return false;
         }
-        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || !getFacades().getTurn().isPlayersTurn(currentPlayer)) {
             return false;
         }
-        if (currentPlayer.isPlayedDevCard()) {
+        if (currentPlayer.hasPlayedDevCard()) {
             return false;
         }
         return currentPlayer.getOldDevCards().getSoldier() > 0;
@@ -150,18 +156,6 @@ public class DevCardFacade extends AbstractFacade {
         }
 
         getFacades().getTurn().startRobbing();
-
-
-//        RobberFacade robberFacade = getFacades().getRobber();
-//        getModel().getTurnTracker().setStatus(TurnStatus.ROBBING);
-//        do {
-//
-//            Objects.requireNonNull(hexLocation);
-//            Objects.requireNonNull(targetPlayer);
-//            if (robberFacade.canMoveRobber(hexLocation)) {
-//
-//            }
-//        } while (!robberFacade.canMoveRobber(hexLocation));
     }
 
     /**
@@ -179,10 +173,10 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer == null) {
             return false;
         }
-        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || !getFacades().getTurn().isPlayersTurn(currentPlayer)) {
             return false;
         }
-        if (currentPlayer.isPlayedDevCard() == true) {
+        if (currentPlayer.hasPlayedDevCard()) {
             return false;
         }
         int total = currentPlayer.getOldDevCards().getMonument() + currentPlayer.getNewDevCards().getMonument();
@@ -222,16 +216,13 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer == null) {
             return false;
         }
-        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || !getFacades().getTurn().isPlayersTurn(currentPlayer)) {
             return false;
         }
-        if (currentPlayer.isPlayedDevCard() == true) {
+        if (currentPlayer.hasPlayedDevCard()) {
             return false;
         }
-        if (currentPlayer.getOldDevCards().getRoadBuilding() == 0 || currentPlayer.getRoads() < 2) {
-            return false;
-        }
-        return true;
+        return !(currentPlayer.getOldDevCards().getRoadBuilding() == 0 || currentPlayer.getRoads() < 2);
     }
 
     /**
@@ -271,10 +262,10 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer == null || resourceType1 == null || resourceType2 == null) {
             return false;
         }
-        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || !getFacades().getTurn().isPlayersTurn(currentPlayer)) {
             return false;
         }
-        if (currentPlayer.isPlayedDevCard() == true) {
+        if (currentPlayer.hasPlayedDevCard()) {
             return false;
         }
         if (currentPlayer.getOldDevCards().getYearOfPlenty() == 0) {
@@ -350,16 +341,13 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer == null || monopolyType == null) {
             return false;
         }
-        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || !getFacades().getTurn().isPlayersTurn(currentPlayer)) {
             return false;
         }
-        if (currentPlayer.isPlayedDevCard() == true) {
+        if (currentPlayer.hasPlayedDevCard()) {
             return false;
         }
-        if (currentPlayer.getOldDevCards().getMonopoly() == 0) {
-            return false;
-        }
-        return true;
+        return currentPlayer.getOldDevCards().getMonopoly() != 0;
     }
 
     /**
