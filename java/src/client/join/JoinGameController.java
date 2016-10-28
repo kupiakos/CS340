@@ -19,13 +19,13 @@ import java.awt.event.ActionListener;
  */
 public class JoinGameController extends Controller implements IJoinGameController {
 
+    public static GameInfo selectedGame;
+    private final int SERVER_CONTACT_INTERVAL = 1000;
     private INewGameView newGameView;
     private ISelectColorView selectColorView;
     private IMessageView messageView;
     private IAction joinAction;
-    private final int SERVER_CONTACT_INTERVAL = 1000;
     private javax.swing.Timer mTimer;
-    public static GameInfo selectedGame;
 
     /**
      * JoinGameController constructor
@@ -194,7 +194,9 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                         getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(0));
                     }
                     mTimer.stop();
-                    getSelectColorView().closeModal();
+                    if (getSelectColorView().isModalShowing()) {
+                        getSelectColorView().closeModal();
+                    }
                     getJoinGameView().closeModal();
                     joinAction.execute();
                 }))
