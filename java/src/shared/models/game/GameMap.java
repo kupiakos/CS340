@@ -264,29 +264,12 @@ public class GameMap {
             return false;
         }
         Set<EdgeLocation> adjacentEdges = getVertexEdges(location);
-
+        if(adjacentEdges.size()==0){
+            return false;
+        }
         boolean ownsAdjacentRoad = false;
         boolean adjacentToAnotherPlayersRoad = false;
         for (EdgeLocation edge : adjacentEdges) {
-            if(!hexes.containsKey(location.getHexLoc())){
-                if (hexes.containsKey(location.getHexLoc().getNeighborLoc(edge.getDir()))) {
-                    if (hexes.get(location.getHexLoc().getNeighborLoc(edge.getDir())).getResource() == HexType.WATER) {
-                        continue;
-                    }
-                }
-                else{
-                    continue;
-                }
-            }
-            else if (hexes.get(location.getHexLoc()).getResource() == HexType.WATER) {
-                if (hexes.containsKey(location.getHexLoc().getNeighborLoc(edge.getDir()))) {
-                    if (hexes.get(location.getHexLoc().getNeighborLoc(edge.getDir())).getResource() == HexType.WATER) {
-                        continue;
-                    }
-                } else {
-                    continue;
-                }
-            }
             if (getRoadOwner(edge) == player) {
                 ownsAdjacentRoad = true;
             } else if (getRoadOwner(edge) != null) {
@@ -341,30 +324,15 @@ public class GameMap {
     public boolean canAddRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player, @NotNull boolean isSetup) {
         if (roads.containsKey(location))
             return false;
-        Set<VertexLocation> vertices = location.getConnectedVertices();
-        if (!hexes.containsKey(location.getHexLoc())) {
-            return false;
-        }
-        boolean hasAdjacentRoad = false;
         boolean hasAdjacentBuilding = false;
-        if(!hexes.containsKey(location.getHexLoc())){
-            if (hexes.containsKey(location.getHexLoc().getNeighborLoc(location.getDir()))) {
-                if (hexes.get(location.getHexLoc().getNeighborLoc(location.getDir())).getResource() == HexType.WATER) {
-                    return false;
-                }
-            }
-            else{
-                return false;
-            }
-        }
-        else if (hexes.get(location.getHexLoc()).getResource() == HexType.WATER) {
-            if (hexes.containsKey(location.getHexLoc().getNeighborLoc(location.getDir()))) {
-                if (hexes.get(location.getHexLoc().getNeighborLoc(location.getDir())).getResource() == HexType.WATER) {
-                    return false;
-                }
-            } else {
-                return false;
-            }
+        boolean hasAdjacentRoad = false;
+        Set<VertexLocation> vertices = location.getConnectedVertices();
+        int hexX = location.getHexLoc().getX();
+        int hexY = location.getHexLoc().getY();
+        int neighborX = location.getHexLoc().getNeighborLoc(location.getDir()).getX();
+        int neighborY = location.getHexLoc().getNeighborLoc(location.getDir()).getY();
+        if((Math.abs(hexX) >= radius || Math.abs(hexY) >= radius || Math.abs(hexX + hexY) >= radius)&&(Math.abs(neighborX) >= radius || Math.abs(neighborY) >= radius || Math.abs(neighborX + neighborY)>=radius)){
+            return false;
         }
         for (VertexLocation v : vertices) {
             HashSet<EdgeLocation> edges = (HashSet) getVertexEdges(v);
@@ -380,18 +348,17 @@ public class GameMap {
                 if (e.equals(location))
                     continue;
                 else if (roads.containsKey(e)) {
-                    if (getRoadOwner(e) != player)
-                        return false;
-                    else
+                    if (getRoadOwner(e) == player)
                         hasAdjacentRoad = true;
                 }
             }
         }
-        if (!hasAdjacentRoad && !isSetup && !hasAdjacentBuilding)
+        if(!hasAdjacentRoad && !hasAdjacentBuilding)
             return false;
-        else if (isSetup && hasAdjacentRoad)
+        else if (isSetup && !hasAdjacentBuilding)
             return false;
-        return true;
+        else
+            return true;
     }
 
     /**
@@ -495,8 +462,13 @@ public class GameMap {
         Set<EdgeLocation> edges = vertex.getEdges();
         for (Iterator<EdgeLocation> itr = edges.iterator(); itr.hasNext(); ) {
             EdgeLocation e = itr.next();
-            if ((Math.abs(e.getHexLoc().getX()) == radius || Math.abs(e.getHexLoc().getY()) == radius) || Math.abs(e.getHexLoc().getX() + e.getHexLoc().getY()) == radius)
+            int hexX = e.getHexLoc().getX();
+            int hexY = e.getHexLoc().getY();
+            int neighborX = e.getHexLoc().getNeighborLoc(e.getDir()).getX();
+            int neighborY = e.getHexLoc().getNeighborLoc(e.getDir()).getY();
+            if((Math.abs(hexX) >= radius || Math.abs(hexY) >= radius || Math.abs(hexX + hexY) >= radius)&&(Math.abs(neighborX) >= radius || Math.abs(neighborY) >= radius || Math.abs(neighborX + neighborY)>=radius)){
                 itr.remove();
+            }
         }
         return edges;
     }
