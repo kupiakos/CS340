@@ -32,8 +32,7 @@ public class ChatController extends Controller implements IChatController {
         super(view);
         observeClientModel();
     }
-
-
+    
     @Override
     public IChatView getView() {
         return (IChatView) super.getView();
