@@ -34,13 +34,14 @@ public class RollController extends Controller implements IRollController {
 
     @Override
     protected void updateFromModel(ClientModel model) {
-        Player clientPlayer = getPlayer();
-        PlayerIndex currentPlayerIndex = model.getTurnTracker().getCurrentTurn();
-        Player currentPlayer = model.getPlayer(currentPlayerIndex);
-        if (model.getTurnTracker().getStatus() == TurnStatus.ROLLING && clientPlayer.equals(currentPlayer)) {
-            getRollView().showModal();
+        if (rollTimer == null &&
+                model.getTurnTracker().getStatus() == TurnStatus.ROLLING &&
+                getFacade().getTurn().isPlayersTurn(getPlayer())) {
+            start();
         } else {
-            getRollView().closeModal();
+            if (getRollView().isModalShowing()) {
+                getRollView().closeModal();
+            }
         }
     }
 
@@ -48,11 +49,16 @@ public class RollController extends Controller implements IRollController {
      * Start timer
      */
     public void start() {
+        if (rollTimer != null) {
+            return;
+        }
         countdown = 5;
-        getRollView().showModal();
         ActionListener rollAction = e -> updateView();
         rollTimer = new Timer(1000, rollAction);
         rollTimer.start();
+        if (!getRollView().isModalShowing()) {
+            getRollView().showModal();
+        }
     }
 
     /**
@@ -82,17 +88,21 @@ public class RollController extends Controller implements IRollController {
 
     @Override
     public void rollDice() {
-        rollTimer.stop();
+        // rollTimer.stop();
         int random1 = 1 + (int) (Math.random() * ((6 - 1) + 1));
         int random2 = 1 + (int) (Math.random() * ((6 - 1) + 1));
         int rollValue = random1 + random2;
 
+        getRollView().closeModal();
         RollNumberAction roll = new RollNumberAction(rollValue, getPlayer().getPlayerIndex());
         getAsync().runModelMethod(server::rollNumber, roll)
+                .onSuccess(() -> SwingUtilities.invokeLater(() -> {
+                    rollTimer = null;
+                    getResultView().setRollValue(rollValue);
+                    getResultView().showModal();
+                }))
                 .onError(Throwable::printStackTrace)
                 .start();
-        getResultView().setRollValue(rollValue);
-        getResultView().showModal();
     }
 
 }

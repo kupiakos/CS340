@@ -87,27 +87,27 @@ public class RobberFacadeTest {
 
     @Test
     public void canDiscard() throws Exception {
-        ResourceSet trueSet1 = new ResourceSet(1, 1, 1, 1, 1);
-        ResourceSet falseSet1 = new ResourceSet(3, 1, 1, 1, 1);
-        ResourceSet falseSet2 = new ResourceSet(1, 0, 1, 1, 1);
+        ResourceSet trueSet = new ResourceSet(1, 1, 1, 1, 1);
+        ResourceSet falseSet = new ResourceSet(3, 1, 1, 1, 1);
+        ResourceSet roundSet = new ResourceSet(1, 0, 1, 1, 1);
 
         //Pre-condition tests
         model.getTurnTracker().setStatus(TurnStatus.FIRST_ROUND);
-        assertFalse(facade.canDiscard(trueSet1, listOfPlayers.get(0)));
+        assertFalse(facade.canDiscard(trueSet, listOfPlayers.get(0)));
 //        assertFalse(facade.canDiscard(null, listOfPlayers.get(0)));
         model.getTurnTracker().setStatus(TurnStatus.DISCARDING);
 //        assertFalse(facade.canDiscard(null, listOfPlayers.get(0)));
-        assertFalse(facade.canDiscard(trueSet1, listOfPlayers.get(1)));
-        assertFalse(facade.canDiscard(trueSet1, listOfPlayers.get(3)));
+        assertFalse(facade.canDiscard(trueSet, listOfPlayers.get(1)));
+        assertFalse(facade.canDiscard(trueSet, listOfPlayers.get(3)));
 
         //Subset tests
-        assertTrue(facade.canDiscard(trueSet1, listOfPlayers.get(0)));
-        assertFalse(facade.canDiscard(falseSet1, listOfPlayers.get(0)));
+        assertTrue(facade.canDiscard(trueSet, listOfPlayers.get(0)));
+        assertFalse(facade.canDiscard(falseSet, listOfPlayers.get(0)));
 
         //Rounding tests
-        assertFalse(facade.canDiscard(falseSet2, listOfPlayers.get(0)));
-        assertFalse(facade.canDiscard(falseSet2, listOfPlayers.get(2)));
-        assertTrue(facade.canDiscard(trueSet1, listOfPlayers.get(2)));
+        assertFalse(facade.canDiscard(roundSet, listOfPlayers.get(0)));
+        assertFalse(facade.canDiscard(trueSet, listOfPlayers.get(2)));
+        assertTrue(facade.canDiscard(roundSet, listOfPlayers.get(2)));
     }
 
     @Test
@@ -125,8 +125,9 @@ public class RobberFacadeTest {
         facade.discard(set, listOfPlayers.get(0));
         ResourceSet confirm = new ResourceSet(1, 1, 1, 1, 1);
         assertEquals(confirm, listOfPlayers.get(0).getResources());
+        set = new ResourceSet(1, 0, 1, 1, 1);
         facade.discard(set, listOfPlayers.get(2));
-        ResourceSet confirm2 = new ResourceSet(0, 2, 1, 1, 0);
+        ResourceSet confirm2 = new ResourceSet(0, 3, 1, 1, 0);
         assertEquals(confirm2, listOfPlayers.get(2).getResources());
     }
 

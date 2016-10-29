@@ -2,20 +2,27 @@ package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.DevCardType;
+import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.definitions.TurnStatus;
+import shared.locations.HexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.DevCardSet;
 import shared.models.game.Player;
 import shared.models.game.ResourceSet;
+
+import java.util.Objects;
 
 /**
  * Created by Philip on 9/17/2016.
  */
 public class DevCardFacade extends AbstractFacade {
 
+    ResourcesFacade resourcesFacade;
+
     /**
-     * Constructor. Requires a valid game model to work.
+     * Constructor. Requires a valid game model to work. Also sets the {@code resourcesFacade} so that the
+     * {@link DevCardFacade#useYearOfPlentyCard(Player, ResourceType, ResourceType)} can give the player two resource cards
      *
      * @param manager the manager to use, not null
      * @throws NullPointerException if {@code model} is null
@@ -24,6 +31,7 @@ public class DevCardFacade extends AbstractFacade {
      */
     public DevCardFacade(@NotNull FacadeManager manager) {
         super(manager);
+        resourcesFacade = manager.getResources();
     }
 
     /**
@@ -38,8 +46,11 @@ public class DevCardFacade extends AbstractFacade {
      * There is at least one development card available
      * @post None.
      */
-    public boolean canBuyDevCard(@NotNull Player currentPlayer) {
-        if (currentPlayer == null || getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+    public boolean canBuyDevCard(Player currentPlayer) {
+        if (currentPlayer == null) {
+            return false;
+        }
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
             return false;
         }
         DevCardSet all = new DevCardSet();
@@ -93,11 +104,14 @@ public class DevCardFacade extends AbstractFacade {
      * It is the {@code currentPlayer} turn.
      * @post None.
      */
-    public boolean canUseSoldierCard(@NotNull Player currentPlayer) {
+    public boolean canUseSoldierCard(Player currentPlayer) {
         if (currentPlayer == null) {
             return false;
         }
         if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+            return false;
+        }
+        if (currentPlayer.isPlayedDevCard()) {
             return false;
         }
         return currentPlayer.getOldDevCards().getSoldier() > 0;
@@ -115,13 +129,39 @@ public class DevCardFacade extends AbstractFacade {
      * The card cannot be reused for the rest of the game
      * If applicable, the {@code currentPlayer} gets the Largest Army card
      */
-    public void useSoldierCard(@NotNull Player currentPlayer) {
+    public void useSoldierCard(@NotNull Player currentPlayer) {//, @NotNull HexLocation hexLocation, @NotNull Player targetPlayer
         if (!canUseSoldierCard(currentPlayer)) {
             throw new IllegalArgumentException();
         }
-        RobberFacade facade = getFacades().getRobber();
-        //Call move Robber
-        //facade.moveRobber();
+        currentPlayer.setPlayedDevCard(true);
+        currentPlayer.getOldDevCards().setSoldier(currentPlayer.getOldDevCards().getSoldier() - 1);
+        currentPlayer.setSoldiers(currentPlayer.getSoldiers() + 1);
+        if (currentPlayer.getSoldiers() >= 3) {
+            if (getModel().getTurnTracker().getLargestArmy() == null) {
+                getModel().getTurnTracker().setLargestArmy(currentPlayer.getPlayerIndex());
+                currentPlayer.setVictoryPoints(currentPlayer.getVictoryPoints() + 2);
+            } else {
+                PlayerIndex largestArmy = getModel().getTurnTracker().getLargestArmy();
+                if (currentPlayer.getSoldiers() > getModel().getPlayer(largestArmy).getSoldiers()) {
+                    getModel().getTurnTracker().setLargestArmy(currentPlayer.getPlayerIndex());
+                    currentPlayer.setVictoryPoints(currentPlayer.getVictoryPoints() + 2);
+                }
+            }
+        }
+
+        getFacades().getTurn().startRobbing();
+
+
+//        RobberFacade robberFacade = getFacades().getRobber();
+//        getModel().getTurnTracker().setStatus(TurnStatus.ROBBING);
+//        do {
+//
+//            Objects.requireNonNull(hexLocation);
+//            Objects.requireNonNull(targetPlayer);
+//            if (robberFacade.canMoveRobber(hexLocation)) {
+//
+//            }
+//        } while (!robberFacade.canMoveRobber(hexLocation));
     }
 
     /**
@@ -135,11 +175,14 @@ public class DevCardFacade extends AbstractFacade {
      * It is the {@code currentPlayer} turn.
      * @post None.
      */
-    public boolean canUseVictoryPointCards(@NotNull Player currentPlayer) {
+    public boolean canUseVictoryPointCards(Player currentPlayer) {
         if (currentPlayer == null) {
             return false;
         }
         if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+            return false;
+        }
+        if (currentPlayer.isPlayedDevCard() == true) {
             return false;
         }
         int total = currentPlayer.getOldDevCards().getMonument() + currentPlayer.getNewDevCards().getMonument();
@@ -150,6 +193,7 @@ public class DevCardFacade extends AbstractFacade {
      * The {@code currentPlayer} uses all of their the Victory Point development cards.  This can only be played when the {@code currentPlayer}'s total victory points equal 10, including unplayed victory point cards
      *
      * @param currentPlayer The player who is using their development card during their turn.
+     * @throws IllegalArgumentException
      * @pre This method is called by the controller when the card to be used is a Victory Point card
      * {@code currentPlayer} is part of the current {@link ClientModel}
      * The method {@link DevCardFacade#canUseVictoryPointCards(Player)} returns a true statement
@@ -157,7 +201,12 @@ public class DevCardFacade extends AbstractFacade {
      * The card cannot be reused for the rest of the game
      */
     public void useVictoryPointCards(@NotNull Player currentPlayer) {
-
+        if (!canUseVictoryPointCards(currentPlayer)) {
+            throw new IllegalArgumentException();
+        }
+        currentPlayer.setPlayedDevCard(true);
+        currentPlayer.setVictoryPoints(currentPlayer.getVictoryPoints() + currentPlayer.getOldDevCards().getMonument() + currentPlayer.getNewDevCards().getMonument());
+        getModel().setWinner(currentPlayer.getPlayerIndex());
     }
 
     /**
@@ -169,14 +218,27 @@ public class DevCardFacade extends AbstractFacade {
      * {@code currentPlayer} is part of the current {@link ClientModel}
      * @post None.
      */
-    public boolean canUseRoadBuildingCard(@NotNull Player currentPlayer) {
-        return false;
+    public boolean canUseRoadBuildingCard(Player currentPlayer) {
+        if (currentPlayer == null) {
+            return false;
+        }
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+            return false;
+        }
+        if (currentPlayer.isPlayedDevCard() == true) {
+            return false;
+        }
+        if (currentPlayer.getOldDevCards().getRoadBuilding() == 0 || currentPlayer.getRoads() < 2) {
+            return false;
+        }
+        return true;
     }
 
     /**
      * The {@code currentPlayer} uses the Road Building development card.  The {@code currentPlayer} places 2 roads down
      *
      * @param currentPlayer The player who is using their development card during their turn.
+     * @throws IllegalArgumentException
      * @pre This method is called by the controller when the card to be used is a Road Building card
      * {@code currentPlayer} is part of the current {@link ClientModel}
      * The method {@link DevCardFacade#canUseRoadBuildingCard(Player)} returns a true statement.
@@ -185,7 +247,12 @@ public class DevCardFacade extends AbstractFacade {
      * If applicable, the {@code currentPlayer} gets the Longest Road card
      */
     public void useRoadBuildingCard(@NotNull Player currentPlayer) {
-
+        if (!canUseRoadBuildingCard(currentPlayer)) {
+            throw new IllegalArgumentException();
+        }
+        currentPlayer.setPlayedDevCard(true);
+        currentPlayer.getOldDevCards().setRoadBuilding(currentPlayer.getOldDevCards().getRoadBuilding() - 1);
+        //Let the roads be placed through buildingFacade and check if the Longest Road card is given
     }
 
     /**
@@ -200,8 +267,41 @@ public class DevCardFacade extends AbstractFacade {
      * {@code resourceType1} and {@code resourceType2} are not null
      * @post None.
      */
-    public boolean canUseYearOfPlentyCard(@NotNull Player currentPlayer, @NotNull ResourceType resourceType1, @NotNull ResourceType resourceType2) {
-        return false;
+    public boolean canUseYearOfPlentyCard(Player currentPlayer, ResourceType resourceType1, ResourceType resourceType2) {
+        if (currentPlayer == null || resourceType1 == null || resourceType2 == null) {
+            return false;
+        }
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+            return false;
+        }
+        if (currentPlayer.isPlayedDevCard() == true) {
+            return false;
+        }
+        if (currentPlayer.getOldDevCards().getYearOfPlenty() == 0) {
+            return false;
+        }
+        if (resourceType1 == resourceType2) {
+            ResourceSet resources = new ResourceSet(resourceType1, 2);
+            if (!resourcesFacade.canReceiveFromBank(resources)) {
+                return false;
+            }
+//            if (getModel().getBank().getOfType(resourceType1) < 2) {
+//                return false;
+//            }
+        } else {
+            ResourceSet resources1 = new ResourceSet(resourceType1, 1);
+            ResourceSet resources2 = new ResourceSet(resourceType2, 1);
+            if (!resourcesFacade.canReceiveFromBank(resources1) || !resourcesFacade.canReceiveFromBank(resources2)) {
+                return false;
+            }
+//            if (getModel().getBank().getOfType(resourceType1) < 1) {
+//                return false;
+//            }
+//            if (getModel().getBank().getOfType(resourceType2) < 1) {
+//                return false;
+//            }
+        }
+        return true;
     }
 
     /**
@@ -210,6 +310,7 @@ public class DevCardFacade extends AbstractFacade {
      * @param currentPlayer The player who is using their development card during their turn.
      * @param resourceType1 The first resource desired by the {@code currentPlayer}
      * @param resourceType2 The second resource desired by the {@code currentPlayer}
+     * @throws IllegalArgumentException
      * @pre This method is called by the controller when the card to be used is a Year of Plenty card
      * {@code currentPlayer} is part of the current {@link ClientModel}
      * {@code resourceType1} and {@code resourceType2} are valid {@link ResourceType}
@@ -218,7 +319,20 @@ public class DevCardFacade extends AbstractFacade {
      * The card is discarded and cannot be used for the rest of the game
      */
     public void useYearOfPlentyCard(@NotNull Player currentPlayer, @NotNull ResourceType resourceType1, @NotNull ResourceType resourceType2) {
-
+        if (!canUseYearOfPlentyCard(currentPlayer, resourceType1, resourceType2)) {
+            throw new IllegalArgumentException();
+        }
+        currentPlayer.setPlayedDevCard(true);
+        currentPlayer.getOldDevCards().setYearOfPlenty(currentPlayer.getOldDevCards().getYearOfPlenty() - 1);
+        if (resourceType1 == resourceType2) {
+            ResourceSet resources = new ResourceSet(resourceType1, 2);
+            resourcesFacade.receiveFromBank(currentPlayer, resources);
+        } else {
+            ResourceSet resources1 = new ResourceSet(resourceType1, 1);
+            ResourceSet resources2 = new ResourceSet(resourceType2, 1);
+            resourcesFacade.receiveFromBank(currentPlayer, resources1);
+            resourcesFacade.receiveFromBank(currentPlayer, resources2);
+        }
     }
 
     /**
@@ -232,8 +346,20 @@ public class DevCardFacade extends AbstractFacade {
      * {@code monopolyType} is valid {@link ResourceType}
      * @post None.
      */
-    public boolean canUseMonopolyCard(@NotNull Player currentPlayer, @NotNull ResourceType monopolyType) {
-        return false;
+    public boolean canUseMonopolyCard(Player currentPlayer, ResourceType monopolyType) {
+        if (currentPlayer == null || monopolyType == null) {
+            return false;
+        }
+        if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || getFacades().getTurn().isPlayersTurn(currentPlayer) == false) {
+            return false;
+        }
+        if (currentPlayer.isPlayedDevCard() == true) {
+            return false;
+        }
+        if (currentPlayer.getOldDevCards().getMonopoly() == 0) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -241,6 +367,7 @@ public class DevCardFacade extends AbstractFacade {
      *
      * @param currentPlayer The player who is using their development card during their turn.
      * @param monopolyType  The resource type that the {@code currentPlayer} wants
+     * @throws IllegalArgumentException
      * @pre This method is called by the controller when the card to be used is a Monopoly card
      * {@code currentPlayer} is part of the current {@link ClientModel}
      * {@code monopolyType} is valid {@link ResourceType}
@@ -249,6 +376,17 @@ public class DevCardFacade extends AbstractFacade {
      * The card is discarded and cannot be used for the rest of the game
      */
     public void useMonopolyCard(@NotNull Player currentPlayer, @NotNull ResourceType monopolyType) {
-
+        if (!canUseMonopolyCard(currentPlayer, monopolyType)) {
+            throw new IllegalArgumentException();
+        }
+        currentPlayer.setPlayedDevCard(true);
+        currentPlayer.getOldDevCards().setMonopoly(currentPlayer.getOldDevCards().getMonopoly() - 1);
+        for (Player p : getModel().getPlayers()) {
+            if (p != currentPlayer && p.getResources().getOfType(monopolyType) > 0) {
+                int number = p.getResources().getOfType(monopolyType);
+                p.getResources().setOfType(monopolyType, 0);
+                currentPlayer.getResources().setOfType(monopolyType, currentPlayer.getResources().getOfType(monopolyType) + number);
+            }
+        }
     }
 }

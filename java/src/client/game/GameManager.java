@@ -1,7 +1,6 @@
 package client.game;
 
 import client.poller.Poller;
-import client.server.MockProxy;
 import client.server.ServerProxy;
 import client.utils.ServerAsyncHelper;
 import shared.IServer;
@@ -51,11 +50,11 @@ public class GameManager extends Observable implements IGameManager {
     /**
      * Port that was passed in from the command line
      */
-    private String port;
+    private String port = "8081";
     /**
      * Host that was passed in from command line i.e. localhost
      */
-    private String host;
+    private String host = "localhost";
 
     /**
      * Init stuff for the game manager as needed

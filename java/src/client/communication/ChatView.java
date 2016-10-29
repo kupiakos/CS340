@@ -87,8 +87,12 @@ public class ChatView extends PanelView implements IChatView {
     private void sendMessage() {
         String message = chatTextInput.getText();
         if (!message.isEmpty()) {
-            getController().sendMessage(message);
-
+            try{
+                getController().sendMessage(message);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
             // Clear the text area so we are ready for the next message
             chatTextInput.setText("");
         }
