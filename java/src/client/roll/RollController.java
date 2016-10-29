@@ -89,9 +89,7 @@ public class RollController extends Controller implements IRollController {
 
     @Override
     public void rollDice() {
-        if(rollTimer.isRunning()) {
-            rollTimer.stop();
-        }
+        // rollTimer.stop();
         int random1 = 1 + (int) (Math.random() * ((6 - 1) + 1));
         int random2 = 1 + (int) (Math.random() * ((6 - 1) + 1));
         int rollValue = random1 + random2;
