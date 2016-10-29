@@ -391,7 +391,7 @@ public class Player {
     /**
      * @return Whether the player has played a dev card this turn.
      */
-    public boolean isPlayedDevCard() {
+    public boolean hasPlayedDevCard() {
         return playedDevCard;
     }
 

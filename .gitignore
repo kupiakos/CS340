@@ -16,7 +16,8 @@ demo/logs/
 cs340.properties
 cs340.xml
 java/dist/
-
+tester.zip
+*.directory
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids

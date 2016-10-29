@@ -40,7 +40,7 @@ public class RollController extends Controller implements IRollController {
             start();
         } else {
             if (getRollView().isModalShowing()) {
-                getRollView().closeModal();
+                //getRollView().closeModal();
             }
         }
     }
@@ -53,6 +53,8 @@ public class RollController extends Controller implements IRollController {
             return;
         }
         countdown = 5;
+
+        getRollView().setMessage("Rolling automatically in..." + countdown + " seconds");
         ActionListener rollAction = e -> updateView();
         rollTimer = new Timer(1000, rollAction);
         rollTimer.start();
@@ -88,7 +90,9 @@ public class RollController extends Controller implements IRollController {
 
     @Override
     public void rollDice() {
-        // rollTimer.stop();
+        if(rollTimer.isRunning()) {
+            rollTimer.stop();
+        }
         int random1 = 1 + (int) (Math.random() * ((6 - 1) + 1));
         int random2 = 1 + (int) (Math.random() * ((6 - 1) + 1));
         int rollValue = random1 + random2;

@@ -356,7 +356,7 @@ public class MapController extends Controller implements IMapController {
     public void startMove(PieceType pieceType) {
         // There doesn't seem to be a known way to transfer the parameters so placeCity, etc. are called correctly.
         // Class fields could work?
-        getView().startDrop(pieceType, getPlayer().getColor(), getFacade().getTurn().isSetup());
+        getView().startDrop(pieceType, getPlayer().getColor(), !getFacade().getTurn().isSetup());
     }
 
     /**
@@ -391,8 +391,8 @@ public class MapController extends Controller implements IMapController {
     public void playRoadBuildingCard() {
         // TODO: Identify situations when requiring placing two roads is impossible, and preclude card.
         // TODO: Identify if startDrop (OverlayView.showModal) is blocking or not.
-        getView().startDrop(PieceType.ROAD, getPlayer().getColor(), false);
-        getView().startDrop(PieceType.ROAD, getPlayer().getColor(), false);
+        startMove(PieceType.ROAD);
+        startMove(PieceType.ROAD);
     }
 
     /**

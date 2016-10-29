@@ -69,7 +69,7 @@ public abstract class Controller implements IController, Observer {
 
 
     @Override
-    public void update(Observable o, Object arg) {
+    public synchronized void update(Observable o, Object arg) {
         if (o instanceof IGameManager && arg instanceof ClientModel) {
             setServer(((IGameManager) o).getServer());
             updateFromModel((ClientModel) arg);
