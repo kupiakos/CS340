@@ -1,10 +1,8 @@
 package client.roll;
 
 import client.base.Controller;
-import shared.definitions.PlayerIndex;
 import shared.definitions.TurnStatus;
 import shared.models.game.ClientModel;
-import shared.models.game.Player;
 import shared.models.moves.RollNumberAction;
 
 import javax.swing.*;
@@ -90,7 +88,7 @@ public class RollController extends Controller implements IRollController {
 
     @Override
     public void rollDice() {
-        if(rollTimer.isRunning()) {
+        if (rollTimer.isRunning()) {
             rollTimer.stop();
         }
         int random1 = 1 + (int) (Math.random() * ((6 - 1) + 1));
