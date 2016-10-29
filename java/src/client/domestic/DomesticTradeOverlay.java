@@ -51,7 +51,6 @@ public class DomesticTradeOverlay extends OverlayView implements IDomesticTradeO
     };
 
     public DomesticTradeOverlay() {
-
         this.buildView();
     }
 
@@ -199,6 +198,8 @@ public class DomesticTradeOverlay extends OverlayView implements IDomesticTradeO
             });
             toggleButtonGroup.add(recieveToggle);
 
+            upDownPanelByResourceType.get(resourceType).setVisible(false);
+
 
             JPanel segmentedButtonPanel = new JPanel();
             segmentedButtonPanel.setAlignmentX(CENTER_ALIGNMENT);
@@ -279,7 +280,7 @@ public class DomesticTradeOverlay extends OverlayView implements IDomesticTradeO
     /**
      * Resizes an image using a Graphics2D object backed by a BufferedImage.
      *
-     * @param srcImg - source image to scale
+     * @param src - source image to scale
      * @param w      - desired width
      * @param h      - desired height
      * @return - the new resized image
@@ -318,7 +319,6 @@ public class DomesticTradeOverlay extends OverlayView implements IDomesticTradeO
 
     @Override
     public void setPlayers(PlayerInfo[] value) {
-
         for (int i = 0; i < value.length; i++) {
 
             JToggleButton toggle = new JToggleButton(value[i].getName());

@@ -3,6 +3,7 @@ package shared.models.moves;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
 import shared.models.game.ResourceSet;
 
@@ -66,7 +67,7 @@ public class OfferTradeAction {
     /**
      * @param receiver Who you're offering the trade to (0-3)
      */
-    public void setReceiver(@NotNull PlayerIndex receiver) {
+    public void setReceiver(@Nullable PlayerIndex receiver) {
         this.receiver = receiver;
     }
 
