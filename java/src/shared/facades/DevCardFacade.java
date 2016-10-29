@@ -124,9 +124,7 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer.hasPlayedDevCard()) {
             return false;
         }
-        if (currentPlayer.isPlayedDevCard()) {
-            return false;
-        }
+
         return currentPlayer.getOldDevCards().getSoldier() > 0;
     }
 
@@ -188,9 +186,7 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer.hasPlayedDevCard()) {
             return false;
         }
-        if (currentPlayer.isPlayedDevCard() == true) {
-            return false;
-        }
+
         int total = currentPlayer.getOldDevCards().getMonument() + currentPlayer.getNewDevCards().getMonument();
         return total > 0 && (currentPlayer.getVictoryPoints() + total) >= 10;
     }
