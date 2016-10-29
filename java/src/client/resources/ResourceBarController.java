@@ -93,6 +93,7 @@ public class ResourceBarController extends Controller implements IResourceBarCon
      */
     @Override
     public void updateFromModel(ClientModel model) {
+
         Player player = getPlayer();
         ResourcesFacade resourcesFacade = getFacade().getResources();
 

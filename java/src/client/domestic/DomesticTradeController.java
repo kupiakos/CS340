@@ -73,61 +73,56 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
     @Override
     public void startTrade() {
-        tradeOffer = new TradeOffer(null, new ResourceSet(0,0,0,0,0),getPlayer().getPlayerIndex());
+        tradeOffer = new TradeOffer(null, new ResourceSet(0, 0, 0, 0, 0), getPlayer().getPlayerIndex());
         getTradeOverlay().showModal();
     }
 
     @Override
     public void decreaseResourceAmount(ResourceType resource) {
-        switch(resource){
+        switch (resource) {
             case WOOD:
-                if(sendWood){
-                    tradeOffer.getOffer().setWood(tradeOffer.getOffer().getWood()+1);
-                    if(tradeOffer.getOffer().getWood()>=getPlayer().getResources().getWood())
+                if (sendWood) {
+                    tradeOffer.getOffer().setWood(tradeOffer.getOffer().getWood() + 1);
+                    if (tradeOffer.getOffer().getWood() >= getPlayer().getResources().getWood())
                         getTradeOverlay().setResourceAmountChangeEnabled(ResourceType.WOOD, false, true);
-                }
-                else{
-                    tradeOffer.getOffer().setWood(tradeOffer.getOffer().getWood()-1);
+                } else {
+                    tradeOffer.getOffer().setWood(tradeOffer.getOffer().getWood() - 1);
                 }
                 break;
             case BRICK:
-                if(sendBrick){
-                    tradeOffer.getOffer().setBrick(tradeOffer.getOffer().getBrick()+1);
-                    if(tradeOffer.getOffer().getBrick()>=getPlayer().getResources().getBrick())
+                if (sendBrick) {
+                    tradeOffer.getOffer().setBrick(tradeOffer.getOffer().getBrick() + 1);
+                    if (tradeOffer.getOffer().getBrick() >= getPlayer().getResources().getBrick())
                         getTradeOverlay().setResourceAmountChangeEnabled(ResourceType.BRICK, false, true);
-                }
-                else{
-                    tradeOffer.getOffer().setWood(tradeOffer.getOffer().getWood()-1);
+                } else {
+                    tradeOffer.getOffer().setWood(tradeOffer.getOffer().getWood() - 1);
                 }
                 break;
             case WHEAT:
-                if(sendWood){
-                    tradeOffer.getOffer().setWheat(tradeOffer.getOffer().getWheat()+1);
-                    if(tradeOffer.getOffer().getWheat()>=getPlayer().getResources().getWheat())
+                if (sendWood) {
+                    tradeOffer.getOffer().setWheat(tradeOffer.getOffer().getWheat() + 1);
+                    if (tradeOffer.getOffer().getWheat() >= getPlayer().getResources().getWheat())
                         getTradeOverlay().setResourceAmountChangeEnabled(ResourceType.WHEAT, false, true);
-                }
-                else{
-                    tradeOffer.getOffer().setWheat(tradeOffer.getOffer().getWheat()-1);
+                } else {
+                    tradeOffer.getOffer().setWheat(tradeOffer.getOffer().getWheat() - 1);
                 }
                 break;
             case ORE:
-                if(sendWood){
-                    tradeOffer.getOffer().setOre(tradeOffer.getOffer().getOre()+1);
-                    if(tradeOffer.getOffer().getOre()>=getPlayer().getResources().getOre())
+                if (sendWood) {
+                    tradeOffer.getOffer().setOre(tradeOffer.getOffer().getOre() + 1);
+                    if (tradeOffer.getOffer().getOre() >= getPlayer().getResources().getOre())
                         getTradeOverlay().setResourceAmountChangeEnabled(ResourceType.ORE, false, true);
-                }
-                else{
-                    tradeOffer.getOffer().setOre(tradeOffer.getOffer().getOre()-1);
+                } else {
+                    tradeOffer.getOffer().setOre(tradeOffer.getOffer().getOre() - 1);
                 }
                 break;
             case SHEEP:
-                if(sendWood){
-                    tradeOffer.getOffer().setSheep(tradeOffer.getOffer().getSheep()+1);
-                    if(tradeOffer.getOffer().getSheep()>=getPlayer().getResources().getSheep())
+                if (sendWood) {
+                    tradeOffer.getOffer().setSheep(tradeOffer.getOffer().getSheep() + 1);
+                    if (tradeOffer.getOffer().getSheep() >= getPlayer().getResources().getSheep())
                         getTradeOverlay().setResourceAmountChangeEnabled(ResourceType.SHEEP, false, true);
-                }
-                else{
-                    tradeOffer.getOffer().setSheep(tradeOffer.getOffer().getSheep()-1);
+                } else {
+                    tradeOffer.getOffer().setSheep(tradeOffer.getOffer().getSheep() - 1);
                 }
                 break;
         }
@@ -135,55 +130,50 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
     @Override
     public void increaseResourceAmount(ResourceType resource) {
-        switch(resource){
+        switch (resource) {
             case WOOD:
-                if(sendWood){
-                    tradeOffer.getOffer().setWood(tradeOffer.getOffer().getWood()-1);
-                    if(tradeOffer.getOffer().getWood()==0)
+                if (sendWood) {
+                    tradeOffer.getOffer().setWood(tradeOffer.getOffer().getWood() - 1);
+                    if (tradeOffer.getOffer().getWood() == 0)
                         getTradeOverlay().setResourceAmountChangeEnabled(ResourceType.WOOD, false, true);
-                }
-                else{
-                    tradeOffer.getOffer().setWood(tradeOffer.getOffer().getWood()+1);
+                } else {
+                    tradeOffer.getOffer().setWood(tradeOffer.getOffer().getWood() + 1);
                 }
                 break;
             case BRICK:
-                if(sendBrick){
-                    tradeOffer.getOffer().setBrick(tradeOffer.getOffer().getBrick()-11);
-                    if(tradeOffer.getOffer().getBrick()==0)
+                if (sendBrick) {
+                    tradeOffer.getOffer().setBrick(tradeOffer.getOffer().getBrick() - 11);
+                    if (tradeOffer.getOffer().getBrick() == 0)
                         getTradeOverlay().setResourceAmountChangeEnabled(ResourceType.BRICK, false, true);
-                }
-                else{
-                    tradeOffer.getOffer().setWood(tradeOffer.getOffer().getWood()+1);
+                } else {
+                    tradeOffer.getOffer().setWood(tradeOffer.getOffer().getWood() + 1);
                 }
                 break;
             case WHEAT:
-                if(sendWood){
-                    tradeOffer.getOffer().setWheat(tradeOffer.getOffer().getWheat()-1);
-                    if(tradeOffer.getOffer().getWheat()==0)
+                if (sendWood) {
+                    tradeOffer.getOffer().setWheat(tradeOffer.getOffer().getWheat() - 1);
+                    if (tradeOffer.getOffer().getWheat() == 0)
                         getTradeOverlay().setResourceAmountChangeEnabled(ResourceType.WHEAT, false, true);
-                }
-                else{
-                    tradeOffer.getOffer().setWheat(tradeOffer.getOffer().getWheat()+1);
+                } else {
+                    tradeOffer.getOffer().setWheat(tradeOffer.getOffer().getWheat() + 1);
                 }
                 break;
             case ORE:
-                if(sendWood){
-                    tradeOffer.getOffer().setOre(tradeOffer.getOffer().getOre()-1);
-                    if(tradeOffer.getOffer().getOre()==0)
+                if (sendWood) {
+                    tradeOffer.getOffer().setOre(tradeOffer.getOffer().getOre() - 1);
+                    if (tradeOffer.getOffer().getOre() == 0)
                         getTradeOverlay().setResourceAmountChangeEnabled(ResourceType.ORE, false, true);
-                }
-                else{
-                    tradeOffer.getOffer().setOre(tradeOffer.getOffer().getOre()+1);
+                } else {
+                    tradeOffer.getOffer().setOre(tradeOffer.getOffer().getOre() + 1);
                 }
                 break;
             case SHEEP:
-                if(sendWood){
-                    tradeOffer.getOffer().setSheep(tradeOffer.getOffer().getSheep()-1);
-                    if(tradeOffer.getOffer().getSheep()==0)
+                if (sendWood) {
+                    tradeOffer.getOffer().setSheep(tradeOffer.getOffer().getSheep() - 1);
+                    if (tradeOffer.getOffer().getSheep() == 0)
                         getTradeOverlay().setResourceAmountChangeEnabled(ResourceType.SHEEP, false, true);
-                }
-                else{
-                    tradeOffer.getOffer().setSheep(tradeOffer.getOffer().getSheep()+1);
+                } else {
+                    tradeOffer.getOffer().setSheep(tradeOffer.getOffer().getSheep() + 1);
                 }
                 break;
         }
@@ -202,7 +192,7 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
     @Override
     public void setResourceToReceive(ResourceType resource) {
-        switch(resource){
+        switch (resource) {
             case WOOD:
                 sendWood = true;
                 tradeOffer.getOffer().setWood(Math.abs(tradeOffer.getOffer().getWood()));
@@ -228,7 +218,7 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
     @Override
     public void setResourceToSend(ResourceType resource) {
-        switch(resource){
+        switch (resource) {
             case WOOD:
                 sendWood = false;
                 tradeOffer.getOffer().setWood(-(tradeOffer.getOffer().getWood()));
@@ -255,7 +245,7 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
     @Override
     public void unsetResource(ResourceType resource) {
-        switch(resource){
+        switch (resource) {
             case WOOD:
                 tradeOffer.getOffer().setWood(0);
                 break;

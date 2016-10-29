@@ -5,10 +5,13 @@ import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.definitions.TurnStatus;
+import shared.locations.HexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.DevCardSet;
 import shared.models.game.Player;
 import shared.models.game.ResourceSet;
+
+import java.util.Objects;
 
 /**
  * Created by Philip on 9/17/2016.
@@ -47,6 +50,7 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer == null) {
             return false;
         }
+
         if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || !getFacades().getTurn().isPlayersTurn(currentPlayer)) {
             return false;
         }
@@ -120,6 +124,7 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer.hasPlayedDevCard()) {
             return false;
         }
+
         return currentPlayer.getOldDevCards().getSoldier() > 0;
     }
 
@@ -156,6 +161,8 @@ public class DevCardFacade extends AbstractFacade {
         }
 
         getFacades().getTurn().startRobbing();
+
+
     }
 
     /**
@@ -179,6 +186,7 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer.hasPlayedDevCard()) {
             return false;
         }
+
         int total = currentPlayer.getOldDevCards().getMonument() + currentPlayer.getNewDevCards().getMonument();
         return total > 0 && (currentPlayer.getVictoryPoints() + total) >= 10;
     }
@@ -341,6 +349,7 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer == null || monopolyType == null) {
             return false;
         }
+
         if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || !getFacades().getTurn().isPlayersTurn(currentPlayer)) {
             return false;
         }

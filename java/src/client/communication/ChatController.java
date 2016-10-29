@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * @author audakel on 9/24/16.
  */
 public class ChatController extends Controller implements IChatController {
-    private static final Logger LOGGER = Logger.getLogger(ChatController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger("ChatController");
 
     /**
      * Required constructor, registers on the observable list
@@ -32,7 +32,6 @@ public class ChatController extends Controller implements IChatController {
         super(view);
         observeClientModel();
     }
-
 
     @Override
     public IChatView getView() {
