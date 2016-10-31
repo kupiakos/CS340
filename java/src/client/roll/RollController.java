@@ -51,7 +51,6 @@ public class RollController extends Controller implements IRollController {
             return;
         }
         countdown = 5;
-
         getRollView().setMessage("Rolling automatically in..." + countdown + " seconds");
         ActionListener rollAction = e -> updateView();
         rollTimer = new Timer(1000, rollAction);
@@ -88,9 +87,7 @@ public class RollController extends Controller implements IRollController {
 
     @Override
     public void rollDice() {
-        if (rollTimer.isRunning()) {
-            rollTimer.stop();
-        }
+        // rollTimer.stop();
         int random1 = 1 + (int) (Math.random() * ((6 - 1) + 1));
         int random2 = 1 + (int) (Math.random() * ((6 - 1) + 1));
         int rollValue = random1 + random2;
