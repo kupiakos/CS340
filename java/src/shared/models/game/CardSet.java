@@ -58,6 +58,16 @@ public abstract class CardSet<CardType extends Enum<?>> {
 
     public abstract void setOfType(@NotNull CardType type, int value);
 
+    /**
+     * Shift the amount of a type by some number relative to its current value
+     *
+     * @return the new amount of type
+     */
+    public int adjustOfType(CardType type, int amount) {
+        setOfType(type, getOfType(type) + amount);
+        return getOfType(type);
+    }
+
     protected abstract Stream<CardType> getTypes();
 
     protected IntStream getValues() {
