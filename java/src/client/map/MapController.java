@@ -1,7 +1,6 @@
 package client.map;
 
 import client.base.Controller;
-import client.base.IAction;
 import client.data.RobPlayerInfo;
 import client.devcards.DevCardController;
 import client.resources.ResourceBarController;
@@ -31,11 +30,10 @@ import java.util.stream.Collectors;
 public class MapController extends Controller implements IMapController {
 
     private static final Logger LOGGER = Logger.getLogger(MapController.class.getSimpleName());
-    private IAction onBuildAction;
+    boolean dropping = false;
     private GameMap prevMap = new GameMap();
     private Map<PlayerIndex, CatanColor> prevColors = new HashMap<>();
     private IRobView robView;
-    private boolean havePlacedRobber = false;
     private HexLocation newRobberLoc = null;
     private MapStatus status = MapStatus.NORMAL;
 
@@ -159,17 +157,22 @@ public class MapController extends Controller implements IMapController {
         status.startMovingRobber(this);
 
         // Initial Setup
-        if (turn.isSetup() && turn.isPlayersTurn(getPlayer()) && !status.isSetup()) {
+        if (turn.isSetup() && turn.isPlayersTurn(getPlayer()) && !dropping) {
             int settlements = getPlayer().getSettlements();
             int roads = getPlayer().getRoads();
             TurnStatus phase = getFacade().getTurn().getPhase();
             int round = phase == TurnStatus.FIRST_ROUND ? 0 : 1;
+            boolean endOfTurn = true;
             if (settlements >= Constants.START_SETTLEMENTS - round) {
+                endOfTurn = false;
                 setStatus(MapStatus.setupSettlements(phase));
             } else if (roads >= Constants.START_ROADS - round) {
+                endOfTurn = false;
                 setStatus(MapStatus.setupRoads(phase));
             }
-            status.doSetup(this);
+            if (!endOfTurn) {
+                status.doSetup(this);
+            }
         }
     }
 
@@ -255,6 +258,7 @@ public class MapController extends Controller implements IMapController {
      */
     @Override
     public void placeRoad(EdgeLocation edgeLoc) {
+        dropping = false;
         getView().placeRoad(edgeLoc, getPlayer().getColor());
 //        getFacade().getBuilding().buildRoad(getPlayer(), edgeLoc, );
         getAsync().runModelMethod(server::buildRoad,
@@ -263,13 +267,7 @@ public class MapController extends Controller implements IMapController {
                         edgeLoc,
                         getPlayer().getPlayerIndex()))
                 .onError(e -> LOGGER.severe("Failed to place road: " + e.getMessage()))
-                .onSuccess(() -> {
-                    status.keepBuilding(this);
-                    if (onBuildAction != null) {
-                        onBuildAction.execute();
-                        onBuildAction = null;
-                    }
-                })
+                .onSuccess(() -> status.keepBuilding(this))
                 .start();
     }
 
@@ -278,6 +276,7 @@ public class MapController extends Controller implements IMapController {
      */
     @Override
     public void placeSettlement(VertexLocation vertLoc) {
+        dropping = false;
         getView().placeSettlement(vertLoc, getPlayer().getColor());
         getAsync().runModelMethod(server::buildSettlement,
                 new BuildSettlementAction(
@@ -285,13 +284,7 @@ public class MapController extends Controller implements IMapController {
                         vertLoc,
                         getPlayer().getPlayerIndex()))
                 .onError(e -> LOGGER.severe("Failed to place settlement: " + e.getMessage()))
-                .onSuccess(() -> {
-                    status.keepBuilding(this);
-                    if (onBuildAction != null) {
-                        onBuildAction.execute();
-                        onBuildAction = null;
-                    }
-                })
+                .onSuccess(() -> status.keepBuilding(this))
                 .start();
     }
 
@@ -300,17 +293,12 @@ public class MapController extends Controller implements IMapController {
      */
     @Override
     public void placeCity(VertexLocation vertLoc) {
+        dropping = false;
         getView().placeCity(vertLoc, getPlayer().getColor());
         getAsync().runModelMethod(server::buildCity,
                 new BuildCityAction(vertLoc, getPlayer().getPlayerIndex()))
                 .onError(e -> LOGGER.severe("Failed to place city: " + e.getMessage()))
-                .onSuccess(() -> {
-                    status.keepBuilding(this);
-                    if (onBuildAction != null) {
-                        onBuildAction.execute();
-                        onBuildAction = null;
-                    }
-                })
+                .onSuccess(() -> status.keepBuilding(this))
                 .start();
     }
 
@@ -325,6 +313,7 @@ public class MapController extends Controller implements IMapController {
     @Override
     public void placeRobber(HexLocation hexLoc) {
 //        getFacade().getTurn().startMovingRobber();
+        dropping = false;
         GameMap map = getModel().getMap();
         map.setRobber(hexLoc);
         getView().placeRobber(hexLoc);
@@ -367,7 +356,10 @@ public class MapController extends Controller implements IMapController {
     public void startMove(PieceType pieceType, boolean isCancelAllowed) {
         // There doesn't seem to be a known way to transfer the parameters so placeCity, etc. are called correctly.
         // Class fields could work?
-        getView().startDrop(pieceType, getPlayer().getColor(), isCancelAllowed);
+        if (!dropping) {
+            getView().startDrop(pieceType, getPlayer().getColor(), isCancelAllowed);
+        }
+        dropping = true;
     }
 
     /**
@@ -379,6 +371,7 @@ public class MapController extends Controller implements IMapController {
     public void cancelMove() {
         // Unlike startMove, this is called *by* the view.
         setStatus(MapStatus.NORMAL);
+        dropping = false;
     }
 
     /**
@@ -447,6 +440,24 @@ public class MapController extends Controller implements IMapController {
             }
         },
 
+        FIRST_ROAD {
+            @Override
+            public void doSetup(MapController c) {
+                c.startMove(PieceType.ROAD, false);
+            }
+
+            @Override
+            public void keepBuilding(MapController c) {
+                c.setStatus(SECOND_SETTLEMENT);
+                this.finishSetupTurn(c, SECOND_SETTLEMENT);
+            }
+
+            @Override
+            public boolean isSetup() {
+                return true;
+            }
+        },
+
         SECOND_SETTLEMENT {
             @Override
             public void doSetup(MapController c) {
@@ -465,23 +476,6 @@ public class MapController extends Controller implements IMapController {
             }
         },
 
-        FIRST_ROAD {
-            @Override
-            public void doSetup(MapController c) {
-                c.startMove(PieceType.ROAD, false);
-            }
-
-            @Override
-            public void keepBuilding(MapController c) {
-                this.finishSetupTurn(c, SECOND_SETTLEMENT);
-            }
-
-            @Override
-            public boolean isSetup() {
-                return true;
-            }
-        },
-
         SECOND_ROAD {
             @Override
             public void doSetup(MapController c) {
@@ -490,6 +484,7 @@ public class MapController extends Controller implements IMapController {
 
             @Override
             public void keepBuilding(MapController c) {
+                c.setStatus(NORMAL);
                 this.finishSetupTurn(c, NORMAL);
             }
 
@@ -626,10 +621,6 @@ public class MapController extends Controller implements IMapController {
 
         protected void finishSetupTurn(MapController c, MapStatus newStatus) {
             c.getAsync().runModelMethod(c.server::finishTurn, new FinishMoveAction(c.getPlayer().getPlayerIndex()))
-                    .onSuccess(() -> {
-                        c.setStatus(newStatus);
-                        c.status.doSetup(c);
-                    })
                     .onError(e -> LOGGER.severe("failed to finish setup turn " + e.getMessage()))
                     .start();
         }
