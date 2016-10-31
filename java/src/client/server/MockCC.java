@@ -91,7 +91,7 @@ public class MockCC implements IClientCommunicator {
                 return buyDevCard(requestBody);
             case "/moves/Soldier":
                 return useSoldier(requestBody);
-            case "/moves/Year_Of_Plenty":
+            case "/moves/Year_of_Plenty":
                 return useYearOfPlenty(requestBody);
             case "/moves/Road_Building":
                 return useRoadBuilding(requestBody);
