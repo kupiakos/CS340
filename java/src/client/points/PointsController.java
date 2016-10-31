@@ -1,11 +1,8 @@
 package client.points;
 
 import client.base.Controller;
-import shared.definitions.PlayerIndex;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
-
-import java.util.Objects;
 
 /**
  * Implementation for the points controller
@@ -13,8 +10,6 @@ import java.util.Objects;
 public class PointsController extends Controller implements IPointsController {
 
     private IGameFinishedView finishedView;
-    private boolean isLongestRoadPlayer;
-    private boolean isLargestArmyPlayer;
 
     /**
      * PointsController constructor
@@ -25,59 +20,24 @@ public class PointsController extends Controller implements IPointsController {
     public PointsController(IPointsView view, IGameFinishedView finishedView) {
         super(view);
         setFinishedView(finishedView);
-        isLongestRoadPlayer = false;
-        isLargestArmyPlayer = false;
         observeClientModel();
     }
 
     @Override
+    public void gameFinished() {
+        System.out.println("Thank you for playing my game!");
+        System.exit(0);
+    }
+
+    @Override
     protected void updateFromModel(ClientModel model) {
-        Player player = getPlayer();
+        getPointsView().setPoints(getPlayer().getVictoryPoints());
 
-        Player longestRoadPlayer = null;
-        PlayerIndex longestRoad = model.getTurnTracker().getLongestRoad();
-        if (longestRoad != null) {
-            longestRoadPlayer = model.getPlayer(longestRoad);
-        }
-
-        int points = player.getVictoryPoints();
-
-        if (Objects.equals(player, longestRoadPlayer) && !isLongestRoadPlayer) {
-            points += 2;
-            isLongestRoadPlayer = true;
-        } else {
-            if (isLongestRoadPlayer) {
-                points -= 2;
-            }
-            isLongestRoadPlayer = false;
-        }
-
-        Player largestArmyPlayer = null;
-        PlayerIndex largestArmy = model.getTurnTracker().getLargestArmy();
-        if (largestArmy != null) {
-            largestArmyPlayer = model.getPlayer(largestArmy);
-        }
-
-        if (Objects.equals(player, largestArmyPlayer) && !isLargestArmyPlayer) {
-            points += 2;
-            isLargestArmyPlayer = true;
-        } else {
-            if (isLargestArmyPlayer) {
-                points -= 2;
-            }
-            isLargestArmyPlayer = false;
-        }
-
-        getPointsView().setPoints(points);
-
-        PlayerIndex winnerIndex = model.getWinner();
-        if (winnerIndex != null) {
-            Player winner = model.getPlayer(winnerIndex);
-            boolean isLocalPlayer = false;
-            if (player.equals(winner)) {
-                isLocalPlayer = true;
-            }
+        Player winner = getFacade().getTurn().getWinner();
+        if (winner != null) {
+            boolean isLocalPlayer = winner.getPlayerIndex() == getPlayer().getPlayerIndex();
             getFinishedView().setWinner(winner.getName(), isLocalPlayer);
+            getFinishedView().showOneModal();
         }
     }
 
@@ -92,6 +52,5 @@ public class PointsController extends Controller implements IPointsController {
     public void setFinishedView(IGameFinishedView finishedView) {
         this.finishedView = finishedView;
     }
-
 }
 

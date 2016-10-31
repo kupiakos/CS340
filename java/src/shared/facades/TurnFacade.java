@@ -172,4 +172,12 @@ public class TurnFacade extends AbstractFacade {
     public Player getCurrentPlayer() {
         return getModel().getPlayer(tt().getCurrentTurn());
     }
+
+    @Nullable
+    public Player getWinner() {
+        return getModel().getPlayers().stream()
+                .filter(p -> p.getPlayerID() == getModel().getWinner())
+                .findFirst()
+                .orElse(null);
+    }
 }

@@ -16,7 +16,6 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import static shared.definitions.Constants.END_GAME_MSG;
-import static shared.definitions.Constants.WINNING_AMOUNT_VICTORY_POINTS;
 import static shared.definitions.TurnStatus.GAME_OVER;
 
 
@@ -25,6 +24,7 @@ import static shared.definitions.TurnStatus.GAME_OVER;
  */
 public class TurnTrackerController extends Controller implements ITurnTrackerController {
     private static final Logger LOGGER = Logger.getLogger(TurnTracker.class.getSimpleName());
+    boolean initialized = false;
 
     public TurnTrackerController(ITurnTrackerView view) {
         super(view);
@@ -85,17 +85,18 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
      */
     @Override
     protected void updateFromModel(ClientModel model) {
-        initFromModel(model);
+        if (!initialized) {
+            initialized = true;
+            initFromModel(model);
+        }
 
-        ClientModel cm = model;
         TurnTracker tt = model.getTurnTracker();
         TurnFacade turns = getFacade().getTurn();
 
         PlayerIndex largestArmy = tt.getLargestArmy();
         PlayerIndex longestRoad = tt.getLongestRoad();
         PlayerIndex currentTurn = tt.getCurrentTurn();
-        List<Player> players = cm.getPlayers();
-        PlayerIndex winnerIndex = null;
+        List<Player> players = model.getPlayers();
         PlayerIndex index;
         boolean gameOver = false;
 
@@ -113,11 +114,6 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
         for (Player p : players) {
             // Player not set yet
             if (p == null || p.getPlayerIndex() == null) continue;
-
-            if (p.getVictoryPoints() >= WINNING_AMOUNT_VICTORY_POINTS) {
-                gameOver = true;
-                winnerIndex = p.getPlayerIndex();
-            }
             LOGGER.fine("Updating score cards for " + p.getName());
 
             index = p.getPlayerIndex();
@@ -130,10 +126,11 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
             );
         }
 
-        if (gameOver) {
+        Player winner = turns.getWinner();
+        if (winner != null) {
             LOGGER.info("Game over");
             getFacade().getTurn().setPhase(GAME_OVER);
-            getView().updateGameState(END_GAME_MSG, false);
+            getView().updateGameState(END_GAME_MSG, winner.getPlayerID() == getPlayer().getPlayerID());
         }
     }
 }
