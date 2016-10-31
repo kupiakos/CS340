@@ -265,6 +265,18 @@ public class LoginView extends OverlayView implements ILoginView {
 
         private void initEventListeners() {
             btnSignIn.addActionListener(e -> getController().signIn());
+            FocusListener registerFocus = new FocusListener() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    getRootPane().setDefaultButton(btnSignIn);
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                }
+            };
+            txtUsername.addFocusListener(registerFocus);
+            txtPassword.addFocusListener(registerFocus);
         }
     }
 
@@ -407,13 +419,27 @@ public class LoginView extends OverlayView implements ILoginView {
 
             };
 
+            FocusListener registerFocus = new FocusListener() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    getRootPane().setDefaultButton(btnRegister);
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                }
+            };
+
             txtUsername.addFocusListener(usernameValidator);
+            txtUsername.addFocusListener(registerFocus);
             txtUsername.getDocument().addDocumentListener(usernameValidator);
 
             txtPassword.addFocusListener(passValidator);
+            txtPassword.addFocusListener(registerFocus);
             txtPassword.getDocument().addDocumentListener(passValidator);
 
             txtPasswordAgain.addFocusListener(passAgainValidator);
+            txtPasswordAgain.addFocusListener(registerFocus);
             txtPasswordAgain.getDocument().addDocumentListener(passAgainValidator);
 
         }
