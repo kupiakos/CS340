@@ -332,7 +332,7 @@ public class ServerProxy implements IServer {
     public ClientModel useYearOfPlenty(@NotNull YearofPlentyAction yearOfPlentyObject) throws IllegalArgumentException, CommunicationException {
         String requestBody = ModelSerializer.getInstance().toJson(yearOfPlentyObject, YearofPlentyAction.class);
         String modelJson = "";
-        modelJson = cc.sendHTTPRequest("/moves/Year_Of_Plenty", requestBody, "POST");
+        modelJson = cc.sendHTTPRequest("/moves/Year_of_Plenty", requestBody, "POST");
         return ModelSerializer.getInstance().fromJson(modelJson, ClientModel.class);
 
     }
