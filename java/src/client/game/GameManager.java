@@ -44,10 +44,6 @@ public class GameManager extends Observable implements IGameManager {
     private ServerAsyncHelper async;
 
     /**
-     * The PlayerIndex that this client is playing as
-     */
-    private PlayerIndex thisPlayerIndex;
-    /**
      * Port that was passed in from the command line
      */
     private String port = "8081";
@@ -87,7 +83,7 @@ public class GameManager extends Observable implements IGameManager {
      * @return
      */
     public Player getPlayer() {
-        return getClientModel().getPlayer(thisPlayerIndex);
+        return getClientModel().getPlayer(getThisPlayerIndex());
     }
 
     /**
@@ -184,11 +180,11 @@ public class GameManager extends Observable implements IGameManager {
     }
 
     public PlayerIndex getThisPlayerIndex() {
-        return thisPlayerIndex;
+        return getPlayerInfo().getPlayerIndex();
     }
 
     public void setThisPlayerIndex(PlayerIndex thisPlayerIndex) {
-        this.thisPlayerIndex = thisPlayerIndex;
+        getPlayerInfo().setPlayerIndex(thisPlayerIndex);
     }
 
     @Override

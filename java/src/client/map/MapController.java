@@ -30,11 +30,13 @@ import java.util.stream.Collectors;
 public class MapController extends Controller implements IMapController {
 
     private static final Logger LOGGER = Logger.getLogger(MapController.class.getSimpleName());
-    boolean dropping = false;
+    private boolean dropping = false;
     private GameMap prevMap = new GameMap();
     private Map<PlayerIndex, CatanColor> prevColors = new HashMap<>();
     private IRobView robView;
     private HexLocation newRobberLoc = null;
+    // For Road Building Card
+    private EdgeLocation firstRoadLoc = null;
     private MapStatus status = MapStatus.NORMAL;
 
     public MapController(IMapView view, IRobView robView) {
@@ -260,15 +262,7 @@ public class MapController extends Controller implements IMapController {
     public void placeRoad(EdgeLocation edgeLoc) {
         dropping = false;
         getView().placeRoad(edgeLoc, getPlayer().getColor());
-//        getFacade().getBuilding().buildRoad(getPlayer(), edgeLoc, );
-        getAsync().runModelMethod(server::buildRoad,
-                new BuildRoadAction(
-                        getFacade().getTurn().isSetup(),
-                        edgeLoc,
-                        getPlayer().getPlayerIndex()))
-                .onError(e -> LOGGER.severe("Failed to place road: " + e.getMessage()))
-                .onSuccess(() -> status.keepBuilding(this))
-                .start();
+        status.placeRoad(this, edgeLoc);
     }
 
     /**
@@ -496,20 +490,22 @@ public class MapController extends Controller implements IMapController {
 
         ROAD_BUILDING_FIRST {
             @Override
-            public void keepBuilding(MapController c) {
+            public void placeRoad(MapController c, EdgeLocation edgeLoc) {
+                c.firstRoadLoc = edgeLoc;
                 if (c.getPlayer().getRoads() > 1) {
                     c.setStatus(ROAD_BUILDING_SECOND);
                     c.startMove(PieceType.ROAD);
                 } else {
-                    c.setStatus(NORMAL);
+                    finishRoadBuilding(c, c.firstRoadLoc, null);
                 }
             }
         },
 
         ROAD_BUILDING_SECOND {
             @Override
-            public void keepBuilding(MapController c) {
-                c.setStatus(NORMAL);
+            public void placeRoad(MapController c, EdgeLocation edgeLoc) {
+                c.firstRoadLoc = edgeLoc;
+                finishRoadBuilding(c, c.firstRoadLoc, edgeLoc);
             }
         },
 
@@ -595,7 +591,8 @@ public class MapController extends Controller implements IMapController {
         }
 
         public void startMovingRobber(MapController c) {
-            if (c.getFacade().getTurn().getPhase() == TurnStatus.ROBBING) {
+            if (c.getFacade().getTurn().getPhase() == TurnStatus.ROBBING &&
+                    c.getFacade().getTurn().isPlayersTurn(c.getPlayer())) {
                 c.setStatus(ROBBING_MOVING);
                 c.startMove(PieceType.ROBBER, false);
             } else {
@@ -619,8 +616,28 @@ public class MapController extends Controller implements IMapController {
 
         }
 
+        public void placeRoad(MapController c, EdgeLocation edgeLoc) {
+            c.getAsync().runModelMethod(c.server::buildRoad,
+                    new BuildRoadAction(
+                            c.getFacade().getTurn().isSetup(),
+                            edgeLoc,
+                            c.getPlayer().getPlayerIndex()))
+                    .onError(e -> LOGGER.severe("Failed to place road: " + e.getMessage()))
+                    .onSuccess(() -> c.status.keepBuilding(c))
+                    .start();
+        }
+
+        protected void finishRoadBuilding(MapController c, EdgeLocation loc1, EdgeLocation loc2) {
+            c.setStatus(NORMAL);
+            c.getAsync().runModelMethod(c.server::useRoadBuilding,
+                    new RoadBuildingAction(loc2, loc1, c.getPlayer().getPlayerIndex()))
+                    .onError(e -> LOGGER.severe("Failed to use road building card: " + e.getMessage()))
+                    .start();
+        }
+
         protected void finishSetupTurn(MapController c, MapStatus newStatus) {
             c.getAsync().runModelMethod(c.server::finishTurn, new FinishMoveAction(c.getPlayer().getPlayerIndex()))
+                    .onSuccess(() -> c.dropping = false)
                     .onError(e -> LOGGER.severe("failed to finish setup turn " + e.getMessage()))
                     .start();
         }

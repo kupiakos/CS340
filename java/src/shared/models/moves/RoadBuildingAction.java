@@ -3,6 +3,7 @@ package shared.models.moves;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
@@ -67,11 +68,11 @@ public class RoadBuildingAction {
     /**
      * @param spot2 The spot2
      */
-    public void setSpot2(@NotNull EdgeLocation spot2) {
+    public void setSpot2(@Nullable EdgeLocation spot2) {
         this.spot2 = spot2;
     }
 
-    public RoadBuildingAction withSpot2(@NotNull EdgeLocation spot2) {
+    public RoadBuildingAction withSpot2(@Nullable EdgeLocation spot2) {
         setSpot2(spot2);
         return this;
     }
