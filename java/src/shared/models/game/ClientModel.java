@@ -25,7 +25,7 @@ public class ClientModel {
 
     @SerializedName("winner")
     @Expose
-    private int winner;
+    private int winner = -1;
 
     @SerializedName("turnTracker")
     @Expose
