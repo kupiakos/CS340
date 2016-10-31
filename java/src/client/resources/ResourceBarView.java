@@ -68,6 +68,7 @@ public class ResourceBarView extends PanelView implements IResourceBarView {
     private JLabel label;
     private JButton testButton;
 
+    private BufferedImage resourcesImage;
     private BufferedImage brickImage;
     private BufferedImage oreImage;
     private BufferedImage sheepImage;
@@ -186,6 +187,7 @@ public class ResourceBarView extends PanelView implements IResourceBarView {
 //	}
 
     private void loadImages() {
+        resourcesImage = ImageUtils.loadImage(RESOURCE_IMAGE_PATH + "resources.png");
         brickImage = ImageUtils.loadImage(RESOURCE_IMAGE_PATH + "brick.png");
         oreImage = ImageUtils.loadImage(RESOURCE_IMAGE_PATH + "ore.png");
         sheepImage = ImageUtils.loadImage(RESOURCE_IMAGE_PATH + "sheep.png");
@@ -204,12 +206,14 @@ public class ResourceBarView extends PanelView implements IResourceBarView {
         resourceElementList = new ArrayList<>();
 
         // These resources are not clickable
+        ResourceElement all = new ResourceElement(ResourceBarElement.ALL, false);
         ResourceElement brick = new ResourceElement(ResourceBarElement.BRICK, false);
         ResourceElement ore = new ResourceElement(ResourceBarElement.ORE, false);
         ResourceElement sheep = new ResourceElement(ResourceBarElement.SHEEP, false);
         ResourceElement wheat = new ResourceElement(ResourceBarElement.WHEAT, false);
         ResourceElement wood = new ResourceElement(ResourceBarElement.WOOD, false);
 
+        all.setElementImage(resourcesImage);
         brick.setElementImage(brickImage);
         ore.setElementImage(oreImage);
         sheep.setElementImage(sheepImage);
@@ -245,6 +249,7 @@ public class ResourceBarView extends PanelView implements IResourceBarView {
 
         // This is to determine the order of the Elements in the
         // ResourceBar.
+        resourceElementList.add(ResourceBarElement.ALL);
         resourceElementList.add(ResourceBarElement.WOOD);
         resourceElementList.add(ResourceBarElement.BRICK);
         resourceElementList.add(ResourceBarElement.SHEEP);
@@ -260,7 +265,7 @@ public class ResourceBarView extends PanelView implements IResourceBarView {
 
         resourceElementList.add(ResourceBarElement.SOLDIERS);
 
-
+        resources.put(ResourceBarElement.ALL, all);
         resources.put(ResourceBarElement.WOOD, wood);
         resources.put(ResourceBarElement.BRICK, brick);
         resources.put(ResourceBarElement.SHEEP, sheep);
@@ -338,6 +343,7 @@ public class ResourceBarView extends PanelView implements IResourceBarView {
 
         private boolean _clickable;
         private boolean _enabled;
+        private boolean _changed = false;
         private ResourceBarElement _type;
         private BufferedImage _elementImage;
         private BufferedImage _disabledImage;
@@ -473,14 +479,23 @@ public class ResourceBarView extends PanelView implements IResourceBarView {
         }
 
         public void setElementCount(int elementCount) {
+            _changed = elementCount != this._elementCount;
             this._elementCount = elementCount;
             this.update();
         }
 
         public void update() {
             _elementImageButton.setEnabled(this.isEnabled());
-            if (_elementCount >= 0)
+            if (_elementCount >= 0) {
+                if (_type == ResourceBarElement.ALL && _elementCount > 7) {
+                    _elementCountLabel.setForeground(Color.RED);
+                } else {
+                    _elementCountLabel.setForeground(
+                            _changed ? Color.BLUE : Color.BLACK
+                    );
+                }
                 _elementCountLabel.setText("" + _elementCount);
+            }
             _resourceElementPanel.repaint();
         }
 

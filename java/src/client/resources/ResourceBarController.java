@@ -102,6 +102,7 @@ public class ResourceBarController extends Controller implements IResourceBarCon
                     ResourceBarElement.fromResource(resource),
                     player.getResources().getOfType(resource));
         }
+        getView().setElementAmount(ResourceBarElement.ALL, player.getResources().getTotal());
 
         int roads = player.getRoads();
         getView().setElementAmount(ResourceBarElement.ROAD, roads);
