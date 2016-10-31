@@ -30,6 +30,7 @@ public class RobPlayerInfo extends PlayerInfo {
 
     public RobPlayerInfo(Player p) {
         this(p.getColor(), p.getName(), p.getPlayerID(), p.getResources().getTotal());
+        setPlayerIndex(p.getPlayerIndex());
     }
 
     public int getNumCards() {

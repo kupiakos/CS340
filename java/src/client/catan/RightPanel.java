@@ -49,6 +49,7 @@ public class RightPanel extends JPanel {
         finishedView = new GameFinishedView();
         pointsController = new PointsController(pointsView, finishedView);
         pointsView.setController(pointsController);
+        finishedView.setController(pointsController);
 
         // Initialize resource bar view and controller
         //

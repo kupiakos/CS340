@@ -8,6 +8,7 @@ import shared.models.game.ClientModel;
 import shared.models.game.Player;
 import shared.models.moves.MaritimeTradeAction;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 
@@ -40,25 +41,13 @@ public class MaritimeTradeController extends Controller implements IMaritimeTrad
     }
 
     private void updateOverlay() {
-        TradingFacade trade = getFacade().getTrading();
-
-        ResourceType[] options;
-
-        options = trade.maritimeReceiveOptions(getPlayer(), giveType);
-        LOGGER.fine(options::toString);
-        tradeOverlay.showGetOptions(options);
-
-        options = trade.maritimeSendOptions(getPlayer(), getType);
-        LOGGER.fine(options::toString);
-        tradeOverlay.showGiveOptions(options);
-
         tradeOverlay.setTradeEnabled(false);
-        if (getType == null) {
+        if (giveType == null) {
             tradeOverlay.setStateMessage("Choose a resource to give");
-        } else if (giveType == null) {
+        } else if (getType == null) {
             tradeOverlay.setStateMessage("Choose a resource to get");
         } else {
-            LOGGER.info("Valid trade options selected");
+            tradeOverlay.setStateMessage("Trade");
             tradeOverlay.setTradeEnabled(true);
         }
     }
@@ -68,8 +57,12 @@ public class MaritimeTradeController extends Controller implements IMaritimeTrad
         LOGGER.info("Starting trade");
         giveType = null;
         getType = null;
+        getTradeOverlay().reset();
+        ResourceType[] options = getFacade().getTrading().maritimeSendOptions(getPlayer(), getType);
+        LOGGER.info("Give options: " + Arrays.toString(options));
+        tradeOverlay.showGiveOptions(options);
         updateOverlay();
-        getTradeOverlay().showModal();
+        getTradeOverlay().showOneModal();
     }
 
     @Override
@@ -87,7 +80,8 @@ public class MaritimeTradeController extends Controller implements IMaritimeTrad
                         trade.maritimeTradeRatio(p, giveType),
                         p.getPlayerIndex(),
                         giveType))
-                .onError(e -> LOGGER.severe("Error with maritime trade: " + e.getMessage()));
+                .onError(e -> LOGGER.severe("Error with maritime trade: " + e.getMessage()))
+                .start();
         getTradeOverlay().closeModal();
     }
 
@@ -95,21 +89,27 @@ public class MaritimeTradeController extends Controller implements IMaritimeTrad
     public void cancelTrade() {
         unsetGetValue();
         unsetGiveValue();
+        getTradeOverlay().reset();
         getTradeOverlay().closeModal();
+    }
+
+    @Override
+    public void setGiveResource(ResourceType resource) {
+        giveType = resource;
+        tradeOverlay.selectGiveOption(
+                resource,
+                getFacade().getTrading().maritimeTradeRatio(getPlayer(), resource));
+        ResourceType[] options = getFacade().getTrading().maritimeReceiveOptions(getPlayer(), giveType);
+        LOGGER.info("Get options: " + Arrays.toString(options));
+        tradeOverlay.showGetOptions(options);
+        updateOverlay();
     }
 
     @Override
     public void setGetResource(ResourceType resource) {
         getType = resource;
         tradeOverlay.selectGetOption(resource, 1);
-    }
-
-    @Override
-    public void setGiveResource(ResourceType resource) {
-        giveType = resource;
-        tradeOverlay.selectGetOption(
-                resource,
-                getFacade().getTrading().maritimeTradeRatio(getPlayer(), resource));
+        updateOverlay();
     }
 
     @Override
@@ -124,12 +124,11 @@ public class MaritimeTradeController extends Controller implements IMaritimeTrad
 
     @Override
     protected void updateFromModel(ClientModel model) {
+        // I'm not sure when you can't cancel from maritime trade.
+        tradeOverlay.setCancelEnabled(true);
         getTradeView().enableMaritimeTrade(
                 getFacade().getTrading().canMaritimeTrade(getPlayer())
         );
-        // I'm not sure when you can't cancel from maritime trade.
-        tradeOverlay.setCancelEnabled(true);
-        updateOverlay();
     }
 }
 

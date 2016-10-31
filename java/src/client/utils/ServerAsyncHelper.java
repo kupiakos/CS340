@@ -184,17 +184,27 @@ public class ServerAsyncHelper {
 
         public ClientModelFuture(@NotNull ThrowingFunction<T, ClientModel> runFunc, T arg) {
             super(runFunc, arg);
-            onSuccess(model -> gameManager.setClientModel(model));
+            onSuccess(model -> gameManager.updateGameManager(model));
         }
 
         @NotNull
         public ClientModelFuture<T> onSuccess(@Nullable IAction successFunc) {
-            onError(e -> System.out.println(e.getMessage() + " Hello world!"));
             onSuccess(model -> {
                 if (successFunc != null) {
                     successFunc.execute();
                 }
                 gameManager.updateGameManager(model);
+            });
+            return this;
+        }
+
+        @NotNull
+        public ClientModelFuture<T> onSuccessAfter(@Nullable IAction successFunc) {
+            onSuccess(model -> {
+                gameManager.updateGameManager(model);
+                if (successFunc != null) {
+                    successFunc.execute();
+                }
             });
             return this;
         }

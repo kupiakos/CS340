@@ -96,7 +96,7 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
                         getAcceptOverlay().addGetResource(r, to.getOffer().getOfType(r));
                     } else if (to.getOffer().getOfType(r) < 0) {
                         getAcceptOverlay().addGiveResource(r, -to.getOffer().getOfType(r));
-                        if (getPlayer().getResources().getOfType(r) < to.getOffer().getOfType(r)) {
+                        if (getPlayer().getResources().getOfType(r) < Math.abs(to.getOffer().getOfType(r))) {
                             getAcceptOverlay().setAcceptEnabled(false);
                         }
                     }

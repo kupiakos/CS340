@@ -41,21 +41,19 @@ public class GameHistoryController extends Controller implements IGameHistoryCon
         MessageList log = model.getLog();
 
         ArrayList<LogEntry> entries = new ArrayList<>();
-        if (log != null) {
-            LOGGER.fine("Updating game history");
+        LOGGER.fine("Updating game history");
 
-            for (MessageEntry logMember : log.getLines()) {
-                String m = logMember.getMessage();
-                String s = logMember.getSource();
+        for (MessageEntry logMember : log.getLines()) {
+            String m = logMember.getMessage();
+            String s = logMember.getSource();
 
-                CatanColor messageColor = null;
-                for (Player player : getModel().getPlayers()) {
-                    if (player.getName().equals(s)) {
-                        messageColor = player.getColor();
-                    }
+            CatanColor messageColor = null;
+            for (Player player : getModel().getPlayers()) {
+                if (player.getName().equals(s)) {
+                    messageColor = player.getColor();
                 }
-                entries.add(new LogEntry(messageColor, m));
             }
+            entries.add(new LogEntry(messageColor, m));
         }
         getView().setEntries(entries);
     }

@@ -120,7 +120,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                         getJoinGameView().showModal();
                     }
                 }))
-                .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\rError message: " + e.getMessage()))
+                .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\nError message: " + e.getMessage()))
                 .start();
     }
 
@@ -141,13 +141,16 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 
     @Override
     public void createNewGame() {
-
+        if (getNewGameView().getTitle().isEmpty()) {
+            displayError("Cannot create game", "Cannot create a game with an empty title!");
+            return;
+        }
         CreateGameRequest newGame = new CreateGameRequest(getNewGameView().getRandomlyPlaceHexes(), getNewGameView().getUseRandomPorts(), getNewGameView().getRandomlyPlaceNumbers(), getNewGameView().getTitle());
         getAsync().runMethod(server::createGame, newGame)
                 .onSuccess(() -> SwingUtilities.invokeLater(() -> {
                     reloadGamesList();
                 }))
-                .onError(e -> displayError("Error Communicating with Server", "Cannot create a new game.\rError Message: " + e.getMessage()))
+                .onError(e -> displayError("Error Communicating with Server", "Cannot create a new game.\nError Message: " + e.getMessage()))
                 .start();
         getNewGameView().closeModal();
     }
@@ -201,7 +204,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                     joinAction.execute();
                 }))
                 .onError(e -> {
-                    displayError("Error", "Cannot join game.\rError Message: " + e.getMessage());
+                    displayError("Error", "Cannot join game.\nError Message: " + e.getMessage());
                     e.printStackTrace();
                     selectedGame = null;
                 })

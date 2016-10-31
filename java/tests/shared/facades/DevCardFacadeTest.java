@@ -189,7 +189,8 @@ public class DevCardFacadeTest {
 
         assertTrue(facade.canUseVictoryPointCards(currentPlayer));
         model.getTurnTracker().setCurrentTurn(PlayerIndex.SECOND);
-        assertFalse(facade.canUseVictoryPointCards(listOfPlayers.get(1)));
+        assertFalse(facade.canUseVictoryPointCards(listOfPlayers.get(0)));
+        assertTrue(facade.canUseVictoryPointCards(listOfPlayers.get(1)));
     }
 
     @Test
@@ -224,7 +225,7 @@ public class DevCardFacadeTest {
         } catch (IllegalArgumentException e) {
         }
         assertNotEquals(10, p.getVictoryPoints() + p.getNewDevCards().getMonument() + p.getOldDevCards().getMonument());
-        assertEquals(PlayerIndex.FIRST, model.getWinner());
+        assertEquals(listOfPlayers.get(0).getPlayerID(), model.getWinner());
     }
 
     @Test

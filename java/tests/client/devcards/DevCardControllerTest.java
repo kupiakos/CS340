@@ -21,7 +21,6 @@ import shared.models.game.ClientModel;
 import shared.models.game.DevCardSet;
 import shared.models.game.Player;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -71,7 +70,10 @@ public class DevCardControllerTest {
         gm.setServer(mockProxy);
         gm.getFacade().setDevCards(devCardFacade);
         gm.getFacade().setResources(resourcesFacade);
-        dcc = new DevCardController(playView, buyView, soldierAction, roadAction, gm, mockProxy);
+        gm.setThisPlayerIndex(PlayerIndex.FIRST);
+        dcc = new DevCardController(playView, buyView, soldierAction, roadAction);
+        dcc.setGameManager(gm);
+        dcc.setServer(mockProxy);
         currentPlayer = model.getPlayer(PlayerIndex.FIRST);
         noDevCardsPlayer = model.getPlayer(PlayerIndex.FOURTH);
         for (ResourceType type : ResourceType.values()) {
@@ -83,15 +85,17 @@ public class DevCardControllerTest {
     }
 
     @Test
-    public void buyCard() throws Exception {
+    public void buyCardWithNoResources() throws Exception {
         //Player 4; has no resources
         when(devCardFacade.canBuyDevCard(noDevCardsPlayer)).thenReturn(false);
         dcc.buyCard();
         verify(devCardFacade, never()).buyDevCard(noDevCardsPlayer);
+    }
 
+    @Test
+    public void buyCard() throws Exception {
         //Player 1; has resources
         model.getTurnTracker().setCurrentTurn(PlayerIndex.FIRST);
-        dcc = new DevCardController(playView, buyView, soldierAction, roadAction, gm, mockProxy);
         when(devCardFacade.canBuyDevCard(currentPlayer)).thenReturn(true);
         dcc.buyCard();
         verify(devCardFacade, atMost(1)).buyDevCard(currentPlayer);

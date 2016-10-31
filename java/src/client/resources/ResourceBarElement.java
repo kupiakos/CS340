@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.ResourceType;
 
 public enum ResourceBarElement {
-    WOOD, BRICK, SHEEP, WHEAT, ORE, ROAD, SETTLEMENT, CITY, BUY_CARD, PLAY_CARD, SOLDIERS;
+    ALL, WOOD, BRICK, SHEEP, WHEAT, ORE, ROAD, SETTLEMENT, CITY, BUY_CARD, PLAY_CARD, SOLDIERS;
 
     @Contract(pure = true)
     @NotNull

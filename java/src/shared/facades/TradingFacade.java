@@ -235,7 +235,7 @@ public class TradingFacade extends AbstractFacade {
     public ResourceType[] maritimeReceiveOptions(@NotNull Player player, @Nullable ResourceType giveType) {
         return Arrays.stream(ResourceType.values())
                 .filter(r -> r != giveType)
-                .filter(r -> player.getResources().getOfType(r) >= maritimeTradeRatio(player, r))
+                .filter(r -> getModel().getBank().getOfType(r) >= 1)
                 .toArray(ResourceType[]::new);
     }
 

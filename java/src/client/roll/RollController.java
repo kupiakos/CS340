@@ -32,14 +32,12 @@ public class RollController extends Controller implements IRollController {
 
     @Override
     protected void updateFromModel(ClientModel model) {
-        if (rollTimer == null &&
-                model.getTurnTracker().getStatus() == TurnStatus.ROLLING &&
-                getFacade().getTurn().isPlayersTurn(getPlayer())) {
+        if (model.getTurnTracker().getStatus() != TurnStatus.ROLLING ||
+                !getFacade().getTurn().isPlayersTurn(getPlayer())) {
+            rollTimer = null;
+            getRollView().closeOneModal();
+        } else if (rollTimer == null) {
             start();
-        } else {
-            if (getRollView().isModalShowing()) {
-                //getRollView().closeModal();
-            }
         }
     }
 
@@ -50,6 +48,7 @@ public class RollController extends Controller implements IRollController {
         if (rollTimer != null) {
             return;
         }
+        getAsync().runModelMethod(server::gameState, 0).start();
         countdown = 5;
         getRollView().setMessage("Rolling automatically in..." + countdown + " seconds");
         ActionListener rollAction = e -> updateView();
@@ -63,7 +62,10 @@ public class RollController extends Controller implements IRollController {
     /**
      * update view for timer
      */
-    public void updateView() {
+    public synchronized void updateView() {
+        if (rollTimer == null) {
+            return;
+        }
         countdown--;
         getRollView().setMessage("Rolling automatically in..." + countdown + " seconds");
         if (countdown == 0) {
@@ -87,7 +89,9 @@ public class RollController extends Controller implements IRollController {
 
     @Override
     public void rollDice() {
-        // rollTimer.stop();
+        if (rollTimer != null) {
+            rollTimer.stop();
+        }
         int random1 = 1 + (int) (Math.random() * ((6 - 1) + 1));
         int random2 = 1 + (int) (Math.random() * ((6 - 1) + 1));
         int rollValue = random1 + random2;
@@ -95,7 +99,7 @@ public class RollController extends Controller implements IRollController {
         getRollView().closeModal();
         RollNumberAction roll = new RollNumberAction(rollValue, getPlayer().getPlayerIndex());
         getAsync().runModelMethod(server::rollNumber, roll)
-                .onSuccess(() -> SwingUtilities.invokeLater(() -> {
+                .onSuccessAfter(() -> SwingUtilities.invokeLater(() -> {
                     rollTimer = null;
                     getResultView().setRollValue(rollValue);
                     getResultView().showModal();

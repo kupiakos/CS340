@@ -25,7 +25,7 @@ public class ClientModel {
 
     @SerializedName("winner")
     @Expose
-    private PlayerIndex winner;
+    private int winner = -1;
 
     @SerializedName("turnTracker")
     @Expose
@@ -64,7 +64,7 @@ public class ClientModel {
 
     /**
      * @param chat        all the chat messages the players have sent to each other
-     * @param winner      the player who has won the game, or null if nobody
+     * @param winner      the player ID who has won the game, or -1 if nobody
      * @param turnTracker tracks whose turn it is and what action's being done
      * @param map         the current {@link GameMap} of the game
      * @param bank        the set of cards available to be distributed to the players
@@ -74,7 +74,7 @@ public class ClientModel {
      * @param log         all the log messages for the game's progress
      */
     public ClientModel(@NotNull MessageList chat,
-                       @Nullable PlayerIndex winner,
+                       int winner,
                        @NotNull TurnTracker turnTracker,
                        @NotNull GameMap map,
                        @NotNull ResourceSet bank,
@@ -143,8 +143,7 @@ public class ClientModel {
     /**
      * @return the player who has won the game, or null if nobody
      */
-    @Nullable
-    public PlayerIndex getWinner() {
+    public int getWinner() {
         return winner;
     }
 
@@ -153,11 +152,11 @@ public class ClientModel {
      *
      * @param winner the player who has won the game, or null if nobody
      */
-    public void setWinner(@Nullable PlayerIndex winner) {
+    public void setWinner(int winner) {
         this.winner = winner;
     }
 
-    public ClientModel withWinner(@Nullable PlayerIndex winner) {
+    public ClientModel withWinner(int winner) {
         setWinner(winner);
         return this;
     }
@@ -349,7 +348,7 @@ public class ClientModel {
     public boolean equals(ClientModel other) {
         return (
                 Objects.equals(chat, other.chat) &&
-                        Objects.equals(winner, other.winner) &&
+                        winner == other.winner &&
                         Objects.equals(turnTracker, other.turnTracker) &&
                         Objects.equals(map, other.map) &&
                         Objects.equals(bank, other.bank) &&
