@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import shared.definitions.HexType;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
@@ -264,7 +263,7 @@ public class GameMap {
             return false;
         }
         Set<EdgeLocation> adjacentEdges = getVertexEdges(location);
-        if(adjacentEdges.size()==0){
+        if (adjacentEdges.size() == 0) {
             return false;
         }
         boolean ownsAdjacentRoad = false;
@@ -331,7 +330,7 @@ public class GameMap {
         int hexY = location.getHexLoc().getY();
         int neighborX = location.getHexLoc().getNeighborLoc(location.getDir()).getX();
         int neighborY = location.getHexLoc().getNeighborLoc(location.getDir()).getY();
-        if((Math.abs(hexX) >= radius || Math.abs(hexY) >= radius || Math.abs(hexX + hexY) >= radius)&&(Math.abs(neighborX) >= radius || Math.abs(neighborY) >= radius || Math.abs(neighborX + neighborY)>=radius)){
+        if ((Math.abs(hexX) >= radius || Math.abs(hexY) >= radius || Math.abs(hexX + hexY) >= radius) && (Math.abs(neighborX) >= radius || Math.abs(neighborY) >= radius || Math.abs(neighborX + neighborY) >= radius)) {
             return false;
         }
         for (VertexLocation v : vertices) {
@@ -353,7 +352,7 @@ public class GameMap {
                 }
             }
         }
-        if(!hasAdjacentRoad && !hasAdjacentBuilding)
+        if (!hasAdjacentRoad && !hasAdjacentBuilding)
             return false;
         else if (isSetup && !hasAdjacentBuilding)
             return false;
@@ -466,7 +465,7 @@ public class GameMap {
             int hexY = e.getHexLoc().getY();
             int neighborX = e.getHexLoc().getNeighborLoc(e.getDir()).getX();
             int neighborY = e.getHexLoc().getNeighborLoc(e.getDir()).getY();
-            if((Math.abs(hexX) >= radius || Math.abs(hexY) >= radius || Math.abs(hexX + hexY) >= radius)&&(Math.abs(neighborX) >= radius || Math.abs(neighborY) >= radius || Math.abs(neighborX + neighborY)>=radius)){
+            if ((Math.abs(hexX) >= radius || Math.abs(hexY) >= radius || Math.abs(hexX + hexY) >= radius) && (Math.abs(neighborX) >= radius || Math.abs(neighborY) >= radius || Math.abs(neighborX + neighborY) >= radius)) {
                 itr.remove();
             }
         }

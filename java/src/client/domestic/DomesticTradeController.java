@@ -6,7 +6,6 @@ import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.definitions.TurnStatus;
 import shared.models.game.ClientModel;
-import shared.models.game.Player;
 import shared.models.game.ResourceSet;
 import shared.models.game.TradeOffer;
 import shared.models.games.PlayerInfo;
@@ -79,26 +78,25 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
     }
 
     @Override
-    protected void updateFromModel(ClientModel cm){
+    protected void updateFromModel(ClientModel cm) {
         TradeOffer to = cm.getTradeOffer();
-        if(getWaitOverlay().isModalShowing()){
-            if(cm.getTradeOffer()==null){
+        if (getWaitOverlay().isModalShowing()) {
+            if (cm.getTradeOffer() == null) {
                 getWaitOverlay().closeModal();
             }
         }
-        if(to!=null&&!getAcceptOverlay().isModalShowing()){
-            if(to.getReceiver().equals(getPlayer().getPlayerIndex())){
+        if (to != null && !getAcceptOverlay().isModalShowing()) {
+            if (to.getReceiver().equals(getPlayer().getPlayerIndex())) {
                 getAcceptOverlay().reset();
                 getAcceptOverlay().setAcceptEnabled(true);
                 receiver = to.getReceiver();
                 getAcceptOverlay().setPlayerName(getModel().getPlayer(to.getSender()).getName());
-                for(ResourceType r : ResourceType.values()){
-                    if(to.getOffer().getOfType(r)>0){
-                        getAcceptOverlay().addGetResource(r,to.getOffer().getOfType(r));
-                    }
-                    else if(to.getOffer().getOfType(r)<0){
-                        getAcceptOverlay().addGiveResource(r,-to.getOffer().getOfType(r));
-                        if(getPlayer().getResources().getOfType(r)<to.getOffer().getOfType(r)){
+                for (ResourceType r : ResourceType.values()) {
+                    if (to.getOffer().getOfType(r) > 0) {
+                        getAcceptOverlay().addGetResource(r, to.getOffer().getOfType(r));
+                    } else if (to.getOffer().getOfType(r) < 0) {
+                        getAcceptOverlay().addGiveResource(r, -to.getOffer().getOfType(r));
+                        if (getPlayer().getResources().getOfType(r) < to.getOffer().getOfType(r)) {
                             getAcceptOverlay().setAcceptEnabled(false);
                         }
                     }
@@ -110,7 +108,7 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
     @Override
     public void startTrade() {
-        if(getFacade().getTurn().isPlayersTurn(getPlayer())&&getModel().getTurnTracker().getStatus()== TurnStatus.PLAYING){
+        if (getFacade().getTurn().isPlayersTurn(getPlayer()) && getModel().getTurnTracker().getStatus() == TurnStatus.PLAYING) {
             server = getGameManager().getServer();
             tradeOffer = new OfferTradeAction(null, new ResourceSet(0, 0, 0, 0, 0), getPlayer().getPlayerIndex());
             sendOrReceive = new ResourceSet(0, 0, 0, 0, 0);
@@ -127,8 +125,7 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
             getTradeOverlay().reset();
             getTradeOverlay().setPlayerSelectionEnabled(true);
             getTradeOverlay().setStateMessage("Please Select a Player to Trade with");
-        }
-        else{
+        } else {
             getTradeOverlay().setPlayerSelectionEnabled(false);
             getTradeOverlay().setStateMessage("Wait For Your Turn");
             getTradeOverlay().setTradeEnabled(false);
@@ -139,16 +136,15 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
     @Override
     public void decreaseResourceAmount(ResourceType resource) {
-        if(sendOrReceive.getOfType(resource)==1){
-            tradeOffer.getOffer().setOfType(resource,tradeOffer.getOffer().getOfType(resource)+1);
-            if(tradeOffer.getOffer().getOfType(resource)==0){
-                getTradeOverlay().setResourceAmountChangeEnabled(resource,true,false);
+        if (sendOrReceive.getOfType(resource) == 1) {
+            tradeOffer.getOffer().setOfType(resource, tradeOffer.getOffer().getOfType(resource) + 1);
+            if (tradeOffer.getOffer().getOfType(resource) == 0) {
+                getTradeOverlay().setResourceAmountChangeEnabled(resource, true, false);
             }
-        }
-        else if(sendOrReceive.getOfType(resource)==-1){
-            tradeOffer.getOffer().setOfType(resource,tradeOffer.getOffer().getOfType(resource)-1);
-            if(tradeOffer.getOffer().getOfType(resource)==0){
-                getTradeOverlay().setResourceAmountChangeEnabled(resource,true,false);
+        } else if (sendOrReceive.getOfType(resource) == -1) {
+            tradeOffer.getOffer().setOfType(resource, tradeOffer.getOffer().getOfType(resource) - 1);
+            if (tradeOffer.getOffer().getOfType(resource) == 0) {
+                getTradeOverlay().setResourceAmountChangeEnabled(resource, true, false);
             }
         }
         canSendTrade();
@@ -156,15 +152,14 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
     @Override
     public void increaseResourceAmount(ResourceType resource) {
-        if(sendOrReceive.getOfType(resource)==1){
-            tradeOffer.getOffer().setOfType(resource,tradeOffer.getOffer().getOfType(resource)-1);
-            getTradeOverlay().setResourceAmountChangeEnabled(resource,true,true);
-        }
-        else if(sendOrReceive.getOfType(resource)==-1){
-            tradeOffer.getOffer().setOfType(resource,tradeOffer.getOffer().getOfType(resource)+1);
-            getTradeOverlay().setResourceAmountChangeEnabled(resource,true,true);
-            if(Math.abs(tradeOffer.getOffer().getOfType(resource))>=getPlayer().getResources().getOfType(resource)){
-                getTradeOverlay().setResourceAmountChangeEnabled(resource,false,true);
+        if (sendOrReceive.getOfType(resource) == 1) {
+            tradeOffer.getOffer().setOfType(resource, tradeOffer.getOffer().getOfType(resource) - 1);
+            getTradeOverlay().setResourceAmountChangeEnabled(resource, true, true);
+        } else if (sendOrReceive.getOfType(resource) == -1) {
+            tradeOffer.getOffer().setOfType(resource, tradeOffer.getOffer().getOfType(resource) + 1);
+            getTradeOverlay().setResourceAmountChangeEnabled(resource, true, true);
+            if (Math.abs(tradeOffer.getOffer().getOfType(resource)) >= getPlayer().getResources().getOfType(resource)) {
+                getTradeOverlay().setResourceAmountChangeEnabled(resource, false, true);
             }
         }
         canSendTrade();
@@ -175,15 +170,14 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
         getAsync().runMethod(server::offerTrade, tradeOffer)
                 .start();
         getTradeOverlay().closeModal();
-		getWaitOverlay().showModal();
+        getWaitOverlay().showModal();
     }
 
     @Override
     public void setPlayerToTradeWith(int playerIndex) {
-        if(playerIndex==-1){
+        if (playerIndex == -1) {
             tradeOffer.setReceiver(null);
-        }
-        else {
+        } else {
             tradeOffer.setReceiver(PlayerIndex.fromInt(playerIndex));
         }
         canSendTrade();
@@ -192,26 +186,26 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
     @Override
     public void setResourceToReceive(ResourceType resource) {
         sendOrReceive.setOfType(resource, 1);
-        tradeOffer.getOffer().setOfType(resource,0);
-        getTradeOverlay().setResourceAmount(resource,"0");
-        getTradeOverlay().setResourceAmountChangeEnabled(resource,true,false);
+        tradeOffer.getOffer().setOfType(resource, 0);
+        getTradeOverlay().setResourceAmount(resource, "0");
+        getTradeOverlay().setResourceAmountChangeEnabled(resource, true, false);
         canSendTrade();
     }
 
     @Override
     public void setResourceToSend(ResourceType resource) {
-        sendOrReceive.setOfType(resource,-1);
-        tradeOffer.getOffer().setOfType(resource,0);
-        getTradeOverlay().setResourceAmount(resource,"0");
-        getTradeOverlay().setResourceAmountChangeEnabled(resource,getPlayer().getResources().getOfType(resource)>0,false);
+        sendOrReceive.setOfType(resource, -1);
+        tradeOffer.getOffer().setOfType(resource, 0);
+        getTradeOverlay().setResourceAmount(resource, "0");
+        getTradeOverlay().setResourceAmountChangeEnabled(resource, getPlayer().getResources().getOfType(resource) > 0, false);
         canSendTrade();
     }
 
     @Override
     public void unsetResource(ResourceType resource) {
-        sendOrReceive.setOfType(resource,0);
-        tradeOffer.getOffer().setOfType(resource,0);
-        getTradeOverlay().setResourceAmountChangeEnabled(resource,false,false);
+        sendOrReceive.setOfType(resource, 0);
+        tradeOffer.getOffer().setOfType(resource, 0);
+        getTradeOverlay().setResourceAmountChangeEnabled(resource, false, false);
         canSendTrade();
     }
 
@@ -223,23 +217,22 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
     @Override
     public void acceptTrade(boolean willAccept) {
-        AcceptTradeAction accept = new AcceptTradeAction(willAccept,receiver);
+        AcceptTradeAction accept = new AcceptTradeAction(willAccept, receiver);
         getAsync().runMethod(server::acceptTrade, accept)
                 .start();
-        receiver=null;
+        receiver = null;
         getAcceptOverlay().closeModal();
     }
 
-    private void canSendTrade(){
-        if(tradeOffer.getReceiver()!=null) {
+    private void canSendTrade() {
+        if (tradeOffer.getReceiver() != null) {
             if (getFacade().getTrading().canOfferTrade(getPlayer(), getModel().getPlayers().get(tradeOffer.getReceiver().index()), tradeOffer.getOffer())) {
                 getTradeOverlay().setTradeEnabled(true);
                 getTradeOverlay().setStateMessage("Click to Send Trade");
                 return;
             }
             getTradeOverlay().setStateMessage("Set Trade Offer to Send");
-        }
-        else{
+        } else {
             getTradeOverlay().setStateMessage("Please Select a Player to Trade with");
         }
         getTradeOverlay().setTradeEnabled(false);

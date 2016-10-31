@@ -1,10 +1,8 @@
 package client.roll;
 
 import client.base.Controller;
-import shared.definitions.PlayerIndex;
 import shared.definitions.TurnStatus;
 import shared.models.game.ClientModel;
-import shared.models.game.Player;
 import shared.models.moves.RollNumberAction;
 
 import javax.swing.*;

@@ -5,13 +5,10 @@ import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.definitions.TurnStatus;
-import shared.locations.HexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.DevCardSet;
 import shared.models.game.Player;
 import shared.models.game.ResourceSet;
-
-import java.util.Objects;
 
 /**
  * Created by Philip on 9/17/2016.
