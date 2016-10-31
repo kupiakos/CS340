@@ -21,5 +21,23 @@ public interface IOverlayView extends IView {
      * @return True if the overlay is showing, false otherwise
      */
     boolean isModalShowing();
+
+    /**
+     * If this modal is not currently showing, show it.
+     */
+    default void showOneModal() {
+        if (!isModalShowing()) {
+            showModal();
+        }
+    }
+
+    /**
+     * If this model is currently showing, close it.
+     */
+    default void closeOneModal() {
+        if (isModalShowing()) {
+            closeModal();
+        }
+    }
 }
 
