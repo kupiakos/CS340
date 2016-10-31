@@ -11,11 +11,7 @@ import java.io.IOException;
 public class PlayerIndexTypeAdapter extends TypeAdapter<PlayerIndex> {
     @Override
     public void write(JsonWriter jsonWriter, PlayerIndex playerIndex) throws IOException {
-        if (playerIndex == null) {
-            jsonWriter.value(-1);
-        } else {
-            jsonWriter.value(playerIndex.index());
-        }
+        jsonWriter.value(PlayerIndex.index(playerIndex));
     }
 
     @Override
