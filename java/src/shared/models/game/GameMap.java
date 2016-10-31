@@ -336,12 +336,10 @@ public class GameMap {
         for (VertexLocation v : vertices) {
             HashSet<EdgeLocation> edges = (HashSet) getVertexEdges(v);
             if (hasBuilding(v)) {
-                if (getBuildingOwner(v) != player)
-                    return false;
+                if (getBuildingOwner(v) == player)
+                    hasAdjacentBuilding = true;
                 else if (isSetup && settlementHasAdjacentRoads(v))
                     return false;
-                else
-                    hasAdjacentBuilding = true;
             }
             for (EdgeLocation e : edges) {
                 if (e.equals(location))
