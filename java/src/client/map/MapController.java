@@ -144,6 +144,9 @@ public class MapController extends Controller implements IMapController {
     @Override
     protected synchronized void updateFromModel(ClientModel model) {
         GameMap curMap = model.getMap();
+        if (firstRoadLoc != null) {
+            curMap.getRoads().put(firstRoadLoc, getPlayer().getPlayerIndex());
+        }
         if (haveChangedColors()) {
             // If we've changed colors, force a redraw
             LOGGER.info("Color of players has changed");
@@ -493,6 +496,7 @@ public class MapController extends Controller implements IMapController {
             public void placeRoad(MapController c, EdgeLocation edgeLoc) {
                 c.firstRoadLoc = edgeLoc;
                 if (c.getPlayer().getRoads() > 1) {
+                    c.updateFromModel(c.getModel());
                     c.setStatus(ROAD_BUILDING_SECOND);
                     c.startMove(PieceType.ROAD);
                 } else {
