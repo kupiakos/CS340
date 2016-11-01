@@ -57,7 +57,6 @@ public class DevCardController extends Controller implements IDevCardController 
     @Override
     public void buyCard() {
         if (getFacade().getDevCards().canBuyDevCard(getPlayer())) {
-            getFacade().getDevCards().buyDevCard(getPlayer());
             getBuyCardView().closeModal();
             getAsync().runModelMethod(server::buyDevCard, new BuyDevCardAction(getPlayer().getPlayerIndex()))
                     .onError(Throwable::printStackTrace)
@@ -81,7 +80,6 @@ public class DevCardController extends Controller implements IDevCardController 
     @Override
     public void playMonopolyCard(ResourceType resource) {
         if (getFacade().getDevCards().canUseMonopolyCard(getPlayer(), resource)) {
-            getFacade().getDevCards().useMonopolyCard(getPlayer(), resource);
             getAsync().runModelMethod(server::useMonopoly, new MonopolyAction(getPlayer().getPlayerIndex(), resource))
                     .onError(Throwable::printStackTrace)
                     .start();
@@ -92,7 +90,6 @@ public class DevCardController extends Controller implements IDevCardController 
     @Override
     public void playMonumentCard() {
         if (getFacade().getDevCards().canUseVictoryPointCards(getPlayer())) {
-            getFacade().getDevCards().useVictoryPointCards(getPlayer());
             getAsync().runModelMethod(server::useMonument, new MonumentAction(getPlayer().getPlayerIndex()))
                     .onError(Throwable::printStackTrace)
                     .start();
@@ -103,7 +100,6 @@ public class DevCardController extends Controller implements IDevCardController 
     @Override
     public void playRoadBuildCard() {
         if (getFacade().getDevCards().canUseRoadBuildingCard(getPlayer())) {
-            getFacade().getDevCards().useRoadBuildingCard(getPlayer());
             getPlayCardView().closeModal();
             roadAction.execute();
         }
@@ -112,7 +108,6 @@ public class DevCardController extends Controller implements IDevCardController 
     @Override
     public void playSoldierCard() {
         if (getFacade().getDevCards().canUseSoldierCard(getPlayer())) {
-            getFacade().getDevCards().useSoldierCard(getPlayer());
             getPlayCardView().closeModal();
             soldierAction.execute();
         }
@@ -121,7 +116,6 @@ public class DevCardController extends Controller implements IDevCardController 
     @Override
     public void playYearOfPlentyCard(ResourceType resource1, ResourceType resource2) {
         if (getFacade().getDevCards().canUseYearOfPlentyCard(getPlayer(), resource1, resource2)) {
-            getFacade().getDevCards().useYearOfPlentyCard(getPlayer(), resource1, resource2);
             getAsync().runModelMethod(server::useYearOfPlenty,
                     new YearofPlentyAction(resource1, getPlayer().getPlayerIndex(), resource2))
                     .onError(Throwable::printStackTrace)
