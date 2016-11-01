@@ -65,16 +65,16 @@ public class TradingFacade extends AbstractFacade {
      * </ul>
      *
      * @param sender   the sender of the trade, not null
-     * @param receiver the receiver of the trade, not null
+     * @param receiver the receiver of the trade, or null if none
      * @return true if all of the conditions are met; otherwise false
      * @pre None of the parameters are null.
      * @see #canOfferTrade(Player, Player, ResourceSet)
      */
-    public boolean canOfferTrade(@NotNull Player sender, @NotNull Player receiver) {
+    public boolean canOfferTrade(@NotNull Player sender, @Nullable Player receiver) {
         return getModel().getTradeOffer() == null &&
                 getModel().getTurnTracker().getStatus() == TurnStatus.PLAYING &&
                 getFacades().getTurn().isPlayersTurn(sender) &&
-                sender.getPlayerIndex() != receiver.getPlayerIndex();
+                (receiver == null || sender.getPlayerIndex() != receiver.getPlayerIndex());
     }
 
     /**

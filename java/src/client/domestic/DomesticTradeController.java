@@ -79,6 +79,7 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
     @Override
     protected void updateFromModel(ClientModel cm) {
+        getTradeView().enableDomesticTrade(getFacade().getTrading().canOfferTrade(getPlayer(), null));
         TradeOffer to = cm.getTradeOffer();
         if (getWaitOverlay().isModalShowing()) {
             if (cm.getTradeOffer() == null) {
@@ -108,6 +109,7 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
     @Override
     public void startTrade() {
+
         if (getFacade().getTurn().isPlayersTurn(getPlayer()) && getModel().getTurnTracker().getStatus() == TurnStatus.PLAYING) {
             server = getGameManager().getServer();
             tradeOffer = new OfferTradeAction(null, new ResourceSet(0, 0, 0, 0, 0), getPlayer().getPlayerIndex());
