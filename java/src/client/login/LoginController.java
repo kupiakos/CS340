@@ -7,6 +7,7 @@ import client.server.ServerProxy;
 import shared.models.user.Credentials;
 
 import javax.security.auth.login.CredentialNotFoundException;
+import java.util.regex.Pattern;
 
 
 /**
@@ -87,9 +88,6 @@ public class LoginController extends Controller implements ILoginController {
 
     @Override
     public void register() {
-
-        // TODO: register new user (which, if successful, also logs them in)
-
         String username = getLoginView().getRegisterUsername();
         String password = getLoginView().getRegisterPassword();
         String password2 = getLoginView().getRegisterPasswordRepeat();
@@ -108,7 +106,7 @@ public class LoginController extends Controller implements ILoginController {
         }
         Credentials credentials = new Credentials(password, username);
         getAsync().runMethod(server::register, credentials)
-                .onError(e -> displayRegistrationError(e))
+                .onError(this::displayRegistrationError)
                 .onSuccess(() -> {
                     System.out.println("registration successful");
                     login(credentials);
@@ -118,7 +116,7 @@ public class LoginController extends Controller implements ILoginController {
 
     private void login(Credentials credentials) {
         getAsync().runMethod(server::login, credentials)
-                .onError(e -> displayRegistrationError(e))
+                .onError(this::displayLoginError)
                 .onSuccess(() -> {
                     System.out.println("post-registration login successful");
                     getLoginView().closeModal();
@@ -129,61 +127,37 @@ public class LoginController extends Controller implements ILoginController {
     }
 
     public boolean validateUsername(String username) {
-        final int MIN_UNAME_LENGTH = 3;
-        final int MAX_UNAME_LENGTH = 7;
-        if (username.length() < MIN_UNAME_LENGTH
-                || username.length() > MAX_UNAME_LENGTH) {
-            return false;
-        } else {
-            for (char c : username.toCharArray()) {
-                if (!Character.isLetterOrDigit(c)
-                        && c != '_' && c != '-') {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return Pattern.matches("[\\w-]{3,7}", username);
     }
 
-    public boolean validatePassword(String input) {
-        final int MIN_PASS_LENGTH = 5;
-        if (input.length() < MIN_PASS_LENGTH) {
-            return false;
-        } else {
-            for (char c : input.toCharArray()) {
-                if (!Character.isLetterOrDigit(c)
-                        && c != '_' && c != '-') {
-                    return false;
-                }
-            }
-        }
-        return true;
+    public boolean validatePassword(String password) {
+        return Pattern.matches("[\\w-]{5,}", password);
     }
 
-    void displayInvalidTextError(String title, String message) {
+    private void displayInvalidTextError(String title, String message) {
         messageView.setTitle(title);
         messageView.setMessage(message);
-        messageView.showModal();
+        messageView.showOneModal();
     }
 
-    void displayLoginError(Exception e) {
+    private void displayLoginError(Exception e) {
         messageView.setTitle("Login Error");
         if (e.getClass() == CredentialNotFoundException.class) {
             messageView.setMessage("USERNAME AND/OR PASSWORD NOT FOUND.");
         } else {
             messageView.setMessage("LOGIN ERROR ON SERVER. ERROR: " + e.getMessage());
         }
-        messageView.showModal();
+        messageView.showOneModal();
     }
 
-    void displayRegistrationError(Exception e) {
+    private void displayRegistrationError(Exception e) {
         messageView.setTitle("Registration Error");
         if (e.getClass() == CredentialNotFoundException.class) {
             messageView.setMessage("USERNAME AND/OR PASSWORD NOT VALID OR ALREADY REGISTERED.");
         } else {
             messageView.setMessage("REGISTRATION ERROR ON SERVER.");
         }
-        messageView.showModal();
+        messageView.showOneModal();
     }
 
 }
