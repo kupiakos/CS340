@@ -25,9 +25,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author audakel on 10/5/16.
@@ -61,9 +59,11 @@ public class ChatControllerTest {
         gm = new MockGM();
         gm.setAsync(async);
         gm.setClientModel(model);
+        gm.setServer(mockProxy);
         mockProxy = new MockProxy();
         gm.setServer(mockProxy);
         gm.getFacade().setChat(chatFacade);
+        gm.setThisPlayerIndex(PlayerIndex.FIRST);
         cc = new ChatController(chatView);
         cc.setServer(gm.getServer());
         cc.setGameManager(gm);
