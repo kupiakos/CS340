@@ -493,6 +493,7 @@ public class MapController extends Controller implements IMapController {
             public void placeRoad(MapController c, EdgeLocation edgeLoc) {
                 c.firstRoadLoc = edgeLoc;
                 if (c.getPlayer().getRoads() > 1) {
+                    c.updateFromModel(c.getModel());
                     c.setStatus(ROAD_BUILDING_SECOND);
                     c.startMove(PieceType.ROAD);
                 } else {
@@ -631,6 +632,7 @@ public class MapController extends Controller implements IMapController {
             c.setStatus(NORMAL);
             c.getAsync().runModelMethod(c.server::useRoadBuilding,
                     new RoadBuildingAction(loc2, loc1, c.getPlayer().getPlayerIndex()))
+                    .onSuccess(() -> c.firstRoadLoc = null)
                     .onError(e -> LOGGER.severe("Failed to use road building card: " + e.getMessage()))
                     .start();
         }

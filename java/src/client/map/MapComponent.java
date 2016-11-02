@@ -719,6 +719,8 @@ public class MapComponent extends JComponent {
         g2.translate(this.getWidth() / 2, this.getHeight() / 2);
         g2.scale(scale, scale);
         g2.translate(-WORLD_WIDTH / 2, -WORLD_HEIGHT / 2);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
         drawHexes(g2);
         drawPorts(g2);
