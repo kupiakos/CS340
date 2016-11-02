@@ -5,7 +5,6 @@ import client.map.MapController;
 import shared.definitions.ResourceType;
 import shared.facades.TradingFacade;
 import shared.models.game.ClientModel;
-import shared.models.game.Player;
 import shared.models.moves.MaritimeTradeAction;
 
 import java.util.Arrays;
@@ -74,12 +73,12 @@ public class MaritimeTradeController extends Controller implements IMaritimeTrad
             return;
         }
         TradingFacade trade = getFacade().getTrading();
-        Player p = getPlayer();
-        getAsync().runModelMethod(server::maritimeTrade,
-                new MaritimeTradeAction(getType,
-                        trade.maritimeTradeRatio(p, giveType),
-                        p.getPlayerIndex(),
-                        giveType))
+        MaritimeTradeAction action = new MaritimeTradeAction(getType,
+                trade.maritimeTradeRatio(getPlayer(), giveType),
+                getPlayer().getPlayerIndex(),
+                giveType);
+        LOGGER.info("Maritime Trading: " + action);
+        getAsync().runModelMethod(server::maritimeTrade, action)
                 .onError(e -> LOGGER.severe("Error with maritime trade: " + e.getMessage()))
                 .start();
         getTradeOverlay().closeModal();
