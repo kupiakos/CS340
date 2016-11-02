@@ -144,6 +144,10 @@ public class MapController extends Controller implements IMapController {
     @Override
     protected synchronized void updateFromModel(ClientModel model) {
         GameMap curMap = model.getMap();
+        // Spoof the current client version of the roads during road building
+        if (firstRoadLoc != null) {
+            curMap.getRoads().put(firstRoadLoc, getPlayer().getPlayerIndex());
+        }
         if (haveChangedColors()) {
             // If we've changed colors, force a redraw
             LOGGER.info("Color of players has changed");
@@ -631,6 +635,7 @@ public class MapController extends Controller implements IMapController {
             c.setStatus(NORMAL);
             c.getAsync().runModelMethod(c.server::useRoadBuilding,
                     new RoadBuildingAction(loc2, loc1, c.getPlayer().getPlayerIndex()))
+                    .onSuccess(() -> c.firstRoadLoc = null)
                     .onError(e -> LOGGER.severe("Failed to use road building card: " + e.getMessage()))
                     .start();
         }
