@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import javax.naming.CommunicationException;
+import javax.security.auth.login.CredentialNotFoundException;
 import java.io.*;
 import java.net.*;
 
@@ -16,8 +17,8 @@ import java.net.*;
 class ClientCommunicator implements IClientCommunicator {
 
     private static ClientCommunicator SINGLETON = null;
+    private static CookieManager cookieManager = new CookieManager();
     private String URLPrefix;
-    private static java.net.CookieManager cookieManager = new java.net.CookieManager();
 
     private ClientCommunicator(String host, String port) {
         URLPrefix = "http://" + host + ":" + port;
@@ -49,7 +50,7 @@ class ClientCommunicator implements IClientCommunicator {
      * @pre A can-do method has already been called to make sure that the requested command will work.  A valid URL suffix
      * @post Requested action has been performed and the appropriate information has been returned as Json.
      */
-    public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod) throws IllegalArgumentException, javax.naming.CommunicationException {
+    public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod) throws IllegalArgumentException, CommunicationException, CredentialNotFoundException {
         HttpURLConnection connection = null;
         try {
             URL url = new URL(URLPrefix + URLSuffix);
@@ -79,12 +80,15 @@ class ClientCommunicator implements IClientCommunicator {
                     connection.disconnect();
                     return response.toString();
                 case 400:
-                    response.append("400 - ");
                     InputStream error = connection.getErrorStream();
                     rd = new BufferedReader(new InputStreamReader(error));
                     while ((line = rd.readLine()) != null) {
                         response.append(line);
                         response.append('\r');
+                    }
+                    if (response.toString().contains("Failed to login") ||
+                            response.toString().contains("Failed to register")) {
+                        throw new CredentialNotFoundException(response.toString());
                     }
                     throw new IllegalArgumentException(response.toString());
                 default:

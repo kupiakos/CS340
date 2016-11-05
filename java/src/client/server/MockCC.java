@@ -12,6 +12,8 @@ import shared.models.user.Credentials;
 import shared.models.util.ChangeLogLevelRequest;
 import shared.serialization.ModelSerializer;
 
+import javax.naming.CommunicationException;
+import javax.security.auth.login.CredentialNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,10 @@ public class MockCC implements IClientCommunicator {
         return mockCC;
     }
 
-    public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod) throws IllegalArgumentException, javax.naming.CommunicationException {
+    public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod) throws
+            IllegalArgumentException,
+            CommunicationException,
+            CredentialNotFoundException {
         switch (URLSuffix) {
             case "/user/login":
                 return login(requestBody);
@@ -104,18 +109,18 @@ public class MockCC implements IClientCommunicator {
         }
     }
 
-    private String login(String requestBody) {
+    private String login(String requestBody) throws CredentialNotFoundException {
         Credentials credentials = ModelSerializer.getInstance().fromJson(requestBody, Credentials.class);
         if (credentials.getUsername().equals("user") && credentials.getPassword().equals("password")) {
             return "";
-        } else throw new IllegalArgumentException("400");
+        } else throw new CredentialNotFoundException("Cannot log in");
     }
 
-    private String register(String requestBody) {
+    private String register(String requestBody) throws CredentialNotFoundException {
         Credentials credentials = ModelSerializer.getInstance().fromJson(requestBody, Credentials.class);
         if (!credentials.getUsername().equals("user")) {
             return "";
-        } else throw new IllegalArgumentException("400");
+        } else throw new CredentialNotFoundException("Cannot register");
     }
 
     private String games() {
