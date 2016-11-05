@@ -135,7 +135,7 @@ public class GameManager extends Observable implements IGameManager {
      */
     public IServer getServer() {
         //TODO:: Change this to the real server
-        if (server == null) server = new ServerProxy(host, port);
+        if (server == null) server = ServerProxy.getInstance(host, port);
 
         return server;
     }
