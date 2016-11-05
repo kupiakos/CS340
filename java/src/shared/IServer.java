@@ -73,7 +73,7 @@ public interface IServer {
      * @post A new game is created on the server
      */
     @ServerEndpoint(
-            value = "/games/list",
+            value = "/games/create",
             gameSpecific = false)
     void createGame(@NotNull CreateGameRequest createGameObject) throws IllegalArgumentException, CommunicationException;
 
