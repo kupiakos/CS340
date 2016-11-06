@@ -4,12 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.AIType;
+import shared.models.IGameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class AddAIRequest {
+public class AddAIRequest implements IGameAction{
 
     @SerializedName("AIType")
     @Expose
@@ -71,5 +72,14 @@ public class AddAIRequest {
         return (
                 Objects.equals(aIType, other.aIType)
         );
+    }
+
+    /**
+     * Run on the server.  Adds an AI player of the specified {@link AIType} to the game specifed by the cookie sent in the
+     * HTTP request.
+     */
+    @Override
+    public void execute() {
+
     }
 }

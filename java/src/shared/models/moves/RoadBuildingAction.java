@@ -7,12 +7,13 @@ import org.jetbrains.annotations.Nullable;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
+import shared.models.IGameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class RoadBuildingAction {
+public class RoadBuildingAction implements IGameAction{
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -140,5 +141,14 @@ public class RoadBuildingAction {
                         Objects.equals(spot1, other.spot1) &&
                         Objects.equals(playerIndex, other.playerIndex)
         );
+    }
+
+    /**
+     * Run on the server.  Executes a road building card on the server side. Builds two roads at the specified {@link shared.locations.VertexLocation}s
+     * for the specified {@link PlayerIndex}.
+     */
+    @Override
+    public void execute() {
+
     }
 }

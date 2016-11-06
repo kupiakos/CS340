@@ -5,13 +5,14 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
+import shared.models.IGameAction;
 import shared.models.game.ResourceSet;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class OfferTradeAction {
+public class OfferTradeAction implements IGameAction{
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -139,5 +140,13 @@ public class OfferTradeAction {
                         Objects.equals(offer, other.offer) &&
                         Objects.equals(playerIndex, other.playerIndex)
         );
+    }
+
+    /**
+     * Run on the server.  Lets the {@link PlayerIndex} sender offer {@link PlayerIndex} receiver a trade of resources.
+     */
+    @Override
+    public void execute() {
+
     }
 }

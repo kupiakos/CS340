@@ -4,13 +4,14 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
+import shared.models.IGameAction;
 import shared.models.game.ResourceSet;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class DiscardCardsAction {
+public class DiscardCardsAction implements IGameAction{
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -112,5 +113,14 @@ public class DiscardCardsAction {
                         Objects.equals(discardedCards, other.discardedCards) &&
                         Objects.equals(playerIndex, other.playerIndex)
         );
+    }
+
+    /**
+     * Run on the server.  Remove the specified {@link ResourceSet} from the specified {@link PlayerIndex}.
+     * Returns those resources to the bank.
+     */
+    @Override
+    public void execute() {
+
     }
 }

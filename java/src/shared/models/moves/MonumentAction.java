@@ -5,12 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
+import shared.models.IGameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class MonumentAction {
+public class MonumentAction implements IGameAction{
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -85,5 +86,13 @@ public class MonumentAction {
                 TYPE == other.TYPE &&
                         Objects.equals(playerIndex, other.playerIndex)
         );
+    }
+
+    /**
+     * Run on the server.  Executes a monument action on the server for the given {@link PlayerIndex}.
+     */
+    @Override
+    public void execute() {
+
     }
 }
