@@ -4,6 +4,9 @@ import client.base.IAction;
 import client.game.IGameManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import shared.definitions.functions.ThrowingConsumer;
+import shared.definitions.functions.ThrowingFunction;
+import shared.definitions.functions.ThrowingSupplier;
 import shared.models.game.ClientModel;
 
 import java.util.function.Consumer;
@@ -29,18 +32,6 @@ public class ServerAsyncHelper {
 
     public <T> ClientModelFuture<T> runModelMethod(@NotNull ThrowingFunction<T, ClientModel> runFunc, T arg) {
         return new ClientModelFuture<>(runFunc, arg);
-    }
-
-    public interface ThrowingSupplier<R> {
-        R get() throws Exception;
-    }
-
-    public interface ThrowingFunction<T, R> {
-        R apply(T arg) throws Exception;
-    }
-
-    public interface ThrowingConsumer<T> {
-        void execute(T arg) throws Exception;
     }
 
     public abstract class BaseFuture<RunType, SuccessType> extends Thread {
