@@ -1,6 +1,7 @@
-package server;
+package server.client;
 
 import org.jetbrains.annotations.NotNull;
+import server.games.IServerManager;
 import shared.IServer;
 import shared.facades.FacadeManager;
 import shared.models.game.AddAIRequest;
@@ -16,7 +17,13 @@ import javax.security.auth.login.CredentialNotFoundException;
 public class GameServer implements IServer {
     private ClientModel model;
     private FacadeManager facades;
+    private int gameId;
+    private IServerManager serverManager;
 
+    public GameServer(IServerManager serverManager, int gameId) {
+        setServerManager(serverManager);
+        setGameId(gameId);
+    }
 
     @Override
     public void login(@NotNull Credentials credentials) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
@@ -189,5 +196,21 @@ public class GameServer implements IServer {
 
     public void setFacades(FacadeManager facades) {
         this.facades = facades;
+    }
+
+    public int getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
+    }
+
+    public IServerManager getServerManager() {
+        return serverManager;
+    }
+
+    public void setServerManager(IServerManager serverManager) {
+        this.serverManager = serverManager;
     }
 }
