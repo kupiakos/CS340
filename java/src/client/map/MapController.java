@@ -240,12 +240,12 @@ public class MapController extends Controller implements IMapController {
      * {@link #startMove} is called.
      * <p>
      * {@link MapView#startDrop} opens a
-     * new {@link MapView.MapOverlay}, which is a view.
+     * new MapOverlay, which is a view.
      * This is given the special controller {@link MapView#overlayController}.
      * <p>
      * It also keeps an additional internal {@link MapComponent}
      * which is the half of the map view which actually handles user input.
-     * In {@link MapView.MapOverlay#MapOverlay}, it sets the {@link MapView.MapOverlay#mainMap}
+     * In MapOverlay, it sets the MapOverlay
      * controller to the special controller.
      * <p>
      * The "place a road" modal is shown and the user can place one (or possibly cancel).
@@ -357,7 +357,7 @@ public class MapController extends Controller implements IMapController {
     }
 
     /**
-     * User presses cancel in the {@link client.map.MapView.MapOverlay}
+     * User presses cancel in the MapOverlay
      * {@link client.map.MapView#overlayController} cancelMove
      * this function
      */
