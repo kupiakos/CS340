@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -89,9 +90,10 @@ public class FinishMoveAction implements IGameAction {
 
     /**
      * Run on the server. Finishes turn for specified {@link PlayerIndex}.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

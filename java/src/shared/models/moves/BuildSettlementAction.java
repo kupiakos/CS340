@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.VertexLocation;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -144,9 +145,10 @@ public class BuildSettlementAction implements IGameAction {
 
     /**
      * Run on the server.  Builds a settlement in the game for the {@link PlayerIndex} at the specified {@link VertexLocation}.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

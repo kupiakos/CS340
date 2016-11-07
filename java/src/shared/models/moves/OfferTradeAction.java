@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 import shared.models.game.ResourceSet;
 
 import javax.annotation.Generated;
@@ -144,9 +145,10 @@ public class OfferTradeAction implements IGameAction {
 
     /**
      * Run on the server.  Lets the {@link PlayerIndex} sender offer {@link PlayerIndex} receiver a trade of resources.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

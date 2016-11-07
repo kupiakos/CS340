@@ -28,8 +28,7 @@ public class ServerModel {
             throw new CredentialNotFoundException("The user " + username + " already exists!");
         }
         int id = users.keySet().stream().max(Integer::compareTo).orElseGet(() -> 0) + 1;
-        User user = new User();
-        user.setId(id);
+        User user = new User(id, username, password);
         assert !users.containsKey(id);
         users.put(id, user);
         return id;

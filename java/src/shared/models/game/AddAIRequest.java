@@ -77,9 +77,10 @@ public class AddAIRequest implements IGameAction {
     /**
      * Run on the server.  Adds an AI player of the specified {@link AIType} to the game specifed by the cookie sent in the
      * HTTP request.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

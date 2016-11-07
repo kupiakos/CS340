@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -102,9 +103,10 @@ public class JoinGameRequest implements IGameAction {
     /**
      * Run on the server. Will add the player specified in the cookie to the game specified in this action, with the specified
      * color.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

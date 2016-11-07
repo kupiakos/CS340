@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -90,9 +91,10 @@ public class BuyDevCardAction implements IGameAction {
     /**
      * Run on the server.  Buys a dev card for the specified {@link PlayerIndex}, which is added to their hand.
      * Removes the same card from the bank.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

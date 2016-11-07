@@ -7,6 +7,7 @@ import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -118,9 +119,10 @@ public class MonopolyAction implements IGameAction {
 
     /**
      * Run on the server.  Executes monopoly card on server based on given {@link PlayerIndex} and {@link ResourceType}.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

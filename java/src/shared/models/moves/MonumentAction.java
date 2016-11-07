@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -90,9 +91,10 @@ public class MonumentAction implements IGameAction {
 
     /**
      * Run on the server.  Executes a monument action on the server for the given {@link PlayerIndex}.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

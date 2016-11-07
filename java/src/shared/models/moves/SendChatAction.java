@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 import shared.models.game.MessageEntry;
 
 import javax.annotation.Generated;
@@ -126,9 +127,10 @@ public class SendChatAction implements IGameAction {
 
     /**
      * Run on the server.  Added the specified chat content to the list of chats on the server.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

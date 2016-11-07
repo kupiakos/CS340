@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.HexLocation;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -143,9 +144,10 @@ public class RobPlayerAction implements IGameAction {
 
     /**
      * Run on the server.  Lets a player move the robber to a new {@link HexLocation} and rob a player on that hex.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

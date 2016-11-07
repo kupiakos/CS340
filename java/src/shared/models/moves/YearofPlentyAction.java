@@ -7,6 +7,7 @@ import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -146,9 +147,10 @@ public class YearofPlentyAction implements IGameAction {
     /**
      * Run on the server.  Executes a year of plenty card.  Gives specified {@link PlayerIndex} one of each specified
      * {@link ResourceType}.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

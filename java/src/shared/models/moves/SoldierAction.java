@@ -7,6 +7,7 @@ import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.locations.HexLocation;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -145,9 +146,10 @@ public class SoldierAction implements IGameAction {
     /**
      * Run on the server.  Executes a soldier card on the server.  Allows {@link PlayerIndex} to move the robber to specified
      * {@link HexLocation} and rob a player at the location.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

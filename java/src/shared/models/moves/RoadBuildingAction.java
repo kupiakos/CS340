@@ -8,6 +8,7 @@ import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -146,9 +147,10 @@ public class RoadBuildingAction implements IGameAction {
     /**
      * Run on the server.  Executes a road building card on the server side. Builds two roads at the specified {@link shared.locations.VertexLocation}s
      * for the specified {@link PlayerIndex}.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }

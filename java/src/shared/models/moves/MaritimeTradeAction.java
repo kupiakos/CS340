@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.models.IGameAction;
+import shared.models.game.ClientModel;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -170,9 +171,10 @@ public class MaritimeTradeAction implements IGameAction {
     /**
      * Run on the server.  Exchanges the input {@link ResourceType} for the output {@link ResourceType} at the given ratio.
      * Gives new resource to specified {@link PlayerIndex}.
+     * @param model
      */
     @Override
-    public void execute() {
+    public void execute(ClientModel model) {
 
     }
 }
