@@ -19,12 +19,11 @@ public class ServerModel {
      * Called when a new {@link User} registers.  This method inserts a
      * new {@link User} into {@link ServerModel#idToUser}
      *
-     * @return the new {@link User#id} created
      * @pre {@link #getUser(int)} returns a valid {@link User} for some {@code id}
      * @post A new {@link User} is placed in {@link #idToUser}
      */
-    public int registerUser() {
-        return 0;
+    public void registerUser() {
+
     }
 
     /**
