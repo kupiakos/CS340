@@ -26,7 +26,8 @@ public class MapFacadeTest {
     }
 
     @Test
-    public void findLongestRoad(){
+    public void findLongestRoad() {
+        // TODO: Test enemy settlements breaking roads and cycles
         assertEquals(PlayerIndex.FIRST, facade.findLongestRoad());
         model.getMap().getRoads().put(new EdgeLocation(new HexLocation(0, 0), EdgeDirection.NorthWest), PlayerIndex.FOURTH);
         assertEquals(PlayerIndex.FOURTH, facade.findLongestRoad());
