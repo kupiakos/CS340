@@ -1,6 +1,7 @@
-package server;
+package server.client;
 
 import org.jetbrains.annotations.NotNull;
+import server.games.IServerManager;
 import shared.IServer;
 import shared.facades.FacadeManager;
 import shared.models.game.AddAIRequest;
@@ -13,10 +14,23 @@ import shared.models.util.ChangeLogLevelRequest;
 import javax.naming.CommunicationException;
 import javax.security.auth.login.CredentialNotFoundException;
 
+/**
+ * The server-side implementation of the catan API.
+ * Each instance is used for one game (or none)
+ * <p>
+ * Referred to as the "server facade" in the Phase 3 requirements.
+ *
+ * @see IServer
+ */
 public class GameServer implements IServer {
-    private ClientModel model;
     private FacadeManager facades;
+    private int gameId;
+    private IServerManager serverManager;
 
+    public GameServer(IServerManager serverManager, int gameId) {
+        setServerManager(serverManager);
+        setGameId(gameId);
+    }
 
     @Override
     public void login(@NotNull Credentials credentials) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
@@ -175,12 +189,18 @@ public class GameServer implements IServer {
         return null;
     }
 
-    public ClientModel getModel() {
-        return model;
-    }
-
-    public void setModel(ClientModel model) {
-        this.model = model;
+    /**
+     * Get the model for the current game
+     *
+     * @return the model this instance should use for the current game
+     */
+    @NotNull
+    private ClientModel getModel() {
+        if (getGameId() == -1) {
+            throw new IllegalArgumentException("User must have joined a game");
+        }
+        // TODO: Fix
+        return new ClientModel();
     }
 
     public FacadeManager getFacades() {
@@ -189,5 +209,21 @@ public class GameServer implements IServer {
 
     public void setFacades(FacadeManager facades) {
         this.facades = facades;
+    }
+
+    public int getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
+    }
+
+    public IServerManager getServerManager() {
+        return serverManager;
+    }
+
+    public void setServerManager(IServerManager serverManager) {
+        this.serverManager = serverManager;
     }
 }
