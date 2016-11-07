@@ -16,47 +16,50 @@ public class ServerModel {
     }
 
     /**
-     * Called when a new {@link User} registers.  This method inserts a new {@link User} into {@link ServerModel#idToUser}
+     * Called when a new {@link User} registers.  This method inserts a
+     * new {@link User} into {@link ServerModel#idToUser}
      *
-     * @pre The Register button is clicked
-     * the credentials ({@link User#username} and {@link User#password}) are valid
-     * @post A new {@link User} is placed in {@link ServerModel#idToUser}
+     * @return the new {@link User#id} created
+     * @pre {@link #getUser(int)} returns a valid {@link User} for some {@code id}
+     * @post A new {@link User} is placed in {@link #idToUser}
      */
-    public void registerUser() {
-
+    public int registerUser() {
+        return 0;
     }
 
     /**
-     * Called when a new game is created.  This method creates a new {@link GameModel} and inserts it into {@link ServerModel#gameIDToModel}
+     * Called when a new game is created.  This method creates a new {@link GameModel}
+     * and inserts it into {@link ServerModel#gameIDToModel}
      *
-     * @pre The Create Game button is clicked before a game is started
-     * each {@link shared.models.game.Player} are valid with their game color
-     * the game name is valid
-     * @post A new {@link GameModel} is placed in {@link ServerModel#gameIDToModel}
+     * @return the new {@link GameModel#id} created
+     * @pre {@link #getGameModel(int)} returns a valid {@link GameModel} for some {@code id}
+     * @post A new {@link GameModel} is placed in {@link #gameIDToModel}
      */
-    public void startNewGame() {
-
+    public int startNewGame() {
+        return 0;
     }
 
     /**
-     * Returns a {@link User} based on the {@code ID} given
+     * Returns a {@link User} object or null
      *
      * @param ID An integer that is used to determine which {@link User} to return
-     * @return a {@link User} if {@code ID} is contained in {@link ServerModel#idToUser}; {@code null} otherwise
-     * @pre The {@code ID} must not be {@code null}
-     * @post A {@link User} object or {@code null} is returned
+     * @return a {@link User} if {@code ID} is contained in {@link #idToUser},
+     * null otherwise
+     * @pre None
+     * @post A {@link User} object or null is returned
      */
     public User getUser(int ID) {
         return idToUser.get(ID);
     }
 
     /**
-     * Returns a {@link GameModel} based on the {@code ID} given
+     * Returns a {@link GameModel} object or null
      *
      * @param ID An integer that is used to determine which {@link GameModel} to return
-     * @return a {@link GameModel} if {@code ID} is contained in {@link ServerModel#gameIDToModel}; {@code null} otherwise
-     * @pre The {@code ID} must not be {@code null}
-     * @post A value {@link GameModel} object or {@code null} is returned
+     * @return a {@link GameModel} if {@code ID} is contained in {@link #gameIDToModel},
+     * null otherwise
+     * @pre None
+     * @post A value {@link GameModel} object or null is returned
      */
     public GameModel getGameModel(int ID) {
         return gameIDToModel.get(ID);
