@@ -53,7 +53,7 @@ public class MessageList {
     /**
      * Adds just one message to the list, creates a new one if needed
      *
-     * @param lines
+     * @param line
      */
     public void addMessage(@NotNull MessageEntry line) {
         getLines().add(line);
@@ -63,7 +63,7 @@ public class MessageList {
      * Changes the SendChatAction to a MessageEntry then
      * Adds just one message to the list, creates a new one if needed
      *
-     * @param lines
+     * @param c
      */
     public void addChat(@NotNull SendChatAction c) {
 

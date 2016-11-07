@@ -118,8 +118,6 @@ public class TurnFacade extends AbstractFacade {
 
     /**
      * Sets the game state to the same player's turn (build phase)
-     *
-     * @return successful or not (almost always is true)
      */
     public void finishRolling(boolean moveRobber) {
         updateTracker(getPhase().finishRolling(moveRobber));
@@ -127,8 +125,6 @@ public class TurnFacade extends AbstractFacade {
 
     /**
      * Start robbing
-     *
-     * @return
      */
     public void startRobbing() {
         updateTracker(getPhase().startRobbing());
@@ -136,8 +132,6 @@ public class TurnFacade extends AbstractFacade {
 
     /**
      * Stop the robbing
-     *
-     * @return
      */
     public void finishRobbing() {
         updateTracker(getPhase().finishRobbing());
