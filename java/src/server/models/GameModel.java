@@ -5,10 +5,19 @@ import shared.models.games.GameInfo;
 
 public class GameModel {
 
+    private int id;
     private GameInfo gameInfo;
     private ClientModel clientModel;
 
     public GameModel() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public GameInfo getGameInfo() {
