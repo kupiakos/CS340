@@ -10,7 +10,7 @@ import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class AddAIRequest implements IGameAction{
+public class AddAIRequest implements IGameAction {
 
     @SerializedName("AIType")
     @Expose

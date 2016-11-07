@@ -12,7 +12,7 @@ import java.util.Objects;
  * A game creation request.
  */
 @Generated("net.kupiakos")
-public class CreateGameRequest implements IGameAction{
+public class CreateGameRequest implements IGameAction {
 
     @SerializedName("randomTiles")
     @Expose

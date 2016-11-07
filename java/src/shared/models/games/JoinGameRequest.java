@@ -9,7 +9,7 @@ import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class JoinGameRequest implements IGameAction{
+public class JoinGameRequest implements IGameAction {
 
     @SerializedName("color")
     @Expose

@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class BuildRoadAction implements IGameAction{
+public class BuildRoadAction implements IGameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)

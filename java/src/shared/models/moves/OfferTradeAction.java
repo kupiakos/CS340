@@ -12,7 +12,7 @@ import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class OfferTradeAction implements IGameAction{
+public class OfferTradeAction implements IGameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)

@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class SendChatAction implements IGameAction{
+public class SendChatAction implements IGameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)

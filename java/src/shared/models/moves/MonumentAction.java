@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class MonumentAction implements IGameAction{
+public class MonumentAction implements IGameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)

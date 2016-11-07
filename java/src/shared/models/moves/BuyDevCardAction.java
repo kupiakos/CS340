@@ -10,7 +10,7 @@ import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class BuyDevCardAction implements IGameAction{
+public class BuyDevCardAction implements IGameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)

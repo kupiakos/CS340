@@ -12,7 +12,7 @@ import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class YearofPlentyAction implements IGameAction{
+public class YearofPlentyAction implements IGameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
