@@ -10,7 +10,9 @@ public class ServerModel {
     public ServerModel() {
     }
 
-
+    /**
+     * registers a User
+     */
     public void registerUser() {
 
     }
