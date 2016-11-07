@@ -6,12 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.locations.HexLocation;
+import shared.models.IGameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class SoldierAction {
+public class SoldierAction implements IGameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -139,5 +140,14 @@ public class SoldierAction {
                         Objects.equals(playerIndex, other.playerIndex) &&
                         victimIndex == other.victimIndex
         );
+    }
+
+    /**
+     * Run on the server.  Executes a soldier card on the server.  Allows {@link PlayerIndex} to move the robber to specified
+     * {@link HexLocation} and rob a player at the location.
+     */
+    @Override
+    public void execute() {
+
     }
 }

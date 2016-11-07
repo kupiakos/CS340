@@ -6,12 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
+import shared.models.IGameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class MonopolyAction {
+public class MonopolyAction implements IGameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -113,5 +114,13 @@ public class MonopolyAction {
                         Objects.equals(playerIndex, other.playerIndex) &&
                         Objects.equals(resource, other.resource)
         );
+    }
+
+    /**
+     * Run on the server.  Executes monopoly card on server based on given {@link PlayerIndex} and {@link ResourceType}.
+     */
+    @Override
+    public void execute() {
+
     }
 }

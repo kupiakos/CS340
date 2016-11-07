@@ -4,12 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
+import shared.models.IGameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class AcceptTradeAction {
+public class AcceptTradeAction implements IGameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -111,5 +112,13 @@ public class AcceptTradeAction {
                         willAccept == other.willAccept &&
                         Objects.equals(receiver, other.receiver)
         );
+    }
+
+    /**
+     * Uses server facade to accept the trade that is currently being offered in the game.
+     */
+    @Override
+    public void execute() {
+
     }
 }

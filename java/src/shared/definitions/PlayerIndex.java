@@ -73,6 +73,7 @@ public enum PlayerIndex {
 
     /**
      * Get the numeric index the given PlayerIndex represents, or -1 if null.
+     *
      * @return a number -1-3
      */
     @Contract(pure = true)

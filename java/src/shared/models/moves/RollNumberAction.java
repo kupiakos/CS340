@@ -4,12 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
+import shared.models.IGameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class RollNumberAction {
+public class RollNumberAction implements IGameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -108,5 +109,14 @@ public class RollNumberAction {
                         TYPE == other.TYPE &&
                         Objects.equals(playerIndex, other.playerIndex)
         );
+    }
+
+    /**
+     * Run on the server.  Tells server what number {@link PlayerIndex} rolled.  Server responds by giving players the
+     * necessary resources.
+     */
+    @Override
+    public void execute() {
+
     }
 }
