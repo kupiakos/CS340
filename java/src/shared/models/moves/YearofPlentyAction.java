@@ -6,12 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
+import shared.models.IGameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class YearofPlentyAction {
+public class YearofPlentyAction implements IGameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -140,5 +141,14 @@ public class YearofPlentyAction {
                         Objects.equals(playerIndex, other.playerIndex) &&
                         Objects.equals(resource2, other.resource2)
         );
+    }
+
+    /**
+     * Run on the server.  Executes a year of plenty card.  Gives specified {@link PlayerIndex} one of each specified
+     * {@link ResourceType}.
+     */
+    @Override
+    public void execute() {
+
     }
 }

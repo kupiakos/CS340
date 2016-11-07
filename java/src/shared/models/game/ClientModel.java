@@ -297,6 +297,10 @@ public class ClientModel {
         return this;
     }
 
+    public void incrementVersion() {
+        setVersion(getVersion() + 1);
+    }
+
     /**
      * @return All the log messages.
      */

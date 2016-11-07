@@ -5,12 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
+import shared.models.IGameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class MaritimeTradeAction {
+public class MaritimeTradeAction implements IGameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -164,5 +165,14 @@ public class MaritimeTradeAction {
                         Objects.equals(playerIndex, other.playerIndex) &&
                         Objects.equals(inputResource, other.inputResource)
         );
+    }
+
+    /**
+     * Run on the server.  Exchanges the input {@link ResourceType} for the output {@link ResourceType} at the given ratio.
+     * Gives new resource to specified {@link PlayerIndex}.
+     */
+    @Override
+    public void execute() {
+
     }
 }

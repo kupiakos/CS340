@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
-import shared.locations.VertexDirection;
 import shared.locations.VertexLocation;
 import shared.utils.MapUtils;
 
@@ -493,61 +492,68 @@ public class GameMap {
      * @return Greatest number of connected roads.
      */
     public int getPlayerLongestRoad(PlayerIndex player) {
+        int size = 0;
         int max = 0;
-        HashSet<EdgeLocation> edges = (HashSet) getPlayerRoads(player);
-        for (EdgeLocation e : edges) {
-            int roadSize = getRoadSize(1, e, player);
-            if (roadSize > max)
-                max = roadSize;
+        Set<EdgeLocation> playerRoads = getPlayerRoads(player);
+
+        while (!playerRoads.isEmpty()) {
+            // Pick a road from the set
+            EdgeLocation loc = playerRoads.iterator().next();
+            Set<EdgeLocation> longest = getLongestRoad(new HashSet<EdgeLocation>(Arrays.asList(loc)), loc, player);
+            max = Math.max(longest.size(), max);
+            playerRoads.removeAll(longest);
         }
         return max;
     }
 
+    private Set<EdgeLocation> connectedRoads(EdgeLocation loc) {
+        PlayerIndex player = roads.get(loc);
+        // Note: A continuous road is broken if another player builds a settlement on the vertex between two roads
+        return loc.getConnectedVertices().stream()
+                .filter(v -> {
+                    PlayerIndex owner = getBuildingOwner(v);
+                    return (owner == null || owner == player);
+                })
+                .flatMap(v -> getVertexEdges(v).stream())
+                .distinct()
+                .filter(e -> player == roads.get(e))
+                .collect(Collectors.toSet());
+    }
+
     /**
-     * Recursive method that finds the greatest number of connected roads for the given player with a starting location.
-     *
-     * @param currentSize
-     * @param edge
-     * @param player
-     * @return
+     * Find the longest road that extends the given road segment, starting from the given location.
      */
-    private int getRoadSize(int currentSize, EdgeLocation edge, PlayerIndex player) {
-        Set<EdgeLocation> edges;
-        switch (edge.getDir()) {
-            case North:
-                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.NorthEast));
-                break;
-            case NorthEast:
-                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.East));
-                break;
-            case SouthEast:
-                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.SouthEast));
-                break;
-            case South:
-                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.SouthWest));
-                break;
-            case SouthWest:
-                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.West));
-                break;
-            case NorthWest:
-                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.NorthWest));
-                break;
-            default:
-                edges = new HashSet<>();
-                break;
-        }
-        int max = currentSize;
-        for (EdgeLocation e : edges) {
-            if (e.equals(edge.getNormalizedLocation()))
+    private Set<EdgeLocation> getLongestRoad(Set<EdgeLocation> current, EdgeLocation loc, PlayerIndex player) {
+        List<Set<EdgeLocation>> pathCandidates = new ArrayList<>();
+        pathCandidates.add(current);
+        for (EdgeLocation next : connectedRoads(loc)) {
+            // No cycles allowed and no checking visited nodes
+            // On an edge, this will always be caught
+            if (pathCandidates.stream().anyMatch(candidate -> candidate.contains(next))) {
                 continue;
-            else if (roads.get(e) == player) {
-                int newSize = getRoadSize(currentSize + 1, e, player);
-                if (newSize > max) {
-                    max = newSize;
+            }
+            Set<EdgeLocation> candidate = new HashSet<>(current);
+            candidate.add(next);
+            pathCandidates.add(getLongestRoad(candidate, loc, player));
+        }
+        if (pathCandidates.size() == 1) {
+            return current;
+        }
+        // The pair of sets whose union forms the largest set is the longest continuous road
+        // To do this, all combinations size 2 of the candidates are iterated
+        // There are (candidates.size choose 2) possible union candidates
+        Set<EdgeLocation> largest = current;
+        int n = pathCandidates.size();
+        for (int i = 0; i < n - 1; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                Set<EdgeLocation> union = new HashSet<>(pathCandidates.get(i));
+                union.addAll(pathCandidates.get(j));
+                if (union.size() > largest.size()) {
+                    largest = union;
                 }
             }
         }
-        return max;
+        return largest;
     }
 
     /**

@@ -3,6 +3,7 @@ package client.server;
 import org.jetbrains.annotations.NotNull;
 import shared.IServer;
 import shared.annotations.ServerEndpoint;
+import shared.definitions.functions.ThrowingFunction;
 import shared.models.game.ClientModel;
 import shared.serialization.ModelSerializer;
 
@@ -78,10 +79,6 @@ public interface ServerProxy extends IServer {
                         return commandMap.get(method.getName()).apply(args == null ? null : args[0]);
                     });
             return proxy;
-        }
-
-        private interface ThrowingFunction<T, R> {
-            R apply(T arg) throws Exception;
         }
     }
 }
