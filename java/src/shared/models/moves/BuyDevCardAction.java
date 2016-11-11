@@ -4,14 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
-import shared.models.IGameAction;
-import shared.models.game.ClientModel;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class BuyDevCardAction implements IGameAction {
+public class BuyDevCardAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -91,10 +90,9 @@ public class BuyDevCardAction implements IGameAction {
     /**
      * Run on the server.  Buys a dev card for the specified {@link PlayerIndex}, which is added to their hand.
      * Removes the same card from the bank.
-     * @param model
      */
     @Override
-    public void execute(ClientModel model) {
+    public void execute() {
 
     }
 }

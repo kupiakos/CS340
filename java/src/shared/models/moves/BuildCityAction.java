@@ -5,14 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.VertexLocation;
-import shared.models.IGameAction;
-import shared.models.game.ClientModel;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class BuildCityAction implements IGameAction {
+public class BuildCityAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -118,10 +117,9 @@ public class BuildCityAction implements IGameAction {
 
     /**
      * Run on the server.  Will build a city at the specified {@link VertexLocation} for the specified {@link PlayerIndex}.
-     * @param model
      */
     @Override
-    public void execute(ClientModel model) {
+    public void execute() {
 
     }
 }

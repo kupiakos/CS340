@@ -5,15 +5,14 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
-import shared.models.IGameAction;
-import shared.models.game.ClientModel;
+import shared.models.GameAction;
 import shared.models.game.ResourceSet;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class OfferTradeAction implements IGameAction {
+public class OfferTradeAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -145,10 +144,9 @@ public class OfferTradeAction implements IGameAction {
 
     /**
      * Run on the server.  Lets the {@link PlayerIndex} sender offer {@link PlayerIndex} receiver a trade of resources.
-     * @param model
      */
     @Override
-    public void execute(ClientModel model) {
+    public void execute() {
 
     }
 }

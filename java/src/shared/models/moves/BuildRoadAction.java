@@ -5,14 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
-import shared.models.IGameAction;
-import shared.models.game.ClientModel;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class BuildRoadAction implements IGameAction {
+public class BuildRoadAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -143,10 +142,9 @@ public class BuildRoadAction implements IGameAction {
 
     /**
      * Run on the server.  Builds a road in the game for the specified {@link PlayerIndex} at the specified {@link EdgeLocation}.
-     * @param model
      */
     @Override
-    public void execute(ClientModel model) {
+    public void execute() {
 
     }
 }

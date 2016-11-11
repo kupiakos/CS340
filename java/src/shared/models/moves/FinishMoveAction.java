@@ -4,14 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
-import shared.models.IGameAction;
-import shared.models.game.ClientModel;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class FinishMoveAction implements IGameAction {
+public class FinishMoveAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -90,10 +89,9 @@ public class FinishMoveAction implements IGameAction {
 
     /**
      * Run on the server. Finishes turn for specified {@link PlayerIndex}.
-     * @param model
      */
     @Override
-    public void execute(ClientModel model) {
+    public void execute() {
 
     }
 }
