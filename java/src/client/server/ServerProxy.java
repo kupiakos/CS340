@@ -12,6 +12,8 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import static shared.utils.ClassUtils.defaultWrapper;
+
 /**
  * Created by elijahgk on 9/12/2016.
  * Implements the IServer Interface.
@@ -47,10 +49,11 @@ public interface ServerProxy extends IServer {
                 if (endpoint == null) {
                     continue;
                 }
-                Class<?> returnType =
+                Class<?> deserializeType =
                         (!method.getReturnType().equals(Void.TYPE) && endpoint.returnsCookie().isEmpty()) ?
                                 method.getReturnType() :
                                 null;
+                Class resultType = method.getReturnType();
                 Class<?> paramType = method.getParameterCount() >= 1 ? method.getParameterTypes()[0] : null;
                 String URLSuffix = endpoint.value();
                 String verb = endpoint.isPost() ? "POST" : "GET";
@@ -61,8 +64,10 @@ public interface ServerProxy extends IServer {
                         requestBody = ModelSerializer.getInstance().toJson(arg, paramType);
                     }
                     String resultJson = comm.sendHTTPRequest(URLSuffix, requestBody, verb);
-                    if (returnType != null) {
-                        result = ModelSerializer.getInstance().fromJson(resultJson, method.getReturnType());
+                    if (deserializeType != null) {
+                        result = ModelSerializer.getInstance().fromJson(resultJson, deserializeType);
+                    } else {
+                        result = defaultWrapper(resultType);
                     }
                     return result;
                 });

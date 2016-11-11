@@ -133,8 +133,7 @@ public class MockCC implements IClientCommunicator {
     }
 
     private String joinGame(String requestBody) {
-        JoinGameRequest join = ModelSerializer.getInstance().fromJson(requestBody, JoinGameRequest.class);
-        return "";
+        return "3";
     }
 
     private String saveGame(String requestBody) {
