@@ -3,7 +3,6 @@ package server.models;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.security.auth.login.CredentialNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 

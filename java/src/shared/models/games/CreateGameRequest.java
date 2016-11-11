@@ -3,7 +3,6 @@ package shared.models.games;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
-import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -12,7 +11,7 @@ import java.util.Objects;
  * A game creation request.
  */
 @Generated("net.kupiakos")
-public class CreateGameRequest{
+public class CreateGameRequest {
 
     @SerializedName("randomTiles")
     @Expose

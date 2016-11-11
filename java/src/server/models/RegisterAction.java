@@ -9,16 +9,16 @@ public class RegisterAction extends ServerAction {
     private Credentials credentials;
     private int newUserId;
 
-    public RegisterAction(Credentials credentials){
+    public RegisterAction(Credentials credentials) {
         this.credentials = credentials;
     }
 
     @Override
-    public void execute(){
-        newUserId = getServerModel().registerUser(credentials.getUsername(),credentials.getPassword());
+    public void execute() {
+        newUserId = getServerModel().registerUser(credentials.getUsername(), credentials.getPassword());
     }
 
-    public int getId(){
+    public int getId() {
         return newUserId;
     }
 }

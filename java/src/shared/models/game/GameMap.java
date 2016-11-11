@@ -251,8 +251,8 @@ public class GameMap {
      * This tests distance and adjacency requirements.
      * If it is the first turn, don't check whether the player is connected to one of their own roads.
      *
-     * @param location    the location to test, not null
-     * @param player      the player to test, not null
+     * @param location        the location to test, not null
+     * @param player          the player to test, not null
      * @param isFirstTwoTurns whether the game is in the first turn or not
      * @return whether the map could support adding a settlement owned by the player at that location
      */

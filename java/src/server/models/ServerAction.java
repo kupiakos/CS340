@@ -13,11 +13,11 @@ public class ServerAction implements ICommandAction {
 
     }
 
-    public void setServerModel(ServerModel s){
+    public void setServerModel(ServerModel s) {
         serverModel = s;
     }
 
-    public ServerModel getServerModel(){
+    public ServerModel getServerModel() {
         return serverModel;
     }
 }
