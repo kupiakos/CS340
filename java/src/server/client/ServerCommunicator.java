@@ -30,7 +30,8 @@ import java.util.stream.Collectors;
  * The server to the client communicator.
  * Listens to communications and calls the IServer accordingly.
  */
-public class ServerCommunicator implements HttpHandler, IServerCommunicator {
+public class
+ServerCommunicator implements HttpHandler, IServerCommunicator {
     private Map<String, EndpointHandler> contexts;
     private HttpServer http;
     private IServerManager serverManager;

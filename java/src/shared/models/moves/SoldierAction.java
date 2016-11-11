@@ -6,13 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.locations.HexLocation;
-import shared.models.IGameAction;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class SoldierAction implements IGameAction {
+public class SoldierAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)

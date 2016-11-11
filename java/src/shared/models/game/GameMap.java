@@ -253,7 +253,7 @@ public class GameMap {
      *
      * @param location    the location to test, not null
      * @param player      the player to test, not null
-     * @param isFirstTurn whether the game is in the first turn or not
+     * @param isFirstTwoTurns whether the game is in the first turn or not
      * @return whether the map could support adding a settlement owned by the player at that location
      */
     public boolean canAddSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTwoTurns) {
@@ -316,7 +316,9 @@ public class GameMap {
      * <p>
      * This tests distance and adjacency requirements.
      *
-     * @param road the road containing the location and owner to add
+     * @param location
+     * @param player
+     * @param isSetup
      * @return whether the map could support adding a road owned by the player at that location
      */
     public boolean canAddRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player, @NotNull boolean isSetup) {

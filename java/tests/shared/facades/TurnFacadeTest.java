@@ -40,7 +40,7 @@ public class TurnFacadeTest {
     }
 
     /**
-     * Checks if you can end turn before putting down 2 roads && settlements
+     * Checks if you can end turn before putting down 2 roads and settlements
      *
      * @throws Exception
      */

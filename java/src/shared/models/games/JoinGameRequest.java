@@ -3,13 +3,13 @@ package shared.models.games;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
-import shared.models.IGameAction;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class JoinGameRequest implements IGameAction {
+public class JoinGameRequest extends GameAction {
 
     @SerializedName("color")
     @Expose

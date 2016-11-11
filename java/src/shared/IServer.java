@@ -32,7 +32,7 @@ public interface IServer {
      */
     @ServerEndpoint(
             value = "/user/login",
-            returnsCookie = "command.user",
+            returnsCookie = "catan.user",
             gameSpecific = false,
             requiresAuth = false)
     void login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
@@ -47,7 +47,7 @@ public interface IServer {
      */
     @ServerEndpoint(
             value = "/user/register",
-            returnsCookie = "command.user",
+            returnsCookie = "catan.user",
             gameSpecific = false,
             requiresAuth = false)
     void register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;

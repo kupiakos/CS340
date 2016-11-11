@@ -4,14 +4,14 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
-import shared.models.IGameAction;
+import shared.models.GameAction;
 import shared.models.game.ResourceSet;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class DiscardCardsAction implements IGameAction {
+public class DiscardCardsAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)

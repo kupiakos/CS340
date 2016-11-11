@@ -6,13 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
-import shared.models.IGameAction;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class MonopolyAction implements IGameAction {
+public class MonopolyAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)

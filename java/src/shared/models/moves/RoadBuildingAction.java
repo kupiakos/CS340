@@ -7,13 +7,13 @@ import org.jetbrains.annotations.Nullable;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
-import shared.models.IGameAction;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class RoadBuildingAction implements IGameAction {
+public class RoadBuildingAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)

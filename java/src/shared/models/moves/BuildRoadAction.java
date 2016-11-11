@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
-import shared.models.IGameAction;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class BuildRoadAction implements IGameAction {
+public class BuildRoadAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)

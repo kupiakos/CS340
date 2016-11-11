@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
-import shared.models.IGameAction;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class MaritimeTradeAction implements IGameAction {
+public class MaritimeTradeAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
