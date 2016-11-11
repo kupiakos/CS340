@@ -12,7 +12,7 @@ import java.util.Objects;
  * A game creation request.
  */
 @Generated("net.kupiakos")
-public class CreateGameRequest extends GameAction {
+public class CreateGameRequest{
 
     @SerializedName("randomTiles")
     @Expose
@@ -154,13 +154,5 @@ public class CreateGameRequest extends GameAction {
                         randomNumbers == other.randomNumbers &&
                         Objects.equals(name, other.name)
         );
-    }
-
-    /**
-     * Run on the server.  Creates a new game on the server with the parameters specified in this action.
-     */
-    @Override
-    public void execute() {
-
     }
 }

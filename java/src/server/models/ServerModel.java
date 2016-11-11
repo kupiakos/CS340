@@ -23,9 +23,9 @@ public class ServerModel {
      *
      * @return the ID of the new user
      */
-    public int registerUser(@NotNull String username, @NotNull String password) throws CredentialNotFoundException {
+    public int registerUser(@NotNull String username, @NotNull String password) throws IllegalArgumentException {
         if (users.values().stream().anyMatch(u -> username.equals(u.getUsername()))) {
-            throw new CredentialNotFoundException("The user " + username + " already exists!");
+            throw new IllegalArgumentException("The user " + username + " already exists!");
         }
         int id = users.keySet().stream().max(Integer::compareTo).orElseGet(() -> 0) + 1;
         User user = new User(id, username, password);
@@ -53,7 +53,7 @@ public class ServerModel {
      * @pre {@link #getGameModel(int)} returns a valid {@link GameModel} for some {@code id}
      * @post A new {@link GameModel} is placed in {@link #gameModels}
      */
-    public int startNewGame() {
+    public int startNewGame(boolean randomTiles, boolean randomPorts, boolean randomNumbers, String name) {
         return 0;
     }
 

@@ -2,6 +2,9 @@ package server.client;
 
 import org.jetbrains.annotations.NotNull;
 import server.games.IServerManager;
+import server.models.CreateGameAction;
+import server.models.JoinGameAction;
+import server.models.RegisterAction;
 import shared.IServer;
 import shared.facades.FacadeManager;
 import shared.models.game.AddAIRequest;
@@ -26,6 +29,7 @@ public class GameServer implements IServer {
     private FacadeManager facades;
     private int gameId;
     private IServerManager serverManager;
+    private int userId;
 
     public GameServer(IServerManager serverManager, int gameId) {
         setServerManager(serverManager);
@@ -33,13 +37,16 @@ public class GameServer implements IServer {
     }
 
     @Override
-    public void login(@NotNull Credentials credentials) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
-
+    public int login(@NotNull Credentials credentials) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
+        return 0;
     }
 
     @Override
-    public void register(@NotNull Credentials credentials) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
-
+    public int register(@NotNull Credentials credentials) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
+        RegisterAction action = new RegisterAction(credentials);
+        action.execute();
+        int newUserId = action.getId();
+        return 0;
     }
 
     @Override
@@ -49,12 +56,15 @@ public class GameServer implements IServer {
 
     @Override
     public void createGame(@NotNull CreateGameRequest request) throws IllegalArgumentException, CommunicationException {
-
+        CreateGameAction action = new CreateGameAction(request);
+        action.execute();
     }
 
     @Override
-    public void joinGame(@NotNull JoinGameRequest request) throws IllegalArgumentException, CommunicationException {
-
+    public int joinGame(@NotNull JoinGameRequest request) throws IllegalArgumentException, CommunicationException {
+        JoinGameAction action = new JoinGameAction(request, getServerManager().getServerModel().getUser(this.userId));
+        action.execute();
+        return 0;
     }
 
     @Override
@@ -187,6 +197,11 @@ public class GameServer implements IServer {
     @Override
     public ClientModel useMonument(@NotNull MonumentAction action) throws IllegalArgumentException, CommunicationException {
         return null;
+    }
+
+    @Override
+    public void setUserId(int id) {
+        this.userId = id;
     }
 
     /**
