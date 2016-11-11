@@ -77,7 +77,7 @@ public class LoginController extends Controller implements ILoginController {
         Credentials credentials = new Credentials(password, username);
         getAsync().runMethod(server::login, credentials)
                 .onError(this::displayLoginError)
-                .onSuccess(() -> {
+                .onSuccess( r -> {
                     System.out.println("login successful");
                     getLoginView().closeModal();
                     getGameManager().getPlayerInfo().setName(credentials.getUsername());
@@ -107,7 +107,7 @@ public class LoginController extends Controller implements ILoginController {
         Credentials credentials = new Credentials(password, username);
         getAsync().runMethod(server::register, credentials)
                 .onError(this::displayRegistrationError)
-                .onSuccess(() -> {
+                .onSuccess( r -> {
                     System.out.println("registration successful");
                     login(credentials);
                 })
@@ -117,7 +117,7 @@ public class LoginController extends Controller implements ILoginController {
     private void login(Credentials credentials) {
         getAsync().runMethod(server::login, credentials)
                 .onError(this::displayLoginError)
-                .onSuccess(() -> {
+                .onSuccess( r -> {
                     System.out.println("post-registration login successful");
                     getLoginView().closeModal();
                     getGameManager().getPlayerInfo().setName(credentials.getUsername());

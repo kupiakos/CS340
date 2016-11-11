@@ -35,7 +35,7 @@ public interface IServer {
             returnsCookie = "catan.user",
             gameSpecific = false,
             requiresAuth = false)
-    void login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
+    int login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
 
     /**
      * Method register a new user if the user name is not used, logs the caller in to the server, and sets their
@@ -50,7 +50,7 @@ public interface IServer {
             returnsCookie = "catan.user",
             gameSpecific = false,
             requiresAuth = false)
-    void register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
+    int register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
 
     /**
      * Method returns info about all of the current games on the server
@@ -94,7 +94,7 @@ public interface IServer {
             value = "/games/join",
             returnsCookie = "catan.game",
             gameSpecific = false)
-    void joinGame(@NotNull JoinGameRequest joinGameObject) throws IllegalArgumentException, CommunicationException;
+    int joinGame(@NotNull JoinGameRequest joinGameObject) throws IllegalArgumentException, CommunicationException;
 
     /**
      * For testing and debugging.  Save a game with a bug report for others to fix
@@ -381,5 +381,7 @@ public interface IServer {
      */
     @ServerEndpoint("/moves/Monument")
     ClientModel useMonument(@NotNull MonumentAction monumentObject) throws IllegalArgumentException, CommunicationException;
+
+    void setUserId(int id);
 
 }
