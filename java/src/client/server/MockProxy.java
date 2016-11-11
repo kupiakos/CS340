@@ -1,6 +1,7 @@
 package client.server;
 
 import org.jetbrains.annotations.NotNull;
+import server.models.UserSession;
 import shared.IServer;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
@@ -25,16 +26,16 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public int login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
-        return 0;
+    public UserSession login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
+        return null;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public int register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
-        return 0;
+    public UserSession register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
+        return null;
     }
 
     /**

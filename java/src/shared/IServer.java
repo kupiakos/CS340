@@ -1,6 +1,7 @@
 package shared;
 
 import org.jetbrains.annotations.NotNull;
+import server.models.UserSession;
 import shared.annotations.ServerEndpoint;
 import shared.exceptions.JoinGameException;
 import shared.models.game.AddAIRequest;
@@ -35,7 +36,7 @@ public interface IServer {
             returnsCookie = "catan.user",
             gameSpecific = false,
             requiresAuth = false)
-    int login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
+    UserSession login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
 
     /**
      * Method register a new user if the user name is not used, logs the caller in to the server, and sets their
@@ -50,7 +51,7 @@ public interface IServer {
             returnsCookie = "catan.user",
             gameSpecific = false,
             requiresAuth = false)
-    int register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
+    UserSession register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
 
     /**
      * Method returns info about all of the current games on the server

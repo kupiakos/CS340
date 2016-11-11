@@ -4,17 +4,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class ServerModel {
 
     // Possibly consider a Map<String, User> instead
     private Map<Integer, User> users;
     private Map<Integer, GameModel> gameModels;
+    private transient Set<UserSession> sessions;
 
     public ServerModel() {
         users = new HashMap<>();
         gameModels = new HashMap<>();
+        sessions = new HashSet<>();
     }
 
     /**
@@ -33,6 +37,11 @@ public class ServerModel {
         return id;
     }
 
+    @Nullable
+    public User getUser(@NotNull String username) {
+        return users.values().stream().filter(u -> username.equals(u.getUsername())).findFirst().orElse(null);
+    }
+
     /**
      * Determine whether a username and password combination are already registered
      *
@@ -41,8 +50,25 @@ public class ServerModel {
      * @return true if the user is authenticated, else false
      */
     public boolean authenticateUser(@NotNull String username, @NotNull String password) {
-        User user = users.values().stream().filter(u -> username.equals(u.getUsername())).findFirst().orElse(null);
+        User user = getUser(username);
         return user != null && user.getPassword().equals(password);
+    }
+
+    public UserSession newSession(@NotNull String username) {
+        User user = getUser(username);
+        if (user == null) {
+            return null;
+        }
+        UserSession session;
+        do {
+            session = UserSession.newSession(user.getId());
+        } while (sessions.contains(session));
+        sessions.add(session);
+        return session;
+    }
+
+    public boolean validateSession(@NotNull UserSession session) {
+        return sessions.contains(session);
     }
 
     /**

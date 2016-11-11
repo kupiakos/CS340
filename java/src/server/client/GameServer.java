@@ -2,6 +2,8 @@ package server.client;
 
 import org.jetbrains.annotations.NotNull;
 import server.games.IServerManager;
+import server.models.ServerModel;
+import server.models.UserSession;
 import server.models.CreateGameAction;
 import server.models.JoinGameAction;
 import server.models.RegisterAction;
@@ -37,16 +39,18 @@ public class GameServer implements IServer {
     }
 
     @Override
-    public int login(@NotNull Credentials credentials) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
-        return 0;
+    public UserSession login(@NotNull Credentials credentials) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
+        if (!getServerModel().authenticateUser(credentials.getUsername(), credentials.getPassword())) {
+            throw new CredentialNotFoundException("Failed to login - incorrect username or password");
+        }
+        return getServerModel().newSession(credentials.getUsername());
     }
 
     @Override
-    public int register(@NotNull Credentials credentials) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
+    public UserSession register(@NotNull Credentials credentials) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
         RegisterAction action = new RegisterAction(credentials);
         action.execute();
-        int newUserId = action.getId();
-        return 0;
+        return getServerModel().newSession(credentials.getUsername());
     }
 
     @Override
@@ -240,5 +244,9 @@ public class GameServer implements IServer {
 
     public void setServerManager(IServerManager serverManager) {
         this.serverManager = serverManager;
+    }
+
+    public ServerModel getServerModel() {
+        return getServerManager().getServerModel();
     }
 }
