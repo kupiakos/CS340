@@ -25,16 +25,16 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
-
+    public int login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
+        return 0;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
-
+    public int register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
+        return 0;
     }
 
     /**
@@ -57,8 +57,8 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void joinGame(@NotNull JoinGameRequest joinGameObject) throws IllegalArgumentException, CommunicationException {
-
+    public int joinGame(@NotNull JoinGameRequest joinGameObject) throws IllegalArgumentException, CommunicationException {
+        return 0;
     }
 
     /**
@@ -267,5 +267,9 @@ public class MockProxy implements IServer {
     @Override
     public ClientModel useMonument(@NotNull MonumentAction monumentObject) throws IllegalArgumentException, CommunicationException {
         return null;
+    }
+
+    @Override
+    public void setUserId(int id) {
     }
 }

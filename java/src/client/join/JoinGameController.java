@@ -192,7 +192,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
     public void joinGame(CatanColor color) {
         JoinGameRequest joinGameRequest = new JoinGameRequest(color.toString().toLowerCase(), selectedGame.getId());
         getAsync().runMethod(server::joinGame, joinGameRequest)
-                .onSuccess(() -> SwingUtilities.invokeLater(() -> {
+                .onSuccess(r -> SwingUtilities.invokeLater(() -> {
                     selectedGame = getGameWithId(selectedGame.getId());
                     getGameManager().getPlayerInfo().setColor(color);
                     if (selectedGame.getPlayers().size() != 0) {
