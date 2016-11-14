@@ -3,7 +3,7 @@ package server.models;
 import shared.models.ICommandAction;
 
 public abstract class ServerAction implements ICommandAction {
-    ServerModel serverModel;
+    private transient ServerModel serverModel;
 
     public ServerModel getServerModel() {
         return serverModel;
