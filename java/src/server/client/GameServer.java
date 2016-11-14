@@ -73,7 +73,7 @@ public class GameServer implements IServer {
         JoinGameAction action = new JoinGameAction(request, getServerManager().getServerModel().getUser(this.userId));
         action.setServerModel(getServerModel());
         action.execute();
-        return 0;
+        return action.getJoinedGameId();
     }
 
     @Override
@@ -231,8 +231,7 @@ public class GameServer implements IServer {
         if (getGameId() == -1) {
             throw new IllegalArgumentException("User must have joined a game");
         }
-        // TODO: Fix
-        return new ClientModel();
+        return getServerModel().getGameModel(gameId).getClientModel();
     }
 
     public FacadeManager getFacades() {

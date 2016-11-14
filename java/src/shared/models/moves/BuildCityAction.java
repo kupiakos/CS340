@@ -120,6 +120,6 @@ public class BuildCityAction extends GameAction {
      */
     @Override
     public void execute() {
-        getFacades().getBuilding().buildCity(getModel().getPlayer(playerIndex),vertexLocation);
+        getFacades().getBuilding().buildCity(getModel().getPlayer(playerIndex), vertexLocation);
     }
 }
