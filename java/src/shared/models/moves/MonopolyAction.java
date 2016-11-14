@@ -121,6 +121,6 @@ public class MonopolyAction extends GameAction {
      */
     @Override
     public void execute() {
-
+        getFacades().getDevCards().useMonopolyCard(getModel().getPlayer(playerIndex),resource);
     }
 }

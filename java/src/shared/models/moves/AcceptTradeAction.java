@@ -119,6 +119,6 @@ public class AcceptTradeAction extends GameAction {
      */
     @Override
     public void execute() {
-
+        getFacades().getTrading().respondToTradeOffer(getModel().getPlayer(receiver),willAccept);
     }
 }
