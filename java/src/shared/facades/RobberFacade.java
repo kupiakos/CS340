@@ -103,7 +103,7 @@ public class RobberFacade extends AbstractFacade {
         getModel().getBank().setSheep(getModel().getBank().getSheep() + resourceDiscard.getSheep());
         getModel().getBank().setWood(getModel().getBank().getWood() + resourceDiscard.getWood());
 
-        getFacades().getTurn().finishDiscarding();
+        player.setDiscarded(true);
     }
 
     /**

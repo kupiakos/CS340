@@ -117,6 +117,11 @@ public class RollNumberAction extends GameAction {
      */
     @Override
     public void execute() {
-        getFacades().getResources().getAwardsFromHexes(number);
+        if (number != 7) {
+            getFacades().getTurn().finishRolling(false);
+            getFacades().getResources().getAwardsFromHexes(number);
+        } else {
+            getFacades().getTurn().finishRolling(true);
+        }
     }
 }
