@@ -8,7 +8,7 @@ import shared.models.game.ClientModel;
  * IGameAction is the interface for all game actions in Catan.  Think of a Game Action as a Command.
  */
 public abstract class GameAction implements ICommandAction {
-    private FacadeManager facades;
+    private transient FacadeManager facades;
 
     public FacadeManager getFacades() {
         return facades;

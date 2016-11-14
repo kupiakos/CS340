@@ -2,9 +2,6 @@ package server.models;
 
 import shared.models.games.JoinGameRequest;
 
-/**
- * Created by elija on 11/11/2016.
- */
 public class JoinGameAction extends ServerAction {
     private JoinGameRequest joinGameRequest;
     private int joinedGameId;
@@ -17,7 +14,7 @@ public class JoinGameAction extends ServerAction {
 
     @Override
     public void execute() {
-        GameModel model = serverModel.getGameModel(joinGameRequest.getId());
+        GameModel model = getServerModel().getGameModel(joinGameRequest.getId());
         joinedGameId = model.getId();
     }
 }
