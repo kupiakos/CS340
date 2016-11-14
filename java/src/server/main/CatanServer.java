@@ -16,8 +16,6 @@ public class CatanServer {
         try {
             ServerManager serverManager = new ServerManager();
             serverManager.startServer("localhost", 8081);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
