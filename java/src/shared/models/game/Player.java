@@ -138,6 +138,13 @@ public class Player {
         return 0;
     }
 
+    public boolean hasExcess(){
+        if(this.resources.getTotal()<7){
+            return true;
+        }
+        return false;
+    }
+
     /**
      * @return How many cities this player has left to play
      */

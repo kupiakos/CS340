@@ -3,6 +3,7 @@ package shared.definitions;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import shared.models.game.ClientModel;
 import shared.models.game.Player;
 import shared.models.game.TurnTracker;
 
@@ -73,7 +74,15 @@ public enum TurnStatus {
     DISCARDING {
         @Override
         @Nullable
-        public TurnResult finishDiscarding() {
+        public TurnResult finishDiscarding(ClientModel cm) {
+            for(Player p : cm.getPlayers()){
+                if(p.hasDiscarded()==false&&p.hasExcess()){
+                    return new TurnResult(this, null);
+                }
+            }
+            for(Player p: cm.getPlayers()){
+                p.setDiscarded(false);
+            }
             return new TurnResult(ROBBING, null);
         }
     },
@@ -154,7 +163,7 @@ public enum TurnStatus {
     }
 
     @Nullable
-    public TurnResult finishDiscarding() {
+    public TurnResult finishDiscarding(ClientModel cm) {
         throw new IllegalStateException("Cannot finish discarding in the '" +
                 this.name() + "' state");
     }
