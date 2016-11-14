@@ -138,8 +138,8 @@ public class Player {
         return 0;
     }
 
-    public boolean hasExcess(){
-        if(this.resources.getTotal()<7){
+    public boolean hasExcess() {
+        if (this.resources.getTotal() < 7) {
             return true;
         }
         return false;

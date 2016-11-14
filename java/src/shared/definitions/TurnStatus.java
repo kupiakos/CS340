@@ -75,12 +75,12 @@ public enum TurnStatus {
         @Override
         @Nullable
         public TurnResult finishDiscarding(ClientModel cm) {
-            for(Player p : cm.getPlayers()){
-                if(p.hasDiscarded()==false&&p.hasExcess()){
+            for (Player p : cm.getPlayers()) {
+                if (p.hasDiscarded() == false && p.hasExcess()) {
                     return new TurnResult(this, null);
                 }
             }
-            for(Player p: cm.getPlayers()){
+            for (Player p : cm.getPlayers()) {
                 p.setDiscarded(false);
             }
             return new TurnResult(ROBBING, null);
