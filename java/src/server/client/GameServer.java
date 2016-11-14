@@ -223,8 +223,7 @@ public class GameServer implements IServer {
         if (getGameId() == -1) {
             throw new IllegalArgumentException("User must have joined a game");
         }
-        // TODO: Fix
-        return new ClientModel();
+        return getServerModel().getGameModel(gameId).getClientModel();
     }
 
     public FacadeManager getFacades() {
