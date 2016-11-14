@@ -15,6 +15,9 @@ import shared.models.util.ChangeLogLevelRequest;
 
 import javax.naming.CommunicationException;
 import javax.security.auth.login.CredentialNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The server-side implementation of the catan API.
@@ -53,7 +56,9 @@ public class GameServer implements IServer {
 
     @Override
     public GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException {
-        return new GameInfo[0];
+        ArrayList<GameInfo> gameList = getServerModel().getGameInfo();
+        GameInfo[] games = gameList.toArray(new GameInfo[gameList.size()]);
+        return games;
     }
 
     @Override
