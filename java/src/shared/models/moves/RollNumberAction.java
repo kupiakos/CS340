@@ -117,6 +117,6 @@ public class RollNumberAction extends GameAction {
      */
     @Override
     public void execute() {
-
+        getFacades().getResources().getAwardsFromHexes(number);
     }
 }

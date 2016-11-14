@@ -4,7 +4,6 @@ import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.game.MessageEntry;
 import shared.models.games.CreateGameRequest;
-import shared.models.games.JoinGameRequest;
 import shared.models.games.LoadGameRequest;
 import shared.models.games.SaveGameRequest;
 import shared.models.moves.*;

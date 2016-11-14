@@ -93,6 +93,6 @@ public class BuyDevCardAction extends GameAction {
      */
     @Override
     public void execute() {
-
+        getFacades().getDevCards().buyDevCard(getModel().getPlayer(playerIndex));
     }
 }

@@ -146,6 +146,7 @@ public class RobPlayerAction extends GameAction {
      */
     @Override
     public void execute() {
-
+        getFacades().getRobber().moveRobber(location);
+        getFacades().getRobber().steal(PlayerIndex.fromInt(victimIndex), playerIndex);
     }
 }

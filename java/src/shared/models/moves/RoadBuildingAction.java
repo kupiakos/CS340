@@ -149,6 +149,8 @@ public class RoadBuildingAction extends GameAction {
      */
     @Override
     public void execute() {
-
+        getFacades().getBuilding().buildRoad(getModel().getPlayer(playerIndex), spot1, true, false);
+        getFacades().getBuilding().buildRoad(getModel().getPlayer(playerIndex), spot2, true, false);
+        getFacades().getDevCards().useRoadBuildingCard(getModel().getPlayer(playerIndex));
     }
 }
