@@ -147,6 +147,6 @@ public class BuildSettlementAction extends GameAction {
      */
     @Override
     public void execute() {
-
+        getFacades().getBuilding().buildSettlement(getFacades().getClientModel().getPlayer(playerIndex), vertexLocation, free);
     }
 }

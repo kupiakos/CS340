@@ -148,6 +148,6 @@ public class SoldierAction extends GameAction {
      */
     @Override
     public void execute() {
-
+        getFacades().getDevCards().useSoldierCard(getModel().getPlayer(playerIndex));
     }
 }

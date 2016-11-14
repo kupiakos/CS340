@@ -149,6 +149,6 @@ public class YearofPlentyAction extends GameAction {
      */
     @Override
     public void execute() {
-
+        getFacades().getDevCards().useYearOfPlentyCard(getModel().getPlayer(playerIndex), resource1, resource2);
     }
 }
