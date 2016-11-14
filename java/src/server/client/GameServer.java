@@ -68,7 +68,7 @@ public class GameServer implements IServer {
         JoinGameAction action = new JoinGameAction(request, getServerManager().getServerModel().getUser(this.userId));
         action.setServerModel(getServerModel());
         action.execute();
-        return 0;
+        return action.getJoinedGameId();
     }
 
     @Override

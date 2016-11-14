@@ -1,9 +1,7 @@
 package server.models;
 
 import shared.definitions.CatanColor;
-import shared.models.game.Player;
 import shared.models.games.JoinGameRequest;
-import shared.models.games.PlayerInfo;
 
 /**
  * Created by elija on 11/11/2016.
@@ -21,7 +19,11 @@ public class JoinGameAction extends ServerAction {
     @Override
     public void execute() {
         GameModel model = getServerModel().getGameModel(joinGameRequest.getId());
-        model.getGameInfo().getPlayers().add(new PlayerInfo(CatanColor.valueOf(joinGameRequest.getColor()),user.getUsername(),user.getId()));
+        model.addPlayer(user, CatanColor.valueOf(joinGameRequest.getColor()));
         joinedGameId = model.getId();
+    }
+
+    public int getJoinedGameId() {
+        return joinedGameId;
     }
 }
