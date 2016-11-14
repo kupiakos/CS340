@@ -102,6 +102,8 @@ public class RobberFacade extends AbstractFacade {
         getModel().getBank().setBrick(getModel().getBank().getBrick() + resourceDiscard.getBrick());
         getModel().getBank().setSheep(getModel().getBank().getSheep() + resourceDiscard.getSheep());
         getModel().getBank().setWood(getModel().getBank().getWood() + resourceDiscard.getWood());
+
+        getFacades().getTurn().finishDiscarding();
     }
 
     /**
@@ -189,5 +191,6 @@ public class RobberFacade extends AbstractFacade {
         ResourceType randType = getModel().getPlayer(targetPlayer).getResources().getRandom();
         targetSet.setOfType(randType, targetSet.getOfType(randType) - 1);
         currentSet.setOfType(randType, currentSet.getOfType(randType) + 1);
+        getFacades().getTurn().finishRobbing();
     }
 }
