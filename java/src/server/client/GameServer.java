@@ -2,13 +2,10 @@ package server.client;
 
 import org.jetbrains.annotations.NotNull;
 import server.games.IServerManager;
-import server.models.ServerModel;
-import server.models.UserSession;
-import server.models.CreateGameAction;
-import server.models.JoinGameAction;
-import server.models.RegisterAction;
+import server.models.*;
 import shared.IServer;
 import shared.facades.FacadeManager;
+import shared.models.GameAction;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.games.*;
@@ -49,6 +46,7 @@ public class GameServer implements IServer {
     @Override
     public UserSession register(@NotNull Credentials credentials) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
         RegisterAction action = new RegisterAction(credentials);
+        action.setServerModel(getServerModel());
         action.execute();
         return getServerModel().newSession(credentials.getUsername());
     }
@@ -61,12 +59,14 @@ public class GameServer implements IServer {
     @Override
     public void createGame(@NotNull CreateGameRequest request) throws IllegalArgumentException, CommunicationException {
         CreateGameAction action = new CreateGameAction(request);
+        action.setServerModel(getServerModel());
         action.execute();
     }
 
     @Override
     public int joinGame(@NotNull JoinGameRequest request) throws IllegalArgumentException, CommunicationException {
         JoinGameAction action = new JoinGameAction(request, getServerManager().getServerModel().getUser(this.userId));
+        action.setServerModel(getServerModel());
         action.execute();
         return 0;
     }
@@ -116,91 +116,96 @@ public class GameServer implements IServer {
 
     }
 
-    @Override
-    public ClientModel sendChat(@NotNull SendChatAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
-    }
-
-    @Override
-    public ClientModel acceptTrade(@NotNull AcceptTradeAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
-    }
-
-    @Override
-    public ClientModel discardCards(@NotNull DiscardCardsAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
-    }
-
-    @Override
-    public ClientModel rollNumber(@NotNull RollNumberAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
-    }
-
-    @Override
-    public ClientModel buildRoad(@NotNull BuildRoadAction action) throws IllegalArgumentException, CommunicationException {
-//        action.execute(getModel());
-        // Add action to list of commands
+    @NotNull
+    private ClientModel executeGameAction(@NotNull GameAction action) {
+        action.setFacades(getFacades());
+        action.execute();
         return getModel();
     }
 
     @Override
+    public ClientModel sendChat(@NotNull SendChatAction action) throws IllegalArgumentException, CommunicationException {
+        return executeGameAction(action);
+    }
+
+    @Override
+    public ClientModel acceptTrade(@NotNull AcceptTradeAction action) throws IllegalArgumentException, CommunicationException {
+        return executeGameAction(action);
+    }
+
+    @Override
+    public ClientModel discardCards(@NotNull DiscardCardsAction action) throws IllegalArgumentException, CommunicationException {
+        return executeGameAction(action);
+    }
+
+    @Override
+    public ClientModel rollNumber(@NotNull RollNumberAction action) throws IllegalArgumentException, CommunicationException {
+        return executeGameAction(action);
+    }
+
+    @Override
+    public ClientModel buildRoad(@NotNull BuildRoadAction action) throws IllegalArgumentException, CommunicationException {
+        return executeGameAction(action);
+    }
+
+    @Override
     public ClientModel buildSettlement(@NotNull BuildSettlementAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return executeGameAction(action);
     }
 
     @Override
     public ClientModel buildCity(@NotNull BuildCityAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return executeGameAction(action);
     }
 
     @Override
     public ClientModel offerTrade(@NotNull OfferTradeAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return executeGameAction(action);
     }
 
     @Override
     public ClientModel maritimeTrade(@NotNull MaritimeTradeAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return executeGameAction(action);
     }
 
     @Override
     public ClientModel robPlayer(@NotNull RobPlayerAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return executeGameAction(action);
     }
 
     @Override
     public ClientModel finishTurn(@NotNull FinishMoveAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return executeGameAction(action);
     }
 
     @Override
     public ClientModel buyDevCard(@NotNull BuyDevCardAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return executeGameAction(action);
     }
 
     @Override
     public ClientModel useSoldier(@NotNull SoldierAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return executeGameAction(action);
     }
 
     @Override
     public ClientModel useYearOfPlenty(@NotNull YearofPlentyAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return executeGameAction(action);
     }
 
     @Override
     public ClientModel useRoadBuilding(@NotNull RoadBuildingAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return executeGameAction(action);
     }
 
     @Override
     public ClientModel useMonopoly(@NotNull MonopolyAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return executeGameAction(action);
     }
 
     @Override
     public ClientModel useMonument(@NotNull MonumentAction action) throws IllegalArgumentException, CommunicationException {
-        return null;
+        return executeGameAction(action);
     }
 
     @Override
