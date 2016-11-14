@@ -3,6 +3,7 @@ package shared.models.moves;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+import shared.definitions.Constants;
 import shared.definitions.PlayerIndex;
 import shared.models.GameAction;
 
@@ -117,9 +118,9 @@ public class RollNumberAction extends GameAction {
      */
     @Override
     public void execute() {
-        if (number != 7) {
+        if (number != Constants.ROBBER_ROLL) {
             getFacades().getTurn().finishRolling(false);
-            getFacades().getResources().getAwardsFromHexes(number);
+            getFacades().getResources().giveAwards(getFacades().getResources().getAwardsFromHexes(number));
         } else {
             getFacades().getTurn().finishRolling(true);
         }

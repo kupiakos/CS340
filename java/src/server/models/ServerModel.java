@@ -109,8 +109,8 @@ public class ServerModel {
     }
 
     @Nullable
-    public ArrayList<GameInfo> getGameInfo() {
-        ArrayList<GameInfo> gameInfoList = new ArrayList<>();
+    public List<GameInfo> getGameInfo() {
+        List<GameInfo> gameInfoList = new ArrayList<>();
         for(GameModel g : gameModels.values()){
             gameInfoList.add(g.getGameInfo());
         }
