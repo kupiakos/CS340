@@ -88,6 +88,9 @@ public class GameServer implements IServer {
 
     @Override
     public ClientModel gameState(int version) throws IllegalArgumentException, CommunicationException {
+        if (version != getModel().getVersion()) {
+            return getModel();
+        }
         return null;
     }
 
