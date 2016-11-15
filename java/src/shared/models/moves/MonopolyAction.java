@@ -123,6 +123,6 @@ public class MonopolyAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getDevCards().useMonopolyCard(getModel().getPlayer(playerIndex), resource);
-        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName()," played a Monopoly card"));
+        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " played a Monopoly card"));
     }
 }

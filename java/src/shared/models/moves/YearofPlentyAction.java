@@ -151,6 +151,6 @@ public class YearofPlentyAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getDevCards().useYearOfPlentyCard(getModel().getPlayer(playerIndex), resource1, resource2);
-        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName()," played Year of Plenty"));
+        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " played Year of Plenty"));
     }
 }

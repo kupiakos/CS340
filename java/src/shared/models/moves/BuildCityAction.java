@@ -122,6 +122,6 @@ public class BuildCityAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getBuilding().buildCity(getModel().getPlayer(playerIndex), vertexLocation);
-        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName()," built a city"));
+        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " built a city"));
     }
 }

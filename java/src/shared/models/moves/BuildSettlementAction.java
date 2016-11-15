@@ -149,6 +149,6 @@ public class BuildSettlementAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getBuilding().buildSettlement(getFacades().getClientModel().getPlayer(playerIndex), vertexLocation, free);
-        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName()," built a settlement"));
+        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " built a settlement"));
     }
 }

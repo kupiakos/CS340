@@ -153,6 +153,6 @@ public class RoadBuildingAction extends GameAction {
         getFacades().getBuilding().buildRoad(getModel().getPlayer(playerIndex), spot1, true, false);
         getFacades().getBuilding().buildRoad(getModel().getPlayer(playerIndex), spot2, true, false);
         getFacades().getDevCards().useRoadBuildingCard(getModel().getPlayer(playerIndex));
-        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName()," played a Road Building card"));
+        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " played a Road Building card"));
     }
 }
