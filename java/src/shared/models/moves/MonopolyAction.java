@@ -7,6 +7,7 @@ import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.models.GameAction;
+import shared.models.game.MessageEntry;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -122,5 +123,6 @@ public class MonopolyAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getDevCards().useMonopolyCard(getModel().getPlayer(playerIndex), resource);
+        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName()," played a Monopoly card"));
     }
 }

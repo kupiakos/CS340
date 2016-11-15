@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.models.GameAction;
+import shared.models.game.MessageEntry;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -93,5 +94,6 @@ public class FinishMoveAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getTurn().endTurn(getModel().getPlayer(playerIndex));
+        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName()," finished their turn"));
     }
 }
