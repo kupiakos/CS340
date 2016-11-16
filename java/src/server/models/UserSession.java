@@ -7,21 +7,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Random;
 
 public class UserSession {
-    @SerializedName("userID")
+    private static Random random = new Random();
+    @SerializedName("playerID")
     @Expose
     private int userId;
-
     @SerializedName("token")
     @Expose
     private int token;
-
-    private static Random random = new Random();
-
-    @NotNull
-    public static UserSession newSession(int userId) {
-        // Assume no duplicates
-        return new UserSession(userId, random.nextInt());
-    }
 
     public UserSession() {
     }
@@ -29,6 +21,12 @@ public class UserSession {
     public UserSession(int userId, int token) {
         this.userId = userId;
         this.token = token;
+    }
+
+    @NotNull
+    public static UserSession newSession(int userId) {
+        // Assume no duplicates
+        return new UserSession(userId, random.nextInt());
     }
 
     public int getUserId() {

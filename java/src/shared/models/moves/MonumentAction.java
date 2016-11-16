@@ -93,6 +93,6 @@ public class MonumentAction extends GameAction {
      */
     @Override
     public void execute() {
-
+        getFacades().getDevCards().useVictoryPointCards(getModel().getPlayer(playerIndex));
     }
 }

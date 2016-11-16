@@ -7,6 +7,7 @@ import client.server.ServerProxy;
 import shared.models.user.Credentials;
 
 import javax.security.auth.login.CredentialNotFoundException;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 
@@ -16,6 +17,8 @@ import java.util.regex.Pattern;
 public class LoginController extends Controller implements ILoginController {
     private IMessageView messageView;
     private IAction loginAction;
+    private static final Logger LOGGER = Logger.getLogger("LoginController");
+
 
     /**
      * LoginController constructor
@@ -24,18 +27,15 @@ public class LoginController extends Controller implements ILoginController {
      * @param messageView Message view (used to display error messages that occur during the login process)
      */
     public LoginController(ILoginView view, IMessageView messageView) {
-
         super(view);
         this.messageView = messageView;
     }
 
     private ILoginView getLoginView() {
-
         return (ILoginView) super.getView();
     }
 
     public IMessageView getMessageView() {
-
         return messageView;
     }
 
@@ -45,7 +45,6 @@ public class LoginController extends Controller implements ILoginController {
      * @return The action to be executed when the user logs in
      */
     public IAction getLoginAction() {
-
         return loginAction;
     }
 
@@ -55,7 +54,6 @@ public class LoginController extends Controller implements ILoginController {
      * @param value The action to be executed when the user logs in
      */
     public void setLoginAction(IAction value) {
-
         loginAction = value;
     }
 
@@ -78,7 +76,7 @@ public class LoginController extends Controller implements ILoginController {
         getAsync().runMethod(server::login, credentials)
                 .onError(this::displayLoginError)
                 .onSuccess(r -> {
-                    System.out.println("login successful");
+                    LOGGER.info("login successful");
                     getLoginView().closeModal();
                     getGameManager().getPlayerInfo().setName(credentials.getUsername());
                     loginAction.execute();
@@ -108,8 +106,10 @@ public class LoginController extends Controller implements ILoginController {
         getAsync().runMethod(server::register, credentials)
                 .onError(this::displayRegistrationError)
                 .onSuccess(r -> {
-                    System.out.println("registration successful");
-                    login(credentials);
+                    LOGGER.info("registration successful");
+                    getLoginView().closeModal();
+                    getGameManager().getPlayerInfo().setName(credentials.getUsername());
+                    loginAction.execute();
                 })
                 .start();
     }
@@ -118,7 +118,7 @@ public class LoginController extends Controller implements ILoginController {
         getAsync().runMethod(server::login, credentials)
                 .onError(this::displayLoginError)
                 .onSuccess(r -> {
-                    System.out.println("post-registration login successful");
+                    LOGGER.info("post-registration login successful");
                     getLoginView().closeModal();
                     getGameManager().getPlayerInfo().setName(credentials.getUsername());
                     loginAction.execute();

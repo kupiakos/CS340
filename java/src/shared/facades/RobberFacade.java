@@ -91,17 +91,8 @@ public class RobberFacade extends AbstractFacade {
         if (!canDiscard(resourceDiscard, player)) {
             throw new IllegalArgumentException();
         }
-        player.getResources().setOre(player.getResources().getOre() - resourceDiscard.getOre());
-        player.getResources().setWheat(player.getResources().getWheat() - resourceDiscard.getWheat());
-        player.getResources().setBrick(player.getResources().getBrick() - resourceDiscard.getBrick());
-        player.getResources().setSheep(player.getResources().getSheep() - resourceDiscard.getSheep());
-        player.getResources().setWood(player.getResources().getWood() - resourceDiscard.getWood());
-
-        getModel().getBank().setOre(getModel().getBank().getOre() + resourceDiscard.getOre());
-        getModel().getBank().setWheat(getModel().getBank().getWheat() + resourceDiscard.getWheat());
-        getModel().getBank().setBrick(getModel().getBank().getBrick() + resourceDiscard.getBrick());
-        getModel().getBank().setSheep(getModel().getBank().getSheep() + resourceDiscard.getSheep());
-        getModel().getBank().setWood(getModel().getBank().getWood() + resourceDiscard.getWood());
+        getFacades().getResources().returnToBank(player, resourceDiscard);
+        player.setDiscarded(true);
     }
 
     /**

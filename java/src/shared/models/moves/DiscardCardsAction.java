@@ -121,6 +121,7 @@ public class DiscardCardsAction extends GameAction {
      */
     @Override
     public void execute() {
-
+        getFacades().getRobber().discard(discardedCards, getModel().getPlayer(playerIndex));
+        getFacades().getTurn().finishDiscarding();
     }
 }
