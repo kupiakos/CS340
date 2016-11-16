@@ -4,7 +4,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import shared.definitions.HexType;
 import shared.definitions.PlayerIndex;
+import shared.definitions.PortType;
+import shared.locations.EdgeDirection;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
 import shared.locations.VertexLocation;
@@ -23,7 +26,7 @@ public class GameMap {
 
     @SerializedName("radius")
     @Expose
-    private int radius;
+    private int radius = 3;
 
     @SerializedName("robber")
     @Expose
@@ -50,6 +53,80 @@ public class GameMap {
      * No args constructor for use in serialization
      */
     public GameMap() {
+    }
+
+    //because currently game map cLASS ONLY HAS default constructor and roads are already placed and radius.
+    //One way it could be done would be take a list of all of the hex locations for a map of that size,
+    //shuffle the list, and then assign the hex types in order.
+
+    //two const lists.  one list lists the order or all of the hex types in the order they are supposed to appear on the map
+    //the other lists all the nubmer
+    //and then if we have random tiles, we shuffle that list
+    //numbers, we shuffle that list
+    //use those two lists to init all the hexes for the map
+
+    //to create const lists, decide in what order we need to list everything
+
+    /**
+     * @param randomTiles
+     * @param randomPorts
+     * @param randomNumbers
+     */
+    public GameMap(boolean randomTiles, boolean randomPorts, boolean randomNumbers) {
+        List<Integer> hexNumbers = Arrays.asList(5, 2, 6, 8, 10, 9, 3, -1, 3, 11, 4, 8, 4, 6, 5, 10, 11, 12, 9);
+
+        if (randomNumbers) {
+            Collections.shuffle(hexNumbers);
+        }
+
+        List<HexType> hexTypes = Arrays.asList(HexType.ORE, HexType.WHEAT, HexType.WOOD, HexType.BRICK, HexType.SHEEP,
+                HexType.SHEEP, HexType.ORE, HexType.DESERT, HexType.WOOD, HexType.WHEAT, HexType.WOOD, HexType.WHEAT,
+                HexType.BRICK, HexType.ORE, HexType.BRICK, HexType.SHEEP, HexType.WOOD, HexType.SHEEP, HexType.WHEAT
+        );
+
+        if (randomTiles) {
+            Collections.shuffle(hexTypes);
+        }
+
+        ArrayList<HexLocation> hexLocations = new ArrayList<>();
+
+        for (int column = -radius + 1; column < radius; column++) {
+            for (int diagonalRow = (column < 0) ? -radius - column + 1 : -radius + 1; diagonalRow < ((column > 0) ? radius - column : radius); diagonalRow++) {
+                hexLocations.add(new HexLocation(column, diagonalRow));
+            }
+        }
+
+        for (int i = 0; i < hexLocations.size(); i++) {
+            hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexTypes.get(i)));
+        }
+
+        final List<EdgeLocation> portLocations = Arrays.asList(
+                new EdgeLocation(new HexLocation(-3, 0), EdgeDirection.SouthEast),
+                new EdgeLocation(new HexLocation(-1, -2), EdgeDirection.South),
+                new EdgeLocation(new HexLocation(1, -3), EdgeDirection.South),
+                new EdgeLocation(new HexLocation(3, -3), EdgeDirection.SouthWest),
+                new EdgeLocation(new HexLocation(3, -1), EdgeDirection.NorthWest),
+                new EdgeLocation(new HexLocation(2, 1), EdgeDirection.NorthWest),
+                new EdgeLocation(new HexLocation(0, 3), EdgeDirection.North),
+                new EdgeLocation(new HexLocation(-2, -3), EdgeDirection.NorthEast),
+                new EdgeLocation(new HexLocation(-3, 2), EdgeDirection.NorthEast)
+        );
+
+        List<PortType> portTypes = Arrays.asList(
+                PortType.THREE, PortType.WHEAT, PortType.ORE,
+                PortType.THREE, PortType.SHEEP, PortType.THREE,
+                PortType.THREE, PortType.BRICK, PortType.WOOD
+        );
+
+        if (randomPorts) {
+            Collections.shuffle(portTypes);
+        }
+
+        for (int i = 0; i < portLocations.size(); i++) {
+            HexLocation hexLoc = portLocations.get(i).getHexLoc();
+            ports.put(hexLoc, new Port(hexLoc, portLocations.get(i).getDir(), (portTypes.get(i) == PortType.THREE) ? 3 : 2, portTypes.get(i)));
+        }
+
     }
 
     /**
