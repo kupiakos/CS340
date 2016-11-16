@@ -56,7 +56,7 @@ public class GameServer implements IServer {
 
     @Override
     public GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException {
-        ArrayList<GameInfo> gameList = getServerModel().getGameInfo();
+        List<GameInfo> gameList = getServerModel().getGameInfo();
         GameInfo[] games = gameList.toArray(new GameInfo[gameList.size()]);
         return games;
     }
