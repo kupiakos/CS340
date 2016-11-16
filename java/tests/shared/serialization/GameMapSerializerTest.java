@@ -394,7 +394,7 @@ public class GameMapSerializerTest {
                         "    \"cities\": [],\n" +
                         "    \"hexes\": [],\n" +
                         "    \"ports\": [],\n" +
-                        "    \"radius\": 0,\n" +
+                        "    \"radius\": 3,\n" +
                         "    \"roads\": [],\n" +
                         "    \"settlements\": []\n" +
                         "}"),

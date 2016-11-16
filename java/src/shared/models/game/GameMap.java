@@ -4,7 +4,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import shared.definitions.HexType;
 import shared.definitions.PlayerIndex;
+import shared.definitions.PortType;
+import shared.locations.EdgeDirection;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
 import shared.locations.VertexLocation;
@@ -23,7 +26,7 @@ public class GameMap {
 
     @SerializedName("radius")
     @Expose
-    private int radius;
+    private int radius = 3;
 
     @SerializedName("robber")
     @Expose
@@ -75,6 +78,118 @@ public class GameMap {
         this.ports = ports;
         this.settlements = settlements;
         this.cities = cities;
+    }
+
+    /**
+     * Constructor that creates GameMap based on if the user wants random hex types, random port types,
+     * and/or random numbers on hexes
+     *
+     * @param randomTiles   whether the HexTypes are random
+     * @param randomPorts   whether the Port Types are random
+     * @param randomNumbers whether the Numbers on the Hexes are random
+     */
+    public GameMap(boolean randomTiles, boolean randomPorts, boolean randomNumbers) {
+        setNewGameHexes(randomTiles, randomNumbers);
+        setNewGamePorts(randomPorts);
+    }
+
+    /**
+     * Sets the hexes of the new game based on if the user wants random hex types or random numbers on hexes
+     *
+     * @param randomTiles   whether the HexTypes are random
+     * @param randomNumbers whether the Numbers on the Hexes are random
+     */
+    public void setNewGameHexes(boolean randomTiles, boolean randomNumbers) {
+        List<Integer> hexNumbers = setHexNumbers(randomNumbers);
+
+        List<HexType> hexTypes = setHexTypes(randomTiles);
+
+        ArrayList<HexLocation> hexLocations = setHexLocations();
+
+        for (int i = 0; i < hexLocations.size(); i++) {
+            hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexTypes.get(i)));
+        }
+    }
+
+    /**
+     * Sets the hex locations of the new game based on the radius
+     *
+     * @return the List of Hex Locations for each hex on the map
+     */
+    public ArrayList<HexLocation> setHexLocations() {
+        ArrayList<HexLocation> hexLocations = new ArrayList<>();
+
+        for (int column = -radius + 1; column < radius; column++) {
+            for (int diagonalRow = (column < 0) ? -radius - column + 1 : -radius + 1; diagonalRow < ((column > 0) ? radius - column : radius); diagonalRow++) {
+                hexLocations.add(new HexLocation(column, diagonalRow));
+            }
+        }
+        return hexLocations;
+    }
+
+    /**
+     * Sets the Hex Types for each hex on the new game map
+     * @param randomTiles whether the HexTypes are random
+     * @return List of Hex Types that contain a hex type for each hex on the new game map
+     */
+    public List<HexType> setHexTypes(boolean randomTiles) {
+        List<HexType> hexTypes = Arrays.asList(HexType.ORE, HexType.WHEAT, HexType.WOOD, HexType.BRICK, HexType.SHEEP,
+                HexType.SHEEP, HexType.ORE, HexType.DESERT, HexType.WOOD, HexType.WHEAT, HexType.WOOD, HexType.WHEAT,
+                HexType.BRICK, HexType.ORE, HexType.BRICK, HexType.SHEEP, HexType.WOOD, HexType.SHEEP, HexType.WHEAT
+        );
+
+        if (randomTiles) {
+            Collections.shuffle(hexTypes);
+        }
+        return hexTypes;
+    }
+
+    /**
+     * Set the Hex Numbers for each hex on the new game map
+     * @param randomNumbers whether the Numbers on the Hexes are random
+     * @return List of Integers that contain the numbers for each hex on the new game map
+     */
+    public List<Integer> setHexNumbers(boolean randomNumbers) {
+        List<Integer> hexNumbers = Arrays.asList(5, 2, 6, 8, 10, 9, 3, -1, 3, 11, 4, 8, 4, 6, 5, 10, 11, 12, 9);
+
+        if (randomNumbers) {
+            Collections.shuffle(hexNumbers);
+        }
+
+        return hexNumbers;
+    }
+
+    /**
+     * Sets the ports of the new game based on if the user wants random port types
+     * @param randomPorts whether the Port Types are random
+     */
+    public void setNewGamePorts(boolean randomPorts) {
+        final List<EdgeLocation> portLocations = Arrays.asList(
+                new EdgeLocation(new HexLocation(-3, 0), EdgeDirection.SouthEast),
+                new EdgeLocation(new HexLocation(-1, -2), EdgeDirection.South),
+                new EdgeLocation(new HexLocation(1, -3), EdgeDirection.South),
+                new EdgeLocation(new HexLocation(3, -3), EdgeDirection.SouthWest),
+                new EdgeLocation(new HexLocation(3, -1), EdgeDirection.NorthWest),
+                new EdgeLocation(new HexLocation(2, 1), EdgeDirection.NorthWest),
+                new EdgeLocation(new HexLocation(0, 3), EdgeDirection.North),
+                new EdgeLocation(new HexLocation(-2, -3), EdgeDirection.NorthEast),
+                new EdgeLocation(new HexLocation(-3, 2), EdgeDirection.NorthEast)
+        );
+
+        List<PortType> portTypes = Arrays.asList(
+                PortType.THREE, PortType.WHEAT, PortType.ORE,
+                PortType.THREE, PortType.SHEEP, PortType.THREE,
+                PortType.THREE, PortType.BRICK, PortType.WOOD
+        );
+
+        if (randomPorts) {
+            Collections.shuffle(portTypes);
+        }
+
+        for (int i = 0; i < portLocations.size(); i++) {
+            HexLocation hexLoc = portLocations.get(i).getHexLoc();
+            ports.put(hexLoc, new Port(hexLoc, portLocations.get(i).getDir(), (portTypes.get(i) == PortType.THREE) ? 3 : 2, portTypes.get(i)));
+        }
     }
 
     private static <V> Map<VertexLocation, V> normalizeVertexMap(Map<VertexLocation, V> vMap) {

@@ -2,7 +2,9 @@ package server.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import shared.models.game.ClientModel;
 import shared.models.games.GameInfo;
+import shared.models.games.PlayerInfo;
 
 import java.util.*;
 
@@ -77,7 +79,17 @@ public class ServerModel {
      * @post A new {@link GameModel} is placed in {@link #gameModels}
      */
     public int startNewGame(boolean randomTiles, boolean randomPorts, boolean randomNumbers, String name) {
-        return 0;
+
+        List<PlayerInfo> playerInfos = new ArrayList<>();
+        int id = gameModels.keySet().stream().max(Integer::compareTo).orElseGet(() -> 0) + 1;
+
+        GameInfo gameInfo = new GameInfo(playerInfos, name, id);
+
+        ClientModel clientModel = new ClientModel(randomTiles, randomPorts, randomNumbers);
+
+        GameModel gameModel = new GameModel(id, gameInfo, clientModel);
+        gameModels.put(id, gameModel);
+        return id;
     }
 
     /**
@@ -111,7 +123,7 @@ public class ServerModel {
     @Nullable
     public List<GameInfo> getGameInfo() {
         List<GameInfo> gameInfoList = new ArrayList<>();
-        for(GameModel g : gameModels.values()){
+        for (GameModel g : gameModels.values()) {
             gameInfoList.add(g.getGameInfo());
         }
         return gameInfoList;

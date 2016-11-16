@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
+import shared.definitions.TurnStatus;
 import shared.exceptions.JoinGameException;
 
 import javax.annotation.Generated;
@@ -93,8 +94,33 @@ public class ClientModel {
         this.log = log;
     }
 
-
     // CUSTOM CODE
+
+    /**
+     * Constructor that represents a new Client Model for a newly initialized game
+     *
+     * @param randomTiles whether the HexTypes are random
+     * @param randomPorts whether the Port Types are random
+     * @param randomNumbers whether the Numbers on the Hexes are random
+     */
+    public ClientModel(boolean randomTiles, boolean randomPorts, boolean randomNumbers) {
+        setChat(new MessageList());
+
+        setWinner(-1);
+
+        setTurnTracker(new TurnTracker(null, null, TurnStatus.FIRST_ROUND, null));
+
+        setMap(new GameMap(randomTiles, randomPorts, randomNumbers));
+
+        setBank(new ResourceSet(19, 19, 19, 19, 19));
+
+        setTradeOffer(new TradeOffer(null, new ResourceSet(0, 0, 0, 0, 0), null));
+
+        setVersion(1);
+
+        setLog(new MessageList());
+    }
+
     @NotNull
     public int getPlayerCount() {
         return this.getPlayers().size();

@@ -18,6 +18,12 @@ public class GameModel {
     public GameModel() {
     }
 
+    public GameModel(int id, GameInfo gameInfo, ClientModel clientModel) {
+        this.id = id;
+        this.gameInfo = gameInfo;
+        this.clientModel = clientModel;
+    }
+
     public int getId() {
         return id;
     }
