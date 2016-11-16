@@ -55,30 +55,65 @@ public class GameMap {
     public GameMap() {
     }
 
-    //because currently game map cLASS ONLY HAS default constructor and roads are already placed and radius.
-    //One way it could be done would be take a list of all of the hex locations for a map of that size,
-    //shuffle the list, and then assign the hex types in order.
-
-    //two const lists.  one list lists the order or all of the hex types in the order they are supposed to appear on the map
-    //the other lists all the nubmer
-    //and then if we have random tiles, we shuffle that list
-    //numbers, we shuffle that list
-    //use those two lists to init all the hexes for the map
-
-    //to create const lists, decide in what order we need to list everything
-
     /**
      * @param randomTiles
      * @param randomPorts
      * @param randomNumbers
      */
     public GameMap(boolean randomTiles, boolean randomPorts, boolean randomNumbers) {
-        List<Integer> hexNumbers = Arrays.asList(5, 2, 6, 8, 10, 9, 3, -1, 3, 11, 4, 8, 4, 6, 5, 10, 11, 12, 9);
+        setNewGameHexes(randomTiles, randomNumbers);
+        setNewGamePorts(randomPorts);
+    }
 
-        if (randomNumbers) {
-            Collections.shuffle(hexNumbers);
+    /**
+     * @param roads       The list of roads currently placed on the map
+     * @param radius      The radius of the map (it includes the center hex, and the ocean hexes)
+     * @param robber      The current location of the robber
+     * @param hexes       A list of all the hexes on the grid - it's only land tiles
+     * @param ports       The list of ports currently placed on the map
+     * @param settlements The list of settlements currently placed on the map
+     * @param cities      The list of cities currently placed on the map
+     */
+    public GameMap(Map<EdgeLocation, PlayerIndex> roads,
+                   int radius,
+                   HexLocation robber,
+                   Map<HexLocation, Hex> hexes,
+                   Map<HexLocation, Port> ports,
+                   Map<VertexLocation, PlayerIndex> settlements,
+                   Map<VertexLocation, PlayerIndex> cities) {
+        this.roads = roads;
+        this.radius = radius;
+        this.robber = robber;
+        this.hexes = hexes;
+        this.ports = ports;
+        this.settlements = settlements;
+        this.cities = cities;
+    }
+
+    public void setNewGameHexes(boolean randomTiles, boolean randomNumbers) {
+        List<Integer> hexNumbers = setHexNumbers(randomNumbers);
+
+        List<HexType> hexTypes = setHexTypes(randomTiles);
+
+        ArrayList<HexLocation> hexLocations = setHexLocations();
+
+        for (int i = 0; i < hexLocations.size(); i++) {
+            hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexTypes.get(i)));
         }
+    }
 
+    public ArrayList<HexLocation> setHexLocations() {
+        ArrayList<HexLocation> hexLocations = new ArrayList<>();
+
+        for (int column = -radius + 1; column < radius; column++) {
+            for (int diagonalRow = (column < 0) ? -radius - column + 1 : -radius + 1; diagonalRow < ((column > 0) ? radius - column : radius); diagonalRow++) {
+                hexLocations.add(new HexLocation(column, diagonalRow));
+            }
+        }
+        return hexLocations;
+    }
+
+    public List<HexType> setHexTypes(boolean randomTiles) {
         List<HexType> hexTypes = Arrays.asList(HexType.ORE, HexType.WHEAT, HexType.WOOD, HexType.BRICK, HexType.SHEEP,
                 HexType.SHEEP, HexType.ORE, HexType.DESERT, HexType.WOOD, HexType.WHEAT, HexType.WOOD, HexType.WHEAT,
                 HexType.BRICK, HexType.ORE, HexType.BRICK, HexType.SHEEP, HexType.WOOD, HexType.SHEEP, HexType.WHEAT
@@ -87,19 +122,20 @@ public class GameMap {
         if (randomTiles) {
             Collections.shuffle(hexTypes);
         }
+        return hexTypes;
+    }
 
-        ArrayList<HexLocation> hexLocations = new ArrayList<>();
+    public List<Integer> setHexNumbers(boolean randomNumbers) {
+        List<Integer> hexNumbers = Arrays.asList(5, 2, 6, 8, 10, 9, 3, -1, 3, 11, 4, 8, 4, 6, 5, 10, 11, 12, 9);
 
-        for (int column = -radius + 1; column < radius; column++) {
-            for (int diagonalRow = (column < 0) ? -radius - column + 1 : -radius + 1; diagonalRow < ((column > 0) ? radius - column : radius); diagonalRow++) {
-                hexLocations.add(new HexLocation(column, diagonalRow));
-            }
+        if (randomNumbers) {
+            Collections.shuffle(hexNumbers);
         }
 
-        for (int i = 0; i < hexLocations.size(); i++) {
-            hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexTypes.get(i)));
-        }
+        return hexNumbers;
+    }
 
+    public void setNewGamePorts(boolean randomPorts) {
         final List<EdgeLocation> portLocations = Arrays.asList(
                 new EdgeLocation(new HexLocation(-3, 0), EdgeDirection.SouthEast),
                 new EdgeLocation(new HexLocation(-1, -2), EdgeDirection.South),
@@ -126,32 +162,6 @@ public class GameMap {
             HexLocation hexLoc = portLocations.get(i).getHexLoc();
             ports.put(hexLoc, new Port(hexLoc, portLocations.get(i).getDir(), (portTypes.get(i) == PortType.THREE) ? 3 : 2, portTypes.get(i)));
         }
-
-    }
-
-    /**
-     * @param roads       The list of roads currently placed on the map
-     * @param radius      The radius of the map (it includes the center hex, and the ocean hexes)
-     * @param robber      The current location of the robber
-     * @param hexes       A list of all the hexes on the grid - it's only land tiles
-     * @param ports       The list of ports currently placed on the map
-     * @param settlements The list of settlements currently placed on the map
-     * @param cities      The list of cities currently placed on the map
-     */
-    public GameMap(Map<EdgeLocation, PlayerIndex> roads,
-                   int radius,
-                   HexLocation robber,
-                   Map<HexLocation, Hex> hexes,
-                   Map<HexLocation, Port> ports,
-                   Map<VertexLocation, PlayerIndex> settlements,
-                   Map<VertexLocation, PlayerIndex> cities) {
-        this.roads = roads;
-        this.radius = radius;
-        this.robber = robber;
-        this.hexes = hexes;
-        this.ports = ports;
-        this.settlements = settlements;
-        this.cities = cities;
     }
 
     private static <V> Map<VertexLocation, V> normalizeVertexMap(Map<VertexLocation, V> vMap) {
