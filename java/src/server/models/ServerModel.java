@@ -2,11 +2,9 @@ package server.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import shared.models.games.GameInfo;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ServerModel {
 
@@ -108,5 +106,14 @@ public class ServerModel {
     @Nullable
     public GameModel getGameModel(int ID) {
         return gameModels.get(ID);
+    }
+
+    @Nullable
+    public List<GameInfo> getGameInfo() {
+        List<GameInfo> gameInfoList = new ArrayList<>();
+        for(GameModel g : gameModels.values()){
+            gameInfoList.add(g.getGameInfo());
+        }
+        return gameInfoList;
     }
 }

@@ -180,5 +180,6 @@ public class RobberFacade extends AbstractFacade {
         ResourceType randType = getModel().getPlayer(targetPlayer).getResources().getRandom();
         targetSet.setOfType(randType, targetSet.getOfType(randType) - 1);
         currentSet.setOfType(randType, currentSet.getOfType(randType) + 1);
+        getFacades().getTurn().finishRobbing();
     }
 }
