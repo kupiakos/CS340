@@ -119,4 +119,13 @@ public class ServerModel {
     public GameModel getGameModel(int ID) {
         return gameModels.get(ID);
     }
+
+    @Nullable
+    public List<GameInfo> getGameInfo() {
+        List<GameInfo> gameInfoList = new ArrayList<>();
+        for(GameModel g : gameModels.values()){
+            gameInfoList.add(g.getGameInfo());
+        }
+        return gameInfoList;
+    }
 }
