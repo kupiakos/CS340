@@ -15,6 +15,7 @@ import java.util.Map;
 public class ServerManager implements IServerManager {
     private Map<Integer, IServer> runningServers = new HashMap<>();
     private IServerCommunicator communicator;
+    private ServerModel model;
 
     public ServerManager() throws IOException {
         communicator = new ServerCommunicator(this);
@@ -34,7 +35,10 @@ public class ServerManager implements IServerManager {
     @NotNull
     @Override
     public ServerModel getServerModel() {
-        return null;
+        if (model == null) {
+            model = new ServerModel();
+        }
+        return model;
     }
 
     @Override

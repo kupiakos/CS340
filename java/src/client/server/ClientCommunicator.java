@@ -1,13 +1,17 @@
 package client.server;
 
 import client.game.GameManager;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import shared.utils.CookieUtils;
 
 import javax.naming.CommunicationException;
 import javax.security.auth.login.CredentialNotFoundException;
 import java.io.*;
 import java.net.*;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Created by elijahgk on 9/12/2016.
@@ -16,9 +20,11 @@ import java.net.*;
  */
 class ClientCommunicator implements IClientCommunicator {
 
+    private static final Logger LOGGER = Logger.getLogger("ClientCommunicator");
     private static ClientCommunicator SINGLETON = null;
     private static CookieManager cookieManager = new CookieManager();
     private String URLPrefix;
+
 
     private ClientCommunicator(String host, String port) {
         URLPrefix = "http://" + host + ":" + port;
@@ -56,10 +62,12 @@ class ClientCommunicator implements IClientCommunicator {
             URL url = new URL(URLPrefix + URLSuffix);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(requestMethod);
-            connection.setDoOutput(true);
-            DataOutputStream output = new DataOutputStream(connection.getOutputStream());
-            output.writeBytes(requestBody);
-            output.close();
+            if (requestMethod.equalsIgnoreCase("POST")) {
+                connection.setDoOutput(true);
+                DataOutputStream output = new DataOutputStream(connection.getOutputStream());
+                output.writeBytes(requestBody);
+                output.close();
+            }
             int responseCode = connection.getResponseCode();
             StringBuilder response = new StringBuilder();
 
@@ -68,9 +76,13 @@ class ClientCommunicator implements IClientCommunicator {
                     InputStream input = connection.getInputStream();
                     BufferedReader rd = new BufferedReader(new InputStreamReader(input));
                     String line;
-                    if (URLSuffix.equals("/user/login")) {
-                        JsonObject obj = (JsonObject) new JsonParser().parse(URLDecoder.decode(cookieManager.getCookieStore().getCookies().get(0).getValue(), "UTF-8"));
-                        GameManager.getGame().getPlayerInfo().setId(obj.get("playerID").getAsInt());
+                    String authCookie = CookieUtils.getCookieMap(cookieManager.getCookieStore().getCookies()).get("catan.user");
+                    if (authCookie != null) {
+                        JsonObject obj = (JsonObject) new JsonParser().parse(authCookie);
+                        JsonElement playerID = obj.get("playerID");
+                        if (playerID != null) {
+                            GameManager.getGame().getPlayerInfo().setId(playerID.getAsInt());
+                        }
                     }
                     while ((line = rd.readLine()) != null) {
                         response.append(line);
@@ -80,6 +92,8 @@ class ClientCommunicator implements IClientCommunicator {
                     connection.disconnect();
                     return response.toString();
                 case 400:
+                case 404:
+                case 405:
                     InputStream error = connection.getErrorStream();
                     rd = new BufferedReader(new InputStreamReader(error));
                     while ((line = rd.readLine()) != null) {
@@ -91,13 +105,18 @@ class ClientCommunicator implements IClientCommunicator {
                         throw new CredentialNotFoundException(response.toString());
                     }
                     throw new IllegalArgumentException(response.toString());
+                case 500:
+                    String errorMessage = new BufferedReader(new InputStreamReader(connection.getErrorStream()))
+                            .lines().collect(Collectors.joining("\n"));
+                    LOGGER.info("Received server error: " + errorMessage);
+                    throw new CommunicationException(errorMessage);
                 default:
                     response.append("{\"error\":\"SendHTTPRequest responded with an unhandled error resulting from response code: ").append(responseCode).append("\"");
                     break;
             }
             connection.disconnect();
             return response.toString();
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException | IllegalStateException e) {
             throw new IllegalArgumentException(e.getMessage());
         } catch (IOException e) {
             throw new CommunicationException(e.getMessage());

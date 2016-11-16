@@ -113,7 +113,7 @@ public class TurnFacade extends AbstractFacade {
     }
 
     public void finishDiscarding() {
-        updateTracker(getPhase().finishDiscarding());
+        updateTracker(getPhase().finishDiscarding(getModel()));
     }
 
     /**
