@@ -56,16 +56,6 @@ public class GameMap {
     }
 
     /**
-     * @param randomTiles
-     * @param randomPorts
-     * @param randomNumbers
-     */
-    public GameMap(boolean randomTiles, boolean randomPorts, boolean randomNumbers) {
-        setNewGameHexes(randomTiles, randomNumbers);
-        setNewGamePorts(randomPorts);
-    }
-
-    /**
      * @param roads       The list of roads currently placed on the map
      * @param radius      The radius of the map (it includes the center hex, and the ocean hexes)
      * @param robber      The current location of the robber
@@ -90,6 +80,25 @@ public class GameMap {
         this.cities = cities;
     }
 
+    /**
+     * Constructor that creates GameMap based on if the user wants random hex types, random port types,
+     * and/or random numbers on hexes
+     *
+     * @param randomTiles   whether the HexTypes are random
+     * @param randomPorts   whether the Port Types are random
+     * @param randomNumbers whether the Numbers on the Hexes are random
+     */
+    public GameMap(boolean randomTiles, boolean randomPorts, boolean randomNumbers) {
+        setNewGameHexes(randomTiles, randomNumbers);
+        setNewGamePorts(randomPorts);
+    }
+
+    /**
+     * Sets the hexes of the new game based on if the user wants random hex types or random numbers on hexes
+     *
+     * @param randomTiles   whether the HexTypes are random
+     * @param randomNumbers whether the Numbers on the Hexes are random
+     */
     public void setNewGameHexes(boolean randomTiles, boolean randomNumbers) {
         List<Integer> hexNumbers = setHexNumbers(randomNumbers);
 
@@ -102,6 +111,11 @@ public class GameMap {
         }
     }
 
+    /**
+     * Sets the hex locations of the new game based on the radius
+     *
+     * @return the List of Hex Locations for each hex on the map
+     */
     public ArrayList<HexLocation> setHexLocations() {
         ArrayList<HexLocation> hexLocations = new ArrayList<>();
 
@@ -113,6 +127,11 @@ public class GameMap {
         return hexLocations;
     }
 
+    /**
+     * Sets the Hex Types for each hex on the new game map
+     * @param randomTiles whether the HexTypes are random
+     * @return List of Hex Types that contain a hex type for each hex on the new game map
+     */
     public List<HexType> setHexTypes(boolean randomTiles) {
         List<HexType> hexTypes = Arrays.asList(HexType.ORE, HexType.WHEAT, HexType.WOOD, HexType.BRICK, HexType.SHEEP,
                 HexType.SHEEP, HexType.ORE, HexType.DESERT, HexType.WOOD, HexType.WHEAT, HexType.WOOD, HexType.WHEAT,
@@ -125,6 +144,11 @@ public class GameMap {
         return hexTypes;
     }
 
+    /**
+     * Set the Hex Numbers for each hex on the new game map
+     * @param randomNumbers whether the Numbers on the Hexes are random
+     * @return List of Integers that contain the numbers for each hex on the new game map
+     */
     public List<Integer> setHexNumbers(boolean randomNumbers) {
         List<Integer> hexNumbers = Arrays.asList(5, 2, 6, 8, 10, 9, 3, -1, 3, 11, 4, 8, 4, 6, 5, 10, 11, 12, 9);
 
@@ -135,6 +159,10 @@ public class GameMap {
         return hexNumbers;
     }
 
+    /**
+     * Sets the ports of the new game based on if the user wants random port types
+     * @param randomPorts whether the Port Types are random
+     */
     public void setNewGamePorts(boolean randomPorts) {
         final List<EdgeLocation> portLocations = Arrays.asList(
                 new EdgeLocation(new HexLocation(-3, 0), EdgeDirection.SouthEast),

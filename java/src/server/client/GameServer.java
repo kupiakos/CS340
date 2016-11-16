@@ -15,8 +15,6 @@ import shared.models.util.ChangeLogLevelRequest;
 
 import javax.naming.CommunicationException;
 import javax.security.auth.login.CredentialNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

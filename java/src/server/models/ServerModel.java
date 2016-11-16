@@ -123,7 +123,7 @@ public class ServerModel {
     @Nullable
     public List<GameInfo> getGameInfo() {
         List<GameInfo> gameInfoList = new ArrayList<>();
-        for(GameModel g : gameModels.values()){
+        for (GameModel g : gameModels.values()) {
             gameInfoList.add(g.getGameInfo());
         }
         return gameInfoList;

@@ -94,15 +94,14 @@ public class ClientModel {
         this.log = log;
     }
 
-
     // CUSTOM CODE
 
     /**
      * Constructor that represents a new Client Model for a newly initialized game
      *
-     * @param randomTiles
-     * @param randomPorts
-     * @param randomNumbers
+     * @param randomTiles whether the HexTypes are random
+     * @param randomPorts whether the Port Types are random
+     * @param randomNumbers whether the Numbers on the Hexes are random
      */
     public ClientModel(boolean randomTiles, boolean randomPorts, boolean randomNumbers) {
         setChat(new MessageList());
