@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.HexLocation;
 import shared.models.GameAction;
-import shared.models.game.MessageEntry;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -149,7 +148,7 @@ public class RobPlayerAction extends GameAction {
     public void execute() {
         getFacades().getRobber().moveRobber(location);
         getFacades().getRobber().steal(PlayerIndex.fromInt(victimIndex), playerIndex);
-        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " robbed " + getModel().getPlayer(PlayerIndex.fromInt(victimIndex)).getName()));
+        getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " robbed " + getModel().getPlayer(PlayerIndex.fromInt(victimIndex)).getName());
         getModel().incrementVersion();
     }
 }
