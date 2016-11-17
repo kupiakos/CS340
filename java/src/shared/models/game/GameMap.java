@@ -99,14 +99,33 @@ public class GameMap {
      * @param randomTiles   whether the HexTypes are random
      * @param randomNumbers whether the Numbers on the Hexes are random
      */
-    public void setNewGameHexes(boolean randomTiles, boolean randomNumbers) {
+    private void setNewGameHexes(boolean randomTiles, boolean randomNumbers) {
         List<Integer> hexNumbers = setHexNumbers(randomNumbers);
-
         List<HexType> hexTypes = setHexTypes(randomTiles);
+        List<HexLocation> hexLocations = setHexLocations();
 
-        ArrayList<HexLocation> hexLocations = setHexLocations();
-
+        HexType hexType = HexType.DESERT;
+        int hexNumber = -1;
+        boolean seenNegOne = false;
+        boolean seenDesert = false;
         for (int i = 0; i < hexLocations.size(); i++) {
+            if (hexNumbers.get(i) == 0 && hexTypes.get(i) != HexType.DESERT) {
+                if (seenDesert) {
+                    hexes.put(hexLocations.get(i), new Hex(hexNumber, hexLocations.get(i), hexTypes.get(i)));
+                } else {
+                    hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexType));
+                    hexType = hexTypes.get(i);
+                }
+                seenNegOne = true;
+            } else if (hexTypes.get(i) == HexType.DESERT && hexNumbers.get(i) != 0) {
+                if (seenNegOne) {
+                    hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexType));
+                } else {
+                    hexes.put(hexLocations.get(i), new Hex(0, hexLocations.get(i), hexTypes.get(i)));
+                    hexNumber = hexNumbers.get(i);
+                }
+                seenDesert = true;
+            }
             hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexTypes.get(i)));
         }
     }
@@ -116,8 +135,8 @@ public class GameMap {
      *
      * @return the List of Hex Locations for each hex on the map
      */
-    public ArrayList<HexLocation> setHexLocations() {
-        ArrayList<HexLocation> hexLocations = new ArrayList<>();
+    private List<HexLocation> setHexLocations() {
+        List<HexLocation> hexLocations = new ArrayList<>();
 
         for (int column = -radius + 1; column < radius; column++) {
             for (int diagonalRow = (column < 0) ? -radius - column + 1 : -radius + 1; diagonalRow < ((column > 0) ? radius - column : radius); diagonalRow++) {
@@ -132,7 +151,7 @@ public class GameMap {
      * @param randomTiles whether the HexTypes are random
      * @return List of Hex Types that contain a hex type for each hex on the new game map
      */
-    public List<HexType> setHexTypes(boolean randomTiles) {
+    private List<HexType> setHexTypes(boolean randomTiles) {
         List<HexType> hexTypes = Arrays.asList(HexType.ORE, HexType.WHEAT, HexType.WOOD, HexType.BRICK, HexType.SHEEP,
                 HexType.SHEEP, HexType.ORE, HexType.DESERT, HexType.WOOD, HexType.WHEAT, HexType.WOOD, HexType.WHEAT,
                 HexType.BRICK, HexType.ORE, HexType.BRICK, HexType.SHEEP, HexType.WOOD, HexType.SHEEP, HexType.WHEAT
@@ -141,6 +160,7 @@ public class GameMap {
         if (randomTiles) {
             Collections.shuffle(hexTypes);
         }
+
         return hexTypes;
     }
 
@@ -149,8 +169,8 @@ public class GameMap {
      * @param randomNumbers whether the Numbers on the Hexes are random
      * @return List of Integers that contain the numbers for each hex on the new game map
      */
-    public List<Integer> setHexNumbers(boolean randomNumbers) {
-        List<Integer> hexNumbers = Arrays.asList(5, 2, 6, 8, 10, 9, 3, -1, 3, 11, 4, 8, 4, 6, 5, 10, 11, 12, 9);
+    private List<Integer> setHexNumbers(boolean randomNumbers) {
+        List<Integer> hexNumbers = Arrays.asList(5, 2, 6, 8, 10, 9, 3, 0, 3, 11, 4, 8, 4, 6, 5, 10, 11, 12, 9);
 
         if (randomNumbers) {
             Collections.shuffle(hexNumbers);
@@ -163,7 +183,7 @@ public class GameMap {
      * Sets the ports of the new game based on if the user wants random port types
      * @param randomPorts whether the Port Types are random
      */
-    public void setNewGamePorts(boolean randomPorts) {
+    private void setNewGamePorts(boolean randomPorts) {
         final List<EdgeLocation> portLocations = Arrays.asList(
                 new EdgeLocation(new HexLocation(-3, 0), EdgeDirection.SouthEast),
                 new EdgeLocation(new HexLocation(-1, -2), EdgeDirection.South),
