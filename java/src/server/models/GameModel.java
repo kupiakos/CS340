@@ -9,6 +9,9 @@ import shared.models.game.ResourceSet;
 import shared.models.games.GameInfo;
 import shared.models.games.PlayerInfo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GameModel {
 
     private int id;
@@ -83,14 +86,20 @@ public class GameModel {
     }
 
     public void addAIPlayer() {
-        int aiID = -2;
+        final Map<Integer, String> names = new HashMap<>();
+        names.put(-2, "Java");
+        names.put(-3, "Python");
+        names.put(-4, "Ruby");
+        names.put(-5, "C++");
         PlayerInfo aiInfo = new PlayerInfo();
+        int aiID = -2;
         for (PlayerInfo p : getGameInfo().getPlayers()) {
             if (p.getId() <= aiID) {
                 aiID--;
             }
         }
         aiInfo.setId(aiID);
+        aiInfo.setName(names.get(aiID));
         for (CatanColor c : CatanColor.values()) {
             boolean isTaken = false;
             for (PlayerInfo p : getGameInfo().getPlayers()) {
@@ -105,7 +114,6 @@ public class GameModel {
             aiInfo.setColor(c);
             break;
         }
-        aiInfo.setName("Bill");
         aiInfo.setPlayerIndex(PlayerIndex.fromInt(getClientModel().getPlayerCount()));
         getGameInfo().getPlayers().add(aiInfo);
         getClientModel().getPlayers().add(new Player(
