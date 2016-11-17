@@ -94,6 +94,7 @@ public class BuyDevCardAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getDevCards().buyDevCard(getModel().getPlayer(playerIndex));
+        getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " bought a development card");
         getModel().incrementVersion();
     }
 }

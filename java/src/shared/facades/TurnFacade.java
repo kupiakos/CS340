@@ -116,8 +116,8 @@ public class TurnFacade extends AbstractFacade {
     /**
      * Sets the game state to the same player's turn (build phase)
      */
-    public void finishRolling(boolean moveRobber) {
-        updateTracker(getPhase().finishRolling(moveRobber));
+    public void finishRolling(ClientModel model, boolean moveRobber) {
+        updateTracker(getPhase().finishRolling(model, moveRobber));
     }
 
     /**
