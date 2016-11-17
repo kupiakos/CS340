@@ -163,6 +163,10 @@ public class TurnFacade extends AbstractFacade {
         return getPhase().isSetup();
     }
 
+    public void advanceSetup() {
+        updateTracker(getPhase().advanceSetup(getModel()));
+    }
+
     public Player getCurrentPlayer() {
         return getModel().getPlayer(tt().getCurrentTurn());
     }

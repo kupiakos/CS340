@@ -2,7 +2,6 @@ package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PurchaseType;
-import shared.definitions.TurnStatus;
 import shared.locations.EdgeLocation;
 import shared.locations.VertexLocation;
 import shared.models.game.ClientModel;
@@ -73,7 +72,7 @@ public class BuildingFacade extends AbstractFacade {
     public void buildSettlement(@NotNull Player player, @NotNull VertexLocation buildLocation, boolean isFree) {
         if (!canBuildSettlement(player, buildLocation, isFree))
             throw new IllegalArgumentException();
-        this.getModel().getMap().addSettlement(buildLocation, player.getPlayerIndex(), false);
+        this.getModel().getMap().addSettlement(buildLocation, player.getPlayerIndex(), manager.getTurn().isSetup());
         if (!isFree) {
             resource.purchaseItem(player, PurchaseType.SETTLEMENT);
         }
@@ -136,7 +135,7 @@ public class BuildingFacade extends AbstractFacade {
         resource = manager.getResources();
         if (getUnusedSettlements(player) <= 0)
             return false;
-        else if (!map.canPlaceSettlement(player, buildLocation, (manager.getTurn().getPhase() == TurnStatus.FIRST_ROUND || manager.getTurn().getPhase() == TurnStatus.SECOND_ROUND)))
+        else if (!map.canPlaceSettlement(player, buildLocation, manager.getTurn().isSetup()))
             return false;
         else if (!isFree) {
             if (!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))

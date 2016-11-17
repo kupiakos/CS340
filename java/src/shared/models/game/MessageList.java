@@ -59,6 +59,14 @@ public class MessageList {
         getLines().add(line);
     }
 
+    public void addMessage(@NotNull Player player, @NotNull String message) {
+        addMessage(new MessageEntry(player.getName(), message));
+    }
+
+    public void prefixMessage(@NotNull Player player, @NotNull String message) {
+        addMessage(player, player.getName() + message);
+    }
+
     /**
      * Changes the SendChatAction to a MessageEntry then
      * Adds just one message to the list, creates a new one if needed

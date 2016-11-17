@@ -110,6 +110,15 @@ public enum TurnStatus {
         public boolean isSetup() {
             return true;
         }
+
+        @Nullable
+        @Override
+        public TurnResult advanceSetup(ClientModel model) {
+            if (currentPlayerHasConstructions(model, 1)) {
+                return advanceTurn(model.getPlayer(model.getTurnTracker().getCurrentTurn()));
+            }
+            return null;
+        }
     },
 
     @SerializedName("SecondRound")
@@ -136,6 +145,15 @@ public enum TurnStatus {
         public boolean isSetup() {
             return true;
         }
+
+        @Nullable
+        @Override
+        public TurnResult advanceSetup(ClientModel model) {
+            if (currentPlayerHasConstructions(model, 2)) {
+                return advanceTurn(model.getPlayer(model.getTurnTracker().getCurrentTurn()));
+            }
+            return null;
+        }
     },
 
     @SerializedName("GameOver")
@@ -144,6 +162,12 @@ public enum TurnStatus {
             return true;
         }
     };
+
+    public static boolean currentPlayerHasConstructions(ClientModel model, int number) {
+        PlayerIndex current = model.getTurnTracker().getCurrentTurn();
+        return (model.getPlayer(current).getSettlements() == number &&
+                model.getPlayer(current).getRoads() == number);
+    }
 
     @Nullable
     public TurnResult advanceTurn(@NotNull Player p) {
@@ -182,6 +206,12 @@ public enum TurnStatus {
 
     public boolean isEndGame() {
         return false;
+    }
+
+    @Nullable
+    public TurnResult advanceSetup(ClientModel model) {
+        throw new IllegalStateException("Cannot advance setup in the '" +
+                this.name() + "' state");
     }
 
     public boolean isSetup() {

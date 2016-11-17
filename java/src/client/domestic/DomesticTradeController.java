@@ -15,6 +15,7 @@ import shared.models.moves.OfferTradeAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -87,7 +88,7 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
             }
         }
         if (to != null && !getAcceptOverlay().isModalShowing()) {
-            if (to.getReceiver().equals(getPlayer().getPlayerIndex())) {
+            if (Objects.equals(to.getReceiver(), (getPlayer().getPlayerIndex()))) {
                 getAcceptOverlay().reset();
                 getAcceptOverlay().setAcceptEnabled(true);
                 receiver = to.getReceiver();

@@ -209,7 +209,7 @@ public class GameMap {
                 new EdgeLocation(new HexLocation(3, -1), EdgeDirection.NorthWest),
                 new EdgeLocation(new HexLocation(2, 1), EdgeDirection.NorthWest),
                 new EdgeLocation(new HexLocation(0, 3), EdgeDirection.North),
-                new EdgeLocation(new HexLocation(-2, -3), EdgeDirection.NorthEast),
+                new EdgeLocation(new HexLocation(-2, 3), EdgeDirection.NorthEast),
                 new EdgeLocation(new HexLocation(-3, 2), EdgeDirection.NorthEast)
         );
 

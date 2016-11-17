@@ -28,13 +28,16 @@ import java.util.List;
  */
 public class GameServer implements IServer {
     private FacadeManager facades;
-    private int gameId;
+    private int gameId = -1;
     private IServerManager serverManager;
     private int userId;
 
     public GameServer(IServerManager serverManager, int gameId) {
-        setServerManager(serverManager);
         setGameId(gameId);
+        setServerManager(serverManager);
+        if (gameId != -1) {
+            setFacades(new FacadeManager(getModel()));
+        }
     }
 
     @Override
@@ -264,6 +267,9 @@ public class GameServer implements IServer {
 
     public void setServerManager(IServerManager serverManager) {
         this.serverManager = serverManager;
+        if (gameId != -1) {
+            setFacades(new FacadeManager(getModel()));
+        }
     }
 
     public ServerModel getServerModel() {
