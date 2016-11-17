@@ -72,9 +72,19 @@ public enum PlayerIndex {
     }
 
     /**
+     * Get the numeric index the given PlayerIndex represents, or -1 if null.
+     *
+     * @return a number -1-3
+     */
+    @Contract(pure = true)
+    public static int index(@Nullable PlayerIndex pi) {
+        return pi == null ? -1 : pi.index();
+    }
+
+    /**
      * Get the numeric index this represents.
      *
-     * @return a number 1-4
+     * @return a number 0-3
      */
     @Contract(pure = true)
     public int index() {

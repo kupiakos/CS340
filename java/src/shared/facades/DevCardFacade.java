@@ -97,10 +97,30 @@ public class DevCardFacade extends AbstractFacade {
     public boolean canUseDevCard(@NotNull Player currentPlayer) {
         if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING ||
                 !getFacades().getTurn().isPlayersTurn(currentPlayer) ||
-                currentPlayer.hasPlayedDevCard()) {
+                (currentPlayer.getNewDevCards().getMonument() == 0 && currentPlayer.hasPlayedDevCard())) {
             return false;
         }
         return !currentPlayer.getOldDevCards().isEmpty();
+    }
+
+    public boolean canUseDevCard(@NotNull Player currentPlayer, @NotNull DevCardType cardType) {
+        if (!canUseDevCard(currentPlayer)) {
+            return false;
+        }
+        switch (cardType) {
+            case SOLDIER:
+                return canUseSoldierCard(currentPlayer);
+            case YEAR_OF_PLENTY:
+                return currentPlayer.getOldDevCards().getYearOfPlenty() > 0;
+            case MONOPOLY:
+                return currentPlayer.getOldDevCards().getMonopoly() > 0;
+            case ROAD_BUILD:
+                return canUseRoadBuildingCard(currentPlayer);
+            case MONUMENT:
+                return canUseVictoryPointCards(currentPlayer);
+        }
+        assert false;
+        return false;
     }
 
     /**
@@ -150,23 +170,22 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer.getSoldiers() >= 3) {
             if (getModel().getTurnTracker().getLargestArmy() == null) {
                 getModel().getTurnTracker().setLargestArmy(currentPlayer.getPlayerIndex());
-                currentPlayer.setVictoryPoints(currentPlayer.getVictoryPoints() + 2);
             } else {
                 PlayerIndex largestArmy = getModel().getTurnTracker().getLargestArmy();
                 if (currentPlayer.getSoldiers() > getModel().getPlayer(largestArmy).getSoldiers()) {
                     getModel().getTurnTracker().setLargestArmy(currentPlayer.getPlayerIndex());
-                    currentPlayer.setVictoryPoints(currentPlayer.getVictoryPoints() + 2);
                 }
             }
         }
 
         getFacades().getTurn().startRobbing();
-
-
+        getFacades().getTurn().calcVictoryPoints();
     }
 
     /**
-     * Does the {@code currentPlayer} have 10 victory points, including the unplayed victory point cards.  This method takes the {@code currentPlayer}'s current victory points and adds the unplayed victory point cards to see if they equal 10
+     * Can the player play monument cards?
+     * <p>
+     * According to the spec (but not the rules), Monument cards are played immediately.
      *
      * @param currentPlayer The player who is using their development card during their turn.
      * @return True if the total victory point count is 10 (or more), False otherwise
@@ -183,12 +202,9 @@ public class DevCardFacade extends AbstractFacade {
         if (getFacades().getTurn().getPhase() != TurnStatus.PLAYING || !getFacades().getTurn().isPlayersTurn(currentPlayer)) {
             return false;
         }
-        if (currentPlayer.hasPlayedDevCard()) {
-            return false;
-        }
 
         int total = currentPlayer.getOldDevCards().getMonument() + currentPlayer.getNewDevCards().getMonument();
-        return total > 0 && (currentPlayer.getVictoryPoints() + total) >= 10;
+        return total > 0;
     }
 
     /**
@@ -207,8 +223,10 @@ public class DevCardFacade extends AbstractFacade {
             throw new IllegalArgumentException();
         }
         currentPlayer.setPlayedDevCard(true);
-        currentPlayer.setVictoryPoints(currentPlayer.getVictoryPoints() + currentPlayer.getOldDevCards().getMonument() + currentPlayer.getNewDevCards().getMonument());
-        getModel().setWinner(currentPlayer.getPlayerIndex());
+        currentPlayer.setMonuments(currentPlayer.getMonuments() + 1);
+
+        getModel().setWinner(currentPlayer.getPlayerID());
+        getFacades().getTurn().calcVictoryPoints();
     }
 
     /**
@@ -230,7 +248,7 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer.hasPlayedDevCard()) {
             return false;
         }
-        return !(currentPlayer.getOldDevCards().getRoadBuilding() == 0 || currentPlayer.getRoads() < 2);
+        return !(currentPlayer.getOldDevCards().getRoadBuilding() == 0 || currentPlayer.getRoads() < 1);
     }
 
     /**

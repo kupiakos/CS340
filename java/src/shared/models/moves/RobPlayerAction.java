@@ -5,12 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.HexLocation;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class RobPlayerAction {
+public class RobPlayerAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -138,5 +139,16 @@ public class RobPlayerAction {
                         Objects.equals(playerIndex, other.playerIndex) &&
                         victimIndex == other.victimIndex
         );
+    }
+
+    /**
+     * Run on the server.  Lets a player move the robber to a new {@link HexLocation} and rob a player on that hex.
+     */
+    @Override
+    public void execute() {
+        getFacades().getRobber().moveRobber(location);
+        getFacades().getRobber().steal(PlayerIndex.fromInt(victimIndex), playerIndex);
+        getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " robbed " + getModel().getPlayer(PlayerIndex.fromInt(victimIndex)).getName());
+        getModel().incrementVersion();
     }
 }

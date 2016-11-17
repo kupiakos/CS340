@@ -4,16 +4,16 @@ import client.base.Controller;
 import client.base.IView;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.CatanColor;
-import shared.definitions.PlayerIndex;
 import shared.facades.ChatFacade;
 import shared.models.game.ClientModel;
-import shared.models.game.MessageEntry;
 import shared.models.game.MessageList;
 import shared.models.game.Player;
 import shared.models.moves.SendChatAction;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Controls all the interaction between the fascade, server, and UI for chatting
@@ -48,13 +48,11 @@ public class ChatController extends Controller implements IChatController {
      */
     @Override
     public void sendMessage(@NotNull String message) {
-        PlayerIndex player = getModel().getTurnTracker().getCurrentTurn();
-        SendChatAction chat = new SendChatAction(message, player);
+        SendChatAction chat = new SendChatAction(message, getPlayer().getPlayerIndex());
         ChatFacade cf = getFacade().getChat();
 
-        if (cf.canSendChat(chat)) {
+        if (cf.canSendChat(getPlayer(), message)) {
             LOGGER.info("sent chat: " + chat);
-            cf.sendChat(chat);
             getAsync().runModelMethod(server::sendChat, chat)
                     .onError(Throwable::printStackTrace)
                     .start();
@@ -64,26 +62,16 @@ public class ChatController extends Controller implements IChatController {
     @Override
     public void updateFromModel(ClientModel model) {
         MessageList chats = model.getChat();
-        ArrayList<LogEntry> entries = new ArrayList<>();
 
-        if (chats != null) {
-            LOGGER.fine("Updating chats...");
+        Map<String, CatanColor> colors = model.getPlayers().stream()
+                .collect(Collectors.toMap(Player::getName, Player::getColor));
 
-            for (MessageEntry message : chats.getLines()) {
-                String msg = message.getMessage();
-                String source = message.getSource();
+        List<LogEntry> entries = chats.getLines().stream()
+                .map(e -> new LogEntry(
+                        colors.get(e.getSource()),
+                        e.getMessage()))
+                .collect(Collectors.toList());
 
-                CatanColor messageColor = null;
-                for (Player player : model.getPlayers()) {
-                    // Set the chat color from who sent the message
-                    if (player.getName().equals(source)) {
-                        messageColor = player.getColor();
-                    }
-                }
-                // Add new entries with the message and color
-                entries.add(new LogEntry(messageColor, msg));
-            }
-        }
         // Update the view with the new chats
         getView().setEntries(entries);
     }

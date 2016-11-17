@@ -4,6 +4,9 @@ import client.base.IAction;
 import client.game.IGameManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import shared.definitions.functions.ThrowingConsumer;
+import shared.definitions.functions.ThrowingFunction;
+import shared.definitions.functions.ThrowingSupplier;
 import shared.models.game.ClientModel;
 
 import java.util.function.Consumer;
@@ -18,11 +21,11 @@ public class MockServerAsyncHelper extends ServerAsyncHelper {
         super(gameManager);
     }
 
-    public <T, R> ServerAsyncHelper.Future<T, R> runMethod(ServerAsyncHelper.ThrowingFunction<T, R> runFunc, T arg) {
+    public <T, R> ServerAsyncHelper.Future<T, R> runMethod(ThrowingFunction<T, R> runFunc, T arg) {
         return new MockFuture<>(runFunc, arg);
     }
 
-    public <T> ServerAsyncHelper.VoidFuture<T> runMethod(ServerAsyncHelper.ThrowingConsumer<T> runFunc, T arg) {
+    public <T> ServerAsyncHelper.VoidFuture<T> runMethod(ThrowingConsumer<T> runFunc, T arg) {
         return new MockVoidFuture<>(runFunc, arg);
     }
 
@@ -31,7 +34,7 @@ public class MockServerAsyncHelper extends ServerAsyncHelper {
     }
 
     public <T> ServerAsyncHelper.ClientModelFuture<T> runModelMethod(
-            @NotNull ServerAsyncHelper.ThrowingFunction<T, ClientModel> runFunc,
+            @NotNull ThrowingFunction<T, ClientModel> runFunc,
             T arg) {
         return new MockClientModelFuture<>(runFunc, arg);
     }
@@ -67,7 +70,7 @@ public class MockServerAsyncHelper extends ServerAsyncHelper {
         private boolean hasResult;
         private T arg;
 
-        public MockVoidFuture(@NotNull ServerAsyncHelper.ThrowingConsumer<T> runFunc, T arg) {
+        public MockVoidFuture(@NotNull ThrowingConsumer<T> runFunc, T arg) {
             super(runFunc, arg);
         }
 
@@ -82,7 +85,7 @@ public class MockServerAsyncHelper extends ServerAsyncHelper {
     }
 
     public class MockFuture<T, R> extends ServerAsyncHelper.Future<T, R> {
-        public MockFuture(@NotNull ServerAsyncHelper.ThrowingFunction<T, R> runFunc, T arg) {
+        public MockFuture(@NotNull ThrowingFunction<T, R> runFunc, T arg) {
             super(runFunc, arg);
         }
 
@@ -99,7 +102,7 @@ public class MockServerAsyncHelper extends ServerAsyncHelper {
 
     public class MockClientModelFuture<T> extends ServerAsyncHelper.ClientModelFuture<T> {
 
-        public MockClientModelFuture(@NotNull ServerAsyncHelper.ThrowingFunction<T, ClientModel> runFunc, T arg) {
+        public MockClientModelFuture(@NotNull ThrowingFunction<T, ClientModel> runFunc, T arg) {
             super(runFunc, arg);
         }
 

@@ -3,14 +3,16 @@ package shared.models.moves;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
+import shared.models.GameAction;
 import shared.models.game.ResourceSet;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class OfferTradeAction {
+public class OfferTradeAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -66,7 +68,7 @@ public class OfferTradeAction {
     /**
      * @param receiver Who you're offering the trade to (0-3)
      */
-    public void setReceiver(@NotNull PlayerIndex receiver) {
+    public void setReceiver(@Nullable PlayerIndex receiver) {
         this.receiver = receiver;
     }
 
@@ -138,5 +140,14 @@ public class OfferTradeAction {
                         Objects.equals(offer, other.offer) &&
                         Objects.equals(playerIndex, other.playerIndex)
         );
+    }
+
+    /**
+     * Run on the server.  Lets the {@link PlayerIndex} sender offer {@link PlayerIndex} receiver a trade of resources.
+     */
+    @Override
+    public void execute() {
+        getFacades().getTrading().offerTrade(getModel().getPlayer(playerIndex), getModel().getPlayer(receiver), offer);
+        getModel().incrementVersion();
     }
 }

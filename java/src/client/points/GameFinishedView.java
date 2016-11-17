@@ -31,15 +31,14 @@ public class GameFinishedView extends OverlayView implements IGameFinishedView {
     private ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-
             if (e.getSource() == okButton) {
                 closeModal();
+                getController().gameFinished();
             }
         }
     };
 
     public GameFinishedView() {
-
         this.setOpaque(true);
         this.setLayout(new BorderLayout());
         this.setBorder(BorderFactory.createLineBorder(Color.black, BORDER_WIDTH));

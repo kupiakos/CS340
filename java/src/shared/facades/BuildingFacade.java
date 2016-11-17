@@ -2,7 +2,6 @@ package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PurchaseType;
-import shared.definitions.TurnStatus;
 import shared.locations.EdgeLocation;
 import shared.locations.VertexLocation;
 import shared.models.game.ClientModel;
@@ -48,18 +47,16 @@ public class BuildingFacade extends AbstractFacade {
      * </ul>
      */
     public void buildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree, boolean isSetup) throws IllegalArgumentException {
-        try {
-            if (!canBuildRoad(player, buildLocation, isFree, isSetup))
-                throw new IllegalArgumentException();
-            this.getModel().getMap().addRoad(buildLocation, player.getPlayerIndex(), isSetup);
-            player.setRoads(player.getRoads() - 1);
-        } catch (Exception e) {
-            System.err.println("Player tried to build a road without being able to.");
+        if (!canBuildRoad(player, buildLocation, isFree, isSetup)) {
+            throw new IllegalArgumentException();
         }
+        this.getModel().getMap().addRoad(buildLocation, player.getPlayerIndex(), isSetup);
         if (!isFree) {
             resource.purchaseItem(player, PurchaseType.ROAD);
         }
-        return;
+        player.setRoads(player.getRoads() - 1);
+        map.findLongestRoad();
+        getFacades().getTurn().calcVictoryPoints();
     }
 
     /**
@@ -75,19 +72,15 @@ public class BuildingFacade extends AbstractFacade {
      * </ul>
      */
     public void buildSettlement(@NotNull Player player, @NotNull VertexLocation buildLocation, boolean isFree) {
-        try {
-            if (!canBuildSettlement(player, buildLocation, isFree))
-                throw new IllegalArgumentException();
-            this.getModel().getMap().addSettlement(buildLocation, player.getPlayerIndex(), false);
-        } catch (Exception e) {
-            System.err.println("Player tried to build a settlement without being able to.");
-        }
-        player.setSettlements(player.getSettlements() - 1);
+        if (!canBuildSettlement(player, buildLocation, isFree))
+            throw new IllegalArgumentException();
+        this.getModel().getMap().addSettlement(buildLocation, player.getPlayerIndex(), manager.getTurn().isSetup());
         if (!isFree) {
             resource.purchaseItem(player, PurchaseType.SETTLEMENT);
         }
-        return;
-
+        player.setSettlements(player.getSettlements() - 1);
+        map.findLongestRoad();
+        getFacades().getTurn().calcVictoryPoints();
     }
 
     /**
@@ -103,16 +96,13 @@ public class BuildingFacade extends AbstractFacade {
      * </ul>
      */
     public void buildCity(@NotNull Player player, @NotNull VertexLocation buildLocation) {
-        try {
-            if (!canBuildCity(player, buildLocation))
-                throw new IllegalArgumentException();
-            this.getModel().getMap().upgradeSettlement(buildLocation, player.getPlayerIndex());
-        } catch (Exception e) {
-            System.err.println("Player tried to build a city without being able to.");
-        }
+        if (!canBuildCity(player, buildLocation))
+            throw new IllegalArgumentException();
+        this.getModel().getMap().upgradeSettlement(buildLocation, player.getPlayerIndex());
+        resource.purchaseItem(player, PurchaseType.CITY);
         player.setCities(player.getCities() - 1);
         player.setSettlements(player.getSettlements() + 1);
-        resource.purchaseItem(player, PurchaseType.CITY);
+        getFacades().getTurn().calcVictoryPoints();
     }
 
     /**
@@ -126,7 +116,7 @@ public class BuildingFacade extends AbstractFacade {
      */
     public boolean canBuildRoad(@NotNull Player player, @NotNull EdgeLocation buildLocation, boolean isFree, boolean isSetup) {
         resource = manager.getResources();
-        if (getUnusedRoads(player) < 1)
+        if (getUnusedRoads(player) <= 0)
             return false;
         if (!map.canPlaceRoad(player, buildLocation, isSetup))
             return false;
@@ -148,9 +138,9 @@ public class BuildingFacade extends AbstractFacade {
      */
     public boolean canBuildSettlement(@NotNull Player player, @NotNull VertexLocation buildLocation, boolean isFree) {
         resource = manager.getResources();
-        if (getUnusedSettlements(player) < 1)
+        if (getUnusedSettlements(player) <= 0)
             return false;
-        else if (!map.canPlaceSettlement(player, buildLocation, (manager.getTurn().getPhase() == TurnStatus.FIRST_ROUND || manager.getTurn().getPhase() == TurnStatus.SECOND_ROUND)))
+        else if (!map.canPlaceSettlement(player, buildLocation, manager.getTurn().isSetup()))
             return false;
         else if (!isFree) {
             if (!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
@@ -173,7 +163,7 @@ public class BuildingFacade extends AbstractFacade {
             return false;
         else if (!map.canPlaceCity(player, buildLocation))
             return false;
-        else if (!resource.canPurchaseItem(player, PurchaseType.SETTLEMENT))
+        else if (!resource.canPurchaseItem(player, PurchaseType.CITY))
             return false;
         return true;
     }

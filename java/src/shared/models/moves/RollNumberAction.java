@@ -3,13 +3,15 @@ package shared.models.moves;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+import shared.definitions.Constants;
 import shared.definitions.PlayerIndex;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class RollNumberAction {
+public class RollNumberAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -108,5 +110,21 @@ public class RollNumberAction {
                         TYPE == other.TYPE &&
                         Objects.equals(playerIndex, other.playerIndex)
         );
+    }
+
+    /**
+     * Run on the server.  Tells server what number {@link PlayerIndex} rolled.  Server responds by giving players the
+     * necessary resources.
+     */
+    @Override
+    public void execute() {
+        if (number != Constants.ROBBER_ROLL) {
+            getFacades().getResources().giveAwards(getFacades().getResources().getAwardsFromHexes(number));
+            getFacades().getTurn().finishRolling(getModel(), false);
+        } else {
+            getFacades().getTurn().finishRolling(getModel(), true);
+        }
+        getModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " rolled a" + number);
+        getModel().incrementVersion();
     }
 }

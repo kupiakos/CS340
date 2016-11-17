@@ -3,16 +3,18 @@ package shared.models.games;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+import shared.definitions.CatanColor;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class JoinGameRequest {
+public class JoinGameRequest extends GameAction {
 
     @SerializedName("color")
     @Expose
-    private String color;
+    private CatanColor color;
 
     @SerializedName("id")
     @Expose
@@ -32,7 +34,7 @@ public class JoinGameRequest {
      * @param color What color you want to join (or rejoin) as.
      * @param id    The ID of the game to join
      */
-    public JoinGameRequest(String color, int id) {
+    public JoinGameRequest(CatanColor color, int id) {
         this.color = color;
         this.id = id;
     }
@@ -40,18 +42,18 @@ public class JoinGameRequest {
     /**
      * @return What color you want to join (or rejoin) as.
      */
-    public String getColor() {
+    public CatanColor getColor() {
         return color;
     }
 
     /**
      * @param color What color you want to join (or rejoin) as.
      */
-    public void setColor(@NotNull String color) {
+    public void setColor(@NotNull CatanColor color) {
         this.color = color;
     }
 
-    public JoinGameRequest withColor(@NotNull String color) {
+    public JoinGameRequest withColor(@NotNull CatanColor color) {
         setColor(color);
         return this;
     }
@@ -96,5 +98,14 @@ public class JoinGameRequest {
                 Objects.equals(color, other.color) &&
                         id == other.id
         );
+    }
+
+    /**
+     * Run on the server. Will add the player specified in the cookie to the game specified in this action, with the specified
+     * color.
+     */
+    @Override
+    public void execute() {
+
     }
 }

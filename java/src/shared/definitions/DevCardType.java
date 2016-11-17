@@ -9,7 +9,7 @@ public enum DevCardType {
     @SerializedName("Soldier")
     SOLDIER,
 
-    @SerializedName("Year_Of_Plenty")
+    @SerializedName("Year_of_Plenty")
     YEAR_OF_PLENTY,
 
     @SerializedName("Monopoly")

@@ -61,6 +61,12 @@ public class MessageView extends OverlayView implements IMessageView {
     }
 
     @Override
+    public void showModal() {
+        super.showModal();
+        SwingUtilities.invokeLater(() -> getRootPane().setDefaultButton(closeButton));
+    }
+
+    @Override
     public void setTitle(String title) {
         label.setText(title);
     }

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.CatanColor;
 import shared.definitions.Constants;
 import shared.definitions.PlayerIndex;
+import shared.definitions.PurchaseType;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -122,6 +123,28 @@ public class Player {
         return getVictoryPoints() >= Constants.WINNING_AMOUNT_VICTORY_POINTS;
     }
 
+    public int leftOfResource(@NotNull PurchaseType purchaseType) {
+        switch (purchaseType) {
+            case ROAD:
+                return getRoads();
+            case SETTLEMENT:
+                return getSettlements();
+            case CITY:
+                return getCities();
+            case DEVCARD:
+                return Integer.MAX_VALUE;
+        }
+        assert false;
+        return 0;
+    }
+
+    public boolean hasExcess() {
+        if (this.resources.getTotal() > 7) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * @return How many cities this player has left to play
      */
@@ -144,7 +167,7 @@ public class Player {
     /**
      * @return Whether this player has discarded or not already this discard phase.
      */
-    public boolean isDiscarded() {
+    public boolean hasDiscarded() {
         return discarded;
     }
 

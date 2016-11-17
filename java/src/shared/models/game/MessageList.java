@@ -3,7 +3,6 @@ package shared.models.game;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
-import shared.models.moves.SendChatAction;
 
 import javax.annotation.Generated;
 import java.util.ArrayList;
@@ -53,21 +52,18 @@ public class MessageList {
     /**
      * Adds just one message to the list, creates a new one if needed
      *
-     * @param lines
+     * @param line
      */
     public void addMessage(@NotNull MessageEntry line) {
         getLines().add(line);
     }
 
-    /**
-     * Changes the SendChatAction to a MessageEntry then
-     * Adds just one message to the list, creates a new one if needed
-     *
-     * @param lines
-     */
-    public void addChat(@NotNull SendChatAction c) {
+    public void addMessage(@NotNull Player player, @NotNull String message) {
+        addMessage(new MessageEntry(player.getName(), message));
+    }
 
-        getLines().add(c.asMessageEntry());
+    public void prefixMessage(@NotNull Player player, @NotNull String message) {
+        addMessage(player, player.getName() + message);
     }
 
     public MessageList withLines(@NotNull List<MessageEntry> lines) {

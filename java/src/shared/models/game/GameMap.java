@@ -6,9 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import shared.definitions.HexType;
 import shared.definitions.PlayerIndex;
+import shared.definitions.PortType;
+import shared.locations.EdgeDirection;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
-import shared.locations.VertexDirection;
 import shared.locations.VertexLocation;
 import shared.utils.MapUtils;
 
@@ -25,7 +26,7 @@ public class GameMap {
 
     @SerializedName("radius")
     @Expose
-    private int radius;
+    private int radius = 3;
 
     @SerializedName("robber")
     @Expose
@@ -79,6 +80,19 @@ public class GameMap {
         this.cities = cities;
     }
 
+    /**
+     * Constructor that creates GameMap based on if the user wants random hex types, random port types,
+     * and/or random numbers on hexes
+     *
+     * @param randomTiles   whether the HexTypes are random
+     * @param randomPorts   whether the Port Types are random
+     * @param randomNumbers whether the Numbers on the Hexes are random
+     */
+    public GameMap(boolean randomTiles, boolean randomPorts, boolean randomNumbers) {
+        setNewGameHexes(randomTiles, randomNumbers);
+        setNewGamePorts(randomPorts);
+    }
+
     private static <V> Map<VertexLocation, V> normalizeVertexMap(Map<VertexLocation, V> vMap) {
         return vMap.entrySet().stream()
                 .collect(Collectors.toMap(e -> e.getKey().getNormalizedLocation(), e -> e.getValue()));
@@ -87,6 +101,133 @@ public class GameMap {
     private static <V> Map<EdgeLocation, V> normalizeEdgeMap(Map<EdgeLocation, V> eMap) {
         return eMap.entrySet().stream()
                 .collect(Collectors.toMap(e -> e.getKey().getNormalizedLocation(), e -> e.getValue()));
+    }
+
+    /**
+     * Sets the hexes of the new game based on if the user wants random hex types or random numbers on hexes
+     *
+     * @param randomTiles   whether the HexTypes are random
+     * @param randomNumbers whether the Numbers on the Hexes are random
+     */
+    private void setNewGameHexes(boolean randomTiles, boolean randomNumbers) {
+        List<Integer> hexNumbers = setHexNumbers(randomNumbers);
+        List<HexType> hexTypes = setHexTypes(randomTiles);
+        List<HexLocation> hexLocations = setHexLocations();
+
+        HexType hexType = HexType.DESERT;
+        int hexNumber = -1;
+        boolean seenNegOne = false;
+        boolean seenDesert = false;
+        for (int i = 0; i < hexLocations.size(); i++) {
+            if (hexNumbers.get(i) == 0 && hexTypes.get(i) != HexType.DESERT) {
+                if (seenDesert) {
+                    hexes.put(hexLocations.get(i), new Hex(hexNumber, hexLocations.get(i), hexTypes.get(i)));
+                } else {
+                    hexes.put(hexLocations.get(i), new Hex(0, hexLocations.get(i), HexType.DESERT));
+                    hexType = hexTypes.get(i);
+                }
+                seenNegOne = true;
+            } else if (hexTypes.get(i) == HexType.DESERT && hexNumbers.get(i) != 0) {
+                if (seenNegOne) {
+                    hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexType));
+                } else {
+                    hexes.put(hexLocations.get(i), new Hex(0, hexLocations.get(i), HexType.DESERT));
+                    hexNumber = hexNumbers.get(i);
+                }
+                seenDesert = true;
+            } else {
+                hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexTypes.get(i)));
+            }
+        }
+        Set<HexLocation> deserts = MapUtils.keysWithValueMatching(hexes, hex -> hex.getResource() == HexType.DESERT);
+        assert deserts.size() == 1;
+        HexLocation desert = deserts.iterator().next();
+        setRobber(desert);
+    }
+
+    /**
+     * Sets the hex locations of the new game based on the radius
+     *
+     * @return the List of Hex Locations for each hex on the map
+     */
+    private List<HexLocation> setHexLocations() {
+        List<HexLocation> hexLocations = new ArrayList<>();
+
+        for (int column = -radius + 1; column < radius; column++) {
+            for (int diagonalRow = (column < 0) ? -radius - column + 1 : -radius + 1; diagonalRow < ((column > 0) ? radius - column : radius); diagonalRow++) {
+                hexLocations.add(new HexLocation(column, diagonalRow));
+            }
+        }
+        return hexLocations;
+    }
+
+    /**
+     * Sets the Hex Types for each hex on the new game map
+     *
+     * @param randomTiles whether the HexTypes are random
+     * @return List of Hex Types that contain a hex type for each hex on the new game map
+     */
+    private List<HexType> setHexTypes(boolean randomTiles) {
+        List<HexType> hexTypes = Arrays.asList(HexType.ORE, HexType.WHEAT, HexType.WOOD, HexType.BRICK, HexType.SHEEP,
+                HexType.SHEEP, HexType.ORE, HexType.DESERT, HexType.WOOD, HexType.WHEAT, HexType.WOOD, HexType.WHEAT,
+                HexType.BRICK, HexType.ORE, HexType.BRICK, HexType.SHEEP, HexType.WOOD, HexType.SHEEP, HexType.WHEAT
+        );
+
+        if (randomTiles) {
+            Collections.shuffle(hexTypes);
+        }
+
+        return hexTypes;
+    }
+
+    /**
+     * Set the Hex Numbers for each hex on the new game map
+     *
+     * @param randomNumbers whether the Numbers on the Hexes are random
+     * @return List of Integers that contain the numbers for each hex on the new game map
+     */
+    private List<Integer> setHexNumbers(boolean randomNumbers) {
+        List<Integer> hexNumbers = Arrays.asList(5, 2, 6, 8, 10, 9, 3, 0, 3, 11, 4, 8, 4, 6, 5, 10, 11, 12, 9);
+
+        if (randomNumbers) {
+            Collections.shuffle(hexNumbers);
+        }
+
+        return hexNumbers;
+    }
+
+    /**
+     * Sets the ports of the new game based on if the user wants random port types
+     *
+     * @param randomPorts whether the Port Types are random
+     */
+    private void setNewGamePorts(boolean randomPorts) {
+        final List<EdgeLocation> portLocations = Arrays.asList(
+                new EdgeLocation(new HexLocation(-3, 0), EdgeDirection.SouthEast),
+                new EdgeLocation(new HexLocation(-1, -2), EdgeDirection.South),
+                new EdgeLocation(new HexLocation(1, -3), EdgeDirection.South),
+                new EdgeLocation(new HexLocation(3, -3), EdgeDirection.SouthWest),
+                new EdgeLocation(new HexLocation(3, -1), EdgeDirection.NorthWest),
+                new EdgeLocation(new HexLocation(2, 1), EdgeDirection.NorthWest),
+                new EdgeLocation(new HexLocation(0, 3), EdgeDirection.North),
+                new EdgeLocation(new HexLocation(-2, 3), EdgeDirection.NorthEast),
+                new EdgeLocation(new HexLocation(-3, 2), EdgeDirection.NorthEast)
+        );
+
+        List<PortType> portTypes = Arrays.asList(
+                PortType.THREE, PortType.WHEAT, PortType.ORE,
+                PortType.THREE, PortType.SHEEP, PortType.THREE,
+                PortType.THREE, PortType.BRICK, PortType.WOOD
+        );
+
+        if (randomPorts) {
+            Collections.shuffle(portTypes);
+        }
+
+        for (int i = 0; i < portLocations.size(); i++) {
+            HexLocation hexLoc = portLocations.get(i).getHexLoc();
+            ports.put(hexLoc, new Port(hexLoc, portLocations.get(i).getDir(), (portTypes.get(i) == PortType.THREE) ? 3 : 2, portTypes.get(i)));
+        }
     }
 
     /**
@@ -253,9 +394,9 @@ public class GameMap {
      * This tests distance and adjacency requirements.
      * If it is the first turn, don't check whether the player is connected to one of their own roads.
      *
-     * @param location    the location to test, not null
-     * @param player      the player to test, not null
-     * @param isFirstTurn whether the game is in the first turn or not
+     * @param location        the location to test, not null
+     * @param player          the player to test, not null
+     * @param isFirstTwoTurns whether the game is in the first turn or not
      * @return whether the map could support adding a settlement owned by the player at that location
      */
     public boolean canAddSettlement(@NotNull VertexLocation location, @NotNull PlayerIndex player, boolean isFirstTwoTurns) {
@@ -264,7 +405,7 @@ public class GameMap {
             return false;
         }
         Set<EdgeLocation> adjacentEdges = getVertexEdges(location);
-        if(adjacentEdges.size()==0){
+        if (adjacentEdges.size() == 0) {
             return false;
         }
         boolean ownsAdjacentRoad = false;
@@ -318,7 +459,9 @@ public class GameMap {
      * <p>
      * This tests distance and adjacency requirements.
      *
-     * @param road the road containing the location and owner to add
+     * @param location
+     * @param player
+     * @param isSetup
      * @return whether the map could support adding a road owned by the player at that location
      */
     public boolean canAddRoad(@NotNull EdgeLocation location, @NotNull PlayerIndex player, @NotNull boolean isSetup) {
@@ -331,18 +474,16 @@ public class GameMap {
         int hexY = location.getHexLoc().getY();
         int neighborX = location.getHexLoc().getNeighborLoc(location.getDir()).getX();
         int neighborY = location.getHexLoc().getNeighborLoc(location.getDir()).getY();
-        if((Math.abs(hexX) >= radius || Math.abs(hexY) >= radius || Math.abs(hexX + hexY) >= radius)&&(Math.abs(neighborX) >= radius || Math.abs(neighborY) >= radius || Math.abs(neighborX + neighborY)>=radius)){
+        if ((Math.abs(hexX) >= radius || Math.abs(hexY) >= radius || Math.abs(hexX + hexY) >= radius) && (Math.abs(neighborX) >= radius || Math.abs(neighborY) >= radius || Math.abs(neighborX + neighborY) >= radius)) {
             return false;
         }
         for (VertexLocation v : vertices) {
             HashSet<EdgeLocation> edges = (HashSet) getVertexEdges(v);
             if (hasBuilding(v)) {
-                if (getBuildingOwner(v) != player)
-                    return false;
+                if (getBuildingOwner(v) == player)
+                    hasAdjacentBuilding = true;
                 else if (isSetup && settlementHasAdjacentRoads(v))
                     return false;
-                else
-                    hasAdjacentBuilding = true;
             }
             for (EdgeLocation e : edges) {
                 if (e.equals(location))
@@ -353,7 +494,7 @@ public class GameMap {
                 }
             }
         }
-        if(!hasAdjacentRoad && !hasAdjacentBuilding)
+        if (!hasAdjacentRoad && !hasAdjacentBuilding)
             return false;
         else if (isSetup && !hasAdjacentBuilding)
             return false;
@@ -466,7 +607,7 @@ public class GameMap {
             int hexY = e.getHexLoc().getY();
             int neighborX = e.getHexLoc().getNeighborLoc(e.getDir()).getX();
             int neighborY = e.getHexLoc().getNeighborLoc(e.getDir()).getY();
-            if((Math.abs(hexX) >= radius || Math.abs(hexY) >= radius || Math.abs(hexX + hexY) >= radius)&&(Math.abs(neighborX) >= radius || Math.abs(neighborY) >= radius || Math.abs(neighborX + neighborY)>=radius)){
+            if ((Math.abs(hexX) >= radius || Math.abs(hexY) >= radius || Math.abs(hexX + hexY) >= radius) && (Math.abs(neighborX) >= radius || Math.abs(neighborY) >= radius || Math.abs(neighborX + neighborY) >= radius)) {
                 itr.remove();
             }
         }
@@ -496,61 +637,68 @@ public class GameMap {
      * @return Greatest number of connected roads.
      */
     public int getPlayerLongestRoad(PlayerIndex player) {
+        int size = 0;
         int max = 0;
-        HashSet<EdgeLocation> edges = (HashSet) getPlayerRoads(player);
-        for (EdgeLocation e : edges) {
-            int roadSize = getRoadSize(1, e, player);
-            if (roadSize > max)
-                max = roadSize;
+        Set<EdgeLocation> playerRoads = getPlayerRoads(player);
+
+        while (!playerRoads.isEmpty()) {
+            // Pick a road from the set
+            EdgeLocation loc = playerRoads.iterator().next();
+            Set<EdgeLocation> longest = getLongestRoad(new HashSet<EdgeLocation>(Arrays.asList(loc)), loc, player);
+            max = Math.max(longest.size(), max);
+            playerRoads.removeAll(longest);
         }
         return max;
     }
 
+    private Set<EdgeLocation> connectedRoads(EdgeLocation loc) {
+        PlayerIndex player = roads.get(loc);
+        // Note: A continuous road is broken if another player builds a settlement on the vertex between two roads
+        return loc.getConnectedVertices().stream()
+                .filter(v -> {
+                    PlayerIndex owner = getBuildingOwner(v);
+                    return (owner == null || owner == player);
+                })
+                .flatMap(v -> getVertexEdges(v).stream())
+                .distinct()
+                .filter(e -> player == roads.get(e))
+                .collect(Collectors.toSet());
+    }
+
     /**
-     * Recursive method that finds the greatest number of connected roads for the given player with a starting location.
-     *
-     * @param currentSize
-     * @param edge
-     * @param player
-     * @return
+     * Find the longest road that extends the given road segment, starting from the given location.
      */
-    private int getRoadSize(int currentSize, EdgeLocation edge, PlayerIndex player) {
-        Set<EdgeLocation> edges;
-        switch (edge.getDir()) {
-            case North:
-                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.NorthEast));
-                break;
-            case NorthEast:
-                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.East));
-                break;
-            case SouthEast:
-                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.SouthEast));
-                break;
-            case South:
-                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.SouthWest));
-                break;
-            case SouthWest:
-                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.West));
-                break;
-            case NorthWest:
-                edges = getVertexEdges(new VertexLocation(edge.getHexLoc(), VertexDirection.NorthWest));
-                break;
-            default:
-                edges = new HashSet<>();
-                break;
-        }
-        int max = currentSize;
-        for (EdgeLocation e : edges) {
-            if (e.equals(edge.getNormalizedLocation()))
+    private Set<EdgeLocation> getLongestRoad(Set<EdgeLocation> current, EdgeLocation loc, PlayerIndex player) {
+        List<Set<EdgeLocation>> pathCandidates = new ArrayList<>();
+        pathCandidates.add(current);
+        for (EdgeLocation next : connectedRoads(loc)) {
+            // No cycles allowed and no checking visited nodes
+            // On an edge, this will always be caught
+            if (pathCandidates.stream().anyMatch(candidate -> candidate.contains(next))) {
                 continue;
-            else if (roads.get(e) == player) {
-                int newSize = getRoadSize(currentSize + 1, e, player);
-                if (newSize > max) {
-                    max = newSize;
+            }
+            Set<EdgeLocation> candidate = new HashSet<>(current);
+            candidate.add(next);
+            pathCandidates.add(getLongestRoad(candidate, next, player));
+        }
+        if (pathCandidates.size() == 1) {
+            return current;
+        }
+        // The pair of sets whose union forms the largest set is the longest continuous road
+        // To do this, all combinations size 2 of the candidates are iterated
+        // There are (candidates.size choose 2) possible union candidates
+        Set<EdgeLocation> largest = current;
+        int n = pathCandidates.size();
+        for (int i = 0; i < n - 1; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                Set<EdgeLocation> union = new HashSet<>(pathCandidates.get(i));
+                union.addAll(pathCandidates.get(j));
+                if (union.size() > largest.size()) {
+                    largest = union;
                 }
             }
         }
-        return max;
+        return largest;
     }
 
     /**

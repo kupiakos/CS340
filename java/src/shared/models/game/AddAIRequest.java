@@ -72,4 +72,9 @@ public class AddAIRequest {
                 Objects.equals(aIType, other.aIType)
         );
     }
+
+    /**
+     * Run on the server.  Adds an AI player of the specified {@link AIType} to the game specifed by the cookie sent in the
+     * HTTP request.
+     */
 }

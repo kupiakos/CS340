@@ -5,12 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class BuildRoadAction {
+public class BuildRoadAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -137,5 +138,15 @@ public class BuildRoadAction {
                         Objects.equals(roadLocation, other.roadLocation) &&
                         Objects.equals(playerIndex, other.playerIndex)
         );
+    }
+
+    /**
+     * Run on the server.  Builds a road in the game for the specified {@link PlayerIndex} at the specified {@link EdgeLocation}.
+     */
+    @Override
+    public void execute() {
+        getFacades().getBuilding().buildRoad(getFacades().getClientModel().getPlayer(playerIndex), roadLocation, free, getFacades().getTurn().isSetup());
+        getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " built a road");
+        getModel().incrementVersion();
     }
 }

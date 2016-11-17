@@ -3,15 +3,17 @@ package client.join;
 import client.base.Controller;
 import client.base.IAction;
 import client.misc.IMessageView;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.CatanColor;
 import shared.definitions.PlayerIndex;
 import shared.models.games.CreateGameRequest;
 import shared.models.games.GameInfo;
 import shared.models.games.JoinGameRequest;
-import shared.models.games.PlayerInfo;
 
+import javax.naming.CommunicationException;
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 
 /**
@@ -120,7 +122,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                         getJoinGameView().showModal();
                     }
                 }))
-                .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\rError message: " + e.getMessage()))
+                .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\nError message: " + e.getMessage()))
                 .start();
     }
 
@@ -141,13 +143,19 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 
     @Override
     public void createNewGame() {
-
-        CreateGameRequest newGame = new CreateGameRequest(getNewGameView().getRandomlyPlaceHexes(), getNewGameView().getUseRandomPorts(), getNewGameView().getRandomlyPlaceNumbers(), getNewGameView().getTitle());
+        if (getNewGameView().getTitle().isEmpty()) {
+            displayError("Cannot create game", "Cannot create a game with an empty title!");
+            return;
+        }
+        CreateGameRequest newGame = new CreateGameRequest(
+                getNewGameView().getRandomlyPlaceHexes(),
+                getNewGameView().getUseRandomPorts(),
+                getNewGameView().getRandomlyPlaceNumbers(),
+                getNewGameView().getTitle()
+        );
         getAsync().runMethod(server::createGame, newGame)
-                .onSuccess(() -> SwingUtilities.invokeLater(() -> {
-                    reloadGamesList();
-                }))
-                .onError(e -> displayError("Error Communicating with Server", "Cannot create a new game.\rError Message: " + e.getMessage()))
+                .onSuccess(() -> SwingUtilities.invokeLater(this::reloadGamesList))
+                .onError(e -> displayError("Error Communicating with Server", "Cannot create a new game.\nError Message: " + e.getMessage()))
                 .start();
         getNewGameView().closeModal();
     }
@@ -158,40 +166,46 @@ public class JoinGameController extends Controller implements IJoinGameControlle
         for (CatanColor c : CatanColor.values()) {
             getSelectColorView().setColorEnabled(c, true);
         }
-        for (PlayerInfo p : selectedGame.getPlayers()) {
-            if (p.getId() != getGameManager().getPlayerInfo().getId())
-                getSelectColorView().setColorEnabled(p.getColor(), false);
-        }
+        selectedGame.getPlayers().stream()
+                .filter(p -> p.getId() != getGameManager().getPlayerInfo().getId())
+                .forEach(p -> getSelectColorView().setColorEnabled(p.getColor(), false));
         getSelectColorView().showModal();
     }
 
     @Override
     public void cancelJoinGame() {
-
         getJoinGameView().closeModal();
+    }
+
+    @Nullable
+    private GameInfo getGameWithId(int id) {
+        try {
+            return Arrays.stream(server.listOfGames())
+                    .filter(gi -> gi.getId() == id)
+                    .findFirst().orElse(null);
+        } catch (CommunicationException e) {
+            return null;
+        }
     }
 
     @Override
     public void joinGame(CatanColor color) {
-        JoinGameRequest joinGameRequest = new JoinGameRequest(color.toString().toLowerCase(), selectedGame.getId());
+        JoinGameRequest joinGameRequest = new JoinGameRequest(color, selectedGame.getId());
         getAsync().runMethod(server::joinGame, joinGameRequest)
-                .onSuccess(() -> SwingUtilities.invokeLater(() -> {
+                .onSuccess(r -> SwingUtilities.invokeLater(() -> {
+                    selectedGame = getGameWithId(selectedGame.getId());
                     getGameManager().getPlayerInfo().setColor(color);
-                    System.out.println(selectedGame.getPlayers().size());
                     if (selectedGame.getPlayers().size() != 0) {
                         for (int i = 0; i < selectedGame.getPlayers().size(); i++) {
                             if (selectedGame.getPlayers().get(i).getId() == getGameManager().getPlayerInfo().getId()) {
                                 getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(i));
-                                getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(i));
                                 break;
                             } else if (i == selectedGame.getPlayers().size() - 1) {
                                 getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(i + 1));
-                                getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(i + 1));
                             }
                         }
                     } else {
-                        getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.fromInt(0));
-                        getGameManager().setThisPlayerIndex(PlayerIndex.fromInt(0));
+                        getGameManager().getPlayerInfo().setPlayerIndex(PlayerIndex.FIRST);
                     }
                     mTimer.stop();
                     if (getSelectColorView().isModalShowing()) {
@@ -201,7 +215,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                     joinAction.execute();
                 }))
                 .onError(e -> {
-                    displayError("Error", "Cannot join game.\rError Message: " + e.getMessage());
+                    displayError("Error", "Cannot join game.\nError Message: " + e.getMessage());
                     e.printStackTrace();
                     selectedGame = null;
                 })

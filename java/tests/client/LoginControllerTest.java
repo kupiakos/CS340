@@ -23,15 +23,13 @@ import static org.mockito.Mockito.*;
  * Created by elija on 10/23/2016.
  */
 public class LoginControllerTest {
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
     private LoginController controller;
     private GameManager mockManager;
     private ILoginView mockLoginView;
     private IMessageView mockMessageView;
     private IServer mockProxy;
-
-    @Rule
-    public MockitoRule rule = MockitoJUnit.rule();
-
     @Spy
     private MockServerAsyncHelper async;
 
@@ -57,7 +55,7 @@ public class LoginControllerTest {
         controller.register();
         verify(mockLoginView, atMost(1)).getRegisterUsername();
         verify(mockLoginView, atMost(1)).getRegisterPassword();
-        verify(mockMessageView).showModal();
+        verify(mockMessageView).showOneModal();
     }
 
     @Test

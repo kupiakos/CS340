@@ -2,6 +2,7 @@ package client.map;
 
 import client.base.IController;
 import client.data.RobPlayerInfo;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.PieceType;
 import shared.locations.EdgeLocation;
 import shared.locations.HexLocation;
@@ -118,6 +119,6 @@ public interface IMapController extends IController {
      *
      * @param victim The player to be robbed
      */
-    void robPlayer(RobPlayerInfo victim);
+    void robPlayer(@Nullable RobPlayerInfo victim);
 }
 

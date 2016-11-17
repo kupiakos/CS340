@@ -4,13 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
-import shared.models.game.MessageEntry;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class SendChatAction {
+public class SendChatAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -114,12 +114,11 @@ public class SendChatAction {
     }
 
     /**
-     * Converter that lets us change btwn chats and messages.... not sure why both are needed
-     *
-     * @return new MessageEntry
+     * Run on the server.  Added the specified chat content to the list of chats on the server.
      */
-    public MessageEntry asMessageEntry() {
-        // TODO:: How are we keeping track of who is sending messages? Enums of id?
-        return new MessageEntry(playerIndex.index() + "", content);
+    @Override
+    public void execute() {
+        getFacades().getChat().sendChat(getModel().getPlayer(getPlayerIndex()), getContent());
+        getModel().incrementVersion();
     }
 }

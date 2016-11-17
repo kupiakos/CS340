@@ -2,6 +2,7 @@ package shared.facades;
 
 import org.junit.Before;
 import org.junit.Test;
+import shared.definitions.Constants;
 import shared.definitions.TurnStatus;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
@@ -40,18 +41,19 @@ public class TurnFacadeTest {
     }
 
     /**
-     * Checks if you can end turn before putting down 2 roads && settlements
+     * Checks if you can end turn before putting down 2 roads and settlements
      *
      * @throws Exception
      */
     @Test
     public void canEndTurn() throws Exception {
         assertEquals(tf.getPhase(), TurnStatus.SECOND_ROUND);
-        p.setRoads(1);
-        p.setSettlements(1);
+        p.setRoads(Constants.START_ROADS - 1);
+        p.setSettlements(Constants.START_SETTLEMENTS - 1);
         assertFalse(tf.canEndTurn(p));
-        p.setRoads(2);
-        p.setSettlements(2);
+        p.setSettlements(Constants.START_SETTLEMENTS - 2);
+        assertFalse(tf.canEndTurn(p));
+        p.setRoads(Constants.START_ROADS - 2);
         assertTrue(tf.canEndTurn(p));
         tf.endTurn(p);
         assertEquals(tf.getPhase(), ROLLING);

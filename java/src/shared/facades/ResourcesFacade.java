@@ -44,8 +44,7 @@ public class ResourcesFacade extends AbstractFacade {
      */
     public boolean canPurchaseItem(@NotNull Player player, @NotNull PurchaseType item) {
         ResourceSet itemCost = item.purchaseCost();
-        return itemCost.isSubset(player.getResources());
-
+        return itemCost.isSubset(player.getResources()) && player.leftOfResource(item) > 0;
     }
 
     /**
@@ -74,7 +73,7 @@ public class ResourcesFacade extends AbstractFacade {
      * @return whether the player can receive the resources from the bank
      */
     public boolean canReceiveFromBank(@NotNull ResourceSet resources) {
-        return !(resources.isEmpty() || resources.hasNegative()) && resources.isSubset(getModel().getBank());
+        return !(resources.hasNegative()) && resources.isSubset(getModel().getBank());
     }
 
     /**
@@ -216,7 +215,7 @@ public class ResourcesFacade extends AbstractFacade {
             throw new IllegalArgumentException("Illegal giving of awards");
         }
         awards.entrySet().forEach(e -> {
-            if (e.getValue() != null)
+            if (e.getKey() != null && e.getValue() != null)
                 receiveFromBank(getModel().getPlayer(e.getKey()), e.getValue());
         });
     }

@@ -3,13 +3,14 @@ package client.communication;
 import client.base.Controller;
 import shared.definitions.CatanColor;
 import shared.models.game.ClientModel;
-import shared.models.game.MessageEntry;
 import shared.models.game.MessageList;
 import shared.models.game.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 /**
@@ -29,10 +30,7 @@ public class GameHistoryController extends Controller implements IGameHistoryCon
     }
 
     private void initFromModel() {
-        List<LogEntry> entries = new ArrayList<LogEntry>();
-        entries.add(new LogEntry(CatanColor.BROWN, "This is a brown message"));
-
-        getView().setEntries(entries);
+        getView().setEntries(new ArrayList<>());
         updateFromModel(getModel());
     }
 
@@ -40,23 +38,17 @@ public class GameHistoryController extends Controller implements IGameHistoryCon
     public void updateFromModel(ClientModel model) {
         MessageList log = model.getLog();
 
-        ArrayList<LogEntry> entries = new ArrayList<>();
-        if (log != null) {
-            LOGGER.fine("Updating game history");
+        LOGGER.fine("Updating game history");
 
-            for (MessageEntry logMember : log.getLines()) {
-                String m = logMember.getMessage();
-                String s = logMember.getSource();
+        Map<String, CatanColor> colors = model.getPlayers().stream()
+                .collect(Collectors.toMap(Player::getName, Player::getColor));
 
-                CatanColor messageColor = null;
-                for (Player player : getModel().getPlayers()) {
-                    if (player.getName().equals(s)) {
-                        messageColor = player.getColor();
-                    }
-                }
-                entries.add(new LogEntry(messageColor, m));
-            }
-        }
+        List<LogEntry> entries = log.getLines().stream()
+                .map(e -> new LogEntry(
+                        colors.get(e.getSource()),
+                        e.getMessage()))
+                .collect(Collectors.toList());
+
         getView().setEntries(entries);
     }
 

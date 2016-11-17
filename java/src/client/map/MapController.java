@@ -1,10 +1,11 @@
 package client.map;
 
 import client.base.Controller;
-import client.base.IAction;
 import client.data.RobPlayerInfo;
 import client.devcards.DevCardController;
 import client.resources.ResourceBarController;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.*;
 import shared.facades.TurnFacade;
 import shared.locations.EdgeLocation;
@@ -17,11 +18,10 @@ import shared.models.game.Player;
 import shared.models.moves.*;
 import shared.utils.MapUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 /**
@@ -30,10 +30,14 @@ import java.util.logging.Logger;
 public class MapController extends Controller implements IMapController {
 
     private static final Logger LOGGER = Logger.getLogger(MapController.class.getSimpleName());
-    private IAction onBuildAction;
-    private boolean activeBuild = false;
+    private boolean dropping = false;
     private GameMap prevMap = new GameMap();
+    private Map<PlayerIndex, CatanColor> prevColors = new HashMap<>();
     private IRobView robView;
+    private HexLocation newRobberLoc = null;
+    // For Road Building Card
+    private EdgeLocation firstRoadLoc = null;
+    private MapStatus status = MapStatus.NORMAL;
 
     public MapController(IMapView view, IRobView robView) {
         super(view);
@@ -88,7 +92,7 @@ public class MapController extends Controller implements IMapController {
                     LOGGER.finer(() -> "New hex: " + hex);
                     view.addHex(loc, hex.getResource());
                     int num = hex.getNumber();
-                    if (num > 0 && num < 12) {
+                    if (num > 0 && num <= 12) {
                         view.addNumber(loc, hex.getNumber());
                     }
                 });
@@ -129,10 +133,22 @@ public class MapController extends Controller implements IMapController {
 
     }
 
+    private boolean haveChangedColors() {
+        Map<PlayerIndex, CatanColor> curColors = getModel().getPlayers().stream()
+                .collect(Collectors.toMap(Player::getPlayerIndex, Player::getColor));
+        boolean changed = !prevColors.equals(curColors);
+        prevColors = curColors;
+        return changed;
+    }
 
     @Override
     protected synchronized void updateFromModel(ClientModel model) {
         GameMap curMap = model.getMap();
+        if (haveChangedColors()) {
+            // If we've changed colors, force a redraw
+            LOGGER.info("Color of players has changed");
+            prevMap = new GameMap();
+        }
         if ((prevMap == curMap) || curMap.equals(prevMap)) {
             LOGGER.fine("Skipping map update as it is the same");
         } else {
@@ -140,27 +156,24 @@ public class MapController extends Controller implements IMapController {
         }
 
         TurnFacade turn = getFacade().getTurn();
-        if (turn.isSetup() && turn.isPlayersTurn(getPlayer()) && onBuildAction == null) {
-            PieceType needToBuild = null;
+        status.startMovingRobber(this);
+
+        // Initial Setup
+        if (turn.isSetup() && turn.isPlayersTurn(getPlayer()) && !dropping) {
             int settlements = getPlayer().getSettlements();
             int roads = getPlayer().getRoads();
-            TurnStatus status = getFacade().getTurn().getPhase();
-            onBuildAction = () -> {
-            };
-            int round = status == TurnStatus.FIRST_ROUND ? 0 : 1;
+            TurnStatus phase = getFacade().getTurn().getPhase();
+            int round = phase == TurnStatus.FIRST_ROUND ? 0 : 1;
+            boolean endOfTurn = true;
             if (settlements >= Constants.START_SETTLEMENTS - round) {
-                needToBuild = PieceType.SETTLEMENT;
+                endOfTurn = false;
+                setStatus(MapStatus.setupSettlements(phase));
             } else if (roads >= Constants.START_ROADS - round) {
-                needToBuild = PieceType.ROAD;
-                onBuildAction = () -> {
-                    getAsync().runModelMethod(server::finishTurn, new FinishMoveAction(getPlayer().getPlayerIndex()))
-                            .onSuccess(() -> onBuildAction = null)
-                            .onError(e -> LOGGER.severe("failed to finish first turn " + e.getMessage()))
-                            .start();
-                };
+                endOfTurn = false;
+                setStatus(MapStatus.setupRoads(phase));
             }
-            if (needToBuild != null) {
-                startMove(needToBuild);
+            if (!endOfTurn) {
+                status.doSetup(this);
             }
         }
     }
@@ -227,12 +240,12 @@ public class MapController extends Controller implements IMapController {
      * {@link #startMove} is called.
      * <p>
      * {@link MapView#startDrop} opens a
-     * new {@link MapView.MapOverlay}, which is a view.
+     * new MapOverlay, which is a view.
      * This is given the special controller {@link MapView#overlayController}.
      * <p>
      * It also keeps an additional internal {@link MapComponent}
      * which is the half of the map view which actually handles user input.
-     * In {@link MapView.MapOverlay#MapOverlay}, it sets the {@link MapView.MapOverlay#mainMap}
+     * In MapOverlay, it sets the MapOverlay
      * controller to the special controller.
      * <p>
      * The "place a road" modal is shown and the user can place one (or possibly cancel).
@@ -247,21 +260,9 @@ public class MapController extends Controller implements IMapController {
      */
     @Override
     public void placeRoad(EdgeLocation edgeLoc) {
+        dropping = false;
         getView().placeRoad(edgeLoc, getPlayer().getColor());
-//        getFacade().getBuilding().buildRoad(getPlayer(), edgeLoc, );
-        getAsync().runModelMethod(server::buildRoad,
-                new BuildRoadAction(
-                        getFacade().getTurn().isSetup(),
-                        edgeLoc,
-                        getPlayer().getPlayerIndex()))
-                .onError(e -> LOGGER.severe("Failed to place road: " + e.getMessage()))
-                .onSuccess(() -> {
-                    if (onBuildAction != null) {
-                        onBuildAction.execute();
-                        onBuildAction = null;
-                    }
-                })
-                .start();
+        status.placeRoad(this, edgeLoc);
     }
 
     /**
@@ -269,6 +270,7 @@ public class MapController extends Controller implements IMapController {
      */
     @Override
     public void placeSettlement(VertexLocation vertLoc) {
+        dropping = false;
         getView().placeSettlement(vertLoc, getPlayer().getColor());
         getAsync().runModelMethod(server::buildSettlement,
                 new BuildSettlementAction(
@@ -276,12 +278,7 @@ public class MapController extends Controller implements IMapController {
                         vertLoc,
                         getPlayer().getPlayerIndex()))
                 .onError(e -> LOGGER.severe("Failed to place settlement: " + e.getMessage()))
-                .onSuccess(() -> {
-                    if (onBuildAction != null) {
-                        onBuildAction.execute();
-                        onBuildAction = null;
-                    }
-                })
+                .onSuccess(() -> status.keepBuilding(this))
                 .start();
     }
 
@@ -290,16 +287,12 @@ public class MapController extends Controller implements IMapController {
      */
     @Override
     public void placeCity(VertexLocation vertLoc) {
+        dropping = false;
         getView().placeCity(vertLoc, getPlayer().getColor());
         getAsync().runModelMethod(server::buildCity,
                 new BuildCityAction(vertLoc, getPlayer().getPlayerIndex()))
                 .onError(e -> LOGGER.severe("Failed to place city: " + e.getMessage()))
-                .onSuccess(() -> {
-                    if (onBuildAction != null) {
-                        onBuildAction.execute();
-                        onBuildAction = null;
-                    }
-                })
+                .onSuccess(() -> status.keepBuilding(this))
                 .start();
     }
 
@@ -313,26 +306,23 @@ public class MapController extends Controller implements IMapController {
      */
     @Override
     public void placeRobber(HexLocation hexLoc) {
-        getFacade().getTurn().startRobbing();
-        getModel().getMap().setRobber(hexLoc);
+//        getFacade().getTurn().startMovingRobber();
+        dropping = false;
+        GameMap map = getModel().getMap();
+        map.setRobber(hexLoc);
         getView().placeRobber(hexLoc);
 
-        List<RobPlayerInfo> robPlayerInfos = new ArrayList<>();
-        for (Player p : getModel().getPlayers()) {
-            if (p == null ||
-                    p.getPlayerIndex() == getPlayer().getPlayerIndex() ||
-                    p.getResources().getTotal() == 0) {
-                continue;
-            }
-            robPlayerInfos.add(new RobPlayerInfo(p));
-        }
-        // TODO: Discover how moving the robber with no robbing candidates is supposed to work.
-        if (robPlayerInfos.size() != 0) {
-            getRobView().setPlayers(
-                    robPlayerInfos.toArray(new RobPlayerInfo[robPlayerInfos.size()])
-            );
-            getRobView().showModal();
-        }
+        RobPlayerInfo[] robPlayers = map.getHexBuildings(hexLoc).stream()
+                .map(map::getBuildingOwner)
+                .distinct()
+                .filter(pi -> pi != getPlayer().getPlayerIndex())
+                .map(pi -> new RobPlayerInfo(getModel().getPlayer(pi)))
+                .toArray(RobPlayerInfo[]::new);
+
+        newRobberLoc = hexLoc;
+        getRobView().setPlayers(robPlayers);
+        getRobView().showModal();
+        status.startRobbing(this);
     }
 
     /**
@@ -354,19 +344,28 @@ public class MapController extends Controller implements IMapController {
      */
     @Override
     public void startMove(PieceType pieceType) {
+        startMove(pieceType, !getFacade().getTurn().isSetup());
+    }
+
+    public void startMove(PieceType pieceType, boolean isCancelAllowed) {
         // There doesn't seem to be a known way to transfer the parameters so placeCity, etc. are called correctly.
         // Class fields could work?
-        getView().startDrop(pieceType, getPlayer().getColor(), !getFacade().getTurn().isSetup());
+        if (!dropping) {
+            getView().startDrop(pieceType, getPlayer().getColor(), isCancelAllowed);
+        }
+        dropping = true;
     }
 
     /**
-     * User presses cancel in the {@link client.map.MapView.MapOverlay}
+     * User presses cancel in the MapOverlay
      * {@link client.map.MapView#overlayController} cancelMove
      * this function
      */
     @Override
     public void cancelMove() {
         // Unlike startMove, this is called *by* the view.
+        setStatus(MapStatus.NORMAL);
+        dropping = false;
     }
 
     /**
@@ -381,7 +380,8 @@ public class MapController extends Controller implements IMapController {
      */
     @Override
     public void playSoldierCard() {
-        getView().startDrop(PieceType.ROBBER, getPlayer().getColor(), false);
+        setStatus(MapStatus.SOLDIER_MOVING);
+        startMove(PieceType.ROBBER, true);
     }
 
     /**
@@ -391,8 +391,8 @@ public class MapController extends Controller implements IMapController {
     public void playRoadBuildingCard() {
         // TODO: Identify situations when requiring placing two roads is impossible, and preclude card.
         // TODO: Identify if startDrop (OverlayView.showModal) is blocking or not.
-        startMove(PieceType.ROAD);
-        startMove(PieceType.ROAD);
+        setStatus(MapStatus.ROAD_BUILDING_FIRST);
+        startMove(PieceType.ROAD, true);
     }
 
     /**
@@ -407,15 +407,242 @@ public class MapController extends Controller implements IMapController {
      * @see RobView#actionListener
      */
     @Override
-    public void robPlayer(RobPlayerInfo victim) {
-        getAsync().runModelMethod(server::robPlayer,
-                new RobPlayerAction(
-                        getModel().getMap().getRobber(),
-                        getPlayer().getPlayerIndex(),
-                        victim.getPlayerIndex().index()))
-                .onError(e -> LOGGER.severe("Failed to rob player: " + e.getMessage()))
-                .start();
+    public void robPlayer(@Nullable RobPlayerInfo victim) {
+        status.robPlayer(this, victim);
     }
 
+    private void setStatus(MapStatus status) {
+        this.status = status;
+    }
+
+    private enum MapStatus {
+        FIRST_SETTLEMENT {
+            @Override
+            public void doSetup(MapController c) {
+                c.startMove(PieceType.SETTLEMENT, false);
+            }
+
+            @Override
+            public void keepBuilding(MapController c) {
+                c.setStatus(FIRST_ROAD);
+                c.status.doSetup(c);
+            }
+
+            @Override
+            public boolean isSetup() {
+                return true;
+            }
+        },
+
+        FIRST_ROAD {
+            @Override
+            public void doSetup(MapController c) {
+                c.startMove(PieceType.ROAD, false);
+            }
+
+            @Override
+            public void keepBuilding(MapController c) {
+                c.setStatus(SECOND_SETTLEMENT);
+                this.finishSetupTurn(c, SECOND_SETTLEMENT);
+            }
+
+            @Override
+            public boolean isSetup() {
+                return true;
+            }
+        },
+
+        SECOND_SETTLEMENT {
+            @Override
+            public void doSetup(MapController c) {
+                c.startMove(PieceType.SETTLEMENT, false);
+            }
+
+            @Override
+            public void keepBuilding(MapController c) {
+                c.setStatus(SECOND_ROAD);
+                c.status.doSetup(c);
+            }
+
+            @Override
+            public boolean isSetup() {
+                return true;
+            }
+        },
+
+        SECOND_ROAD {
+            @Override
+            public void doSetup(MapController c) {
+                c.startMove(PieceType.ROAD, false);
+            }
+
+            @Override
+            public void keepBuilding(MapController c) {
+                c.setStatus(NORMAL);
+                this.finishSetupTurn(c, NORMAL);
+            }
+
+            @Override
+            public boolean isSetup() {
+                return true;
+            }
+        },
+
+        ROAD_BUILDING_FIRST {
+            @Override
+            public void placeRoad(MapController c, EdgeLocation edgeLoc) {
+                c.firstRoadLoc = edgeLoc;
+                if (c.getPlayer().getRoads() > 1) {
+                    c.updateFromModel(c.getModel());
+                    c.setStatus(ROAD_BUILDING_SECOND);
+                    c.startMove(PieceType.ROAD);
+                } else {
+                    finishRoadBuilding(c, c.firstRoadLoc, null);
+                }
+            }
+        },
+
+        ROAD_BUILDING_SECOND {
+            @Override
+            public void placeRoad(MapController c, EdgeLocation edgeLoc) {
+                c.firstRoadLoc = edgeLoc;
+                finishRoadBuilding(c, c.firstRoadLoc, edgeLoc);
+            }
+        },
+
+        ROBBING {
+            @Override
+            public void startMovingRobber(MapController c) {
+            }
+
+            @Override
+            public void robPlayer(MapController c, @Nullable RobPlayerInfo victim) {
+                c.getAsync().runModelMethod(c.server::robPlayer,
+                        new RobPlayerAction(
+                                c.newRobberLoc,
+                                c.getPlayer().getPlayerIndex(),
+                                victim == null ? -1 : victim.getPlayerIndex().index()))
+                        .onSuccess(() -> c.setStatus(NORMAL))
+                        .onError(e -> {
+                            LOGGER.severe("Failed to rob player: " + e.getMessage());
+                            c.setStatus(NORMAL);
+                        })
+                        .start();
+            }
+        },
+
+        SOLDIER {
+            @Override
+            public void startMovingRobber(MapController c) {
+            }
+
+            @Override
+            public void robPlayer(MapController c, @Nullable RobPlayerInfo victim) {
+                c.getAsync().runModelMethod(c.server::useSoldier,
+                        new SoldierAction(
+                                c.newRobberLoc,
+                                c.getPlayer().getPlayerIndex(),
+                                victim == null ? -1 : victim.getPlayerIndex().index()))
+                        .onSuccess(() -> c.setStatus(NORMAL))
+                        .onError(e -> {
+                            LOGGER.severe("Failed to rob player with soldier: " + e.getMessage());
+                            c.setStatus(NORMAL);
+                        })
+                        .start();
+
+            }
+        },
+
+        ROBBING_MOVING {
+            @Override
+            public void startMovingRobber(MapController c) {
+            }
+
+            @Override
+            public void startRobbing(MapController c) {
+                c.setStatus(ROBBING);
+            }
+        },
+
+        SOLDIER_MOVING {
+            @Override
+            public void startMovingRobber(MapController c) {
+            }
+
+            @Override
+            public void startRobbing(MapController c) {
+                c.setStatus(SOLDIER);
+            }
+        },
+
+        NORMAL;
+
+        @Contract(pure = true)
+        public static MapStatus setupSettlements(TurnStatus status) {
+            return status == TurnStatus.FIRST_ROUND ? FIRST_SETTLEMENT : SECOND_SETTLEMENT;
+        }
+
+        @Contract(pure = true)
+        public static MapStatus setupRoads(TurnStatus status) {
+            return status == TurnStatus.FIRST_ROUND ? FIRST_ROAD : SECOND_ROAD;
+        }
+
+        public boolean isSetup() {
+            return false;
+        }
+
+        public void startMovingRobber(MapController c) {
+            if (c.getFacade().getTurn().getPhase() == TurnStatus.ROBBING &&
+                    c.getFacade().getTurn().isPlayersTurn(c.getPlayer())) {
+                c.setStatus(ROBBING_MOVING);
+                c.startMove(PieceType.ROBBER, false);
+            } else {
+                c.getRobView().closeOneModal();
+            }
+        }
+
+        public void startRobbing(MapController c) {
+
+        }
+
+        public void robPlayer(MapController c, @Nullable RobPlayerInfo victim) {
+            assert false;
+        }
+
+        public void keepBuilding(MapController c) {
+
+        }
+
+        public void doSetup(MapController c) {
+
+        }
+
+        public void placeRoad(MapController c, EdgeLocation edgeLoc) {
+            c.getAsync().runModelMethod(c.server::buildRoad,
+                    new BuildRoadAction(
+                            c.getFacade().getTurn().isSetup(),
+                            edgeLoc,
+                            c.getPlayer().getPlayerIndex()))
+                    .onError(e -> LOGGER.severe("Failed to place road: " + e.getMessage()))
+                    .onSuccess(() -> c.status.keepBuilding(c))
+                    .start();
+        }
+
+        protected void finishRoadBuilding(MapController c, EdgeLocation loc1, EdgeLocation loc2) {
+            c.setStatus(NORMAL);
+            c.getAsync().runModelMethod(c.server::useRoadBuilding,
+                    new RoadBuildingAction(loc2, loc1, c.getPlayer().getPlayerIndex()))
+                    .onSuccess(() -> c.firstRoadLoc = null)
+                    .onError(e -> LOGGER.severe("Failed to use road building card: " + e.getMessage()))
+                    .start();
+        }
+
+        protected void finishSetupTurn(MapController c, MapStatus newStatus) {
+            c.getAsync().runModelMethod(c.server::finishTurn, new FinishMoveAction(c.getPlayer().getPlayerIndex()))
+                    .onSuccess(() -> c.dropping = false)
+                    .onError(e -> LOGGER.severe("failed to finish setup turn " + e.getMessage()))
+                    .start();
+        }
+    }
 }
 

@@ -3,15 +3,17 @@ package shared.models.moves;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class RoadBuildingAction {
+public class RoadBuildingAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -67,11 +69,11 @@ public class RoadBuildingAction {
     /**
      * @param spot2 The spot2
      */
-    public void setSpot2(@NotNull EdgeLocation spot2) {
+    public void setSpot2(@Nullable EdgeLocation spot2) {
         this.spot2 = spot2;
     }
 
-    public RoadBuildingAction withSpot2(@NotNull EdgeLocation spot2) {
+    public RoadBuildingAction withSpot2(@Nullable EdgeLocation spot2) {
         setSpot2(spot2);
         return this;
     }
@@ -139,5 +141,18 @@ public class RoadBuildingAction {
                         Objects.equals(spot1, other.spot1) &&
                         Objects.equals(playerIndex, other.playerIndex)
         );
+    }
+
+    /**
+     * Run on the server.  Executes a road building card on the server side. Builds two roads at the specified {@link shared.locations.VertexLocation}s
+     * for the specified {@link PlayerIndex}.
+     */
+    @Override
+    public void execute() {
+        getFacades().getBuilding().buildRoad(getModel().getPlayer(playerIndex), spot1, true, false);
+        getFacades().getBuilding().buildRoad(getModel().getPlayer(playerIndex), spot2, true, false);
+        getFacades().getDevCards().useRoadBuildingCard(getModel().getPlayer(playerIndex));
+        getFacades().getClientModel().getLog().addMessage(getModel().getPlayer(playerIndex), " played a Road Building card");
+        getModel().incrementVersion();
     }
 }

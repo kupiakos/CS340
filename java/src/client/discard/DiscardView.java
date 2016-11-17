@@ -2,6 +2,7 @@ package client.discard;
 
 import client.base.OverlayView;
 import client.custom.cwt.RoundedButton;
+import client.map.MapController;
 import client.utils.FontUtils;
 import client.utils.ImageUtils;
 import shared.definitions.ResourceType;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /*
  * IDiscardController Overview
@@ -40,8 +42,8 @@ import java.util.Map;
  */
 @SuppressWarnings({"serial", "unused"})
 public class DiscardView extends OverlayView implements IDiscardView {
+    private static final Logger LOGGER = Logger.getLogger(MapController.class.getSimpleName());
     private final boolean TESTING = false;
-
     private final int LABEL_TEXT_SIZE = 20;
     private final int BUTTON_TEXT_SIZE = 14;
     private final int BORDER_WIDTH = 7;
@@ -312,14 +314,14 @@ public class DiscardView extends OverlayView implements IDiscardView {
         private ActionListener _actionListener = e -> {
             switch (e.getActionCommand()) {
                 case "UP":
-                    System.out.printf("Increase amount of %s\n",
-                            Resource.this.getType());
+                    LOGGER.info(String.format("Increase amount of %s\n",
+                            Resource.this.getType()));
                     DiscardView.this.getController()
                             .increaseAmount(Resource.this.getType());
                     break;
                 case "DOWN":
-                    System.out.printf("Decrease amount of %s\n",
-                            Resource.this.getType());
+                    LOGGER.info(String.format("Decrease amount of %s\n",
+                            Resource.this.getType()));
                     DiscardView.this.getController()
                             .decreaseAmount(Resource.this.getType());
                     break;

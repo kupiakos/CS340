@@ -5,11 +5,9 @@ import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
 import shared.definitions.TurnStatus;
 import shared.models.game.ClientModel;
-import shared.models.game.MessageEntry;
 import shared.models.game.Player;
 import shared.models.game.TurnTracker;
 
-import static shared.definitions.Constants.LOG_FINISH_TURN_MSG;
 import static shared.definitions.TurnStatus.FIRST_ROUND;
 
 /**
@@ -60,7 +58,6 @@ public class TurnFacade extends AbstractFacade {
     public void endTurn(@NotNull Player player) {
         // TODO:: Figure out if we need to consolidate cards or anything or reset them to a start state
         updateTracker(getPhase().endTurn(tt(), player));
-        getModel().writeLog(new MessageEntry(player.getName(), LOG_FINISH_TURN_MSG));
     }
 
 
@@ -113,22 +110,18 @@ public class TurnFacade extends AbstractFacade {
     }
 
     public void finishDiscarding() {
-        updateTracker(getPhase().finishDiscarding());
+        updateTracker(getPhase().finishDiscarding(getModel()));
     }
 
     /**
      * Sets the game state to the same player's turn (build phase)
-     *
-     * @return successful or not (almost always is true)
      */
-    public void finishRolling(boolean moveRobber) {
-        updateTracker(getPhase().finishRolling(moveRobber));
+    public void finishRolling(ClientModel model, boolean moveRobber) {
+        updateTracker(getPhase().finishRolling(model, moveRobber));
     }
 
     /**
      * Start robbing
-     *
-     * @return
      */
     public void startRobbing() {
         updateTracker(getPhase().startRobbing());
@@ -136,8 +129,6 @@ public class TurnFacade extends AbstractFacade {
 
     /**
      * Stop the robbing
-     *
-     * @return
      */
     public void finishRobbing() {
         updateTracker(getPhase().finishRobbing());
@@ -169,7 +160,34 @@ public class TurnFacade extends AbstractFacade {
         return getPhase().isSetup();
     }
 
+    public void advanceSetup() {
+        updateTracker(getPhase().advanceSetup(getModel()));
+    }
+
+    public void calcVictoryPoints() {
+        for (Player p : getModel().getPlayers()) {
+            int points = p.getMonuments();
+            points += getModel().getMap().getPlayerSettlements(p.getPlayerIndex()).size();
+            points += getModel().getMap().getPlayerCities(p.getPlayerIndex()).size();
+            if (getModel().getTurnTracker().getLongestRoad() == p.getPlayerIndex()) {
+                points += 2;
+            }
+            if (getModel().getTurnTracker().getLargestArmy() == p.getPlayerIndex()) {
+                points += 2;
+            }
+            p.setVictoryPoints(points);
+        }
+    }
+
     public Player getCurrentPlayer() {
         return getModel().getPlayer(tt().getCurrentTurn());
+    }
+
+    @Nullable
+    public Player getWinner() {
+        return getModel().getPlayers().stream()
+                .filter(p -> p.getPlayerID() == getModel().getWinner())
+                .findFirst()
+                .orElse(null);
     }
 }

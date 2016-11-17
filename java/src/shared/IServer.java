@@ -1,6 +1,9 @@
 package shared;
 
 import org.jetbrains.annotations.NotNull;
+import server.models.UserSession;
+import shared.annotations.ServerEndpoint;
+import shared.definitions.AIType;
 import shared.exceptions.JoinGameException;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
@@ -29,7 +32,12 @@ public interface IServer {
      * @pre The username and password are valid.
      * @post The login operation is successful and the user session is being tracked.
      */
-    void login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
+    @ServerEndpoint(
+            value = "/user/login",
+            returnsCookie = "catan.user",
+            gameSpecific = false,
+            requiresAuth = false)
+    UserSession login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
 
     /**
      * Method register a new user if the user name is not used, logs the caller in to the server, and sets their
@@ -39,7 +47,12 @@ public interface IServer {
      * @pre The crediantials are are valid and have not already been used.
      * @post A new user is registered on the server and the user session is being tracked.
      */
-    void register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
+    @ServerEndpoint(
+            value = "/user/register",
+            returnsCookie = "catan.user",
+            gameSpecific = false,
+            requiresAuth = false)
+    UserSession register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException;
 
     /**
      * Method returns info about all of the current games on the server
@@ -48,6 +61,10 @@ public interface IServer {
      * @pre None
      * @post None
      */
+    @ServerEndpoint(
+            value = "/games/list",
+            gameSpecific = false,
+            isPost = false)
     GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -57,6 +74,9 @@ public interface IServer {
      * @pre name is not null and randomTiles, randomNumbers, and randomPorts contain valid boolean values
      * @post A new game is created on the server
      */
+    @ServerEndpoint(
+            value = "/games/create",
+            gameSpecific = false)
     void createGame(@NotNull CreateGameRequest createGameObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -72,7 +92,11 @@ public interface IServer {
      * </ul>
      * @post The current Player has been added to the specified game with the specified color.
      */
-    void joinGame(@NotNull JoinGameRequest joinGameObject) throws IllegalArgumentException, CommunicationException;
+    @ServerEndpoint(
+            value = "/games/join",
+            returnsCookie = "catan.game",
+            gameSpecific = false)
+    int joinGame(@NotNull JoinGameRequest joinGameObject) throws IllegalArgumentException, CommunicationException;
 
     /**
      * For testing and debugging.  Save a game with a bug report for others to fix
@@ -81,6 +105,9 @@ public interface IServer {
      * @pre {@link SaveGameRequest} contains a valid file name and game ID.
      * @post The current state of the specified game (including its ID) has been saved to the  specified file name in the server’s saves/ directory.
      */
+    @ServerEndpoint(
+            value = "/games/save",
+            gameSpecific = false)
     void saveGame(@NotNull SaveGameRequest saveGameObject) throws CommunicationException, IllegalArgumentException;
 
     /**
@@ -90,6 +117,9 @@ public interface IServer {
      * @pre {@link LoadGameRequest} contains a valid file name.
      * @post The game in the specified file has been loaded into the server and its state restored  (including its ID).
      */
+    @ServerEndpoint(
+            value = "/games/load",
+            gameSpecific = false)
     void loadGame(@NotNull LoadGameRequest loadGameObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -103,6 +133,7 @@ public interface IServer {
      * </ul>
      * @post None
      */
+    @ServerEndpoint(value = "/game/model", isPost = false)
     ClientModel gameState(int version) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -112,6 +143,7 @@ public interface IServer {
      * @pre Caller is logged in and joined a game.
      * @post Command list is cleared
      */
+    @ServerEndpoint("/game/reset")
     ClientModel resetGame() throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -121,6 +153,7 @@ public interface IServer {
      * @pre Caller is logged in and joined a game.
      * @post None.
      */
+    @ServerEndpoint(value = "/game/commands", isPost = false)
     String[] getCommandsGame() throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -131,6 +164,7 @@ public interface IServer {
      * @pre Caller is logged in and joined a game.
      * @post The passed-in command list has been applied to the game.
      */
+    @ServerEndpoint("/game/commands")
     ClientModel postCommandsGame(@NotNull String[] gameCommands) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -140,7 +174,8 @@ public interface IServer {
      * @pre None
      * @post None.
      */
-    String[] listAI() throws IllegalArgumentException, CommunicationException;
+    @ServerEndpoint(value = "/game/listAI", isPost = false)
+    AIType[] listAI() throws IllegalArgumentException, CommunicationException;
 
     /**
      * Adds an AI player to the current game. You must login and join a game before calling this method
@@ -149,6 +184,7 @@ public interface IServer {
      * @pre Caller is logged in and joined a game, there is space for another player, {@link AddAIRequest} contains a valid AI type.
      * @post A new AI player of the specified type has been added to the current game.
      */
+    @ServerEndpoint("/game/addAI")
     void addAI(@NotNull AddAIRequest addAIObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -158,6 +194,7 @@ public interface IServer {
      * @pre LogLevel is a valid logging level
      * @post The Server is using the specified logging level.
      */
+    @ServerEndpoint("/util/changeLogLevel")
     void changeLogLevel(@NotNull ChangeLogLevelRequest changeLogLevelObject) throws IllegalArgumentException, CommunicationException;
 
 //Move APIs (Assumed pre-condition for all Move APIs are caller is logged in and joined a game)
@@ -170,6 +207,7 @@ public interface IServer {
      * @pre None
      * @post Chat contains your message at the end
      */
+    @ServerEndpoint("/moves/sendChat")
     ClientModel sendChat(@NotNull SendChatAction sendChatObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -180,6 +218,7 @@ public interface IServer {
      * @pre player is offered a domestic trade.
      * @post If you accepted, you and the player who offered swap the specified resources, If you declined no resources are exchanged, The trade offer is removed
      */
+    @ServerEndpoint("/moves/acceptTrade")
     ClientModel acceptTrade(@NotNull AcceptTradeAction acceptTradeObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -190,6 +229,7 @@ public interface IServer {
      * @pre Caller has the cards that he is trying to discard.
      * @post Caller no longer has the cards defined in {@link DiscardCardsAction}.
      */
+    @ServerEndpoint("/moves/discardCards")
     ClientModel discardCards(@NotNull DiscardCardsAction discardCardsObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -199,6 +239,7 @@ public interface IServer {
      * @pre It is your turn and the client's model status is 'rolling'
      * @post The client model's status is now in 'Discarding', 'Robbing', or 'Playing'
      */
+    @ServerEndpoint("/moves/rollNumber")
     ClientModel rollNumber(@NotNull RollNumberAction rollNumberObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -209,6 +250,7 @@ public interface IServer {
      * @pre caller canBuildRoad. {@link BuildRoadAction} is valid.
      * @post If !free, lose the required resources.  The road is now on the map in the correct location.  Player loses 1 road. Longest road has been applied, if applicable.
      */
+    @ServerEndpoint("/moves/buildRoad")
     ClientModel buildRoad(@NotNull BuildRoadAction buildRoadObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -219,6 +261,7 @@ public interface IServer {
      * @pre Caller canBuildSettlement.  {@link BuildSettlementAction} is valid
      * @post Lose required resources (if !free).  The settlement has been placed on specified location.  Player loses 1 settlement.
      */
+    @ServerEndpoint("/moves/buildSettlement")
     ClientModel buildSettlement(@NotNull BuildSettlementAction buildSettlementObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -229,6 +272,7 @@ public interface IServer {
      * @pre Caller canBuildCity.  {@link BuildCityAction} is valid.
      * @post Lose required resources.  City is placed on specified location.  Player receives 1 settlement back and loses 1 city.
      */
+    @ServerEndpoint("/moves/buildCity")
     ClientModel buildCity(@NotNull BuildCityAction buildCityObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -239,6 +283,7 @@ public interface IServer {
      * @pre Player has the resources they are offering. {@link OfferTradeAction} is valid.
      * @post The trade is offered to the other player (stored in server model).
      */
+    @ServerEndpoint("/moves/offerTrade")
     ClientModel offerTrade(@NotNull OfferTradeAction offerTradeObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -249,6 +294,7 @@ public interface IServer {
      * @pre Player has resources they are trading in.  For ratios less than 4, you have the correct port for the trade.
      * @post The trade has been executed (resources offered by player are now in bank,  requiested resources are received by player).
      */
+    @ServerEndpoint("/moves/maritimeTrade")
     ClientModel maritimeTrade(@NotNull MaritimeTradeAction maritimeTradeObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -259,6 +305,7 @@ public interface IServer {
      * @pre The robber is not being kept in the same location.  If a player is being robbed, then that player has resources.
      * @post The robber is in the new specified location.  The play being robbed (if any) has given robbing player 1 random resource.
      */
+    @ServerEndpoint("/moves/robPlayer")
     ClientModel robPlayer(@NotNull RobPlayerAction robPlayerObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -269,6 +316,7 @@ public interface IServer {
      * @pre None
      * @post The cards in the newDevHand have been transferred to the oldDevHand
      */
+    @ServerEndpoint("/moves/finishTurn")
     ClientModel finishTurn(@NotNull FinishMoveAction finishMoveObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -278,6 +326,7 @@ public interface IServer {
      * @pre Player has required resources.  There are dev cards left in the bank.
      * @post Player has a new dev card in 1) oldDevHand if monument; in newDevHand otherwise.
      */
+    @ServerEndpoint("/moves/buyDevCard")
     ClientModel buyDevCard(@NotNull BuyDevCardAction buyDevCardObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -288,6 +337,7 @@ public interface IServer {
      * @pre The robber is not being kept in same location.  The player being robbed (if any) has resource cards.
      * @post Robber is moved.  Player being robbed (if any) has given player a resource card at random. Largest army is transferred (if applicable).  Cannot play other dev cards this turn.
      */
+    @ServerEndpoint("/moves/Soldier")
     ClientModel useSoldier(@NotNull SoldierAction soldierObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -298,6 +348,7 @@ public interface IServer {
      * @pre The two specified resources are in the bank.
      * @post Player has gained two specified resources.
      */
+    @ServerEndpoint("/moves/Year_of_Plenty")
     ClientModel useYearOfPlenty(@NotNull YearofPlentyAction yearOfPlentyObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -308,6 +359,7 @@ public interface IServer {
      * @pre First road location is connected to one of player's other roads.  Second location is connected as well (can be connected to first road).  Neither road is on water.  Player has two unused roads.
      * @post Play has two fewer unused roads.  Roads are placed at specified location.  Longest road is transferred (if applicable).
      */
+    @ServerEndpoint("/moves/Road_Building")
     ClientModel useRoadBuilding(@NotNull RoadBuildingAction roadBuildingObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -318,6 +370,7 @@ public interface IServer {
      * @pre None
      * @post All other players have given you all of their resource cards of one specified type.
      */
+    @ServerEndpoint("/moves/Monopoly")
     ClientModel useMonopoly(@NotNull MonopolyAction monopolyObject) throws IllegalArgumentException, CommunicationException;
 
     /**
@@ -328,6 +381,9 @@ public interface IServer {
      * @pre Player will win after having played all of their monument cards.
      * @post You gain victory point(s).
      */
+    @ServerEndpoint("/moves/Monument")
     ClientModel useMonument(@NotNull MonumentAction monumentObject) throws IllegalArgumentException, CommunicationException;
+
+    void setUserId(int id);
 
 }

@@ -27,7 +27,7 @@ public abstract class CardSet<CardType extends Enum<?>> {
      *
      * @param set1 the first set, not null
      * @param set2 the second set, not null
-     * @return a new {@link CardSet<type>} containing the sum of their contents.
+     * @return a new {@link CardSet} containing the sum of their contents.
      * @pre {@code set1} and {@code set2} are valid resource sets
      * @post The return will be valid. {@code set1} and {@code set2} are unmodified.
      */
@@ -42,7 +42,7 @@ public abstract class CardSet<CardType extends Enum<?>> {
      *
      * @param set1 the set (copied) to be subtracted from, not null
      * @param set2 the set to subtract with, not null
-     * @return a new {@link CardSet<type>} containing the difference of their contents.
+     * @return a new {@link CardSet} containing the difference of their contents.
      * @pre {@code set1} and {@code set2} are valid resource sets
      * @post The return will be valid. {@code set1} and {@code set2} are unmodified.
      */
@@ -57,6 +57,16 @@ public abstract class CardSet<CardType extends Enum<?>> {
     public abstract int getOfType(CardType type);
 
     public abstract void setOfType(@NotNull CardType type, int value);
+
+    /**
+     * Shift the amount of a type by some number relative to its current value
+     *
+     * @return the new amount of type
+     */
+    public int adjustOfType(CardType type, int amount) {
+        setOfType(type, getOfType(type) + amount);
+        return getOfType(type);
+    }
 
     protected abstract Stream<CardType> getTypes();
 
@@ -163,8 +173,6 @@ public abstract class CardSet<CardType extends Enum<?>> {
 
     /**
      * Swap the signs of each of this set's resources
-     *
-     * @return a negative copy of {@code set}
      */
     public void toNegative() {
         getTypes().forEach(type ->

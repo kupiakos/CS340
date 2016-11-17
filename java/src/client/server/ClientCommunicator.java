@@ -1,12 +1,21 @@
 package client.server;
 
 import client.game.GameManager;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.jetbrains.annotations.NotNull;
+import shared.utils.CookieUtils;
 
 import javax.naming.CommunicationException;
+import javax.security.auth.login.CredentialNotFoundException;
 import java.io.*;
 import java.net.*;
+import java.util.Map;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
+import static shared.utils.ClassUtils.getStackTrace;
 
 /**
  * Created by elijahgk on 9/12/2016.
@@ -15,9 +24,11 @@ import java.net.*;
  */
 class ClientCommunicator implements IClientCommunicator {
 
+    private static final Logger LOGGER = Logger.getLogger("ClientCommunicator");
     private static ClientCommunicator SINGLETON = null;
+    private static CookieManager cookieManager = new CookieManager();
     private String URLPrefix;
-    private static java.net.CookieManager cookieManager = new java.net.CookieManager();
+
 
     private ClientCommunicator(String host, String port) {
         URLPrefix = "http://" + host + ":" + port;
@@ -39,26 +50,54 @@ class ClientCommunicator implements IClientCommunicator {
         return SINGLETON;
     }
 
+    @NotNull
+    private static URL withParams(@NotNull URL url, @NotNull Map<String, String> parameters) throws URISyntaxException, MalformedURLException {
+        URI u = url.toURI();
+        StringBuilder sb = new StringBuilder(u.getQuery() == null ? "" : u.getQuery());
+        parameters.forEach((k, v) -> {
+            try {
+                k = URLEncoder.encode(k, "UTF-8");
+                v = URLEncoder.encode(v, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                LOGGER.warning(getStackTrace(e));
+                return;
+            }
+            if (sb.length() > 0) {
+                sb.append('&');
+            }
+            sb.append(k);
+            sb.append('=');
+            sb.append(v);
+        });
+        return new URI(u.getScheme(), url.getAuthority(), u.getPath(), sb.toString(), u.getFragment()).toURL();
+    }
+
     /**
      * Method that will communicate with the server.
      *
      * @param URLSuffix     Refers to which server command is being sent to the server, may not be null.
      * @param requestBody   This is the request body which is required by the server command; may be null.
      * @param requestMethod GET OR POST
+     * @param parameters
      * @return Any information pertinent to the client. Or an error message if not a 200 response code.
      * @pre A can-do method has already been called to make sure that the requested command will work.  A valid URL suffix
      * @post Requested action has been performed and the appropriate information has been returned as Json.
      */
-    public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod) throws IllegalArgumentException, javax.naming.CommunicationException {
+    public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod, Map<String, String> parameters) throws IllegalArgumentException, CommunicationException, CredentialNotFoundException {
         HttpURLConnection connection = null;
         try {
             URL url = new URL(URLPrefix + URLSuffix);
+            if (parameters != null) {
+                url = withParams(url, parameters);
+            }
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(requestMethod);
-            connection.setDoOutput(true);
-            DataOutputStream output = new DataOutputStream(connection.getOutputStream());
-            output.writeBytes(requestBody);
-            output.close();
+            if (requestMethod.equalsIgnoreCase("POST")) {
+                connection.setDoOutput(true);
+                DataOutputStream output = new DataOutputStream(connection.getOutputStream());
+                output.writeBytes(requestBody);
+                output.close();
+            }
             int responseCode = connection.getResponseCode();
             StringBuilder response = new StringBuilder();
 
@@ -67,9 +106,13 @@ class ClientCommunicator implements IClientCommunicator {
                     InputStream input = connection.getInputStream();
                     BufferedReader rd = new BufferedReader(new InputStreamReader(input));
                     String line;
-                    if (URLSuffix.equals("/user/login")) {
-                        JsonObject obj = (JsonObject) new JsonParser().parse(URLDecoder.decode(cookieManager.getCookieStore().getCookies().get(0).getValue(), "UTF-8"));
-                        GameManager.getGame().getPlayerInfo().setId(obj.get("playerID").getAsInt());
+                    String authCookie = CookieUtils.getCookieMap(cookieManager.getCookieStore().getCookies()).get("catan.user");
+                    if (authCookie != null) {
+                        JsonObject obj = (JsonObject) new JsonParser().parse(authCookie);
+                        JsonElement playerID = obj.get("playerID");
+                        if (playerID != null) {
+                            GameManager.getGame().getPlayerInfo().setId(playerID.getAsInt());
+                        }
                     }
                     while ((line = rd.readLine()) != null) {
                         response.append(line);
@@ -79,21 +122,31 @@ class ClientCommunicator implements IClientCommunicator {
                     connection.disconnect();
                     return response.toString();
                 case 400:
-                    response.append("400 - ");
+                case 404:
+                case 405:
                     InputStream error = connection.getErrorStream();
                     rd = new BufferedReader(new InputStreamReader(error));
                     while ((line = rd.readLine()) != null) {
                         response.append(line);
                         response.append('\r');
                     }
+                    if (response.toString().contains("Failed to login") ||
+                            response.toString().contains("Failed to register")) {
+                        throw new CredentialNotFoundException(response.toString());
+                    }
                     throw new IllegalArgumentException(response.toString());
+                case 500:
+                    String errorMessage = new BufferedReader(new InputStreamReader(connection.getErrorStream()))
+                            .lines().collect(Collectors.joining("\n"));
+                    LOGGER.info("Received server error: " + errorMessage);
+                    throw new CommunicationException(errorMessage);
                 default:
                     response.append("{\"error\":\"SendHTTPRequest responded with an unhandled error resulting from response code: ").append(responseCode).append("\"");
                     break;
             }
             connection.disconnect();
             return response.toString();
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException | IllegalStateException | URISyntaxException e) {
             throw new IllegalArgumentException(e.getMessage());
         } catch (IOException e) {
             throw new CommunicationException(e.getMessage());

@@ -8,6 +8,7 @@ import shared.models.games.PlayerInfo;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -36,7 +37,7 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
         mTimer = new Timer(SERVER_CONTACT_INTERVAL, pollGames);
         getAsync().runMethod(server::listAI)
                 .onSuccess(AI -> SwingUtilities.invokeLater(() -> {
-                    getView().setAIChoices(AI);
+                    getView().setAIChoices(Arrays.stream(AI).map(AIType::toString).toArray(String[]::new));
                     updatePlayers();
                 }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of AI Types.\rError message: " + e.getMessage()))
@@ -47,7 +48,12 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
     private void updatePlayers() {
         getAsync().runMethod(server::listOfGames)
                 .onSuccess(games -> SwingUtilities.invokeLater(() -> {
-                    GameInfo game = games[JoinGameController.selectedGame.getId()];
+                    GameInfo game = Arrays.stream(games)
+                            .filter(g -> g.getId() == JoinGameController.selectedGame.getId())
+                            .findFirst().orElse(null);
+                    if (game == null) {
+                        return;
+                    }
                     JoinGameController.selectedGame = game;
                     List<PlayerInfo> players = game.getPlayers();
                     getView().setPlayers(players.toArray(new PlayerInfo[players.size()]));
@@ -74,9 +80,7 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
                 ai = new AddAIRequest(t);
         }
         getAsync().runMethod(server::addAI, ai)
-                .onSuccess(() -> SwingUtilities.invokeLater(() -> {
-                    updatePlayers();
-                }))
+                .onSuccess(() -> SwingUtilities.invokeLater(this::updatePlayers))
                 .onError(e -> displayError("Error adding AI", e.getMessage()))
                 .start();
     }

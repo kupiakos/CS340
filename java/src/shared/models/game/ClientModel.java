@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
+import shared.definitions.TurnStatus;
 import shared.exceptions.JoinGameException;
 
 import javax.annotation.Generated;
@@ -25,7 +26,7 @@ public class ClientModel {
 
     @SerializedName("winner")
     @Expose
-    private PlayerIndex winner;
+    private int winner = -1;
 
     @SerializedName("turnTracker")
     @Expose
@@ -64,7 +65,7 @@ public class ClientModel {
 
     /**
      * @param chat        all the chat messages the players have sent to each other
-     * @param winner      the player who has won the game, or null if nobody
+     * @param winner      the player ID who has won the game, or -1 if nobody
      * @param turnTracker tracks whose turn it is and what action's being done
      * @param map         the current {@link GameMap} of the game
      * @param bank        the set of cards available to be distributed to the players
@@ -74,7 +75,7 @@ public class ClientModel {
      * @param log         all the log messages for the game's progress
      */
     public ClientModel(@NotNull MessageList chat,
-                       @Nullable PlayerIndex winner,
+                       int winner,
                        @NotNull TurnTracker turnTracker,
                        @NotNull GameMap map,
                        @NotNull ResourceSet bank,
@@ -93,8 +94,25 @@ public class ClientModel {
         this.log = log;
     }
 
-
     // CUSTOM CODE
+
+    /**
+     * Constructor that represents a new Client Model for a newly initialized game
+     *
+     * @param randomTiles   whether the HexTypes are random
+     * @param randomPorts   whether the Port Types are random
+     * @param randomNumbers whether the Numbers on the Hexes are random
+     */
+    public ClientModel(boolean randomTiles, boolean randomPorts, boolean randomNumbers) {
+        setChat(new MessageList());
+        setWinner(-1);
+        setTurnTracker(new TurnTracker(null, PlayerIndex.FIRST, TurnStatus.FIRST_ROUND, null));
+        setMap(new GameMap(randomTiles, randomPorts, randomNumbers));
+        setBank(new ResourceSet(19, 19, 19, 19, 19));
+        setVersion(1);
+        setLog(new MessageList());
+    }
+
     @NotNull
     public int getPlayerCount() {
         return this.getPlayers().size();
@@ -143,8 +161,7 @@ public class ClientModel {
     /**
      * @return the player who has won the game, or null if nobody
      */
-    @Nullable
-    public PlayerIndex getWinner() {
+    public int getWinner() {
         return winner;
     }
 
@@ -153,11 +170,11 @@ public class ClientModel {
      *
      * @param winner the player who has won the game, or null if nobody
      */
-    public void setWinner(@Nullable PlayerIndex winner) {
+    public void setWinner(int winner) {
         this.winner = winner;
     }
 
-    public ClientModel withWinner(@Nullable PlayerIndex winner) {
+    public ClientModel withWinner(int winner) {
         setWinner(winner);
         return this;
     }
@@ -298,6 +315,10 @@ public class ClientModel {
         return this;
     }
 
+    public void incrementVersion() {
+        setVersion(getVersion() + 1);
+    }
+
     /**
      * @return All the log messages.
      */
@@ -349,7 +370,7 @@ public class ClientModel {
     public boolean equals(ClientModel other) {
         return (
                 Objects.equals(chat, other.chat) &&
-                        Objects.equals(winner, other.winner) &&
+                        winner == other.winner &&
                         Objects.equals(turnTracker, other.turnTracker) &&
                         Objects.equals(map, other.map) &&
                         Objects.equals(bank, other.bank) &&

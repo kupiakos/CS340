@@ -4,6 +4,9 @@ import client.base.IAction;
 import client.game.IGameManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import shared.definitions.functions.ThrowingConsumer;
+import shared.definitions.functions.ThrowingFunction;
+import shared.definitions.functions.ThrowingSupplier;
 import shared.models.game.ClientModel;
 
 import java.util.function.Consumer;
@@ -29,18 +32,6 @@ public class ServerAsyncHelper {
 
     public <T> ClientModelFuture<T> runModelMethod(@NotNull ThrowingFunction<T, ClientModel> runFunc, T arg) {
         return new ClientModelFuture<>(runFunc, arg);
-    }
-
-    public interface ThrowingSupplier<R> {
-        R get() throws Exception;
-    }
-
-    public interface ThrowingFunction<T, R> {
-        R apply(T arg) throws Exception;
-    }
-
-    public interface ThrowingConsumer<T> {
-        void execute(T arg) throws Exception;
     }
 
     public abstract class BaseFuture<RunType, SuccessType> extends Thread {
@@ -184,17 +175,27 @@ public class ServerAsyncHelper {
 
         public ClientModelFuture(@NotNull ThrowingFunction<T, ClientModel> runFunc, T arg) {
             super(runFunc, arg);
-            onSuccess(model -> gameManager.setClientModel(model));
+            onSuccess(model -> gameManager.updateGameManager(model));
         }
 
         @NotNull
         public ClientModelFuture<T> onSuccess(@Nullable IAction successFunc) {
-            onError(e -> System.out.println(e.getMessage() + " Hello world!"));
             onSuccess(model -> {
                 if (successFunc != null) {
                     successFunc.execute();
                 }
                 gameManager.updateGameManager(model);
+            });
+            return this;
+        }
+
+        @NotNull
+        public ClientModelFuture<T> onSuccessAfter(@Nullable IAction successFunc) {
+            onSuccess(model -> {
+                gameManager.updateGameManager(model);
+                if (successFunc != null) {
+                    successFunc.execute();
+                }
             });
             return this;
         }

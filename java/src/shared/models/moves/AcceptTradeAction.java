@@ -4,12 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class AcceptTradeAction {
+public class AcceptTradeAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -111,5 +112,21 @@ public class AcceptTradeAction {
                         willAccept == other.willAccept &&
                         Objects.equals(receiver, other.receiver)
         );
+    }
+
+    /**
+     * Uses server facade to accept the trade that is currently being offered in the game.
+     */
+    @Override
+    public void execute() {
+        String senderName = getModel().getPlayer(getModel().getTradeOffer().getSender()).getName();
+        getFacades().getTrading().respondToTradeOffer(getModel().getPlayer(receiver), willAccept);
+        if (willAccept) {
+            getFacades().getClientModel().getLog().addMessage(
+                    getModel().getPlayer(receiver),
+                    senderName + " made a trade with " + getModel().getPlayer(getReceiver()).getName()
+            );
+        }
+        getModel().incrementVersion();
     }
 }

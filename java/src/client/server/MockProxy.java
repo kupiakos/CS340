@@ -1,7 +1,9 @@
 package client.server;
 
 import org.jetbrains.annotations.NotNull;
+import server.models.UserSession;
 import shared.IServer;
+import shared.definitions.AIType;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.games.*;
@@ -25,16 +27,16 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
-
+    public UserSession login(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
+        return null;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
-
+    public UserSession register(@NotNull Credentials credentialsObject) throws CredentialNotFoundException, IllegalArgumentException, CommunicationException {
+        return null;
     }
 
     /**
@@ -57,8 +59,8 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public void joinGame(@NotNull JoinGameRequest joinGameObject) throws IllegalArgumentException, CommunicationException {
-
+    public int joinGame(@NotNull JoinGameRequest joinGameObject) throws IllegalArgumentException, CommunicationException {
+        return 0;
     }
 
     /**
@@ -113,8 +115,8 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public String[] listAI() throws CommunicationException, IllegalArgumentException {
-        return new String[0];
+    public AIType[] listAI() throws CommunicationException, IllegalArgumentException {
+        return AIType.values();
     }
 
     /**
@@ -267,5 +269,9 @@ public class MockProxy implements IServer {
     @Override
     public ClientModel useMonument(@NotNull MonumentAction monumentObject) throws IllegalArgumentException, CommunicationException {
         return null;
+    }
+
+    @Override
+    public void setUserId(int id) {
     }
 }

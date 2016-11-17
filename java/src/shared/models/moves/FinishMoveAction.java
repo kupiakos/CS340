@@ -4,12 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
+import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class FinishMoveAction {
+public class FinishMoveAction extends GameAction {
 
     @SerializedName("type")
     @Expose(deserialize = false)
@@ -84,5 +85,15 @@ public class FinishMoveAction {
                 TYPE == other.TYPE &&
                         Objects.equals(playerIndex, other.playerIndex)
         );
+    }
+
+    /**
+     * Run on the server. Finishes turn for specified {@link PlayerIndex}.
+     */
+    @Override
+    public void execute() {
+        getFacades().getTurn().endTurn(getModel().getPlayer(playerIndex));
+        getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " finished their turn");
+        getModel().incrementVersion();
     }
 }
