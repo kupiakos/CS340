@@ -93,6 +93,16 @@ public class GameMap {
         setNewGamePorts(randomPorts);
     }
 
+    private static <V> Map<VertexLocation, V> normalizeVertexMap(Map<VertexLocation, V> vMap) {
+        return vMap.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey().getNormalizedLocation(), e -> e.getValue()));
+    }
+
+    private static <V> Map<EdgeLocation, V> normalizeEdgeMap(Map<EdgeLocation, V> eMap) {
+        return eMap.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey().getNormalizedLocation(), e -> e.getValue()));
+    }
+
     /**
      * Sets the hexes of the new game based on if the user wants random hex types or random numbers on hexes
      *
@@ -148,6 +158,7 @@ public class GameMap {
 
     /**
      * Sets the Hex Types for each hex on the new game map
+     *
      * @param randomTiles whether the HexTypes are random
      * @return List of Hex Types that contain a hex type for each hex on the new game map
      */
@@ -166,6 +177,7 @@ public class GameMap {
 
     /**
      * Set the Hex Numbers for each hex on the new game map
+     *
      * @param randomNumbers whether the Numbers on the Hexes are random
      * @return List of Integers that contain the numbers for each hex on the new game map
      */
@@ -181,6 +193,7 @@ public class GameMap {
 
     /**
      * Sets the ports of the new game based on if the user wants random port types
+     *
      * @param randomPorts whether the Port Types are random
      */
     private void setNewGamePorts(boolean randomPorts) {
@@ -210,16 +223,6 @@ public class GameMap {
             HexLocation hexLoc = portLocations.get(i).getHexLoc();
             ports.put(hexLoc, new Port(hexLoc, portLocations.get(i).getDir(), (portTypes.get(i) == PortType.THREE) ? 3 : 2, portTypes.get(i)));
         }
-    }
-
-    private static <V> Map<VertexLocation, V> normalizeVertexMap(Map<VertexLocation, V> vMap) {
-        return vMap.entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey().getNormalizedLocation(), e -> e.getValue()));
-    }
-
-    private static <V> Map<EdgeLocation, V> normalizeEdgeMap(Map<EdgeLocation, V> eMap) {
-        return eMap.entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey().getNormalizedLocation(), e -> e.getValue()));
     }
 
     /**

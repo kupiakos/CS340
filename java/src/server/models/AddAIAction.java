@@ -2,8 +2,6 @@ package server.models;
 
 import shared.models.game.AddAIRequest;
 
-import javax.jws.soap.SOAPBinding;
-
 /**
  * Created by elija on 11/16/2016.
  */
@@ -11,7 +9,7 @@ public class AddAIAction extends ServerAction {
     private AddAIRequest request;
     private int gameID;
 
-    public AddAIAction(AddAIRequest request, int ID){
+    public AddAIAction(AddAIRequest request, int ID) {
         this.request = request;
         gameID = ID;
     }

@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.AIType;
-import shared.models.GameAction;
 
 import javax.annotation.Generated;
 import java.util.Objects;

@@ -82,7 +82,7 @@ public class GameModel {
         ));
     }
 
-    public void addAIPlayer(){
+    public void addAIPlayer() {
         int aiID = -1;
         PlayerInfo aiInfo = new PlayerInfo();
         for (PlayerInfo p : getGameInfo().getPlayers()) {
@@ -91,15 +91,15 @@ public class GameModel {
             }
         }
         aiInfo.setId(aiID);
-        for(CatanColor c : CatanColor.values()){
+        for (CatanColor c : CatanColor.values()) {
             boolean isTaken = false;
-            for(PlayerInfo p : getGameInfo().getPlayers()){
-                if(p.getColor()==c){
+            for (PlayerInfo p : getGameInfo().getPlayers()) {
+                if (p.getColor() == c) {
                     isTaken = true;
                     break;
                 }
             }
-            if(isTaken){
+            if (isTaken) {
                 continue;
             }
             aiInfo.setColor(c);
