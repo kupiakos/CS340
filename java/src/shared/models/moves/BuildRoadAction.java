@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 import shared.models.GameAction;
-import shared.models.game.MessageEntry;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -147,7 +146,7 @@ public class BuildRoadAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getBuilding().buildRoad(getFacades().getClientModel().getPlayer(playerIndex), roadLocation, free, getFacades().getTurn().isSetup());
-        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " built a road"));
+        getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " built a road");
         getModel().incrementVersion();
     }
 }

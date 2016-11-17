@@ -7,7 +7,6 @@ import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.locations.HexLocation;
 import shared.models.GameAction;
-import shared.models.game.MessageEntry;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -150,7 +149,7 @@ public class SoldierAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getDevCards().useSoldierCard(getModel().getPlayer(playerIndex));
-        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " played a Soldier card"));
+        getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " played a Soldier card");
         getModel().incrementVersion();
     }
 }
