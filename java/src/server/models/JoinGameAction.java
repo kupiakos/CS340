@@ -1,6 +1,6 @@
 package server.models;
 
-import shared.definitions.CatanColor;
+import org.jetbrains.annotations.NotNull;
 import shared.models.games.JoinGameRequest;
 
 /**
@@ -11,7 +11,7 @@ public class JoinGameAction extends ServerAction {
     private int joinedGameId;
     private User user;
 
-    public JoinGameAction(JoinGameRequest joinGameRequest, User user) {
+    public JoinGameAction(@NotNull JoinGameRequest joinGameRequest, @NotNull User user) {
         this.joinGameRequest = joinGameRequest;
         this.user = user;
     }
@@ -19,7 +19,10 @@ public class JoinGameAction extends ServerAction {
     @Override
     public void execute() {
         GameModel model = getServerModel().getGameModel(joinGameRequest.getId());
-        model.addPlayer(user, CatanColor.valueOf(joinGameRequest.getColor()));
+        if (model == null) {
+            throw new IllegalArgumentException("No game with ID " + joinGameRequest.getId() + " exists");
+        }
+        model.addPlayer(user, joinGameRequest.getColor());
         joinedGameId = model.getId();
     }
 

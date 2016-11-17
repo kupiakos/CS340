@@ -3,6 +3,7 @@ package shared.utils;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpCookie;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,5 +25,9 @@ public class CookieUtils {
 
     public static Map<String, String> getCookieMap(Collection<HttpCookie> cookies) {
         return getCookieMap(cookies.stream());
+    }
+
+    public static Stream<HttpCookie> parseCookieHeader(String header) {
+        return Arrays.stream(header.split(";")).map(h -> HttpCookie.parse(h).get(0));
     }
 }

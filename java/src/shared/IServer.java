@@ -3,6 +3,7 @@ package shared;
 import org.jetbrains.annotations.NotNull;
 import server.models.UserSession;
 import shared.annotations.ServerEndpoint;
+import shared.definitions.AIType;
 import shared.exceptions.JoinGameException;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
@@ -174,7 +175,7 @@ public interface IServer {
      * @post None.
      */
     @ServerEndpoint(value = "/game/listAI", isPost = false)
-    String[] listAI() throws IllegalArgumentException, CommunicationException;
+    AIType[] listAI() throws IllegalArgumentException, CommunicationException;
 
     /**
      * Adds an AI player to the current game. You must login and join a game before calling this method
