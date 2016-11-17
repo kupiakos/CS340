@@ -123,7 +123,7 @@ public class GameMap {
                 if (seenDesert) {
                     hexes.put(hexLocations.get(i), new Hex(hexNumber, hexLocations.get(i), hexTypes.get(i)));
                 } else {
-                    hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexType));
+                    hexes.put(hexLocations.get(i), new Hex(0, hexLocations.get(i), HexType.DESERT));
                     hexType = hexTypes.get(i);
                 }
                 seenNegOne = true;
@@ -131,12 +131,13 @@ public class GameMap {
                 if (seenNegOne) {
                     hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexType));
                 } else {
-                    hexes.put(hexLocations.get(i), new Hex(0, hexLocations.get(i), hexTypes.get(i)));
+                    hexes.put(hexLocations.get(i), new Hex(0, hexLocations.get(i), HexType.DESERT));
                     hexNumber = hexNumbers.get(i);
                 }
                 seenDesert = true;
+            } else {
+                hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexTypes.get(i)));
             }
-            hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexTypes.get(i)));
         }
         Set<HexLocation> deserts = MapUtils.keysWithValueMatching(hexes, hex -> hex.getResource() == HexType.DESERT);
         assert deserts.size() == 1;
