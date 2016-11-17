@@ -7,7 +7,6 @@ import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.models.GameAction;
-import shared.models.game.MessageEntry;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -151,7 +150,7 @@ public class YearofPlentyAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getDevCards().useYearOfPlentyCard(getModel().getPlayer(playerIndex), resource1, resource2);
-        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " played Year of Plenty"));
+        getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " played Year of Plenty");
         getModel().incrementVersion();
     }
 }
