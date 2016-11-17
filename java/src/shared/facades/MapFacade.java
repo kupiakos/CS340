@@ -1,6 +1,7 @@
 package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.HexType;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
@@ -12,14 +13,14 @@ import shared.models.game.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * This facade creates an interface to communicate with the underlying map sub-model.
  */
 public class MapFacade extends AbstractFacade {
-
-    private int longestRoadLength;
-    private PlayerIndex longestRoadOwner;
 
     /**
      * Constructor. Requires a valid game model to work.
@@ -77,16 +78,37 @@ public class MapFacade extends AbstractFacade {
      *
      * @return
      */
-    public PlayerIndex findLongestRoad() {
-        for (Player p : getModel().getPlayers()) {
-            int roadSize = getMap().getPlayerLongestRoad(p.getPlayerIndex());
-            if (roadSize > getLongestRoadLength()) {
-                longestRoadLength = roadSize;
-                longestRoadOwner = p.getPlayerIndex();
+    @Nullable
+    PlayerIndex findLongestRoad() {
+        GameMap map = getMap();
+        Map<PlayerIndex, Integer> lengths = getModel().getPlayers().stream()
+                .map(Player::getPlayerIndex)
+                .collect(Collectors.toMap(Function.identity(), map::getPlayerLongestRoad));
+        PlayerIndex longestRoadPlayer = getModel().getTurnTracker().getLongestRoad();
+        for (PlayerIndex p : lengths.keySet()) {
+            int roadSize = getMap().getPlayerLongestRoad(p);
+            if (roadSize >= 5) {
+                if (longestRoadPlayer == null) {
+                    getModel().getTurnTracker().setLongestRoad(p);
+                    longestRoadPlayer = p;
+                    getModel().getPlayer(p).setVictoryPoints(getModel().getPlayer(p).getVictoryPoints() + 2);
+                } else if (p != longestRoadPlayer) {
+                    int currentWinnerSize = getMap().getPlayerLongestRoad(longestRoadPlayer);
+                    if (roadSize > currentWinnerSize) {
+                        getModel().getTurnTracker().setLongestRoad(p);
+                        longestRoadPlayer = p;
+                        getModel().getPlayer(p).setVictoryPoints(getModel().getPlayer(p).getVictoryPoints() + 2);
+                        getModel().getPlayer(longestRoadPlayer).setVictoryPoints(getModel().getPlayer(longestRoadPlayer).getVictoryPoints() - 2);
+                    }
+                }
+            } else if (roadSize < 5 && p == longestRoadPlayer) {
+                longestRoadPlayer = null;
+                getModel().getPlayer(p).setVictoryPoints(getModel().getPlayer(p).getVictoryPoints() - 2);
             }
         }
-        return getLongestRoadOwner();
+        return longestRoadPlayer;
     }
+
 
     /**
      * Sees if a given {@link EdgeLocation} has a road built on it currently.
@@ -169,14 +191,6 @@ public class MapFacade extends AbstractFacade {
 
     public GameMap getMap() {
         return getModel().getMap();
-    }
-
-    private int getLongestRoadLength() {
-        return longestRoadLength;
-    }
-
-    private PlayerIndex getLongestRoadOwner() {
-        return longestRoadOwner;
     }
 
     public List<HexLocation> getOceanBorder(int radius) {

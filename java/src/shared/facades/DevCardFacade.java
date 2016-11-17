@@ -173,6 +173,7 @@ public class DevCardFacade extends AbstractFacade {
                 if (currentPlayer.getSoldiers() > getModel().getPlayer(largestArmy).getSoldiers()) {
                     getModel().getTurnTracker().setLargestArmy(currentPlayer.getPlayerIndex());
                     currentPlayer.setVictoryPoints(currentPlayer.getVictoryPoints() + 2);
+                    getModel().getPlayer(largestArmy).setVictoryPoints(getModel().getPlayer(largestArmy).getVictoryPoints() - 2);
                 }
             }
         }
