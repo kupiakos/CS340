@@ -83,7 +83,7 @@ public class GameModel {
     }
 
     public void addAIPlayer() {
-        int aiID = -1;
+        int aiID = -2;
         PlayerInfo aiInfo = new PlayerInfo();
         for (PlayerInfo p : getGameInfo().getPlayers()) {
             if (p.getId() <= aiID) {
