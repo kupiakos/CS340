@@ -16,9 +16,13 @@ public enum TurnStatus {
     ROLLING {
         @Override
         @Nullable
-        public TurnResult finishRolling(boolean moveRobber) {
+        public TurnResult finishRolling(ClientModel model, boolean moveRobber) {
             if (moveRobber) {
-                return new TurnResult(DISCARDING, null);
+                if (model.getPlayers().stream().anyMatch(Player::hasExcess)) {
+                    return new TurnResult(DISCARDING, null);
+                } else {
+                    return new TurnResult(ROBBING, null);
+                }
             }
             return new TurnResult(PLAYING, null);
         }
@@ -199,7 +203,7 @@ public enum TurnStatus {
     }
 
     @Nullable
-    public TurnResult finishRolling(boolean moveRobber) {
+    public TurnResult finishRolling(ClientModel model, boolean moveRobber) {
         throw new IllegalStateException("Cannot finish rolling in the '" +
                 this.name() + "' state");
     }

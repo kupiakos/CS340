@@ -93,6 +93,7 @@ public class RobberFacade extends AbstractFacade {
         }
         getFacades().getResources().returnToBank(player, resourceDiscard);
         player.setDiscarded(true);
+        getFacades().getTurn().finishDiscarding();
     }
 
     /**
