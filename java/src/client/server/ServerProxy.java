@@ -9,6 +9,7 @@ import shared.serialization.ModelSerializer;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,16 +55,23 @@ public interface ServerProxy extends IServer {
                                 method.getReturnType() :
                                 null;
                 Class resultType = method.getReturnType();
+                String paramName = method.getParameterCount() >= 1 ? method.getParameters()[0].getName() : null;
                 Class<?> paramType = method.getParameterCount() >= 1 ? method.getParameterTypes()[0] : null;
                 String URLSuffix = endpoint.value();
                 String verb = endpoint.isPost() ? "POST" : "GET";
                 commandMap.put(method.getName(), arg -> {
                     Object result = null;
                     String requestBody = "";
+                    Map<String, String> parameters = null;
                     if (paramType != null) {
                         requestBody = ModelSerializer.getInstance().toJson(arg, paramType);
+                        if (verb.equalsIgnoreCase("GET")) {
+                            parameters = new HashMap<>();
+                            parameters.put(paramName, URLEncoder.encode(requestBody, "UTF-8"));
+                            requestBody = "";
+                        }
                     }
-                    String resultJson = comm.sendHTTPRequest(URLSuffix, requestBody, verb);
+                    String resultJson = comm.sendHTTPRequest(URLSuffix, requestBody, verb, parameters);
                     if (deserializeType != null) {
                         result = ModelSerializer.getInstance().fromJson(resultJson, deserializeType);
                     } else {

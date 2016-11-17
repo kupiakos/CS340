@@ -138,6 +138,10 @@ public class GameMap {
             }
             hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexTypes.get(i)));
         }
+        Set<HexLocation> deserts = MapUtils.keysWithValueMatching(hexes, hex -> hex.getResource() == HexType.DESERT);
+        assert deserts.size() == 1;
+        HexLocation desert = deserts.iterator().next();
+        setRobber(desert);
     }
 
     /**

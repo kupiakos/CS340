@@ -15,6 +15,7 @@ import javax.naming.CommunicationException;
 import javax.security.auth.login.CredentialNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by elija on 9/29/2016.
@@ -35,7 +36,7 @@ public class MockCC implements IClientCommunicator {
         return mockCC;
     }
 
-    public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod) throws
+    public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod, Map<String, String> parameters) throws
             IllegalArgumentException,
             CommunicationException,
             CredentialNotFoundException {
