@@ -148,5 +148,6 @@ public class OfferTradeAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getTrading().offerTrade(getModel().getPlayer(playerIndex), getModel().getPlayer(receiver), offer);
+        getModel().incrementVersion();
     }
 }

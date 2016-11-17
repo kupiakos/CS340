@@ -130,5 +130,6 @@ public class SendChatAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getChat().sendChat(this);
+        getModel().incrementVersion();
     }
 }
