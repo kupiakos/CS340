@@ -167,20 +167,16 @@ public class DevCardFacade extends AbstractFacade {
         if (currentPlayer.getSoldiers() >= 3) {
             if (getModel().getTurnTracker().getLargestArmy() == null) {
                 getModel().getTurnTracker().setLargestArmy(currentPlayer.getPlayerIndex());
-                currentPlayer.setVictoryPoints(currentPlayer.getVictoryPoints() + 2);
             } else {
                 PlayerIndex largestArmy = getModel().getTurnTracker().getLargestArmy();
                 if (currentPlayer.getSoldiers() > getModel().getPlayer(largestArmy).getSoldiers()) {
                     getModel().getTurnTracker().setLargestArmy(currentPlayer.getPlayerIndex());
-                    currentPlayer.setVictoryPoints(currentPlayer.getVictoryPoints() + 2);
-                    getModel().getPlayer(largestArmy).setVictoryPoints(getModel().getPlayer(largestArmy).getVictoryPoints() - 2);
                 }
             }
         }
 
         getFacades().getTurn().startRobbing();
-
-
+        getFacades().getTurn().calcVictoryPoints();
     }
 
     /**
@@ -224,9 +220,10 @@ public class DevCardFacade extends AbstractFacade {
             throw new IllegalArgumentException();
         }
         currentPlayer.setPlayedDevCard(true);
-        currentPlayer.setVictoryPoints(currentPlayer.getVictoryPoints() + currentPlayer.getOldDevCards().getMonument() + currentPlayer.getNewDevCards().getMonument());
+        currentPlayer.setMonuments(currentPlayer.getMonuments() + 1);
 
         getModel().setWinner(currentPlayer.getPlayerID());
+        getFacades().getTurn().calcVictoryPoints();
     }
 
     /**

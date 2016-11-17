@@ -164,6 +164,21 @@ public class TurnFacade extends AbstractFacade {
         updateTracker(getPhase().advanceSetup(getModel()));
     }
 
+    public void calcVictoryPoints() {
+        for (Player p : getModel().getPlayers()) {
+            int points = p.getMonuments();
+            points += getModel().getMap().getPlayerSettlements(p.getPlayerIndex()).size();
+            points += getModel().getMap().getPlayerCities(p.getPlayerIndex()).size();
+            if (getModel().getTurnTracker().getLongestRoad() == p.getPlayerIndex()) {
+                points += 2;
+            }
+            if (getModel().getTurnTracker().getLargestArmy() == p.getPlayerIndex()) {
+                points += 2;
+            }
+            p.setVictoryPoints(points);
+        }
+    }
+
     public Player getCurrentPlayer() {
         return getModel().getPlayer(tt().getCurrentTurn());
     }

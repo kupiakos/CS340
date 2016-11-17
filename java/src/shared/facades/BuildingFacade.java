@@ -56,6 +56,7 @@ public class BuildingFacade extends AbstractFacade {
         }
         player.setRoads(player.getRoads() - 1);
         map.findLongestRoad();
+        getFacades().getTurn().calcVictoryPoints();
     }
 
     /**
@@ -79,6 +80,7 @@ public class BuildingFacade extends AbstractFacade {
         }
         player.setSettlements(player.getSettlements() - 1);
         map.findLongestRoad();
+        getFacades().getTurn().calcVictoryPoints();
     }
 
     /**
@@ -100,6 +102,7 @@ public class BuildingFacade extends AbstractFacade {
         resource.purchaseItem(player, PurchaseType.CITY);
         player.setCities(player.getCities() - 1);
         player.setSettlements(player.getSettlements() + 1);
+        getFacades().getTurn().calcVictoryPoints();
     }
 
     /**
