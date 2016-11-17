@@ -150,5 +150,6 @@ public class RobPlayerAction extends GameAction {
         getFacades().getRobber().moveRobber(location);
         getFacades().getRobber().steal(PlayerIndex.fromInt(victimIndex), playerIndex);
         getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " robbed " + getModel().getPlayer(PlayerIndex.fromInt(victimIndex)).getName()));
+        getModel().incrementVersion();
     }
 }

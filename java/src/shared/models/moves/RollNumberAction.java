@@ -124,5 +124,6 @@ public class RollNumberAction extends GameAction {
         } else {
             getFacades().getTurn().finishRolling(true);
         }
+        getModel().incrementVersion();
     }
 }
