@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static shared.utils.ClassUtils.getStackTrace;
+
 // TODO: Add logging
 
 /**
@@ -88,7 +90,7 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
             LOGGER.severe(String.format("Error handling %s %s: %s",
                     exchange.getRequestMethod(),
                     exchange.getRequestURI().getPath(),
-                    e.getMessage()));
+                    getStackTrace(e)));
         }
     }
 

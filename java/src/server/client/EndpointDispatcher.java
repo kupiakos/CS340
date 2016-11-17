@@ -3,6 +3,7 @@ package server.client;
 import com.google.gson.JsonParseException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.jetbrains.annotations.NotNull;
 import server.games.IServerManager;
 import server.models.UserSession;
 import shared.IServer;
@@ -10,22 +11,25 @@ import shared.annotations.ServerEndpoint;
 import shared.serialization.ModelSerializer;
 import shared.utils.CookieUtils;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 import static server.client.ServerCommunicator.sendResponse;
 import static shared.utils.ClassUtils.getStackTrace;
 
 class EndpointDispatcher implements HttpHandler {
     private static final Logger LOGGER = Logger.getLogger("EndpointDispatcher");
     private Method method;
+    private String paramName;
     private String destCookie;
     private Class<?> returnType, paramType;
     private boolean needLogin, needGame;
@@ -33,11 +37,29 @@ class EndpointDispatcher implements HttpHandler {
 
     EndpointDispatcher(ServerEndpoint endpoint, Method method) {
         returnType = method.getReturnType().equals(Void.TYPE) ? null : method.getReturnType();
+        paramName = method.getParameterCount() >= 1 ? method.getParameters()[0].getName() : null;
         paramType = method.getParameterCount() >= 1 ? method.getParameterTypes()[0] : null;
         destCookie = endpoint.returnsCookie();
         needLogin = endpoint.requiresAuth();
         needGame = endpoint.gameSpecific();
         this.method = method;
+    }
+
+    // See http://stackoverflow.com/a/13592567/1530134
+    private static Map<String, List<String>> splitQuery(@NotNull URI uri) {
+        if (uri.getQuery() == null || uri.getQuery().isEmpty()) {
+            return Collections.emptyMap();
+        }
+        return Arrays.stream(uri.getQuery().split("&"))
+                .map(EndpointDispatcher::splitQueryParameter)
+                .collect(Collectors.groupingBy(AbstractMap.SimpleImmutableEntry::getKey, LinkedHashMap::new, mapping(Map.Entry::getValue, toList())));
+    }
+
+    private static AbstractMap.SimpleImmutableEntry<String, String> splitQueryParameter(String it) {
+        final int idx = it.indexOf("=");
+        final String key = idx > 0 ? it.substring(0, idx) : it;
+        final String value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : null;
+        return new AbstractMap.SimpleImmutableEntry<>(key, value);
     }
 
     private static Map<String, String> getCookies(HttpExchange exchange) {
@@ -108,8 +130,22 @@ class EndpointDispatcher implements HttpHandler {
             if (paramType == null) {
                 result = method.invoke(server);
             } else {
+                InputStream dataStream;
+                if (exchange.getRequestMethod().equalsIgnoreCase("GET")) {
+                    // Split parameter string instead
+                    Map<String, List<String>> params = splitQuery(exchange.getRequestURI());
+
+                    if (!params.containsKey(paramName) || params.get(paramName).size() != 1) {
+                        sendResponse(exchange, 400, "Query string does not contain required value " + paramName);
+                        return;
+                    }
+                    String value = params.get(paramName).get(0);
+                    dataStream = new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8));
+                } else {
+                    dataStream = exchange.getRequestBody();
+                }
                 Object arg = ModelSerializer.getInstance().fromJson(
-                        new InputStreamReader(exchange.getRequestBody()),
+                        new InputStreamReader(dataStream),
                         paramType
                 );
                 result = method.invoke(server, arg);

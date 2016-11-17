@@ -138,6 +138,10 @@ public class GameMap {
             }
             hexes.put(hexLocations.get(i), new Hex(hexNumbers.get(i), hexLocations.get(i), hexTypes.get(i)));
         }
+        Set<HexLocation> deserts = MapUtils.keysWithValueMatching(hexes, hex -> hex.getResource() == HexType.DESERT);
+        assert deserts.size() == 1;
+        HexLocation desert = deserts.iterator().next();
+        setRobber(desert);
     }
 
     /**
@@ -205,7 +209,7 @@ public class GameMap {
                 new EdgeLocation(new HexLocation(3, -1), EdgeDirection.NorthWest),
                 new EdgeLocation(new HexLocation(2, 1), EdgeDirection.NorthWest),
                 new EdgeLocation(new HexLocation(0, 3), EdgeDirection.North),
-                new EdgeLocation(new HexLocation(-2, -3), EdgeDirection.NorthEast),
+                new EdgeLocation(new HexLocation(-2, 3), EdgeDirection.NorthEast),
                 new EdgeLocation(new HexLocation(-3, 2), EdgeDirection.NorthEast)
         );
 

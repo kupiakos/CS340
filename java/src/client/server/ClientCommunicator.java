@@ -4,14 +4,18 @@ import client.game.GameManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.jetbrains.annotations.NotNull;
 import shared.utils.CookieUtils;
 
 import javax.naming.CommunicationException;
 import javax.security.auth.login.CredentialNotFoundException;
 import java.io.*;
 import java.net.*;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static shared.utils.ClassUtils.getStackTrace;
 
 /**
  * Created by elijahgk on 9/12/2016.
@@ -46,20 +50,46 @@ class ClientCommunicator implements IClientCommunicator {
         return SINGLETON;
     }
 
+    @NotNull
+    private static URL withParams(@NotNull URL url, @NotNull Map<String, String> parameters) throws URISyntaxException, MalformedURLException {
+        URI u = url.toURI();
+        StringBuilder sb = new StringBuilder(u.getQuery() == null ? "" : u.getQuery());
+        parameters.forEach((k, v) -> {
+            try {
+                k = URLEncoder.encode(k, "UTF-8");
+                v = URLEncoder.encode(v, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                LOGGER.warning(getStackTrace(e));
+                return;
+            }
+            if (sb.length() > 0) {
+                sb.append('&');
+            }
+            sb.append(k);
+            sb.append('=');
+            sb.append(v);
+        });
+        return new URI(u.getScheme(), url.getAuthority(), u.getPath(), sb.toString(), u.getFragment()).toURL();
+    }
+
     /**
      * Method that will communicate with the server.
      *
      * @param URLSuffix     Refers to which server command is being sent to the server, may not be null.
      * @param requestBody   This is the request body which is required by the server command; may be null.
      * @param requestMethod GET OR POST
+     * @param parameters
      * @return Any information pertinent to the client. Or an error message if not a 200 response code.
      * @pre A can-do method has already been called to make sure that the requested command will work.  A valid URL suffix
      * @post Requested action has been performed and the appropriate information has been returned as Json.
      */
-    public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod) throws IllegalArgumentException, CommunicationException, CredentialNotFoundException {
+    public String sendHTTPRequest(String URLSuffix, String requestBody, String requestMethod, Map<String, String> parameters) throws IllegalArgumentException, CommunicationException, CredentialNotFoundException {
         HttpURLConnection connection = null;
         try {
             URL url = new URL(URLPrefix + URLSuffix);
+            if (parameters != null) {
+                url = withParams(url, parameters);
+            }
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(requestMethod);
             if (requestMethod.equalsIgnoreCase("POST")) {
@@ -116,7 +146,7 @@ class ClientCommunicator implements IClientCommunicator {
             }
             connection.disconnect();
             return response.toString();
-        } catch (MalformedURLException | IllegalStateException e) {
+        } catch (MalformedURLException | IllegalStateException | URISyntaxException e) {
             throw new IllegalArgumentException(e.getMessage());
         } catch (IOException e) {
             throw new CommunicationException(e.getMessage());
