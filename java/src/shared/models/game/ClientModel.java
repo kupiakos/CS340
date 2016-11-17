@@ -105,19 +105,12 @@ public class ClientModel {
      */
     public ClientModel(boolean randomTiles, boolean randomPorts, boolean randomNumbers) {
         setChat(new MessageList());
-
         setWinner(-1);
-
         setTurnTracker(new TurnTracker(null, null, TurnStatus.FIRST_ROUND, null));
-
         setMap(new GameMap(randomTiles, randomPorts, randomNumbers));
-
         setBank(new ResourceSet(19, 19, 19, 19, 19));
-
         setTradeOffer(new TradeOffer(null, new ResourceSet(0, 0, 0, 0, 0), null));
-
         setVersion(1);
-
         setLog(new MessageList());
     }
 
