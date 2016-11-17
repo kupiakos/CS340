@@ -60,7 +60,9 @@ public class GameModel {
                 return;
             }
         }
-        getGameInfo().getPlayers().add(new PlayerInfo(color, user.getUsername(), user.getId()));
+        PlayerInfo p = new PlayerInfo(color, user.getUsername(), user.getId());
+        p.setPlayerIndex(PlayerIndex.fromInt(getClientModel().getPlayerCount()));
+        getGameInfo().getPlayers().add(p);
         getClientModel().getPlayers().add(new Player(
                 4,  // starting cities left
                 false,  // discarded
@@ -76,6 +78,51 @@ public class GameModel {
                 user.getUsername(),  // name
                 5,  // starting settlements left
                 user.getId(),  // player ID
+                false  // have played dev card
+        ));
+    }
+
+    public void addAIPlayer() {
+        int aiID = -1;
+        PlayerInfo aiInfo = new PlayerInfo();
+        for (PlayerInfo p : getGameInfo().getPlayers()) {
+            if (p.getId() <= aiID) {
+                aiID--;
+            }
+        }
+        aiInfo.setId(aiID);
+        for (CatanColor c : CatanColor.values()) {
+            boolean isTaken = false;
+            for (PlayerInfo p : getGameInfo().getPlayers()) {
+                if (p.getColor() == c) {
+                    isTaken = true;
+                    break;
+                }
+            }
+            if (isTaken) {
+                continue;
+            }
+            aiInfo.setColor(c);
+            break;
+        }
+        aiInfo.setName("Bill");
+        aiInfo.setPlayerIndex(PlayerIndex.fromInt(getClientModel().getPlayerCount()));
+        getGameInfo().getPlayers().add(aiInfo);
+        getClientModel().getPlayers().add(new Player(
+                4,  // starting cities left
+                false,  // discarded
+                new ResourceSet(),  // resources
+                15,  // roads
+                0,  // victory points
+                new DevCardSet(),  // old dev cards
+                0,  // soldiers
+                aiInfo.getColor(),  // color
+                new DevCardSet(),  // new dev cards
+                PlayerIndex.fromInt(getClientModel().getPlayerCount()),  // player index
+                0,  // monuments
+                aiInfo.getName(),  // name
+                5,  // starting settlements left
+                aiInfo.getId(),  // player ID
                 false  // have played dev card
         ));
     }
