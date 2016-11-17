@@ -8,7 +8,6 @@ import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.locations.EdgeLocation;
 import shared.models.GameAction;
-import shared.models.game.MessageEntry;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -153,7 +152,7 @@ public class RoadBuildingAction extends GameAction {
         getFacades().getBuilding().buildRoad(getModel().getPlayer(playerIndex), spot1, true, false);
         getFacades().getBuilding().buildRoad(getModel().getPlayer(playerIndex), spot2, true, false);
         getFacades().getDevCards().useRoadBuildingCard(getModel().getPlayer(playerIndex));
-        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " played a Road Building card"));
+        getFacades().getClientModel().getLog().addMessage(getModel().getPlayer(playerIndex), " played a Road Building card");
         getModel().incrementVersion();
     }
 }

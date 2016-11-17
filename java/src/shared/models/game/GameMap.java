@@ -679,7 +679,7 @@ public class GameMap {
             }
             Set<EdgeLocation> candidate = new HashSet<>(current);
             candidate.add(next);
-            pathCandidates.add(getLongestRoad(candidate, loc, player));
+            pathCandidates.add(getLongestRoad(candidate, next, player));
         }
         if (pathCandidates.size() == 1) {
             return current;

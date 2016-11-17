@@ -51,9 +51,8 @@ public class ChatController extends Controller implements IChatController {
         SendChatAction chat = new SendChatAction(message, getPlayer().getPlayerIndex());
         ChatFacade cf = getFacade().getChat();
 
-        if (cf.canSendChat(chat)) {
+        if (cf.canSendChat(getPlayer(), message)) {
             LOGGER.info("sent chat: " + chat);
-            cf.sendChat(chat);
             getAsync().runModelMethod(server::sendChat, chat)
                     .onError(Throwable::printStackTrace)
                     .start();

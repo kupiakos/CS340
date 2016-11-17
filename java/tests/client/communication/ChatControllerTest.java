@@ -18,6 +18,7 @@ import shared.facades.ChatFacade;
 import shared.models.game.ClientModel;
 import shared.models.game.MessageEntry;
 import shared.models.game.MessageList;
+import shared.models.game.Player;
 import shared.models.moves.SendChatAction;
 
 import java.util.Arrays;
@@ -79,7 +80,7 @@ public class ChatControllerTest {
     @Test
     public void sendMessage() {
         String m = "Good message";
-        when(chatFacade.canSendChat(any(SendChatAction.class))).thenReturn(true);
+        when(chatFacade.canSendChat(any(Player.class), anyString())).thenReturn(true);
         cc.sendMessage(m);
         verify(async).runModelMethod(
                 // any() is used as you can't properly compare lambdas
@@ -91,7 +92,7 @@ public class ChatControllerTest {
     public void sendBadMessage() {
         // We're not testing the ChatFacade code, we're unit testing sendMessage.
         String m = "Bad Message";
-        when(chatFacade.canSendChat(any(SendChatAction.class))).thenReturn(false);
+        when(chatFacade.canSendChat(any(Player.class), anyString())).thenReturn(false);
         cc.sendMessage(m);
         verifyZeroInteractions(async);
     }
