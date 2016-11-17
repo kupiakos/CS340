@@ -118,7 +118,9 @@ public class GameServer implements IServer {
 
     @Override
     public void addAI(@NotNull AddAIRequest request) throws IllegalArgumentException, CommunicationException {
-
+        AddAIAction action = new AddAIAction(request, getGameId());
+        action.setServerModel(getServerModel());
+        action.execute();
     }
 
     @Override

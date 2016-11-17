@@ -10,7 +10,7 @@ import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("net.kupiakos")
-public class AddAIRequest extends GameAction {
+public class AddAIRequest {
 
     @SerializedName("AIType")
     @Expose
@@ -78,7 +78,4 @@ public class AddAIRequest extends GameAction {
      * Run on the server.  Adds an AI player of the specified {@link AIType} to the game specifed by the cookie sent in the
      * HTTP request.
      */
-    @Override
-    public void execute() {
-    }
 }
