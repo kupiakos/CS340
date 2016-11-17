@@ -101,11 +101,13 @@ public class MapFacade extends AbstractFacade {
                         getModel().getPlayer(longestRoadPlayer).setVictoryPoints(getModel().getPlayer(longestRoadPlayer).getVictoryPoints() - 2);
                     }
                 }
+            } else if (roadSize < 5 && p == longestRoadPlayer) {
+                longestRoadPlayer = null;
+                getModel().getPlayer(p).setVictoryPoints(getModel().getPlayer(p).getVictoryPoints() - 2);
             }
         }
         return longestRoadPlayer;
     }
-
 
 
     /**
