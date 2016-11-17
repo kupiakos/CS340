@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.VertexLocation;
 import shared.models.GameAction;
-import shared.models.game.MessageEntry;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -122,7 +121,7 @@ public class BuildCityAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getBuilding().buildCity(getModel().getPlayer(playerIndex), vertexLocation);
-        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " built a city"));
+        getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " built a city");
         getModel().incrementVersion();
     }
 }

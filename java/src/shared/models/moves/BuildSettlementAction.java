@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import shared.definitions.PlayerIndex;
 import shared.locations.VertexLocation;
 import shared.models.GameAction;
-import shared.models.game.MessageEntry;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -149,7 +148,7 @@ public class BuildSettlementAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getBuilding().buildSettlement(getFacades().getClientModel().getPlayer(playerIndex), vertexLocation, free);
-        getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " built a settlement"));
+        getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " built a settlement");
         getModel().incrementVersion();
     }
 }
