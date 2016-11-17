@@ -174,5 +174,6 @@ public class MaritimeTradeAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getTrading().maritimeTrade(getModel().getPlayer(playerIndex), inputResource, outputResource);
+        getModel().incrementVersion();
     }
 }

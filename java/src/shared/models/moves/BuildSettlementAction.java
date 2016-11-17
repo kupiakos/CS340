@@ -150,5 +150,6 @@ public class BuildSettlementAction extends GameAction {
     public void execute() {
         getFacades().getBuilding().buildSettlement(getFacades().getClientModel().getPlayer(playerIndex), vertexLocation, free);
         getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " built a settlement"));
+        getModel().incrementVersion();
     }
 }

@@ -151,5 +151,6 @@ public class SoldierAction extends GameAction {
     public void execute() {
         getFacades().getDevCards().useSoldierCard(getModel().getPlayer(playerIndex));
         getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " played a Soldier card"));
+        getModel().incrementVersion();
     }
 }
