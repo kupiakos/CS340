@@ -119,8 +119,8 @@ public class RollNumberAction extends GameAction {
     @Override
     public void execute() {
         if (number != Constants.ROBBER_ROLL) {
-            getFacades().getTurn().finishRolling(false);
             getFacades().getResources().giveAwards(getFacades().getResources().getAwardsFromHexes(number));
+            getFacades().getTurn().finishRolling(false);
         } else {
             getFacades().getTurn().finishRolling(true);
         }
