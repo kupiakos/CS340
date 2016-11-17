@@ -5,11 +5,9 @@ import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
 import shared.definitions.TurnStatus;
 import shared.models.game.ClientModel;
-import shared.models.game.MessageEntry;
 import shared.models.game.Player;
 import shared.models.game.TurnTracker;
 
-import static shared.definitions.Constants.LOG_FINISH_TURN_MSG;
 import static shared.definitions.TurnStatus.FIRST_ROUND;
 
 /**
@@ -60,7 +58,6 @@ public class TurnFacade extends AbstractFacade {
     public void endTurn(@NotNull Player player) {
         // TODO:: Figure out if we need to consolidate cards or anything or reset them to a start state
         updateTracker(getPhase().endTurn(tt(), player));
-        getModel().writeLog(new MessageEntry(player.getName(), LOG_FINISH_TURN_MSG));
     }
 
 
@@ -119,8 +116,8 @@ public class TurnFacade extends AbstractFacade {
     /**
      * Sets the game state to the same player's turn (build phase)
      */
-    public void finishRolling(boolean moveRobber) {
-        updateTracker(getPhase().finishRolling(moveRobber));
+    public void finishRolling(ClientModel model, boolean moveRobber) {
+        updateTracker(getPhase().finishRolling(model, moveRobber));
     }
 
     /**

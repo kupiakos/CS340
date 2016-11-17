@@ -10,8 +10,7 @@ import shared.serialization.ModelExample;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ResourcesFacadeTest {
 
@@ -59,7 +58,7 @@ public class ResourcesFacadeTest {
     public void canReceiveFromBank() throws Exception {
         model.setBank(new ResourceSet(1, 1, 2, 1, 0));
         assertTrue(facade.canReceiveFromBank(new ResourceSet(1, 0, 0, 0, 0)));
-        assertFalse(facade.canReceiveFromBank(new ResourceSet(0, 0, 0, 0, 0)));
+        assertTrue(facade.canReceiveFromBank(new ResourceSet(0, 0, 0, 0, 0)));
         assertFalse(facade.canReceiveFromBank(new ResourceSet(0, 0, 0, 0, -2)));
         assertFalse(facade.canReceiveFromBank(new ResourceSet(1, 5, 2, 1, 0)));
     }
@@ -70,13 +69,8 @@ public class ResourcesFacadeTest {
         model.setBank(new ResourceSet(4, 4, 4, 4, 4));
         ResourceSet resources = new ResourceSet(0, 0, 0, 0, 0);
 
-        try {
-            facade.receiveFromBank(player, resources);
-            Assert.fail("expected failure");
-        } catch (IllegalArgumentException e) {
-            assertTrue(model.getBank().equals(new ResourceSet(4, 4, 4, 4, 4)));
-            assertTrue(player.getResources().equals(new ResourceSet(3, 3, 3, 3, 3)));
-        }
+        facade.receiveFromBank(player, resources);
+        assertEquals(player.getResources(), new ResourceSet(3, 3, 3, 3, 3));
 
         ResourceSet resourcesTwo = new ResourceSet(2, 2, 2, 2, 2);
 

@@ -2,8 +2,8 @@ package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
 import shared.models.game.ClientModel;
+import shared.models.game.MessageEntry;
 import shared.models.game.Player;
-import shared.models.moves.SendChatAction;
 
 /**
  * Provides operations for users to chat with each other in a game.
@@ -27,18 +27,16 @@ public class ChatFacade extends AbstractFacade {
      *
      * @return whether the player can send any chat messages
      */
-    public boolean canSendChat(@NotNull SendChatAction c) {
-        return (c.getContent() != null
-                && !c.getContent().isEmpty()
-                && c.getPlayerIndex() != null);
+    public boolean canSendChat(@NotNull Player p, @NotNull String message) {
+        return !message.isEmpty();
     }
 
     /**
      * Sends a chat message to a {@link Player} by updating the message list in the model
      */
-    public void sendChat(@NotNull SendChatAction c) {
-        if (canSendChat(c)) {
-            getModel().getChat().addMessage(c.asMessageEntry());
+    public void sendChat(@NotNull Player p, String message) {
+        if (canSendChat(p, message)) {
+            getModel().getChat().addMessage(new MessageEntry(p.getName(), message));
         }
     }
 }

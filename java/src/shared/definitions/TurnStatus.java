@@ -16,9 +16,13 @@ public enum TurnStatus {
     ROLLING {
         @Override
         @Nullable
-        public TurnResult finishRolling(boolean moveRobber) {
+        public TurnResult finishRolling(ClientModel model, boolean moveRobber) {
             if (moveRobber) {
-                return new TurnResult(DISCARDING, null);
+                if (model.getPlayers().stream().anyMatch(Player::hasExcess)) {
+                    return new TurnResult(DISCARDING, null);
+                } else {
+                    return new TurnResult(ROBBING, null);
+                }
             }
             return new TurnResult(PLAYING, null);
         }
@@ -102,8 +106,8 @@ public enum TurnStatus {
         @Override
         public boolean canEndTurn(@NotNull TurnTracker tt, @NotNull Player p) {
             return (tt.getCurrentTurn() == p.getPlayerIndex() &&
-                    p.getRoads() == 1 &&
-                    p.getSettlements() == 1);
+                    p.getRoads() == Constants.START_ROADS - 1 &&
+                    p.getSettlements() == Constants.START_SETTLEMENTS - 1);
         }
 
         @Override
@@ -137,8 +141,8 @@ public enum TurnStatus {
         @Override
         public boolean canEndTurn(@NotNull TurnTracker tt, @NotNull Player p) {
             return (tt.getCurrentTurn() == p.getPlayerIndex() &&
-                    p.getRoads() == 2 &&
-                    p.getSettlements() == 2);
+                    p.getRoads() == Constants.START_ROADS - 2 &&
+                    p.getSettlements() == Constants.START_SETTLEMENTS - 2);
         }
 
         @Override
@@ -199,7 +203,7 @@ public enum TurnStatus {
     }
 
     @Nullable
-    public TurnResult finishRolling(boolean moveRobber) {
+    public TurnResult finishRolling(ClientModel model, boolean moveRobber) {
         throw new IllegalStateException("Cannot finish rolling in the '" +
                 this.name() + "' state");
     }

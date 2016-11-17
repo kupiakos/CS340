@@ -119,7 +119,14 @@ public class AcceptTradeAction extends GameAction {
      */
     @Override
     public void execute() {
+        String senderName = getModel().getPlayer(getModel().getTradeOffer().getSender()).getName();
         getFacades().getTrading().respondToTradeOffer(getModel().getPlayer(receiver), willAccept);
+        if (willAccept) {
+            getFacades().getClientModel().getLog().addMessage(
+                    getModel().getPlayer(receiver),
+                    senderName + " made a trade with " + getModel().getPlayer(getReceiver()).getName()
+            );
+        }
         getModel().incrementVersion();
     }
 }

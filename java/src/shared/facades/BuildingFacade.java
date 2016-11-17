@@ -55,6 +55,7 @@ public class BuildingFacade extends AbstractFacade {
             resource.purchaseItem(player, PurchaseType.ROAD);
         }
         player.setRoads(player.getRoads() - 1);
+        map.findLongestRoad();
     }
 
     /**
@@ -77,6 +78,7 @@ public class BuildingFacade extends AbstractFacade {
             resource.purchaseItem(player, PurchaseType.SETTLEMENT);
         }
         player.setSettlements(player.getSettlements() - 1);
+        map.findLongestRoad();
     }
 
     /**

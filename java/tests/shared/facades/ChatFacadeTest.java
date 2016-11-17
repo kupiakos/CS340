@@ -1,6 +1,5 @@
 package shared.facades;
 
-import client.game.GameManager;
 import org.junit.Before;
 import org.junit.Test;
 import shared.definitions.PlayerIndex;
@@ -12,7 +11,8 @@ import shared.serialization.ModelExample;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author audakel on 9/29/16.
@@ -46,12 +46,10 @@ public class ChatFacadeTest {
     @Test
     public void canSendChat() throws Exception {
         SendChatAction c = new SendChatAction("", p.getPlayerIndex());
-        SendChatAction c2 = new SendChatAction("why hello", null);
-        SendChatAction c3 = new SendChatAction("Good day sir", p.getPlayerIndex());
+        SendChatAction c2 = new SendChatAction("Good day sir", p.getPlayerIndex());
 
-        assertFalse(cf.canSendChat(c));
-        assertFalse(cf.canSendChat(c2));
-        assertTrue(cf.canSendChat(c3));
+        assertFalse(cf.canSendChat(p, c.getContent()));
+        assertTrue(cf.canSendChat(p, c2.getContent()));
     }
 
     /**
@@ -64,14 +62,12 @@ public class ChatFacadeTest {
     @Test
     public void sendChat() throws Exception {
         SendChatAction c = new SendChatAction("", p.getPlayerIndex());
-        SendChatAction c2 = new SendChatAction("why hello", null);
         SendChatAction c3 = new SendChatAction("Good day sir", p.getPlayerIndex());
 
-        cf.sendChat(c);
-        cf.sendChat(c2);
+        cf.sendChat(p, c.getContent());
         assertTrue(L == cf.getModel().getChat().getLines().size());
-        assertTrue(cf.canSendChat(c3));
-        cf.sendChat(c3);
+        assertTrue(cf.canSendChat(p, c3.getContent()));
+        cf.sendChat(p, c3.getContent());
         ArrayList<MessageEntry> clist = (ArrayList<MessageEntry>) cf.getModel().getChat().getLines();
         assertTrue(1 == clist.size());
         MessageEntry c4 = clist.get(clist.size() - 1);
