@@ -16,6 +16,8 @@ public class GameModel {
     private ClientModel clientModel;
 
     public GameModel() {
+        gameInfo = new GameInfo();
+        clientModel = new ClientModel();
     }
 
     public GameModel(int id, GameInfo gameInfo, ClientModel clientModel) {
@@ -59,6 +61,22 @@ public class GameModel {
             }
         }
         getGameInfo().getPlayers().add(new PlayerInfo(color, user.getUsername(), user.getId()));
-        getClientModel().getPlayers().add(new Player(4, false, new ResourceSet(), 15, 0, new DevCardSet(), 0, color, new DevCardSet(), PlayerIndex.fromInt(getClientModel().getPlayerCount() + 1), 0, user.getUsername(), 5, user.getId(), false));
+        getClientModel().getPlayers().add(new Player(
+                4,  // starting cities left
+                false,  // discarded
+                new ResourceSet(),  // resources
+                15,  // roads
+                0,  // victory points
+                new DevCardSet(),  // old dev cards
+                0,  // soldiers
+                color,  // color
+                new DevCardSet(),  // new dev cards
+                PlayerIndex.fromInt(getClientModel().getPlayerCount()),  // player index
+                0,  // monuments
+                user.getUsername(),  // name
+                5,  // starting settlements left
+                user.getId(),  // player ID
+                false  // have played dev card
+        ));
     }
 }

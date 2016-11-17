@@ -3,6 +3,7 @@ package client.server;
 import org.jetbrains.annotations.NotNull;
 import server.models.UserSession;
 import shared.IServer;
+import shared.definitions.AIType;
 import shared.models.game.AddAIRequest;
 import shared.models.game.ClientModel;
 import shared.models.games.*;
@@ -114,8 +115,8 @@ public class MockProxy implements IServer {
      * {@inheritDoc}
      */
     @Override
-    public String[] listAI() throws CommunicationException, IllegalArgumentException {
-        return new String[0];
+    public AIType[] listAI() throws CommunicationException, IllegalArgumentException {
+        return AIType.values();
     }
 
     /**

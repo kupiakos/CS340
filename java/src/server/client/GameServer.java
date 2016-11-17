@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import server.games.IServerManager;
 import server.models.*;
 import shared.IServer;
+import shared.definitions.AIType;
 import shared.facades.FacadeManager;
 import shared.models.GameAction;
 import shared.models.game.AddAIRequest;
@@ -55,8 +56,7 @@ public class GameServer implements IServer {
     @Override
     public GameInfo[] listOfGames() throws IllegalArgumentException, CommunicationException {
         List<GameInfo> gameList = getServerModel().getGameInfo();
-        GameInfo[] games = gameList.toArray(new GameInfo[gameList.size()]);
-        return games;
+        return gameList.toArray(new GameInfo[gameList.size()]);
     }
 
     @Override
@@ -68,7 +68,11 @@ public class GameServer implements IServer {
 
     @Override
     public int joinGame(@NotNull JoinGameRequest request) throws IllegalArgumentException, CommunicationException {
-        JoinGameAction action = new JoinGameAction(request, getServerManager().getServerModel().getUser(this.userId));
+        User user = getServerManager().getServerModel().getUser(getUserId());
+        if (user == null) {
+            throw new IllegalArgumentException("No user with ID " + getUserId() + " exists");
+        }
+        JoinGameAction action = new JoinGameAction(request, user);
         action.setServerModel(getServerModel());
         action.execute();
         return action.getJoinedGameId();
@@ -108,8 +112,8 @@ public class GameServer implements IServer {
     }
 
     @Override
-    public String[] listAI() throws IllegalArgumentException, CommunicationException {
-        return new String[0];
+    public AIType[] listAI() throws IllegalArgumentException, CommunicationException {
+        return AIType.values();
     }
 
     @Override
@@ -212,6 +216,10 @@ public class GameServer implements IServer {
     @Override
     public ClientModel useMonument(@NotNull MonumentAction action) throws IllegalArgumentException, CommunicationException {
         return executeGameAction(action);
+    }
+
+    public int getUserId() {
+        return userId;
     }
 
     @Override

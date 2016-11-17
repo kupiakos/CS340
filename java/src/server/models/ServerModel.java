@@ -79,7 +79,6 @@ public class ServerModel {
      * @post A new {@link GameModel} is placed in {@link #gameModels}
      */
     public int startNewGame(boolean randomTiles, boolean randomPorts, boolean randomNumbers, String name) {
-
         List<PlayerInfo> playerInfos = new ArrayList<>();
         int id = gameModels.keySet().stream().max(Integer::compareTo).orElseGet(() -> 0) + 1;
 

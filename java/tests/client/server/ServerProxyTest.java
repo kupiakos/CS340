@@ -3,6 +3,7 @@ package client.server;
 import client.game.GameManager;
 import org.junit.Test;
 import shared.definitions.AIType;
+import shared.definitions.CatanColor;
 import shared.definitions.ResourceType;
 import shared.locations.*;
 import shared.models.game.AddAIRequest;
@@ -65,7 +66,7 @@ public class ServerProxyTest {
     public void testGamesCommands() throws IllegalArgumentException, CommunicationException {
         server.listOfGames();
         server.createGame(new CreateGameRequest(true, true, true, "Game01"));
-        server.joinGame(new JoinGameRequest("RED", 0));
+        server.joinGame(new JoinGameRequest(CatanColor.RED, 0));
         server.saveGame(new SaveGameRequest("Game01", 1));
         server.loadGame(new LoadGameRequest("Game01"));
     }
