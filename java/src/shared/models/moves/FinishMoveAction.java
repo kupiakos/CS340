@@ -95,5 +95,6 @@ public class FinishMoveAction extends GameAction {
     public void execute() {
         getFacades().getTurn().endTurn(getModel().getPlayer(playerIndex));
         getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " finished their turn"));
+        getModel().incrementVersion();
     }
 }

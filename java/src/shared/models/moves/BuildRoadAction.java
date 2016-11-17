@@ -148,5 +148,6 @@ public class BuildRoadAction extends GameAction {
     public void execute() {
         getFacades().getBuilding().buildRoad(getFacades().getClientModel().getPlayer(playerIndex), roadLocation, free, getFacades().getTurn().isSetup());
         getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " built a road"));
+        getModel().incrementVersion();
     }
 }

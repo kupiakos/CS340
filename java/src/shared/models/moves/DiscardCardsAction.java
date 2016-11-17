@@ -123,5 +123,6 @@ public class DiscardCardsAction extends GameAction {
     public void execute() {
         getFacades().getRobber().discard(discardedCards, getModel().getPlayer(playerIndex));
         getFacades().getTurn().finishDiscarding();
+        getModel().incrementVersion();
     }
 }

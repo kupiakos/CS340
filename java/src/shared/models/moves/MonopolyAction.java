@@ -124,5 +124,6 @@ public class MonopolyAction extends GameAction {
     public void execute() {
         getFacades().getDevCards().useMonopolyCard(getModel().getPlayer(playerIndex), resource);
         getFacades().getClientModel().getLog().addMessage(new MessageEntry(getModel().getPlayer(playerIndex).getName(), " played a Monopoly card"));
+        getModel().incrementVersion();
     }
 }
