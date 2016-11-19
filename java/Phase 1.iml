@@ -28,5 +28,6 @@
     <orderEntry type="library" name="byte-buddy-1.4.33" level="project" />
     <orderEntry type="library" name="objenesis-2.4" level="project" />
     <orderEntry type="library" name="annotations-13.0" level="project" />
+    <orderEntry type="library" name="org.apache.commons.io" level="project" />
   </component>
 </module>

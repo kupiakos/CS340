@@ -8,10 +8,16 @@ import org.jetbrains.annotations.Nullable;
 import server.games.IServerManager;
 import shared.IServer;
 import shared.annotations.ServerEndpoint;
+import shared.utils.FileUtils;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -29,10 +35,13 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
     private static final Logger LOGGER = Logger.getLogger("ServerCommunicator");
     private Map<String, EndpointHandler> contexts;
     private HttpServer http;
+    private SwaggerHandler swaggerHandler = new SwaggerHandler();
 
     public ServerCommunicator(IServerManager serverManager) throws IOException {
         initCommands();
         http = HttpServer.create();
+        // Swagger calls are not cool and lambda-ed out
+        http.createContext("/docs/api/", new SwaggerHandler());
         http.createContext("/", this);
         setServerManager(serverManager);
     }
@@ -116,7 +125,13 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
         for (EndpointHandler h : contexts.values()) {
             h.setServerManager(serverManager);
         }
+
+        swaggerHandler.setServerManager(serverManager);
     }
+
+    // *************************
+    // Handlers below
+    // *************************
 
     private class EndpointHandler implements HttpHandler {
         private EndpointDispatcher getMethod, postMethod;
@@ -159,5 +174,52 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
         }
     }
 
+    /**
+     * Handles all the html and json requests to run swagger
+     * Appends ".json" to the request before getting the proper file from the file system
+     */
+    private class SwaggerHandler extends EndpointHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
 
+            if (exchange.getRequestMethod().toUpperCase().equals("GET")) {
+                String uri = exchange.getRequestURI().toString();
+
+                String filepath = System.getProperty("user.dir") +
+                        exchange.getRequestURI().toString() +
+                        ((uri.contains("data")) ? ".json" : "");
+
+                LOGGER.warning("GET Swagger: " + filepath);
+
+
+                byte[] encoded = Files.readAllBytes(Paths.get(filepath));
+
+                ArrayList<String> mimetypes = new ArrayList<>();
+                mimetypes.add(FileUtils.getMimeType(filepath));
+                exchange.getResponseHeaders().add("Content-Type", mimetypes.get(0));
+                exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin, X-Atmosphere-tracking-id, X-Atmosphere-Framework, X-Cache-Date, Content-Type, X-Atmosphere-Transport, *");
+                exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "POST, GET, OPTIONS , PUT");
+                exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                exchange.getResponseHeaders().add("Access-Control-Request-Headers", "Origin, X-Atmosphere-tracking-id, X-Atmosphere-Framework, X-Cache-Date, Content-Type, X-Atmosphere-Transport,  *");
+
+                exchange.sendResponseHeaders(200, encoded.length);
+
+                try (BufferedOutputStream out = new BufferedOutputStream(exchange.getResponseBody())) {
+                    try (ByteArrayInputStream bis = new ByteArrayInputStream(encoded)) {
+                        byte[] buffer = new byte[1024];
+                        int count;
+                        while ((count = bis.read(buffer)) != -1) {
+                            out.write(buffer, 0, count);
+                        }
+                    }
+                } catch (Exception e) {
+                    LOGGER.warning("GET Swagger: " + uri);
+                    e.printStackTrace();
+                }
+            } else {
+                // Method not allowed
+                sendResponse(exchange, 405, null);
+            }
+        }
+    }
 }
