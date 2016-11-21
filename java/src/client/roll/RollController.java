@@ -50,6 +50,7 @@ public class RollController extends Controller implements IRollController {
         }
         getAsync().runModelMethod(server::gameState, 0).start();
         countdown = 5;
+
         getRollView().setMessage("Rolling automatically in..." + countdown + " seconds");
         ActionListener rollAction = e -> updateView();
         rollTimer = new Timer(1000, rollAction);
