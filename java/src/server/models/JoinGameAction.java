@@ -24,7 +24,7 @@ public class JoinGameAction extends ServerAction {
             throw new IllegalArgumentException("No game with ID " + joinGameRequest.getId() + " exists");
         }
         for (PlayerInfo p : model.getGameInfo().getPlayers()) {
-            if (p.getColor() == joinGameRequest.getColor()) {
+            if (p.getColor() == joinGameRequest.getColor() && p.getId() != user.getId()) {
                 throw new IllegalArgumentException("Sorry. That color has already been selected.");
             }
         }

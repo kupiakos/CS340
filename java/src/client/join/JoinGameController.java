@@ -228,7 +228,6 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                 .onError(e -> {
                     displayError("Error", "Cannot join game: " + e.getMessage());
                     e.printStackTrace();
-                    selectedGame = null;
                 })
                 .start();
     }
