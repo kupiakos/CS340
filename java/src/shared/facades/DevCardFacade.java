@@ -1,10 +1,7 @@
 package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
-import shared.definitions.DevCardType;
-import shared.definitions.PlayerIndex;
-import shared.definitions.ResourceType;
-import shared.definitions.TurnStatus;
+import shared.definitions.*;
 import shared.locations.HexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.DevCardSet;
@@ -92,7 +89,7 @@ public class DevCardFacade extends AbstractFacade {
         }
         DevCardType randomType = bank.getRandom();
         currentPlayer.getNewDevCards().setOfType(randomType, currentPlayer.getNewDevCards().getOfType(randomType) + 1);
-        getFacades().getResources().returnToBank(currentPlayer, new ResourceSet(1, 0, 1, 0, 1));
+        getFacades().getResources().purchaseItem(currentPlayer, PurchaseType.DEVCARD);
     }
 
     public boolean canUseDevCard(@NotNull Player currentPlayer) {
