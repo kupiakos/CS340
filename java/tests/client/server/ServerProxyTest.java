@@ -3,6 +3,7 @@ package client.server;
 import client.game.GameManager;
 import org.junit.Test;
 import shared.definitions.CatanColor;
+import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.locations.*;
 import shared.models.game.ClientModel;
@@ -110,7 +111,7 @@ public class ServerProxyTest {
         assertTrue(GameManager.getGame().getClientModel().getMap().getPlayerSettlements(player.getPlayerIndex()).size()==0);
         assertTrue(server.offerTrade(new OfferTradeAction(GameManager.getGame().getClientModel().getPlayers().get(1).getPlayerIndex(), new ResourceSet(0, 0, 0, 1, 1), player.getPlayerIndex())) != null);
         assertTrue(server.maritimeTrade(new MaritimeTradeAction(ResourceType.ORE, 2, player.getPlayerIndex(), ResourceType.WOOD)) != null);
-        assertTrue(server.robPlayer(new RobPlayerAction(new HexLocation(0, 0), player.getPlayerIndex(), 1)) != null);
+        assertTrue(server.robPlayer(new RobPlayerAction(new HexLocation(0, 0), player.getPlayerIndex(), PlayerIndex.SECOND)) != null);
         assertTrue(server.finishTurn(new FinishMoveAction(player.getPlayerIndex())) != null);
         assertTrue(server.buyDevCard(new BuyDevCardAction(player.getPlayerIndex())) != null);
         assertTrue(server.useSoldier(new SoldierAction(new HexLocation(0, 0), player.getPlayerIndex(), 1)) != null);
