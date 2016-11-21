@@ -29,7 +29,6 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
     private static final Logger LOGGER = Logger.getLogger("ServerCommunicator");
     private Map<String, EndpointHandler> contexts;
     private HttpServer http;
-    private SwaggerHandler swaggerHandler = new SwaggerHandler();
 
     public ServerCommunicator(IServerManager serverManager) throws IOException {
         initCommands();
@@ -119,7 +118,5 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
         for (EndpointHandler h : contexts.values()) {
             h.setServerManager(serverManager);
         }
-
-        swaggerHandler.setServerManager(serverManager);
     }
 }
