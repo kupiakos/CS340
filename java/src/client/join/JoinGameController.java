@@ -120,6 +120,18 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                         //TODO fix this whack redrawing stuff
                         getJoinGameView().closeModal();
                         getJoinGameView().showModal();
+                    } else if (getSelectColorView().isModalShowing() && selectedGame != null) {
+                        for (GameInfo g : games) {
+                            if (g.getId() == selectedGame.getId()) {
+                                selectedGame = g;
+                                break;
+                            }
+                        }
+                        selectedGame.getPlayers().stream()
+                                .filter(p -> p.getId() != getGameManager().getPlayerInfo().getId())
+                                .forEach(p -> getSelectColorView().setColorEnabled(p.getColor(), false));
+                        getSelectColorView().closeOneModal();
+                        getSelectColorView().showModal();
                     }
                 }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\nError message: " + e.getMessage()))
@@ -215,12 +227,11 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                     joinAction.execute();
                 }))
                 .onError(e -> {
-                    displayError("Error", "Cannot join game.\nError Message: " + e.getMessage());
+                    displayError("Error", "Cannot join game: " + e.getMessage());
                     e.printStackTrace();
                     selectedGame = null;
                 })
                 .start();
-        getSelectColorView().closeModal();
     }
 
     public void displayError(String title, String message) {
