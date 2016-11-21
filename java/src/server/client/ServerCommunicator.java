@@ -29,10 +29,13 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
     private static final Logger LOGGER = Logger.getLogger("ServerCommunicator");
     private Map<String, EndpointHandler> contexts;
     private HttpServer http;
+    private SwaggerHandler swaggerHandler = new SwaggerHandler();
 
     public ServerCommunicator(IServerManager serverManager) throws IOException {
         initCommands();
         http = HttpServer.create();
+        // Swagger calls are not cool and lambda-ed out
+        http.createContext("/docs/api/", new SwaggerHandler());
         http.createContext("/", this);
         setServerManager(serverManager);
     }
@@ -116,48 +119,7 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
         for (EndpointHandler h : contexts.values()) {
             h.setServerManager(serverManager);
         }
+
+        swaggerHandler.setServerManager(serverManager);
     }
-
-    private class EndpointHandler implements HttpHandler {
-        private EndpointDispatcher getMethod, postMethod;
-
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            switch (exchange.getRequestMethod().toUpperCase()) {
-                case "GET":
-                    if (getMethod != null) {
-                        getMethod.handle(exchange);
-                        return;
-                    }
-                    break;
-                case "POST":
-                    if (postMethod != null) {
-                        postMethod.handle(exchange);
-                        return;
-                    }
-                    break;
-            }
-            // Method not allowed
-            sendResponse(exchange, 405, null);
-        }
-
-        void setServerManager(IServerManager serverManager) {
-            if (getMethod != null) {
-                getMethod.setServerManager(serverManager);
-            }
-            if (postMethod != null) {
-                postMethod.setServerManager(serverManager);
-            }
-        }
-
-        void setGetMethod(EndpointDispatcher getMethod) {
-            this.getMethod = getMethod;
-        }
-
-        void setPostMethod(EndpointDispatcher postMethod) {
-            this.postMethod = postMethod;
-        }
-    }
-
-
 }
