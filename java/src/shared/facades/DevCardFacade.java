@@ -92,6 +92,7 @@ public class DevCardFacade extends AbstractFacade {
         }
         DevCardType randomType = bank.getRandom();
         currentPlayer.getNewDevCards().setOfType(randomType, currentPlayer.getNewDevCards().getOfType(randomType) + 1);
+        getFacades().getResources().returnToBank(currentPlayer, new ResourceSet(1, 0, 1, 0, 1));
     }
 
     public boolean canUseDevCard(@NotNull Player currentPlayer) {
