@@ -123,14 +123,17 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                         for (GameInfo g : games) {
                             if (g.getId() == selectedGame.getId()) {
                                 selectedGame = g;
+                                for (CatanColor c : CatanColor.values()) {
+                                    getSelectColorView().setColorEnabled(c, true);
+                                }
+                                selectedGame.getPlayers().stream()
+                                        .filter(p -> p.getId() != getGameManager().getPlayerInfo().getId())
+                                        .forEach(p -> getSelectColorView().setColorEnabled(p.getColor(), false));
+                                getSelectColorView().closeOneModal();
+                                getSelectColorView().showModal();
                                 break;
                             }
                         }
-                        selectedGame.getPlayers().stream()
-                                .filter(p -> p.getId() != getGameManager().getPlayerInfo().getId())
-                                .forEach(p -> getSelectColorView().setColorEnabled(p.getColor(), false));
-                        getSelectColorView().closeOneModal();
-                        getSelectColorView().showModal();
                     }
                 }))
                 .onError(e -> displayError("Error Communicating with Server", "Cannot retrieve list of games.\nError message: " + e.getMessage()))
