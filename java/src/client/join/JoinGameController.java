@@ -117,7 +117,6 @@ public class JoinGameController extends Controller implements IJoinGameControlle
                 .onSuccess(games -> SwingUtilities.invokeLater(() -> {
                     getJoinGameView().setGames(games, getGameManager().getPlayerInfo());
                     if (!getNewGameView().isModalShowing() && !getSelectColorView().isModalShowing()) {
-                        //TODO fix this whack redrawing stuff
                         getJoinGameView().closeModal();
                         getJoinGameView().showModal();
                     } else if (getSelectColorView().isModalShowing() && selectedGame != null) {
