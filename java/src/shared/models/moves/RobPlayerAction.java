@@ -3,9 +3,11 @@ package shared.models.moves;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
 import shared.locations.HexLocation;
 import shared.models.GameAction;
+import shared.models.game.Player;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -27,7 +29,7 @@ public class RobPlayerAction extends GameAction {
 
     @SerializedName("victimIndex")
     @Expose
-    private int victimIndex;
+    private PlayerIndex victimIndex;
 
 
     // CUSTOM CODE
@@ -44,7 +46,7 @@ public class RobPlayerAction extends GameAction {
      * @param playerIndex Who's doing the robbing
      * @param victimIndex The order index of the player to rob
      */
-    public RobPlayerAction(HexLocation location, PlayerIndex playerIndex, int victimIndex) {
+    public RobPlayerAction(@NotNull HexLocation location, @NotNull PlayerIndex playerIndex, @Nullable PlayerIndex victimIndex) {
         this.location = location;
         this.playerIndex = playerIndex;
         this.victimIndex = victimIndex;
@@ -98,18 +100,19 @@ public class RobPlayerAction extends GameAction {
     /**
      * @return The order index of the player to rob
      */
-    public int getVictimIndex() {
+    @Nullable
+    public PlayerIndex getVictimIndex() {
         return victimIndex;
     }
 
     /**
      * @param victimIndex The order index of the player to rob
      */
-    public void setVictimIndex(int victimIndex) {
+    public void setVictimIndex(@Nullable PlayerIndex victimIndex) {
         this.victimIndex = victimIndex;
     }
 
-    public RobPlayerAction withVictimIndex(int victimIndex) {
+    public RobPlayerAction withVictimIndex(@Nullable PlayerIndex victimIndex) {
         setVictimIndex(victimIndex);
         return this;
     }
@@ -136,7 +139,7 @@ public class RobPlayerAction extends GameAction {
         return (
                 TYPE == other.TYPE &&
                         Objects.equals(location, other.location) &&
-                        Objects.equals(playerIndex, other.playerIndex) &&
+                        playerIndex == other.playerIndex &&
                         victimIndex == other.victimIndex
         );
     }
@@ -147,8 +150,15 @@ public class RobPlayerAction extends GameAction {
     @Override
     public void execute() {
         getFacades().getRobber().moveRobber(location);
-        getFacades().getRobber().steal(PlayerIndex.fromInt(victimIndex), playerIndex);
-        getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " robbed " + getModel().getPlayer(PlayerIndex.fromInt(victimIndex)).getName());
+        if (getFacades().getRobber().canStealFrom(victimIndex, playerIndex)) {
+            if (getFacades().getRobber().steal(victimIndex, playerIndex)) {
+                getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex),
+                        " robbed " + getModel().getPlayer(victimIndex).getName());
+            } else {
+                getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex),
+                        " could not rob");
+            }
+        }
         getModel().incrementVersion();
     }
 }

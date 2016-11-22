@@ -2,12 +2,16 @@ package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
 import shared.definitions.PurchaseType;
+import shared.definitions.TurnStatus;
 import shared.locations.EdgeLocation;
 import shared.locations.VertexLocation;
 import shared.models.game.ClientModel;
+import shared.models.game.GameMap;
 import shared.models.game.Player;
+import shared.models.game.ResourceSet;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This facade creates an interface to communicate with the underlying building sub-model.
@@ -74,7 +78,23 @@ public class BuildingFacade extends AbstractFacade {
     public void buildSettlement(@NotNull Player player, @NotNull VertexLocation buildLocation, boolean isFree) {
         if (!canBuildSettlement(player, buildLocation, isFree))
             throw new IllegalArgumentException();
-        this.getModel().getMap().addSettlement(buildLocation, player.getPlayerIndex(), manager.getTurn().isSetup());
+        GameMap gameMap = getModel().getMap();
+        gameMap.addSettlement(buildLocation, player.getPlayerIndex(), manager.getTurn().isSetup());
+        if (manager.getTurn().getPhase() == TurnStatus.SECOND_ROUND) {
+            // Award initial resources from second settlement
+            // TODO: Refactor better into ResourcesFacade
+            ResourceSet startResources = getModel().getMap().getVertexHexes(buildLocation).stream()
+                    // Get the actual hex
+                    .map(gameMap::getHex).filter(h -> h != null)
+                    // Get the resource from that hex
+                    .map(hex -> hex.getResource().getResource()).filter(r -> r != null)
+                    // Collect into a resource set
+                    .collect(Collectors.reducing(
+                            new ResourceSet(),
+                            t -> new ResourceSet(t, 1),
+                            ResourceSet::combined));
+            resource.receiveFromBank(player, startResources);
+        }
         if (!isFree) {
             resource.purchaseItem(player, PurchaseType.SETTLEMENT);
         }

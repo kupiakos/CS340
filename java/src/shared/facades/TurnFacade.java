@@ -168,7 +168,7 @@ public class TurnFacade extends AbstractFacade {
         for (Player p : getModel().getPlayers()) {
             int points = p.getMonuments();
             points += getModel().getMap().getPlayerSettlements(p.getPlayerIndex()).size();
-            points += getModel().getMap().getPlayerCities(p.getPlayerIndex()).size();
+            points += (getModel().getMap().getPlayerCities(p.getPlayerIndex()).size() * 2);
             if (getModel().getTurnTracker().getLongestRoad() == p.getPlayerIndex()) {
                 points += 2;
             }
