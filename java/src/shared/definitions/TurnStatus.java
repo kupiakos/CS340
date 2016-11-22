@@ -183,6 +183,12 @@ public enum TurnStatus {
         if (!canEndTurn(tt, p)) {
             return null;
         }
+        for (DevCardType d : DevCardType.values()) {
+            if (p.getNewDevCards().getOfType(d) > 0) {
+                p.getOldDevCards().setOfType(d, p.getOldDevCards().getOfType(d) + p.getNewDevCards().getOfType(d));
+                p.getNewDevCards().setOfType(d, 0);
+            }
+        }
         return advanceTurn(p);
     }
 
