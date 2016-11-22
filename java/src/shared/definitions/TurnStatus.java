@@ -56,6 +56,12 @@ public enum TurnStatus {
             if (p.haveWon()) {
                 return new TurnResult(GAME_OVER, null);
             }
+            for (DevCardType d : DevCardType.values()) {
+                if (p.getNewDevCards().getOfType(d) > 0) {
+                    p.getOldDevCards().setOfType(d, p.getOldDevCards().getOfType(d) + p.getNewDevCards().getOfType(d));
+                    p.getNewDevCards().setOfType(d, 0);
+                }
+            }
             PlayerIndex nextPlayer = p.getPlayerIndex().nextPlayer();
             if (nextPlayer == null) {
                 nextPlayer = PlayerIndex.FIRST;
@@ -182,12 +188,6 @@ public enum TurnStatus {
     public TurnResult endTurn(@NotNull TurnTracker tt, @NotNull Player p) {
         if (!canEndTurn(tt, p)) {
             return null;
-        }
-        for (DevCardType d : DevCardType.values()) {
-            if (p.getNewDevCards().getOfType(d) > 0) {
-                p.getOldDevCards().setOfType(d, p.getOldDevCards().getOfType(d) + p.getNewDevCards().getOfType(d));
-                p.getNewDevCards().setOfType(d, 0);
-            }
         }
         return advanceTurn(p);
     }
