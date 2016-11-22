@@ -2,6 +2,7 @@ package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.TurnStatus;
 import shared.models.game.ClientModel;
@@ -57,6 +58,12 @@ public class TurnFacade extends AbstractFacade {
      */
     public void endTurn(@NotNull Player player) {
         // TODO:: Figure out if we need to consolidate cards or anything or reset them to a start state
+        for (DevCardType d : DevCardType.values()) {
+            if (getCurrentPlayer().getNewDevCards().getOfType(d) > 0) {
+                getCurrentPlayer().getOldDevCards().setOfType(d, getCurrentPlayer().getOldDevCards().getOfType(d) + getCurrentPlayer().getNewDevCards().getOfType(d));
+                getCurrentPlayer().getNewDevCards().setOfType(d, 0);
+            }
+        }
         updateTracker(getPhase().endTurn(tt(), player));
     }
 
