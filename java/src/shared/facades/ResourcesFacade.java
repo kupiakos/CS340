@@ -43,8 +43,7 @@ public class ResourcesFacade extends AbstractFacade {
      * @post None.
      */
     public boolean canPurchaseItem(@NotNull Player player, @NotNull PurchaseType item) {
-        ResourceSet itemCost = item.purchaseCost();
-        return itemCost.isSubset(player.getResources()) && player.leftOfResource(item) > 0;
+        return canReturnToBank(player, item.purchaseCost());
     }
 
     /**

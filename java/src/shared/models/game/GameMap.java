@@ -301,6 +301,13 @@ public class GameMap {
                 .collect(Collectors.toSet());
     }
 
+    @NotNull
+    public Set<HexLocation> getVertexHexes(@NotNull VertexLocation vertex) {
+        Set<HexLocation> locs = vertex.getHexes();
+        locs.removeIf(h -> !hexes.containsKey(h));
+        return locs;
+    }
+
     /**
      * Get the hex associated with a given location.
      *

@@ -105,6 +105,28 @@ public class VertexLocation {
         }
     }
 
+    /**
+     * Get the hex locations that this vertex connects to
+     */
+    public Set<HexLocation> getHexes() {
+        VertexLocation loc = getNormalizedLocation();
+        Set<HexLocation> hexes = new HashSet<>();
+        hexes.add(loc.getHexLoc());
+        hexes.add(loc.getHexLoc().getNeighborLoc(EdgeDirection.North));
+        switch (loc.getDir()) {
+            case NorthEast:
+                hexes.add(loc.getHexLoc().getNeighborLoc(EdgeDirection.NorthEast));
+                break;
+            case NorthWest:
+                hexes.add(loc.getHexLoc().getNeighborLoc(EdgeDirection.NorthWest));
+                break;
+            default:
+                assert false;
+                return null;
+        }
+        return hexes;
+    }
+
     public Set<EdgeLocation> getEdges() {
         HashSet<EdgeLocation> edges = new HashSet<>();
         HexLocation neighbor;
