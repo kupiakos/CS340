@@ -124,7 +124,7 @@ public class RollNumberAction extends GameAction {
         } else {
             getFacades().getTurn().finishRolling(getModel(), true);
         }
-        getModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " rolled a" + number);
+        getModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " rolled a " + number);
         getModel().incrementVersion();
     }
 }
