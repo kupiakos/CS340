@@ -89,7 +89,11 @@ public class DevCardFacade extends AbstractFacade {
             bank.setOfType(t, bank.getOfType(t) - all.getOfType(t));
         }
         DevCardType randomType = bank.getRandom();
-        currentPlayer.getNewDevCards().setOfType(randomType, currentPlayer.getNewDevCards().getOfType(randomType) + 1);
+        if (randomType == DevCardType.MONUMENT) {
+            currentPlayer.getOldDevCards().setOfType(randomType, currentPlayer.getOldDevCards().getOfType(randomType) + 1);
+        } else {
+            currentPlayer.getNewDevCards().setOfType(randomType, currentPlayer.getNewDevCards().getOfType(randomType) + 1);
+        }
         getFacades().getResources().purchaseItem(currentPlayer, PurchaseType.DEVCARD);
     }
 
@@ -221,11 +225,16 @@ public class DevCardFacade extends AbstractFacade {
         if (!canUseVictoryPointCards(currentPlayer)) {
             throw new IllegalArgumentException();
         }
-        currentPlayer.setPlayedDevCard(true);
+        //currentPlayer.setPlayedDevCard(true);
+        currentPlayer.getOldDevCards().setOfType(DevCardType.MONUMENT, currentPlayer.getOldDevCards().getOfType(DevCardType.MONUMENT) - 1);
         currentPlayer.setMonuments(currentPlayer.getMonuments() + 1);
 
-        getModel().setWinner(currentPlayer.getPlayerID());
+        //Changes here
+        //getModel().setWinner(currentPlayer.getPlayerID());
         getFacades().getTurn().calcVictoryPoints();
+        if (getFacades().getTurn().canEndGame()) {
+            getModel().setWinner(currentPlayer.getPlayerID());
+        }
     }
 
     /**

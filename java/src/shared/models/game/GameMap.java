@@ -489,7 +489,7 @@ public class GameMap {
             if (hasBuilding(v)) {
                 if (getBuildingOwner(v) == player)
                     hasAdjacentBuilding = true;
-                else if (isSetup && settlementHasAdjacentRoads(v))
+                if (isSetup && settlementHasAdjacentRoads(v))
                     return false;
             }
             for (EdgeLocation e : edges) {

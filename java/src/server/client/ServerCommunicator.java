@@ -29,13 +29,11 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
     private static final Logger LOGGER = Logger.getLogger("ServerCommunicator");
     private Map<String, EndpointHandler> contexts;
     private HttpServer http;
-    private SwaggerHandler swaggerHandler = new SwaggerHandler();
 
     public ServerCommunicator(IServerManager serverManager) throws IOException {
         initCommands();
         http = HttpServer.create();
-        // Swagger calls are not cool and lambda-ed out
-        http.createContext("/docs/api/", new SwaggerHandler());
+        http.createContext("/docs/", new DocsHandler());
         http.createContext("/", this);
         setServerManager(serverManager);
     }

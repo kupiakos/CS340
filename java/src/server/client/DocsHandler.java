@@ -23,8 +23,8 @@ import static shared.utils.ClassUtils.getStackTrace;
  * Appends ".json" to the request before getting the proper file from the file system
  */
 
-class SwaggerHandler implements HttpHandler {
-    private static final Logger LOGGER = Logger.getLogger("SwaggerHandler");
+class DocsHandler implements HttpHandler {
+    private static final Logger LOGGER = Logger.getLogger("DocsHandler");
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
