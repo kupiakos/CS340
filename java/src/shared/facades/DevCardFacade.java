@@ -1,10 +1,14 @@
 package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
+<<<<<<< HEAD
 import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.definitions.TurnStatus;
+=======
+import shared.definitions.*;
+>>>>>>> 6787c1787953a4bebea561e274086f1c3dfea985
 import shared.locations.HexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.DevCardSet;
@@ -92,6 +96,7 @@ public class DevCardFacade extends AbstractFacade {
         }
         DevCardType randomType = bank.getRandom();
         currentPlayer.getNewDevCards().setOfType(randomType, currentPlayer.getNewDevCards().getOfType(randomType) + 1);
+        getFacades().getResources().purchaseItem(currentPlayer, PurchaseType.DEVCARD);
     }
 
     public boolean canUseDevCard(@NotNull Player currentPlayer) {
@@ -222,11 +227,16 @@ public class DevCardFacade extends AbstractFacade {
         if (!canUseVictoryPointCards(currentPlayer)) {
             throw new IllegalArgumentException();
         }
-        currentPlayer.setPlayedDevCard(true);
+        //currentPlayer.setPlayedDevCard(true);
+        currentPlayer.getOldDevCards().setOfType(DevCardType.MONUMENT, currentPlayer.getOldDevCards().getOfType(DevCardType.MONUMENT) - 1);
         currentPlayer.setMonuments(currentPlayer.getMonuments() + 1);
 
-        getModel().setWinner(currentPlayer.getPlayerID());
+        //Changes here
+        //getModel().setWinner(currentPlayer.getPlayerID());
         getFacades().getTurn().calcVictoryPoints();
+        if (getFacades().getTurn().canEndGame()) {
+            getModel().setWinner(currentPlayer.getPlayerID());
+        }
     }
 
     /**

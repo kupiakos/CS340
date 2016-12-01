@@ -5,6 +5,7 @@ import client.base.IAction;
 import shared.definitions.PurchaseType;
 import shared.definitions.ResourceType;
 import shared.facades.ResourcesFacade;
+import shared.facades.TurnFacade;
 import shared.models.game.ClientModel;
 import shared.models.game.Player;
 
@@ -96,6 +97,7 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 
         Player player = getPlayer();
         ResourcesFacade resourcesFacade = getFacade().getResources();
+        TurnFacade turnFacade = getGameManager().getFacade().getTurn();
 
         for (ResourceType resource : ResourceType.values()) {
             getView().setElementAmount(
@@ -107,17 +109,17 @@ public class ResourceBarController extends Controller implements IResourceBarCon
         int roads = player.getRoads();
         getView().setElementAmount(ResourceBarElement.ROAD, roads);
         getView().setElementEnabled(ResourceBarElement.ROAD,
-                resourcesFacade.canPurchaseItem(player, PurchaseType.ROAD));
+                resourcesFacade.canPurchaseItem(player, PurchaseType.ROAD) && turnFacade.isPlayersTurn(player));
 
         int settlements = player.getSettlements();
         getView().setElementAmount(ResourceBarElement.SETTLEMENT, settlements);
         getView().setElementEnabled(ResourceBarElement.SETTLEMENT,
-                resourcesFacade.canPurchaseItem(player, PurchaseType.SETTLEMENT));
+                resourcesFacade.canPurchaseItem(player, PurchaseType.SETTLEMENT) && turnFacade.isPlayersTurn(player));
 
         int cities = player.getCities();
         getView().setElementAmount(ResourceBarElement.CITY, cities);
         getView().setElementEnabled(ResourceBarElement.CITY,
-                resourcesFacade.canPurchaseItem(player, PurchaseType.CITY));
+                resourcesFacade.canPurchaseItem(player, PurchaseType.CITY) && turnFacade.isPlayersTurn(player));
 
         int soldiers = player.getSoldiers();
         getView().setElementAmount(ResourceBarElement.SOLDIERS, soldiers);

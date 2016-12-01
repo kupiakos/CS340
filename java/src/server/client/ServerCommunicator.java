@@ -119,7 +119,10 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
         for (EndpointHandler h : contexts.values()) {
             h.setServerManager(serverManager);
         }
+<<<<<<< HEAD
 
         swaggerHandler.setServerManager(serverManager);
+=======
+>>>>>>> 6787c1787953a4bebea561e274086f1c3dfea985
     }
 }

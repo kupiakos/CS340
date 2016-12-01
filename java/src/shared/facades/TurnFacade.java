@@ -2,6 +2,7 @@ package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import shared.definitions.DevCardType;
 import shared.definitions.PlayerIndex;
 import shared.definitions.TurnStatus;
 import shared.models.game.ClientModel;
@@ -168,7 +169,7 @@ public class TurnFacade extends AbstractFacade {
         for (Player p : getModel().getPlayers()) {
             int points = p.getMonuments();
             points += getModel().getMap().getPlayerSettlements(p.getPlayerIndex()).size();
-            points += getModel().getMap().getPlayerCities(p.getPlayerIndex()).size();
+            points += (getModel().getMap().getPlayerCities(p.getPlayerIndex()).size() * 2);
             if (getModel().getTurnTracker().getLongestRoad() == p.getPlayerIndex()) {
                 points += 2;
             }

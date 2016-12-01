@@ -521,7 +521,7 @@ public class MapController extends Controller implements IMapController {
                         new RobPlayerAction(
                                 c.newRobberLoc,
                                 c.getPlayer().getPlayerIndex(),
-                                victim == null ? -1 : victim.getPlayerIndex().index()))
+                                victim == null ? null : victim.getPlayerIndex()))
                         .onSuccess(() -> c.setStatus(NORMAL))
                         .onError(e -> {
                             LOGGER.severe("Failed to rob player: " + e.getMessage());

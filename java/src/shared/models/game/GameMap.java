@@ -301,6 +301,13 @@ public class GameMap {
                 .collect(Collectors.toSet());
     }
 
+    @NotNull
+    public Set<HexLocation> getVertexHexes(@NotNull VertexLocation vertex) {
+        Set<HexLocation> locs = vertex.getHexes();
+        locs.removeIf(h -> !hexes.containsKey(h));
+        return locs;
+    }
+
     /**
      * Get the hex associated with a given location.
      *
@@ -482,7 +489,7 @@ public class GameMap {
             if (hasBuilding(v)) {
                 if (getBuildingOwner(v) == player)
                     hasAdjacentBuilding = true;
-                else if (isSetup && settlementHasAdjacentRoads(v))
+                if (isSetup && settlementHasAdjacentRoads(v))
                     return false;
             }
             for (EdgeLocation e : edges) {

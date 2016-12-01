@@ -1,6 +1,7 @@
 package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import shared.definitions.PlayerIndex;
 import shared.definitions.ResourceType;
 import shared.definitions.TurnStatus;
@@ -144,12 +145,13 @@ public class RobberFacade extends AbstractFacade {
      * The {@code targetPlayer} must have at least one resource
      * @post None.
      */
-    public boolean canStealFrom(PlayerIndex targetPlayer, PlayerIndex currentPlayer) {
-        if (targetPlayer == null || currentPlayer == null || getFacades().getTurn().getPhase() != TurnStatus.ROBBING) {
+    public boolean canStealFrom(@Nullable PlayerIndex targetPlayer, @NotNull PlayerIndex currentPlayer) {
+        if (getFacades().getTurn().getPhase() != TurnStatus.ROBBING || currentPlayer == targetPlayer) {
             return false;
         }
-        if (getModel().getPlayer(targetPlayer).getResources().getTotal() == 0 || currentPlayer == targetPlayer) {
-            return false;
+        // Can always steal from no one
+        if (targetPlayer == null || getModel().getPlayer(targetPlayer).getResources().getTotal() == 0) {
+            return true;
         }
         HexLocation hexLocation = getModel().getMap().getRobber();
         Set<VertexLocation> vertexLocationSet = hexLocation.getVertices();
@@ -166,21 +168,29 @@ public class RobberFacade extends AbstractFacade {
      *
      * @param currentPlayer The {@link PlayerIndex} of the {@link Player} who wants to steal
      * @param targetPlayer  The {@link PlayerIndex} of the {@link Player} that the {@code currentPlayer} wants to take a resource card from
+     * @return whether a resource was stolen
      * @throws IllegalArgumentException
      * @pre The current state of the turn is {@link shared.definitions.TurnStatus#ROBBING} and this method is called by the controller after {@link RobberFacade#canStealFrom(PlayerIndex, PlayerIndex)} is called.
      * {@link RobberFacade#canStealFrom(PlayerIndex, PlayerIndex)} returns a true statement.
      * {@code currentPlayer} and {@code targetPlayer} are both valid (not null) and are both part of the current {@link ClientModel}.
      * @post The {@code currentPlayer} takes one resource card that originally belonged to the {@code targetPlayer}
      */
-    public void steal(@NotNull PlayerIndex targetPlayer, @NotNull PlayerIndex currentPlayer) {
+    public boolean steal(@Nullable PlayerIndex targetPlayer, @NotNull PlayerIndex currentPlayer) {
+        boolean stole = false;
         if (!canStealFrom(targetPlayer, currentPlayer)) {
             throw new IllegalArgumentException();
         }
-        ResourceSet targetSet = getModel().getPlayer(targetPlayer).getResources();
-        ResourceSet currentSet = getModel().getPlayer(currentPlayer).getResources();
-        ResourceType randType = getModel().getPlayer(targetPlayer).getResources().getRandom();
-        targetSet.setOfType(randType, targetSet.getOfType(randType) - 1);
-        currentSet.setOfType(randType, currentSet.getOfType(randType) + 1);
+        if (targetPlayer != null) {
+            ResourceSet targetSet = getModel().getPlayer(targetPlayer).getResources();
+            ResourceSet currentSet = getModel().getPlayer(currentPlayer).getResources();
+            ResourceType randType = getModel().getPlayer(targetPlayer).getResources().getRandom();
+            if (randType != null) {
+                targetSet.setOfType(randType, targetSet.getOfType(randType) - 1);
+                currentSet.setOfType(randType, currentSet.getOfType(randType) + 1);
+                stole = true;
+            }
+        }
         getFacades().getTurn().finishRobbing();
+        return stole;
     }
 }

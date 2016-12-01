@@ -150,6 +150,16 @@ public class SoldierAction extends GameAction {
     public void execute() {
         getFacades().getDevCards().useSoldierCard(getModel().getPlayer(playerIndex));
         getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex), " played a Soldier card");
+        getFacades().getRobber().moveRobber(location);
+        if (getFacades().getRobber().canStealFrom(PlayerIndex.fromInt(victimIndex), playerIndex)) {
+            if (getFacades().getRobber().steal(PlayerIndex.fromInt(victimIndex), playerIndex)) {
+                getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex),
+                        " robbed " + getModel().getPlayer(PlayerIndex.fromInt(victimIndex)).getName());
+            } else {
+                getFacades().getClientModel().getLog().prefixMessage(getModel().getPlayer(playerIndex),
+                        " could not rob");
+            }
+        }
         getModel().incrementVersion();
     }
 }

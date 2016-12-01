@@ -182,10 +182,9 @@ public class RobberFacadeTest {
         assertFalse(facade.canStealFrom(target, currentPlayer.getPlayerIndex())); //Turn status error
         model.getTurnTracker().setStatus(TurnStatus.ROBBING);
         assertFalse(facade.canStealFrom(target, currentPlayer.getPlayerIndex())); //Same player error
-        assertFalse(facade.canStealFrom(null, currentPlayer.getPlayerIndex()));   //Null
-        assertFalse(facade.canStealFrom(target, null));                           //Null
+        assertTrue(facade.canStealFrom(null, currentPlayer.getPlayerIndex()));    //Null
         target = PlayerIndex.SECOND;
-        assertFalse(facade.canStealFrom(target, currentPlayer.getPlayerIndex())); //No resources
+        assertTrue(facade.canStealFrom(target, currentPlayer.getPlayerIndex())); //No resources
         gameMap.setRobber(new HexLocation(0, -1));
         //No settlement
         target = PlayerIndex.THIRD;
@@ -209,12 +208,6 @@ public class RobberFacadeTest {
         }
 
         model.getTurnTracker().setStatus(TurnStatus.ROBBING);
-        try {
-            facade.steal(null, currentPlayer.getPlayerIndex());
-            Assert.fail("Did not fail when expected");
-        } catch (IllegalArgumentException e) {
-            // Successfully failed
-        }
 
         try {
             facade.steal(target, null);
@@ -226,15 +219,6 @@ public class RobberFacadeTest {
         try {
             facade.steal(target, currentPlayer.getPlayerIndex());
             Assert.fail("Did not fail when expected");
-        } catch (IllegalArgumentException e) {
-            // Successfully failed
-        }
-
-        target = PlayerIndex.SECOND;
-        try {
-            facade.steal(target, currentPlayer.getPlayerIndex());
-            Assert.fail("Did not fail when expected");
-
         } catch (IllegalArgumentException e) {
             // Successfully failed
         }
