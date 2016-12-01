@@ -1,4 +1,5 @@
-<project name="DemoServer2" default="server" basedir=".">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="DemoServer2" default="server" basedir="."
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="antlib:org.apache.ivy.ant ">
 
     <!-- PROPERTIES -->
     <!-- ********** -->
@@ -47,6 +48,9 @@
     <property name="host" value="localhost"/>
     <property name="port" value="8081"/>
 
+
+    <taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties"
+             classpath="${java.lib}/checkstyle-7.3-all.jar"/>
 
     <!-- CLASSPATHS -->
     <!-- ********** -->
@@ -211,7 +215,7 @@
 
     <!-- Run the JUnit Tests -->
     <!-- Output is XML, could also be plain-->
-    <target name="junit" depends="test-compile">
+    <target name="junit" depends="test-compile, checkstyle">
         <junit printsummary="on" fork="on" haltonfailure="yes" showoutput="yes">
             <!--<junit printsummary="off" fork="on"-->
             <!--failureproperty="test.failed" showoutput="off" dir="out"-->
@@ -262,6 +266,71 @@
 
     <target name="main" depends="compile, test">
         <description>Main target</description>
+    </target>
+
+
+    <!-- ##########################################################################
+     ####################### target: checkstyle ###############################
+     ########################################################################## -->
+
+    <target name="checkstyle"
+            description="Generates a report of code convention violations."
+            depends="init-checkstyle">
+        <!-- See http://checkstyle.sourceforge.net/anttask.html for full options of using checkstyle with ant-->
+        <checkstyle config="checkstyle.xml"
+                    failureProperty="checkstyle.failure"
+                    failOnViolation="true">
+            <formatter type="plain" tofile="java/testreport/checkstyle_report.txt"/>
+            <fileset dir="java/src" includes="**/*.java"/>
+        </checkstyle>
+    </target>
+
+    <target name="init-checkstyle" depends="resolve">
+        <path id="checkstyle.lib.path">
+            <fileset dir="lib" includes="*.jar"/>
+        </path>
+        <!-- Sevntu custom checks are retrieved by Ivy into lib folder and will be accessible to checkstyle-->
+        <taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties"
+                 classpathref="checkstyle.lib.path"/>
+    </target>
+
+
+    <!-- ##########################################################################
+         ####################### target: resolve ##################################
+         ########################################################################## -->
+    <target name="resolve" description="retrieve dependencies with ivy" depends="init-ivy">
+        <ivy:settings file="ivysettings.xml"/>
+        <ivy:retrieve/>
+    </target>
+
+
+    <!-- ##########################################################################
+         ####### Downloading and setup Ivy for managing dependencies ##############
+         ##########################################################################-->
+    <property name="ivy.install.version" value="2.1.0-rc2"/>
+    <!-- You may place ivy.jar into other folder if you want to keep folder lib clean-->
+    <property name="ivy.jar.dir" value="lib"/>
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
+
+    <target name="download-ivy" unless="offline">
+
+        <mkdir dir="${ivy.jar.dir}"/>
+        <!-- download Ivy from web site so that it can be used even without any special installation -->
+        <get src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+             dest="${ivy.jar.file}" usetimestamp="true"/>
+    </target>
+
+    <target name="init-ivy" depends="download-ivy">
+        <!-- try to load ivy here from ivy home, in case the user has not already dropped
+                it into ant's lib dir (note that the latter copy will always take precedence).
+                We will not fail as long as local lib dir exists (it may be empty) and
+                ivy is in at least one of ant's lib dir or the local lib dir. -->
+        <path id="ivy.lib.path">
+            <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+        </path>
+
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
 
 </project>
