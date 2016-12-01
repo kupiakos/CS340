@@ -29,13 +29,11 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
     private static final Logger LOGGER = Logger.getLogger("ServerCommunicator");
     private Map<String, EndpointHandler> contexts;
     private HttpServer http;
-    private SwaggerHandler swaggerHandler = new SwaggerHandler();
 
     public ServerCommunicator(IServerManager serverManager) throws IOException {
         initCommands();
         http = HttpServer.create();
-        // Swagger calls are not cool and lambda-ed out
-        http.createContext("/docs/api/", new SwaggerHandler());
+        http.createContext("/docs/", new DocsHandler());
         http.createContext("/", this);
         setServerManager(serverManager);
     }
@@ -50,6 +48,10 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
      * @post the exchange will have sent back the requested data and is now closed
      */
     static void sendResponse(@NotNull HttpExchange exchange, int responseCode, @Nullable String message) throws IOException {
+        if (responseCode >= 400) {
+            exchange.getResponseHeaders().add("Content-Type", "text/html");
+        }
+
         if (message == null) {
             exchange.sendResponseHeaders(responseCode, 0);
         } else {
@@ -119,10 +121,7 @@ ServerCommunicator implements HttpHandler, IServerCommunicator {
         for (EndpointHandler h : contexts.values()) {
             h.setServerManager(serverManager);
         }
-<<<<<<< HEAD
 
-        swaggerHandler.setServerManager(serverManager);
-=======
->>>>>>> 6787c1787953a4bebea561e274086f1c3dfea985
     }
+
 }

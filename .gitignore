@@ -60,3 +60,5 @@ java/build/
 java/module_phase_1.xml
 java/testreport/
 testreport/
+.idea/
+java/Phase 1.iml
