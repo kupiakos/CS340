@@ -1,14 +1,8 @@
+
 package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
-<<<<<<< HEAD
-import shared.definitions.DevCardType;
-import shared.definitions.PlayerIndex;
-import shared.definitions.ResourceType;
-import shared.definitions.TurnStatus;
-=======
 import shared.definitions.*;
->>>>>>> 6787c1787953a4bebea561e274086f1c3dfea985
 import shared.locations.HexLocation;
 import shared.models.game.ClientModel;
 import shared.models.game.DevCardSet;
@@ -95,7 +89,11 @@ public class DevCardFacade extends AbstractFacade {
             bank.setOfType(t, bank.getOfType(t) - all.getOfType(t));
         }
         DevCardType randomType = bank.getRandom();
-        currentPlayer.getNewDevCards().setOfType(randomType, currentPlayer.getNewDevCards().getOfType(randomType) + 1);
+        if (randomType == DevCardType.MONUMENT) {
+            currentPlayer.getOldDevCards().setOfType(randomType, currentPlayer.getOldDevCards().getOfType(randomType) + 1);
+        } else {
+            currentPlayer.getNewDevCards().setOfType(randomType, currentPlayer.getNewDevCards().getOfType(randomType) + 1);
+        }
         getFacades().getResources().purchaseItem(currentPlayer, PurchaseType.DEVCARD);
     }
 
