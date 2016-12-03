@@ -4,12 +4,19 @@ import server.db.IGameDAO;
 import server.models.GameModel;
 import shared.models.ICommandAction;
 
+import java.sql.Connection;
 import java.util.List;
 
 /**
  * Created by elija on 12/2/2016.
  */
 public class PostgresGameDAO extends IGameDAO {
+    private Connection db = null;
+
+    public PostgresGameDAO(Connection db) {
+        this.db = db;
+    }
+
     @Override
     public GameModel findById(int id) {
         return null;
