@@ -1,9 +1,5 @@
-package server.plugin.persistence;
+package server.plugin;
 
-
-import server.plugin.IPlugin;
-import server.plugin.IPluginLoader;
-import server.plugin.PluginConfig;
 
 import java.util.ArrayList;
 

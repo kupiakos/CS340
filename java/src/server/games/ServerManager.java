@@ -8,8 +8,8 @@ import server.client.ServerCommunicator;
 import server.models.ServerModel;
 import server.plugin.IPlugin;
 import server.plugin.IPluginLoader;
+import server.plugin.PluginLoader;
 import server.plugin.persistence.IPersistenceProvider;
-import server.plugin.persistence.PluginLoader;
 import shared.IServer;
 
 import java.io.IOException;
