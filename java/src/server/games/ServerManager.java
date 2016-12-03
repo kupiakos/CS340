@@ -15,6 +15,7 @@ import shared.IServer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ServerManager implements IServerManager {
@@ -22,7 +23,7 @@ public class ServerManager implements IServerManager {
     private IServerCommunicator communicator;
     private ServerModel model;
     private IPluginLoader pluginLoader;
-    private ArrayList<IPlugin> plugins = new ArrayList<>();
+    private List<IPlugin> plugins = new ArrayList<>();
     private IPersistenceProvider persistenceProvider;
 
     public ServerManager() throws IOException {
