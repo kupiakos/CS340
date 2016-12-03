@@ -8,7 +8,7 @@ import server.plugin.persistence.IPersistenceProvider;
 import shared.IServer;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 public interface IServerManager {
     @Nullable
@@ -21,5 +21,5 @@ public interface IServerManager {
 
     void stopServer();
 
-    IPersistenceProvider getPersistenceProvider(ArrayList<IPlugin> plugins);
+    IPersistenceProvider getPersistenceProvider(List<IPlugin> plugins);
 }

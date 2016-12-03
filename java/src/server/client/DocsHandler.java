@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -47,7 +48,7 @@ class DocsHandler implements HttpHandler {
         }
 
         try {
-            ArrayList<String> mimetypes = new ArrayList<>();
+            List<String> mimetypes = new ArrayList<>();
             mimetypes.add(FileUtils.getMimeType(filepath));
             exchange.getResponseHeaders().add("Content-Type", mimetypes.get(0));
             exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin, X-Atmosphere-tracking-id, X-Atmosphere-Framework, X-Cache-Date, Content-Type, X-Atmosphere-Transport, *");

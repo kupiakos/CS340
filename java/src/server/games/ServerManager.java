@@ -72,7 +72,7 @@ public class ServerManager implements IServerManager {
      * @return PersistenceProvider for server
      */
     @Override
-    public IPersistenceProvider getPersistenceProvider(ArrayList<IPlugin> plugins) {
+    public IPersistenceProvider getPersistenceProvider(List<IPlugin> plugins) {
         return null;
     }
 }
