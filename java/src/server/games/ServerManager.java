@@ -6,19 +6,31 @@ import server.client.GameServer;
 import server.client.IServerCommunicator;
 import server.client.ServerCommunicator;
 import server.models.ServerModel;
+import server.plugin.IPlugin;
+import server.plugin.IPluginLoader;
+import server.plugin.PluginLoader;
+import server.plugin.persistence.IPersistenceProvider;
 import shared.IServer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ServerManager implements IServerManager {
     private Map<Integer, IServer> runningServers = new HashMap<>();
     private IServerCommunicator communicator;
     private ServerModel model;
+    private IPluginLoader pluginLoader;
+    private List<IPlugin> plugins = new ArrayList<>();
+    private IPersistenceProvider persistenceProvider;
 
     public ServerManager() throws IOException {
         communicator = new ServerCommunicator(this);
+        pluginLoader = new PluginLoader();
+        // TODO:: what type of configs: file or cmd line?
+        pluginLoader.loadConfig(null);
     }
 
     @Nullable
@@ -50,5 +62,17 @@ public class ServerManager implements IServerManager {
     @Override
     public void stopServer() {
         communicator.stop();
+    }
+
+    /**
+     * Takes a list of available running plugins and checks if there is one of type PERSISTENCE and
+     * returns that to be the servers current database
+     *
+     * @param plugins
+     * @return PersistenceProvider for server
+     */
+    @Override
+    public IPersistenceProvider getPersistenceProvider(List<IPlugin> plugins) {
+        return null;
     }
 }
