@@ -1,3 +1,4 @@
+
 package shared.facades;
 
 import org.jetbrains.annotations.NotNull;
@@ -88,7 +89,11 @@ public class DevCardFacade extends AbstractFacade {
             bank.setOfType(t, bank.getOfType(t) - all.getOfType(t));
         }
         DevCardType randomType = bank.getRandom();
-        currentPlayer.getNewDevCards().setOfType(randomType, currentPlayer.getNewDevCards().getOfType(randomType) + 1);
+        if (randomType == DevCardType.MONUMENT) {
+            currentPlayer.getOldDevCards().setOfType(randomType, currentPlayer.getOldDevCards().getOfType(randomType) + 1);
+        } else {
+            currentPlayer.getNewDevCards().setOfType(randomType, currentPlayer.getNewDevCards().getOfType(randomType) + 1);
+        }
         getFacades().getResources().purchaseItem(currentPlayer, PurchaseType.DEVCARD);
     }
 
