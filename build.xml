@@ -1,4 +1,5 @@
-<project name="DemoServer2" default="server" basedir=".">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="DemoServer2" default="server"
+         basedir=".">
 
     <!-- PROPERTIES -->
     <!-- ********** -->
@@ -263,6 +264,5 @@
     <target name="main" depends="compile, test">
         <description>Main target</description>
     </target>
-
 </project>
- 
+
