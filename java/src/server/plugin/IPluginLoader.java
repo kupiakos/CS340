@@ -1,6 +1,5 @@
 package server.plugin;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +14,7 @@ public interface IPluginLoader {
      * files on its classpath using URLClassLoader, and then use the Class.forName method to
      * load the class, and the Class.newInstance method to create them.
      */
-    List<IPlugin> loadConfig(ArrayList<PluginConfig> configs);
+    List<IPlugin> loadConfig(List<PluginConfig> configs);
 
     /**
      * Calls create() for each plugin
@@ -23,7 +22,7 @@ public interface IPluginLoader {
      * @param plugins list of non-activated plugins
      * @return list of activated plugins
      */
-    List<IPlugin> startPlugins(ArrayList<IPlugin> plugins);
+    List<IPlugin> startPlugins(List<IPlugin> plugins);
 
     /**
      * Calls all needed code to turn off / disable each plugin
@@ -31,7 +30,7 @@ public interface IPluginLoader {
      * @param plugins list of activated plugins
      * @return list of plugins that turned off correctly
      */
-    List<IPlugin> stopPlugins(ArrayList<IPlugin> plugins);
+    List<IPlugin> stopPlugins(List<IPlugin> plugins);
 
     /**
      * Based on the command­line parameter for the name of the persistence plugin and

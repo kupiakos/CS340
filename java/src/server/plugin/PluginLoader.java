@@ -1,26 +1,27 @@
 package server.plugin;
 
-
-import java.util.ArrayList;
+import java.util.List;
 
 public class PluginLoader implements IPluginLoader {
+
+
     @Override
-    public ArrayList<IPlugin> loadConfig(ArrayList<PluginConfig> configs) {
+    public List<IPlugin> loadConfig(List<PluginConfig> configs) {
         return null;
     }
 
     @Override
-    public ArrayList<IPlugin> startPlugins(ArrayList<IPlugin> plugins) {
+    public List<IPlugin> startPlugins(List<IPlugin> plugins) {
         return null;
     }
 
     @Override
-    public ArrayList<IPlugin> stopPlugins(ArrayList<IPlugin> plugins) {
+    public List<IPlugin> stopPlugins(List<IPlugin> plugins) {
         return null;
     }
 
     @Override
-    public ArrayList<PluginConfig> parseConfig(Object o) {
+    public List<PluginConfig> parseConfig(Object o) {
         return null;
     }
 }
