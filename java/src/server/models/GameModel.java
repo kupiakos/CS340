@@ -1,5 +1,6 @@
 package server.models;
 
+import com.google.gson.annotations.Expose;
 import shared.definitions.CatanColor;
 import shared.definitions.PlayerIndex;
 import shared.models.game.ClientModel;
@@ -14,8 +15,13 @@ import java.util.Map;
 
 public class GameModel {
 
+    @Expose
     private int id;
+
+    @Expose
     private GameInfo gameInfo;
+
+    @Expose
     private ClientModel clientModel;
 
     public GameModel() {

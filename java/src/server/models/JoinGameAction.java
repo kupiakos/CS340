@@ -1,5 +1,7 @@
 package server.models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import shared.models.games.JoinGameRequest;
 import shared.models.games.PlayerInfo;
@@ -8,8 +10,17 @@ import shared.models.games.PlayerInfo;
  * Created by elija on 11/11/2016.
  */
 public class JoinGameAction extends ServerAction {
+    @SerializedName("type")
+    @Expose(deserialize = false)
+    private final String TYPE = "joinGame";
+
+    @Expose
     private JoinGameRequest joinGameRequest;
+
+    @Expose
     private int joinedGameId;
+
+    @Expose
     private User user;
 
     public JoinGameAction(@NotNull JoinGameRequest joinGameRequest, @NotNull User user) {

@@ -1,12 +1,20 @@
 package server.models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import shared.models.game.AddAIRequest;
 
 /**
  * Created by elija on 11/16/2016.
  */
 public class AddAIAction extends ServerAction {
+    @SerializedName("type")
+    @Expose(deserialize = false)
+    private final String TYPE = "addAI";
+
+    @Expose
     private AddAIRequest request;
+    @Expose
     private int gameID;
 
     public AddAIAction(AddAIRequest request, int ID) {
