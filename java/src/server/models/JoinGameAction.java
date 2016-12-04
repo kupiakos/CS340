@@ -32,6 +32,36 @@ public class JoinGameAction extends ServerAction {
     }
 
     @Override
+    public String toString() {
+        return "JoinGameAction{" +
+                "joinGameRequest=" + joinGameRequest +
+                ", joinedGameId=" + joinedGameId +
+                ", user=" + user +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JoinGameAction that = (JoinGameAction) o;
+
+        if (joinedGameId != that.joinedGameId) return false;
+        if (joinGameRequest != null ? !joinGameRequest.equals(that.joinGameRequest) : that.joinGameRequest != null)
+            return false;
+        return user != null ? user.equals(that.user) : that.user == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = joinGameRequest != null ? joinGameRequest.hashCode() : 0;
+        result = 31 * result + joinedGameId;
+        result = 31 * result + (user != null ? user.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public void execute() {
         GameModel model = getServerModel().getGameModel(joinGameRequest.getId());
         if (model == null) {

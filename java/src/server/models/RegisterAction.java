@@ -20,6 +20,28 @@ public class RegisterAction extends ServerAction {
     }
 
     @Override
+    public String toString() {
+        return "RegisterAction{" +
+                "credentials=" + credentials +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RegisterAction that = (RegisterAction) o;
+
+        return credentials != null ? credentials.equals(that.credentials) : that.credentials == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return credentials != null ? credentials.hashCode() : 0;
+    }
+
+    @Override
     public void execute() {
         getServerModel().registerUser(credentials.getUsername(), credentials.getPassword());
     }
