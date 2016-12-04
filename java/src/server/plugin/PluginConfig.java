@@ -15,7 +15,7 @@ public class PluginConfig {
     /**
      * Type of plugin. Defaults to implement the IPersistenceFactory interface
      */
-    private pluginType type = pluginType.PERSISTENCE;
+    private PluginType type = PluginType.PERSISTENCE;
 
     /**
      * Default constructor
@@ -35,7 +35,7 @@ public class PluginConfig {
      * @param updateNumber
      * @param type
      */
-    public PluginConfig(String name, int updateNumber, pluginType type) {
+    public PluginConfig(String name, int updateNumber, PluginType type) {
         this.name = name;
         this.updateNumber = updateNumber;
         this.type = type;
@@ -57,18 +57,18 @@ public class PluginConfig {
         this.updateNumber = updateNumber;
     }
 
-    public pluginType getType() {
+    public PluginType getType() {
         return type;
     }
 
-    public void setType(pluginType type) {
+    public void setType(PluginType type) {
         this.type = type;
     }
 
     /**
      * Types of plugins.
      */
-    private enum pluginType {
+    public enum PluginType {
         PERSISTENCE
     }
 }
