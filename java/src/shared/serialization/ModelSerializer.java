@@ -52,4 +52,8 @@ public class ModelSerializer {
     public <T> T fromJson(String s, Class<T> classOfT) {
         return gson.fromJson(s, classOfT);
     }
+
+    public <T> T fromJson(JsonElement e, Class<T> classOfT) {
+        return gson.fromJson(e, classOfT);
+    }
 }
