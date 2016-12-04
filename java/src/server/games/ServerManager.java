@@ -13,6 +13,7 @@ import server.plugin.PluginConfig;
 import server.plugin.PluginLoader;
 import shared.IServer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class ServerManager implements IServerManager {
         // pluginCmds String must be in the format of 'name:option, name2:option' Example - mongo:100
         // pluginDir is the directory that we want to put plugins in
         String pluginCmds = null;
-        String pluginDir = null;
+        File pluginDir = null;
 
         List<PluginConfig> pc = pluginLoader.parseConfig(pluginCmds);
         List<IPlugin> lc = pluginLoader.loadConfig(pc, pluginDir);

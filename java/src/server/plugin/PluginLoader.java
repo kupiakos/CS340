@@ -1,5 +1,4 @@
 package server.plugin;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,6 +22,7 @@ public class PluginLoader implements IPluginLoader {
                 .collect(Collectors.toList());
 
         return Arrays.stream(folder.listFiles())
+                .filter(x -> x.getName().length() >= 4)
                 .filter(x -> ".jar".equals(x.getName().substring(x.getName().length() - 4, x.getName().length())))
                 .filter(x -> neededPlugins.contains(x.getName().substring(0, x.getName().length() - 4).toLowerCase()))
                 .map(this::toClass)
