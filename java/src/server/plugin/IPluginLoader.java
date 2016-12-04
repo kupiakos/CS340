@@ -1,5 +1,6 @@
 package server.plugin;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -13,8 +14,12 @@ public interface IPluginLoader {
      * The server will instantiate plugin objects by putting plugin JAR
      * files on its classpath using URLClassLoader, and then use the Class.forName method to
      * load the class, and the Class.newInstance method to create them.
+     *
+     * @param configs
+     * @param path path to the folder where the plugin .jars are located
+     * @return
      */
-    List<IPlugin> loadConfig(List<PluginConfig> configs);
+    List<IPlugin> loadConfig(List<PluginConfig> configs, File folder);
 
     /**
      * Calls create() for each plugin
@@ -36,10 +41,13 @@ public interface IPluginLoader {
      * Based on the command­line parameter for the name of the persistence plugin and
      * number of commands, N, between updates of the game state blobs
      * <p>
-     * Can either take a config file or command line args
+     * Takes PluginConfig object from params from the cmd line args
+     * Future implementation could also handel a config file for several plugin cmd options
+     * String must be in the format of name:option, name2:option
+     * Example - mongo:100
      *
-     * @param o config object
+     * @param s String config
      * @return list of pluginConfigs
      */
-    List<PluginConfig> parseConfig(Object o);
+    List<PluginConfig> parseConfig(String s);
 }

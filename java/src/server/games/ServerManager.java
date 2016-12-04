@@ -5,13 +5,15 @@ import org.jetbrains.annotations.Nullable;
 import server.client.GameServer;
 import server.client.IServerCommunicator;
 import server.client.ServerCommunicator;
+import server.db.IPersistenceProvider;
 import server.models.ServerModel;
 import server.plugin.IPlugin;
 import server.plugin.IPluginLoader;
+import server.plugin.PluginConfig;
 import server.plugin.PluginLoader;
-import server.plugin.persistence.IPersistenceProvider;
 import shared.IServer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,8 +31,17 @@ public class ServerManager implements IServerManager {
     public ServerManager() throws IOException {
         communicator = new ServerCommunicator(this);
         pluginLoader = new PluginLoader();
-        // TODO:: what type of configs: file or cmd line?
-        pluginLoader.loadConfig(null);
+
+        //TODO:: fix args for real
+        // pluginCmds String must be in the format of 'name:option, name2:option' Example - mongo:100
+        // pluginDir is the directory that we want to put plugins in
+        String pluginCmds = null;
+        File pluginDir = null;
+
+        List<PluginConfig> pc = pluginLoader.parseConfig(pluginCmds);
+        List<IPlugin> lc = pluginLoader.loadConfig(pc, pluginDir);
+        plugins = pluginLoader.startPlugins(lc);
+        persistenceProvider = getPersistenceProvider(plugins);
     }
 
     @Nullable
