@@ -17,6 +17,9 @@ public class AddAIAction extends ServerAction {
     @Expose
     private int gameID;
 
+    public AddAIAction() {
+    }
+
     public AddAIAction(AddAIRequest request, int ID) {
         this.request = request;
         gameID = ID;

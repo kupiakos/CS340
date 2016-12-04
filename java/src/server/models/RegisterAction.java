@@ -12,6 +12,9 @@ public class RegisterAction extends ServerAction {
     @Expose
     private Credentials credentials;
 
+    public RegisterAction() {
+    }
+
     public RegisterAction(Credentials credentials) {
         this.credentials = credentials;
     }

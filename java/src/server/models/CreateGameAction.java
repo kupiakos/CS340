@@ -15,6 +15,9 @@ public class CreateGameAction extends ServerAction {
     @Expose
     private CreateGameRequest request;
 
+    public CreateGameAction() {
+    }
+
     public CreateGameAction(CreateGameRequest request) {
         this.request = request;
     }

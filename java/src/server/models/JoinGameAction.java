@@ -23,6 +23,9 @@ public class JoinGameAction extends ServerAction {
     @Expose
     private User user;
 
+    public JoinGameAction() {
+    }
+
     public JoinGameAction(@NotNull JoinGameRequest joinGameRequest, @NotNull User user) {
         this.joinGameRequest = joinGameRequest;
         this.user = user;
