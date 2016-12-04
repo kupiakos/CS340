@@ -60,6 +60,8 @@ public class PostgresProvider implements IPersistenceProvider {
                     "COMMAND BYTEA NOT NULL); " +
                     "END; " +
                     "$do$");
+            stmt.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -71,6 +73,7 @@ public class PostgresProvider implements IPersistenceProvider {
         try {
             Statement stmt = db.createStatement();
             stmt.execute("BEGIN TRANSACTION");
+            stmt.close();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -83,6 +86,7 @@ public class PostgresProvider implements IPersistenceProvider {
         try {
             Statement stmt = db.createStatement();
             stmt.execute("END TRANSACTION");
+            stmt.close();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -97,6 +101,7 @@ public class PostgresProvider implements IPersistenceProvider {
             stmt.execute("DELETE FROM USERINFO");
             stmt.execute("DELETE FROM GAMES");
             stmt.execute("DELETE FROM COMMANDS");
+            stmt.close();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
