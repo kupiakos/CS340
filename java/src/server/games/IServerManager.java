@@ -2,6 +2,7 @@ package server.games;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import server.db.IPersistenceProvider;
 import server.models.ServerModel;
 import server.plugin.IPlugin;
 import server.plugin.persistence.IPersistenceProvider;
