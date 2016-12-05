@@ -4,10 +4,7 @@ import server.db.IGameDAO;
 import server.db.IPersistenceProvider;
 import server.db.IUserDAO;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * Created by elija on 12/2/2016.
@@ -21,8 +18,22 @@ public class PostgresProvider implements IPersistenceProvider {
     public PostgresProvider() {
         try {
             Class.forName("org.postgresql.Driver");
-            db = DriverManager.getConnection("jdbc:postgresql://localhost/", "postgres", "family7");
+            db = DriverManager.getConnection("jdbc:postgresql://localhost/template1", "postgres", "family7");
             Statement stmt = db.createStatement();
+            stmt.execute("DROP DATABASE CATANDB;");
+            ResultSet rs = stmt.executeQuery("SELECT 1 FROM pg_database WHERE datname = 'catandb';");
+            if (!rs.next()) {
+                rs = stmt.executeQuery("SELECT 1 FROM pg_roles WHERE rolname='player';");
+                if (!rs.next()) {
+                    stmt.execute("CREATE USER PLAYER WITH PASSWORD 'catan';");
+                }
+                stmt.execute("CREATE DATABASE CATANDB;");
+                stmt.execute("GRANT ALL PRIVILEGES ON DATABASE CATANDB TO PLAYER;");
+                stmt.execute("ALTER USER PLAYER WITH SUPERUSER;");
+            }
+            rs.close();
+            stmt.close();
+            db = DriverManager.getConnection("jdbc:postgresql://localhost/catandb", "player", "catan");
 
 
         } catch (SQLException e) {
