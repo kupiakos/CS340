@@ -18,7 +18,7 @@ public class PostgresProvider implements IPersistenceProvider {
     public PostgresProvider() {
         try {
             Class.forName("org.postgresql.Driver");
-            db = DriverManager.getConnection("jdbc:postgresql://localhost/template1", "postgres", "family7");
+            db = DriverManager.getConnection("jdbc:postgresql://localhost/template1", "postgres", "password");
             Statement stmt = db.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT 1 FROM pg_database WHERE datname = 'catandb';");
             if (!rs.next()) {
