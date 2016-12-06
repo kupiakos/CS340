@@ -21,5 +21,7 @@ public interface IServerManager {
 
     void stopServer();
 
-    IPersistenceProvider getPersistenceProvider(List<IPlugin> plugins);
+    IPersistenceProvider findPersistenceProvider(List<IPlugin> plugins);
+
+    IPersistenceProvider getPersistenceProvider();
 }

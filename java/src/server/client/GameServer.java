@@ -53,6 +53,7 @@ public class GameServer implements IServer {
         RegisterAction action = new RegisterAction(credentials);
         action.setServerModel(getServerModel());
         action.execute();
+        getServerManager().getPersistenceProvider().getUserDAO().insert(getServerModel().getUser(credentials.getUsername()));
         return getServerModel().newSession(credentials.getUsername());
     }
 
@@ -67,6 +68,7 @@ public class GameServer implements IServer {
         CreateGameAction action = new CreateGameAction(request);
         action.setServerModel(getServerModel());
         action.execute();
+        getServerManager().getPersistenceProvider().getGameDAO().insert(getServerModel().getGameModel(action.getCreatedGameId()));
     }
 
     @Override
@@ -78,6 +80,7 @@ public class GameServer implements IServer {
         JoinGameAction action = new JoinGameAction(request, user);
         action.setServerModel(getServerModel());
         action.execute();
+        getServerManager().getPersistenceProvider().getGameDAO().insertCommand(action, getGameId());
         return action.getJoinedGameId();
     }
 
@@ -124,6 +127,7 @@ public class GameServer implements IServer {
         AddAIAction action = new AddAIAction(request, getGameId());
         action.setServerModel(getServerModel());
         action.execute();
+        getServerManager().getPersistenceProvider().getGameDAO().insertCommand(action, getGameId());
     }
 
     @Override
@@ -135,6 +139,7 @@ public class GameServer implements IServer {
     private ClientModel executeGameAction(@NotNull GameAction action) {
         action.setFacades(getFacades());
         action.execute();
+        getServerManager().getPersistenceProvider().getGameDAO().insertCommand(action, this.gameId);
         return getModel();
     }
 

@@ -41,7 +41,7 @@ public class ServerManager implements IServerManager {
         List<PluginConfig> pc = pluginLoader.parseConfig(pluginCmds);
         List<IPlugin> lc = pluginLoader.loadConfig(pc, pluginDir);
         plugins = pluginLoader.startPlugins(lc);
-        persistenceProvider = getPersistenceProvider(plugins);
+        persistenceProvider = findPersistenceProvider(plugins);
     }
 
     @Nullable
@@ -83,7 +83,12 @@ public class ServerManager implements IServerManager {
      * @return PersistenceProvider for server
      */
     @Override
-    public IPersistenceProvider getPersistenceProvider(List<IPlugin> plugins) {
+    public IPersistenceProvider findPersistenceProvider(List<IPlugin> plugins) {
         return null;
+    }
+
+    @Override
+    public IPersistenceProvider getPersistenceProvider() {
+        return persistenceProvider;
     }
 }

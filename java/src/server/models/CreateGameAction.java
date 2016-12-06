@@ -15,6 +15,8 @@ public class CreateGameAction extends ServerAction {
     @Expose
     private CreateGameRequest request;
 
+    private int createdGameId = -1;
+
     public CreateGameAction() {
     }
 
@@ -46,6 +48,10 @@ public class CreateGameAction extends ServerAction {
 
     @Override
     public void execute() {
-        getServerModel().startNewGame(request.isRandomTiles(), request.isRandomPorts(), request.isRandomNumbers(), request.getName());
+        createdGameId = getServerModel().startNewGame(request.isRandomTiles(), request.isRandomPorts(), request.isRandomNumbers(), request.getName());
+    }
+
+    public int getCreatedGameId() {
+        return createdGameId;
     }
 }
