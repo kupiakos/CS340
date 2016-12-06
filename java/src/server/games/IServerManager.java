@@ -2,10 +2,13 @@ package server.games;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import server.db.IPersistenceProvider;
 import server.models.ServerModel;
+import server.plugin.AbstractPlugin;
 import shared.IServer;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface IServerManager {
     @Nullable
@@ -17,4 +20,6 @@ public interface IServerManager {
     void startServer(@NotNull String hostname, int port) throws IOException;
 
     void stopServer();
+
+    IPersistenceProvider getPersistenceProvider(List<AbstractPlugin> plugins, String persitence);
 }

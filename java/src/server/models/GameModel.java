@@ -1,5 +1,6 @@
 package server.models;
 
+import com.google.gson.annotations.Expose;
 import shared.definitions.CatanColor;
 import shared.definitions.PlayerIndex;
 import shared.models.game.ClientModel;
@@ -14,8 +15,13 @@ import java.util.Map;
 
 public class GameModel {
 
+    @Expose
     private int id;
+
+    @Expose
     private GameInfo gameInfo;
+
+    @Expose
     private ClientModel clientModel;
 
     public GameModel() {
@@ -27,6 +33,35 @@ public class GameModel {
         this.id = id;
         this.gameInfo = gameInfo;
         this.clientModel = clientModel;
+    }
+
+    @Override
+    public String toString() {
+        return "GameModel{" +
+                "id=" + id +
+                ", gameInfo=" + gameInfo +
+                ", clientModel=" + clientModel +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GameModel gameModel = (GameModel) o;
+
+        if (id != gameModel.id) return false;
+        if (gameInfo != null ? !gameInfo.equals(gameModel.gameInfo) : gameModel.gameInfo != null) return false;
+        return clientModel != null ? clientModel.equals(gameModel.clientModel) : gameModel.clientModel == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (gameInfo != null ? gameInfo.hashCode() : 0);
+        result = 31 * result + (clientModel != null ? clientModel.hashCode() : 0);
+        return result;
     }
 
     public int getId() {

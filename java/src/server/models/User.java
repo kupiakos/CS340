@@ -1,13 +1,19 @@
 package server.models;
 
+import com.google.gson.annotations.Expose;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public class User {
 
+    @Expose
     private int id;
+
+    @Expose
     private String username;
+
+    @Expose
     private String password;
 
     public User() {
