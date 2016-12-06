@@ -1,5 +1,6 @@
 package server.db.postgres;
 
+import com.sun.istack.internal.NotNull;
 import server.db.IGameDAO;
 import server.db.IPersistenceProvider;
 import server.db.IUserDAO;
@@ -15,10 +16,10 @@ public class PostgresProvider implements IPersistenceProvider {
     private PostgresGameDAO gameDAO;
     private Connection db;
 
-    public PostgresProvider() {
+    public PostgresProvider(@NotNull String username, @NotNull String password) {
         try {
             Class.forName("org.postgresql.Driver");
-            db = DriverManager.getConnection("jdbc:postgresql://localhost/template1", "postgres", "password");
+            db = DriverManager.getConnection("jdbc:postgresql://localhost/template1", username, password);
             Statement stmt = db.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT 1 FROM pg_database WHERE datname = 'catandb';");
             if (!rs.next()) {
@@ -42,7 +43,6 @@ public class PostgresProvider implements IPersistenceProvider {
         }
         userDAO = new PostgresUserDAO(db);
         gameDAO = new PostgresGameDAO(db);
-        createDB();
     }
 
     @Override

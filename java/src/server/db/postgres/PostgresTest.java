@@ -14,7 +14,9 @@ public class PostgresTest {
 
     @Before
     public void setup() {
-        pp = new PostgresProvider();
+
+        PostgresPlugin PP = new PostgresPlugin("postgres", "password");
+        pp = PP.getProvider();
     }
 
     @Test
