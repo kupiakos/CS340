@@ -12,7 +12,7 @@ public abstract class IGameDAO implements IDAO<GameModel> {
 
     public abstract List<ICommandAction> findAllCommands();
 
-    public abstract boolean insertCommand(ICommandAction command, int gamId);
+    public abstract boolean insertCommand(ICommandAction command, int gameId);
 
     public abstract boolean flushCommands();
 

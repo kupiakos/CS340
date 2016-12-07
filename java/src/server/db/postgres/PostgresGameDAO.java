@@ -48,7 +48,7 @@ public class PostgresGameDAO extends IGameDAO {
     }
 
     @Override
-    public boolean insertCommand(ICommandAction command, int gamId) {
+    public boolean insertCommand(ICommandAction command, int gameId) {
         return false;
     }
 
