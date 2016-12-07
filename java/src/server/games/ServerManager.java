@@ -62,6 +62,7 @@ public class ServerManager implements IServerManager {
     public ServerModel getServerModel() {
         if (model == null) {
             model = new ServerModel();
+            model.updateFromDatabase(persistenceProvider);
         }
         return model;
     }
@@ -90,5 +91,10 @@ public class ServerManager implements IServerManager {
         return (IPersistenceProvider) plugins.stream()
                 .filter(x -> x.getType() == PERSISTENCE && name.equals(x.getName()))
                 .findFirst().orElse(null);
+    }
+
+    @Override
+    public IPersistenceProvider getPersistenceProvider() {
+        return persistenceProvider;
     }
 }

@@ -1,28 +1,43 @@
 package server.db.postgres;
 
+import org.jetbrains.annotations.NotNull;
 import server.db.IGameDAO;
 import server.db.IPersistenceProvider;
 import server.db.IUserDAO;
+import server.plugin.IPlugin;
+import server.plugin.PersistencePlugin;
+import server.plugin.PluginConfig;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * Created by elija on 12/2/2016.
  */
-public class PostgresProvider implements IPersistenceProvider {
+public class PostgresProvider extends PersistencePlugin implements IPersistenceProvider {
 
     private PostgresUserDAO userDAO;
     private PostgresGameDAO gameDAO;
     private Connection db;
 
-    public PostgresProvider() {
+    public PostgresProvider(@NotNull String username, @NotNull String password) {
         try {
             Class.forName("org.postgresql.Driver");
-            db = DriverManager.getConnection("jdbc:postgresql://localhost/", "postgres", "family7");
+            db = DriverManager.getConnection("jdbc:postgresql://localhost/template1", username, password);
             Statement stmt = db.createStatement();
+            //stmt.execute("DROP DATABASE catandb");
+            ResultSet rs = stmt.executeQuery("SELECT 1 FROM pg_database WHERE datname = 'catandb';");
+            if (!rs.next()) {
+                rs = stmt.executeQuery("SELECT 1 FROM pg_roles WHERE rolname='player';");
+                if (!rs.next()) {
+                    stmt.execute("CREATE USER PLAYER WITH PASSWORD 'catan';");
+                }
+                stmt.execute("CREATE DATABASE CATANDB;");
+                stmt.execute("GRANT ALL PRIVILEGES ON DATABASE CATANDB TO PLAYER;");
+                stmt.execute("ALTER USER PLAYER WITH SUPERUSER;");
+            }
+            rs.close();
+            stmt.close();
+            db = DriverManager.getConnection("jdbc:postgresql://localhost/catandb", "player", "catan");
 
 
         } catch (SQLException e) {
@@ -32,7 +47,12 @@ public class PostgresProvider implements IPersistenceProvider {
         }
         userDAO = new PostgresUserDAO(db);
         gameDAO = new PostgresGameDAO(db);
+    }
+
+    @Override
+    public IPlugin start() {
         createDB();
+        return this;
     }
 
     @Override
@@ -49,15 +69,14 @@ public class PostgresProvider implements IPersistenceProvider {
             stmt.execute("DO $do$ " +
                     "BEGIN " +
                     " CREATE TABLE IF NOT EXISTS GAMES(ID INT PRIMARY KEY NOT NULL, " +
-                    "MODEL BYTEA NOT NULL); " +
+                    "MODEL TEXT NOT NULL); " +
                     "END; " +
                     "$do$");
             stmt.execute("DO $do$ " +
                     "BEGIN " +
                     " CREATE TABLE IF NOT EXISTS COMMANDS(ID INT NOT NULL, " +
-                    "COMMAND_ORDER INT NOT NULL, " +
-                    "COMMAND_TYPE TEXT NOT NULL, " +
-                    "COMMAND BYTEA NOT NULL); " +
+                    "COMMAND_ORDER SERIAL PRIMARY KEY, " +
+                    "COMMAND TEXT NOT NULL); " +
                     "END; " +
                     "$do$");
             stmt.close();
@@ -117,5 +136,15 @@ public class PostgresProvider implements IPersistenceProvider {
     @Override
     public IGameDAO getGameDAO() {
         return gameDAO;
+    }
+
+    @Override
+    public PluginConfig.PluginType getType() {
+        return PluginConfig.PluginType.PERSISTENCE;
+    }
+
+    @Override
+    public PluginConfig.PluginType getName() {
+        return PluginConfig.PluginType.PERSISTENCE;
     }
 }
