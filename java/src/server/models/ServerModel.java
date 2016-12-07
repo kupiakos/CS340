@@ -130,6 +130,11 @@ public class ServerModel {
         return gameInfoList;
     }
 
+    /**
+     * Called whenever the server model is initialized so server can retrieve any preexisting users and games.
+     *
+     * @param p
+     */
     public void updateFromDatabase(IPersistenceProvider p) {
         for (User user : p.getUserDAO().findAll()) {
             this.users.put(user.getId(), user);
@@ -139,6 +144,17 @@ public class ServerModel {
         }
         for (ICommandAction command : p.getGameDAO().findAllCommands()) {
             //TODO perform each command for the correct game.
+        }
+    }
+
+    /**
+     * Called when server has processed n commands, this method updates all the game models in the database.
+     *
+     * @param p
+     */
+    public void updateGamesInDatabase(IPersistenceProvider p) {
+        for (GameModel game : gameModels.values()) {
+            p.getGameDAO().update(game);
         }
     }
 }
