@@ -91,4 +91,9 @@ public class ServerManager implements IServerManager {
                 .filter(x -> x.getType() == PERSISTENCE && name.equals(x.getName()))
                 .findFirst().orElse(null);
     }
+
+    @Override
+    public IPersistenceProvider getPersistenceProvider() {
+        return persistenceProvider;
+    }
 }
