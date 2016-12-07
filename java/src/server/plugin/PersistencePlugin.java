@@ -1,8 +1,12 @@
 package server.plugin;
 
 import java.net.URLClassLoader;
+import java.util.Map;
 
 public class PersistencePlugin implements IPlugin {
+    public PersistencePlugin(Map configs) {
+    }
+
     @Override
     public IPlugin start() {
         return null;
@@ -19,7 +23,7 @@ public class PersistencePlugin implements IPlugin {
     }
 
     @Override
-    public PluginConfig.PluginType getName() {
+    public String getName() {
         return null;
     }
 

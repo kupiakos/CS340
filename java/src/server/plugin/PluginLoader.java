@@ -1,11 +1,12 @@
 package server.plugin;
 
 import com.esotericsoftware.yamlbeans.YamlReader;
+import server.db.mongodb.MongoProvider;
+import server.db.postgres.PostgresProvider;
 
 import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -95,15 +96,19 @@ public class PluginLoader implements IPluginLoader {
             URL url;
             url = f.toURL();
             URL[] urls = new URL[]{url};
-            ClassLoader cl = new URLClassLoader(urls);
-            Class<?> c;
+            //TODO dynamically find class to construct from config
 
-            Class[] cArg = new Class[1];
-            Class<IPlugin> classToLoad = IPlugin.class;
-            IPlugin c_;
-            c_ = classToLoad.getDeclaredConstructor(cArg).newInstance(config);
-
-            return c_;
+            IPlugin result = null;
+            if (config.get("name").equals("postgres")) {
+                Class[] cArg = new Class[]{Map.class};
+                Class<PostgresProvider> classToLoad = PostgresProvider.class;
+                result = classToLoad.getDeclaredConstructor(cArg).newInstance(config);
+            } else if (config.get("name").equals("mongo")) {
+                Class[] cArg = new Class[]{Map.class};
+                Class<MongoProvider> classToLoad = MongoProvider.class;
+                result = classToLoad.getDeclaredConstructor(cArg).newInstance(config);
+            }
+            return result;
 
         } catch (Exception e) {
             e.printStackTrace();

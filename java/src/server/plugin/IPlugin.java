@@ -36,7 +36,7 @@ public interface IPlugin {
     /**
      * Name - ie mongo or postgres... must match config file name
      */
-    PluginType getName();
+    String getName();
 
     /**
      * URLClassLoader - needed for init

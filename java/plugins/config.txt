@@ -1,6 +1,0 @@
-<!--Register your plugin jar file name. Below is just a example of a possible config -->
-
-<Name="Postgres">
-<Type="Persistence">
-<FilePath="java\dist\plugins\postgres.jar">
-
