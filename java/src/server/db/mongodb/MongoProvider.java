@@ -3,17 +3,15 @@ package server.db.mongodb;
 import server.db.IGameDAO;
 import server.db.IPersistenceProvider;
 import server.db.IUserDAO;
-import server.plugin.PersistencePlugin;
-
-import java.util.Map;
 
 /**
  * Created by kevin on 12/7/16.
  */
-public class MongoProvider extends PersistencePlugin implements IPersistenceProvider {
-    public MongoProvider(Map configs) {
-        super(configs);
-    }
+public class MongoProvider implements IPersistenceProvider {
+
+    private MongoUserDAO userDAO;
+    private MongoGameDAO gameDAO;
+
 
     @Override
     public boolean createDB() {

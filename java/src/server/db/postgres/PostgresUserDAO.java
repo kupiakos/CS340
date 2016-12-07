@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by elija on 12/2/2016.
  */
-public class PostgresUserDAO extends IUserDAO {
+public class PostgresUserDAO implements IUserDAO {
     private Connection db = null;
 
     public PostgresUserDAO(Connection db) {

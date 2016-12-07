@@ -1,6 +1,7 @@
 package server.models;
 
 import com.google.gson.annotations.Expose;
+import server.db.IDAOObject;
 import shared.definitions.CatanColor;
 import shared.definitions.PlayerIndex;
 import shared.models.game.ClientModel;
@@ -13,7 +14,7 @@ import shared.models.games.PlayerInfo;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GameModel {
+public class GameModel implements IDAOObject {
 
     @Expose
     private int id;
