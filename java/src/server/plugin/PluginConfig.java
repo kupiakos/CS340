@@ -1,12 +1,18 @@
 package server.plugin;
 
 
+import java.util.Map;
+
 public class PluginConfig {
     /**
      * Based on the command­line parameter for the name of the persistence plugin.
-     * We will use this to match with the .jar file.
      */
     private String name;
+
+    /**
+     * Based on the configFile parameter for the name of the persistence plugin.
+     */
+    private String jarName;
 
     /**
      * Number of commands, N, between updates of the game state blobs.
@@ -18,27 +24,30 @@ public class PluginConfig {
     private PluginType type = PluginType.PERSISTENCE;
 
     /**
+     * Type of plugin. Defaults to implement the IPersistenceFactory interface
+     */
+    private Map otherArgs;
+
+    /**
      * Default constructor
      *
      * @param name
-     * @param updateNumber
-     */
-    public PluginConfig(String name, int updateNumber) {
-        this.name = name;
-        this.updateNumber = updateNumber;
-    }
-
-    /**
-     * Optional constructor
-     *
-     * @param name
-     * @param updateNumber
+     * @param jarName
      * @param type
      */
-    public PluginConfig(String name, int updateNumber, PluginType type) {
+    public PluginConfig(String name, String jarName, PluginType type, Map otherArgs) {
         this.name = name;
-        this.updateNumber = updateNumber;
+        this.jarName = jarName;
         this.type = type;
+        this.otherArgs = otherArgs;
+    }
+
+    public String getJarName() {
+        return jarName;
+    }
+
+    public void setJarName(String jarName) {
+        this.jarName = jarName;
     }
 
     public String getName() {
@@ -63,6 +72,14 @@ public class PluginConfig {
 
     public void setType(PluginType type) {
         this.type = type;
+    }
+
+    public Map getOtherArgs() {
+        return otherArgs;
+    }
+
+    public void setOtherArgs(Map otherArgs) {
+        this.otherArgs = otherArgs;
     }
 
     /**
