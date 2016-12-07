@@ -82,8 +82,7 @@ public class GameServer implements IServer {
         JoinGameAction action = new JoinGameAction(request, user);
         action.setServerModel(getServerModel());
         action.execute();
-        getServerManager().getPersistenceProvider().getGameDAO()
-                .insertCommand(action, getGameId());
+        getServerManager().storeCommand(action, getGameId());
         return action.getJoinedGameId();
     }
 
@@ -130,8 +129,7 @@ public class GameServer implements IServer {
         AddAIAction action = new AddAIAction(request, getGameId());
         action.setServerModel(getServerModel());
         action.execute();
-        getServerManager().getPersistenceProvider().getGameDAO()
-                .insertCommand(action, getGameId());
+        getServerManager().storeCommand(action, getGameId());
     }
 
     @Override
@@ -143,8 +141,7 @@ public class GameServer implements IServer {
     private ClientModel executeGameAction(@NotNull GameAction action) {
         action.setFacades(getFacades());
         action.execute();
-        getServerManager().getPersistenceProvider().getGameDAO()
-                .insertCommand(action, getGameId());
+        getServerManager().storeCommand(action, getGameId());
         return getModel();
     }
 

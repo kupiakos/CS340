@@ -12,6 +12,7 @@ import server.plugin.IPluginLoader;
 import server.plugin.PluginConfig;
 import server.plugin.PluginLoader;
 import shared.IServer;
+import shared.models.ICommandAction;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,15 +30,17 @@ public class ServerManager implements IServerManager {
     private IPluginLoader pluginLoader;
     private List<IPlugin> plugins = new ArrayList<>();
     private IPersistenceProvider persistenceProvider;
+    private int N;
+    private int commandsAdded;
 
-    public ServerManager() throws IOException {
+    public ServerManager(String persistence, int N) throws IOException {
         communicator = new ServerCommunicator(this);
         pluginLoader = new PluginLoader();
-
+        this.N = N;
+        commandsAdded = 0;
         //TODO:: fix args for real
         String fs = File.separator;
         String pluginConfigFile = "java" + fs + "plugins" + fs + "config.yaml";
-        String persistence = "mongo";
         File pluginDir = new File("java" + fs + "plugins");
 
         List<PluginConfig> pc = pluginLoader.parseConfig(pluginConfigFile);
@@ -96,5 +99,17 @@ public class ServerManager implements IServerManager {
     @Override
     public IPersistenceProvider getPersistenceProvider() {
         return persistenceProvider;
+    }
+
+    public void storeCommand(ICommandAction command, int GameID) {
+        commandsAdded++;
+        if (commandsAdded >= N) {
+            if (persistenceProvider.getGameDAO().flushCommands()) {
+                commandsAdded = 0;
+                getServerModel().updateGamesInDatabase(persistenceProvider);
+            }
+        } else {
+            persistenceProvider.getGameDAO().insertCommand(command, GameID);
+        }
     }
 }
