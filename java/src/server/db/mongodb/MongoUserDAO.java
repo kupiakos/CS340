@@ -1,5 +1,6 @@
 package server.db.mongodb;
 
+import com.mongodb.client.MongoDatabase;
 import server.db.IUserDAO;
 import server.models.User;
 
@@ -8,4 +9,7 @@ import server.models.User;
  */
 public class MongoUserDAO extends MongoDAO<User> implements IUserDAO {
 
+    public MongoUserDAO(MongoDatabase db) {
+        super(db.getCollection("users"));
+    }
 }

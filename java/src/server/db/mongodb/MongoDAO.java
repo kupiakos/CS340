@@ -1,5 +1,6 @@
 package server.db.mongodb;
 
+import com.mongodb.client.MongoCollection;
 import server.db.IDAO;
 import server.db.IDAOObject;
 
@@ -9,7 +10,11 @@ import java.util.List;
  * Created by kevin on 12/7/16.
  */
 public abstract class MongoDAO<T extends IDAOObject> implements IDAO<T> {
+    private MongoCollection collection;
 
+    protected MongoDAO(MongoCollection collection) {
+        this.collection = collection;
+    }
 
     @Override
     public T findById(int id) {

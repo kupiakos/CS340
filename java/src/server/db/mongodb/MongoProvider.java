@@ -1,5 +1,8 @@
 package server.db.mongodb;
 
+import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoDatabase;
 import server.db.IGameDAO;
 import server.db.IPersistenceProvider;
 import server.db.IUserDAO;
@@ -14,25 +17,34 @@ public class MongoProvider extends PersistencePlugin implements IPersistenceProv
 
     private MongoUserDAO userDAO;
     private MongoGameDAO gameDAO;
+    private MongoClient client;
+    private MongoDatabase database;
 
-    public MongoProvider(Map configs) {
-        super(configs);
+    public MongoProvider(Map params) {
+        super(params);
+        client = new MongoClient(new ServerAddress("localhost", 27017));
+//            , Arrays.asList(new MongoCredential(AuthenticationMechanism.MONGODB_X509, username, "catan", password)
+        database = client.getDatabase("catan");
     }
-
 
     @Override
     public boolean createDB() {
-        return false;
+        database.createCollection("users");
+        database.createCollection("games");
+        database.createCollection("commands");
+        return true;
     }
 
     @Override
     public boolean startTransaction() {
-        return false;
+        // No transactions in MongoDB
+        return true;
     }
 
     @Override
     public boolean finishTransaction() {
-        return false;
+        // No transactions in MongoDB
+        return true;
     }
 
     @Override
@@ -42,11 +54,17 @@ public class MongoProvider extends PersistencePlugin implements IPersistenceProv
 
     @Override
     public IUserDAO getUserDAO() {
-        return null;
+        if (userDAO == null) {
+            userDAO = new MongoUserDAO(database);
+        }
+        return userDAO;
     }
 
     @Override
     public IGameDAO getGameDAO() {
-        return null;
+        if (gameDAO == null) {
+            gameDAO = new MongoGameDAO(database);
+        }
+        return gameDAO;
     }
 }
