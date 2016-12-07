@@ -1,16 +1,30 @@
 package server.plugin;
 
+import java.net.URLClassLoader;
 
-import java.util.Map;
+public class PersistencePlugin implements IPlugin {
+    @Override
+    public IPlugin start() {
+        return null;
+    }
 
-public class PersistencePlugin extends AbstractPlugin {
+    @Override
+    public IPlugin stop() {
+        return null;
+    }
 
-    /**
-     * Any needed config to start the AbstractPlugin
-     *
-     * @param config
-     */
-    public PersistencePlugin(Map config) {
-        super(config);
+    @Override
+    public PluginConfig.PluginType getType() {
+        return null;
+    }
+
+    @Override
+    public PluginConfig.PluginType getName() {
+        return null;
+    }
+
+    @Override
+    public URLClassLoader getURLClassLoader() {
+        return null;
     }
 }

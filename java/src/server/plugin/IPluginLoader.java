@@ -10,7 +10,7 @@ public interface IPluginLoader {
     /**
      * Opens the plugin JAR file that the PluginConfig name specified and then
      * uses an attribute from JAR manifest or the list of all files in the JAR file to find
-     * the class that implements the AbstractPlugin interface.
+     * the class that implements the IPlugin interface.
      * The server will instantiate plugin objects by putting plugin JAR
      * files on its classpath using URLClassLoader, and then use the Class.forName method to
      * load the class, and the Class.newInstance method to create them.
@@ -19,7 +19,7 @@ public interface IPluginLoader {
      * @param folder path to the folder where the plugin .jars are located
      * @return
      */
-    List<AbstractPlugin> loadConfig(List<PluginConfig> configs, File folder);
+    List<IPlugin> loadConfig(List<PluginConfig> configs, File folder);
 
     /**
      * Calls create() for each plugin
@@ -27,7 +27,7 @@ public interface IPluginLoader {
      * @param plugins list of non-activated plugins
      * @return list of activated plugins
      */
-    List<AbstractPlugin> startPlugins(List<AbstractPlugin> plugins);
+    List<IPlugin> startPlugins(List<IPlugin> plugins);
 
     /**
      * Calls all needed code to turn off / disable each plugin
@@ -35,7 +35,7 @@ public interface IPluginLoader {
      * @param plugins list of activated plugins
      * @return list of plugins that turned off correctly
      */
-    List<AbstractPlugin> stopPlugins(List<AbstractPlugin> plugins);
+    List<IPlugin> stopPlugins(List<IPlugin> plugins);
 
     /**
      * Based on the command­line parameter for the name of the persistence plugin and

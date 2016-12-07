@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import server.db.IPersistenceProvider;
 import server.models.ServerModel;
-import server.plugin.AbstractPlugin;
+import server.plugin.IPlugin;
 import shared.IServer;
 
 import java.io.IOException;
@@ -21,5 +21,5 @@ public interface IServerManager {
 
     void stopServer();
 
-    IPersistenceProvider getPersistenceProvider(List<AbstractPlugin> plugins, String persitence);
+    IPersistenceProvider getPersistenceProvider(List<IPlugin> plugins, String persistence);
 }

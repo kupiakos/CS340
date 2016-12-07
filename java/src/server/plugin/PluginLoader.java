@@ -17,7 +17,7 @@ public class PluginLoader implements IPluginLoader {
      * @inheritDoc
      */
     @Override
-    public List<AbstractPlugin> loadConfig(List<PluginConfig> pluginConfigs, File folder) {
+    public List<IPlugin> loadConfig(List<PluginConfig> pluginConfigs, File folder) {
         // neededPlugins
         List<String> neededPlugins = pluginConfigs.stream()
                 .map(PluginConfig::getJarName)
@@ -54,9 +54,9 @@ public class PluginLoader implements IPluginLoader {
      * @inheritDoc
      */
     @Override
-    public List<AbstractPlugin> startPlugins(List<AbstractPlugin> plugins) {
+    public List<IPlugin> startPlugins(List<IPlugin> plugins) {
         return plugins.stream()
-                .map(AbstractPlugin::start)
+                .map(IPlugin::start)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -65,9 +65,9 @@ public class PluginLoader implements IPluginLoader {
      * @inheritDoc
      */
     @Override
-    public List<AbstractPlugin> stopPlugins(List<AbstractPlugin> plugins) {
+    public List<IPlugin> stopPlugins(List<IPlugin> plugins) {
         return plugins.stream()
-                .map(AbstractPlugin::stop)
+                .map(IPlugin::stop)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -87,7 +87,7 @@ public class PluginLoader implements IPluginLoader {
                             (String) ((Map) x.get("plugin")).get("name"),
                             (String) ((Map) x.get("plugin")).get("jarName"),
                             PERSISTENCE,
-                            (Map) ((Map) x.get("plugin")).getOrDefault("other_params", null)))
+                            (Map) ((Map) x.get("plugin")).getOrDefault("params", null)))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,9 +99,9 @@ public class PluginLoader implements IPluginLoader {
      * Where should we look for the class we are trying to instantiate
      *
      * @param f location of class
-     * @return AbstractPlugin
+     * @return IPlugin
      */
-    private AbstractPlugin toClass(File f, Map config) {
+    private IPlugin toClass(File f, Map config) {
         try {
             URL url;
             url = f.toURL();
@@ -110,8 +110,8 @@ public class PluginLoader implements IPluginLoader {
             Class<?> c;
 
             Class[] cArg = new Class[1];
-            Class<AbstractPlugin> classToLoad = AbstractPlugin.class;
-            AbstractPlugin c_;
+            Class<IPlugin> classToLoad = IPlugin.class;
+            IPlugin c_;
             c_ = classToLoad.getDeclaredConstructor(cArg).newInstance(config);
 
             return c_;

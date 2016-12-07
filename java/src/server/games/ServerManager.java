@@ -7,7 +7,7 @@ import server.client.IServerCommunicator;
 import server.client.ServerCommunicator;
 import server.db.IPersistenceProvider;
 import server.models.ServerModel;
-import server.plugin.AbstractPlugin;
+import server.plugin.IPlugin;
 import server.plugin.IPluginLoader;
 import server.plugin.PluginConfig;
 import server.plugin.PluginLoader;
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static server.plugin.PluginConfig.PluginType.PERSISTENCE;
 
@@ -28,7 +27,7 @@ public class ServerManager implements IServerManager {
     private IServerCommunicator communicator;
     private ServerModel model;
     private IPluginLoader pluginLoader;
-    private List<AbstractPlugin> plugins = new ArrayList<>();
+    private List<IPlugin> plugins = new ArrayList<>();
     private IPersistenceProvider persistenceProvider;
 
     public ServerManager() throws IOException {
@@ -36,14 +35,15 @@ public class ServerManager implements IServerManager {
         pluginLoader = new PluginLoader();
 
         //TODO:: fix args for real
-        String pluginConfigFile = "java/" + "plugins/config.yaml";
-        String persitence = "mongo";
-        File pluginDir = new File("java/plugins");
+        String fs = File.separator;
+        String pluginConfigFile = "java" + fs + "plugins" + fs + "config.yaml";
+        String persistence = "mongo";
+        File pluginDir = new File("java" + fs + "plugins");
 
         List<PluginConfig> pc = pluginLoader.parseConfig(pluginConfigFile);
-        List<AbstractPlugin> lc = pluginLoader.loadConfig(pc, pluginDir);
+        List<IPlugin> lc = pluginLoader.loadConfig(pc, pluginDir);
         plugins = pluginLoader.startPlugins(lc);
-        persistenceProvider = getPersistenceProvider(plugins, persitence);
+        persistenceProvider = getPersistenceProvider(plugins, persistence);
     }
 
     @Nullable
@@ -86,9 +86,9 @@ public class ServerManager implements IServerManager {
      * @return PersistenceProvider for server
      */
     @Override
-    public IPersistenceProvider getPersistenceProvider(List<AbstractPlugin> plugins, String name) {
+    public IPersistenceProvider getPersistenceProvider(List<IPlugin> plugins, String name) {
         return (IPersistenceProvider) plugins.stream()
                 .filter(x -> x.getType() == PERSISTENCE && name.equals(x.getName()))
-                .collect(Collectors.toList()).get(0);
+                .findFirst().orElse(null);
     }
 }
