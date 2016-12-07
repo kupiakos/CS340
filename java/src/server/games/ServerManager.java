@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static server.plugin.PluginConfig.PluginType.PERSISTENCE;
+
 public class ServerManager implements IServerManager {
     private Map<Integer, IServer> runningServers = new HashMap<>();
     private IServerCommunicator communicator;
@@ -33,15 +35,15 @@ public class ServerManager implements IServerManager {
         pluginLoader = new PluginLoader();
 
         //TODO:: fix args for real
-        // pluginCmds String must be in the format of 'name:option, name2:option' Example - mongo:100
-        // pluginDir is the directory that we want to put plugins in
-        String pluginCmds = null;
-        File pluginDir = null;
+        String fs = File.separator;
+        String pluginConfigFile = "java" + fs + "plugins" + fs + "config.yaml";
+        String persistence = "mongo";
+        File pluginDir = new File("java" + fs + "plugins");
 
-        List<PluginConfig> pc = pluginLoader.parseConfig(pluginCmds);
+        List<PluginConfig> pc = pluginLoader.parseConfig(pluginConfigFile);
         List<IPlugin> lc = pluginLoader.loadConfig(pc, pluginDir);
         plugins = pluginLoader.startPlugins(lc);
-        persistenceProvider = findPersistenceProvider(plugins);
+        persistenceProvider = getPersistenceProvider(plugins, persistence);
     }
 
     @Nullable
@@ -80,15 +82,13 @@ public class ServerManager implements IServerManager {
      * returns that to be the servers current database
      *
      * @param plugins
+     * @param name
      * @return PersistenceProvider for server
      */
     @Override
-    public IPersistenceProvider findPersistenceProvider(List<IPlugin> plugins) {
-        return null;
-    }
-
-    @Override
-    public IPersistenceProvider getPersistenceProvider() {
-        return persistenceProvider;
+    public IPersistenceProvider getPersistenceProvider(List<IPlugin> plugins, String name) {
+        return (IPersistenceProvider) plugins.stream()
+                .filter(x -> x.getType() == PERSISTENCE && name.equals(x.getName()))
+                .findFirst().orElse(null);
     }
 }

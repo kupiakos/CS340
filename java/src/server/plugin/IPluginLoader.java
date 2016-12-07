@@ -10,13 +10,13 @@ public interface IPluginLoader {
     /**
      * Opens the plugin JAR file that the PluginConfig name specified and then
      * uses an attribute from JAR manifest or the list of all files in the JAR file to find
-     * the class that implements the Plugin interface.
+     * the class that implements the IPlugin interface.
      * The server will instantiate plugin objects by putting plugin JAR
      * files on its classpath using URLClassLoader, and then use the Class.forName method to
      * load the class, and the Class.newInstance method to create them.
      *
      * @param configs
-     * @param path path to the folder where the plugin .jars are located
+     * @param folder path to the folder where the plugin .jars are located
      * @return
      */
     List<IPlugin> loadConfig(List<PluginConfig> configs, File folder);
