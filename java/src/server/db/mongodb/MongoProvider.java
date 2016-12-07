@@ -8,6 +8,11 @@ import server.db.IUserDAO;
  * Created by kevin on 12/7/16.
  */
 public class MongoProvider implements IPersistenceProvider {
+
+    private MongoUserDAO userDAO;
+    private MongoGameDAO gameDAO;
+
+
     @Override
     public boolean createDB() {
         return false;
