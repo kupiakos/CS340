@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by elija on 12/2/2016.
  */
-public interface IDAO<T> {
+public interface IDAO<T extends IDAOObject> {
 
     T findById(int id);
 
