@@ -62,6 +62,7 @@ public class ServerManager implements IServerManager {
     public ServerModel getServerModel() {
         if (model == null) {
             model = new ServerModel();
+            model.updateFromDatabase(persistenceProvider);
         }
         return model;
     }

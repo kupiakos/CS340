@@ -2,6 +2,8 @@ package server.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import server.db.IPersistenceProvider;
+import shared.models.ICommandAction;
 import shared.models.game.ClientModel;
 import shared.models.games.GameInfo;
 import shared.models.games.PlayerInfo;
@@ -126,5 +128,17 @@ public class ServerModel {
             gameInfoList.add(g.getGameInfo());
         }
         return gameInfoList;
+    }
+
+    public void updateFromDatabase(IPersistenceProvider p) {
+        for (User user : p.getUserDAO().findAll()) {
+            this.users.put(user.getId(), user);
+        }
+        for (GameModel game : p.getGameDAO().findAll()) {
+            this.gameModels.put(game.getId(), game);
+        }
+        for (ICommandAction command : p.getGameDAO().findAllCommands()) {
+            //TODO perform each command for the correct game.
+        }
     }
 }
