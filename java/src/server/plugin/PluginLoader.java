@@ -6,7 +6,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static server.plugin.PluginConfig.PluginType.PERSISTENCE;
@@ -23,11 +26,6 @@ public class PluginLoader implements IPluginLoader {
                 .map(PluginConfig::getJarName)
                 .collect(Collectors.toList());
 
-        // neededConfigs
-        List<Map> neededConfigs = pluginConfigs.stream()
-                .map(PluginConfig::getOtherArgs)
-                .collect(Collectors.toList());
-
         // zipNameConfigs
         Map<String, Map> zipNameConfigs = pluginConfigs.stream()
                 .collect(Collectors.toMap(PluginConfig::getJarName, PluginConfig::getOtherArgs));
@@ -40,16 +38,6 @@ public class PluginLoader implements IPluginLoader {
                 .collect(Collectors.toList());
     }
 
-
-    private Map<String, Map> zipNameConfig(List<String> neededPlugins, List<Map> neededConfigs) {
-        Iterator<String> i1 = neededPlugins.iterator();
-        Iterator<Map> i2 = neededConfigs.iterator();
-        Map<String, Map> zipNameConfigs = new HashMap<>();
-        while (i1.hasNext() && i2.hasNext()) {
-            zipNameConfigs.put(i1.next(), i2.next());
-        }
-        return zipNameConfigs;
-    }
 
     /**
      * @inheritDoc
