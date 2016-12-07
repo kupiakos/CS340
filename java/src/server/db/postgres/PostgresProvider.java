@@ -49,15 +49,14 @@ public class PostgresProvider implements IPersistenceProvider {
             stmt.execute("DO $do$ " +
                     "BEGIN " +
                     " CREATE TABLE IF NOT EXISTS GAMES(ID INT PRIMARY KEY NOT NULL, " +
-                    "MODEL BYTEA NOT NULL); " +
+                    "MODEL TEXT NOT NULL); " +
                     "END; " +
                     "$do$");
             stmt.execute("DO $do$ " +
                     "BEGIN " +
                     " CREATE TABLE IF NOT EXISTS COMMANDS(ID INT NOT NULL, " +
-                    "COMMAND_ORDER INT NOT NULL, " +
-                    "COMMAND_TYPE TEXT NOT NULL, " +
-                    "COMMAND BYTEA NOT NULL); " +
+                    "COMMAND_ORDER SERIAL PRIMARY KEY, " +
+                    "COMMAND TEXT NOT NULL); " +
                     "END; " +
                     "$do$");
             stmt.close();
