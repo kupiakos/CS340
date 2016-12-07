@@ -14,7 +14,7 @@ public class PostgresTest {
 
     @Before
     public void setup() {
-        pp = new PostgresProvider("postgres", "password");
+        //pp = new PostgresProvider("postgres", "password");
     }
 
     @Test
