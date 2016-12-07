@@ -39,6 +39,5 @@
     </orderEntry>
     <orderEntry type="library" name="postgresql-9.4.1212.jre6" level="project" />
     <orderEntry type="library" name="yamlbeans-1.09" level="project" />
-    <orderEntry type="library" name="junit-4.11 (4)" level="project" />
   </component>
 </module>
