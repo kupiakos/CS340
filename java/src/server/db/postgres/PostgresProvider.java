@@ -1,6 +1,5 @@
 package server.db.postgres;
 
-import org.jetbrains.annotations.NotNull;
 import server.db.IGameDAO;
 import server.db.IPersistenceProvider;
 import server.db.IUserDAO;
@@ -8,7 +7,12 @@ import server.plugin.IPlugin;
 import server.plugin.PersistencePlugin;
 import server.plugin.PluginConfig;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.*;
+import java.util.Map;
 
 /**
  * Created by elija on 12/2/2016.
@@ -19,10 +23,11 @@ public class PostgresProvider extends PersistencePlugin implements IPersistenceP
     private PostgresGameDAO gameDAO;
     private Connection db;
 
-    public PostgresProvider(@NotNull String username, @NotNull String password) {
+    public PostgresProvider(Map<String, String> config) {
+        super(config);
         try {
             Class.forName("org.postgresql.Driver");
-            db = DriverManager.getConnection("jdbc:postgresql://localhost/template1", username, password);
+            db = DriverManager.getConnection("jdbc:postgresql://localhost/template1", config.get("username"), config.get("password"));
             Statement stmt = db.createStatement();
             //stmt.execute("DROP DATABASE catandb");
             ResultSet rs = stmt.executeQuery("SELECT 1 FROM pg_database WHERE datname = 'catandb';");
@@ -144,7 +149,19 @@ public class PostgresProvider extends PersistencePlugin implements IPersistenceP
     }
 
     @Override
-    public PluginConfig.PluginType getName() {
-        return PluginConfig.PluginType.PERSISTENCE;
+    public String getName() {
+        return "postgres";
+    }
+
+    @Override
+    public URLClassLoader getURLClassLoader() {
+        URL url = null;
+        try {
+            url = new URL("postgres" + File.separator);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        URL[] urls = new URL[]{url};
+        return new URLClassLoader(urls);
     }
 }

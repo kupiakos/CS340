@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="postgres">
+    <output-path>$PROJECT_DIR$/out/artifacts/postgres</output-path>
+    <root id="archive" name="postgres.jar">
+      <element id="dir-copy" path="$PROJECT_DIR$/java/src/server/db/postgres" />
+    </root>
+  </artifact>
+</component>

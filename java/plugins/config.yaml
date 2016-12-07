@@ -9,6 +9,7 @@ available_plugins:
         jarName: mongodb.jar
         description: MongoDB (from humongous) NoSQL database program database program
         params:
+            name: mongo
             username: billy
             password: bob
             port: 8008
@@ -16,10 +17,11 @@ available_plugins:
     - plugin:
         name: postgres
         type: persistence
-        jarName: postgresql.jar
+        jarName: postgres.jar
         description: PostgreSQL, often simply Postgres, is an object-relational database
         params:
-            username: billy
-            password: bob
-            port: 8008
+            name: postgres
+            username: postgres
+            password: password
+            port: 5432
 
