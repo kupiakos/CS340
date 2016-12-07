@@ -4,6 +4,7 @@ import com.mongodb.DBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.util.JSON;
+import org.bson.Document;
 import server.db.IGameDAO;
 import server.models.GameModel;
 import shared.models.ICommandAction;
@@ -17,8 +18,8 @@ import java.util.List;
 public class MongoGameDAO extends MongoDAO<GameModel> implements IGameDAO {
 
     private MongoDatabase db;
-    private MongoCollection games;
-    private MongoCollection commands;
+    private MongoCollection<Document> games;
+    private MongoCollection<Document> commands;
 
     public MongoGameDAO(MongoDatabase db) {
         super(db.getCollection("games"));
@@ -42,5 +43,10 @@ public class MongoGameDAO extends MongoDAO<GameModel> implements IGameDAO {
     @Override
     public boolean flushCommands() {
         return false;
+    }
+
+    @Override
+    protected Class<GameModel> getTypeClass() {
+        return GameModel.class;
     }
 }

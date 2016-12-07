@@ -12,4 +12,9 @@ public class MongoUserDAO extends MongoDAO<User> implements IUserDAO {
     public MongoUserDAO(MongoDatabase db) {
         super(db.getCollection("users"));
     }
+
+    @Override
+    protected Class<User> getTypeClass() {
+        return User.class;
+    }
 }
