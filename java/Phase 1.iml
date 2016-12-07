@@ -28,18 +28,8 @@
     <orderEntry type="library" name="byte-buddy-1.4.33" level="project" />
     <orderEntry type="library" name="objenesis-2.4" level="project" />
     <orderEntry type="library" name="annotations-13.0" level="project" />
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/postgresql-9.4.1212.jre6.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="postgresql-9.4.1212.jre6" level="project" />
     <orderEntry type="library" name="yamlbeans-1.09" level="project" />
-    <orderEntry type="library" name="yamlbeans-1.09" level="project" />
-    <orderEntry type="library" name="postgresql-9.4.1212.jre6 (3)" level="project" />
+    <orderEntry type="library" name="postgresql-9.4.1212.jre6 (4)" level="project" />
   </component>
 </module>
