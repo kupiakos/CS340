@@ -29,7 +29,8 @@ public class PluginLoader implements IPluginLoader {
                 .collect(Collectors.toList());
 
         // zipNameConfigs
-        Map<String, Map> zipNameConfigs = zipNameConfig(neededPlugins, neededConfigs);
+        Map<String, Map> zipNameConfigs = pluginConfigs.stream()
+                .collect(Collectors.toMap(PluginConfig::getJarName, PluginConfig::getOtherArgs));
 
         // loadConfig
         return Arrays.stream(folder.listFiles())
