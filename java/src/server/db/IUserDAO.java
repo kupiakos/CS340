@@ -5,6 +5,6 @@ import server.models.User;
 /**
  * Created by elija on 12/2/2016.
  */
-public abstract class IUserDAO implements IDAO<User> {
+public interface IUserDAO extends IDAO<User> {
 
 }

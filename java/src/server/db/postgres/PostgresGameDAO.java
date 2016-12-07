@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by elija on 12/2/2016.
  */
-public class PostgresGameDAO extends IGameDAO {
+public class PostgresGameDAO implements IGameDAO {
     private Connection db = null;
 
     public PostgresGameDAO(Connection db) {
