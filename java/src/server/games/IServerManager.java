@@ -6,6 +6,7 @@ import server.db.IPersistenceProvider;
 import server.models.ServerModel;
 import server.plugin.IPlugin;
 import shared.IServer;
+import shared.models.ICommandAction;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,5 +22,9 @@ public interface IServerManager {
 
     void stopServer();
 
-    IPersistenceProvider getPersistenceProvider(List<IPlugin> plugins);
+    IPersistenceProvider getPersistenceProvider(List<IPlugin> plugins, String persistence);
+
+    IPersistenceProvider getPersistenceProvider();
+
+    void storeCommand(ICommandAction command, int GameId);
 }

@@ -8,12 +8,11 @@ import java.util.List;
 /**
  * Created by elija on 12/2/2016.
  */
-public abstract class IGameDAO implements IDAO<GameModel> {
+public interface IGameDAO extends IDAO<GameModel> {
 
-    public abstract List<ICommandAction> findAllCommands();
+    List<ICommandAction> findAllCommands();
 
-    public abstract boolean insertCommand(ICommandAction command, int gamId);
+    boolean insertCommand(ICommandAction command, int gameId);
 
-    public abstract boolean flushCommands();
-
+    boolean flushCommands();
 }

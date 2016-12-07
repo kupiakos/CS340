@@ -1,0 +1,27 @@
+# Register your plugin jar file name. Below is just a example of a possible config
+# name must match the cmd line arg
+# jar must match the file name of the jar
+
+available_plugins:
+    - plugin:
+        name: mongo
+        type: persistence
+        jarName: mongodb.jar
+        description: MongoDB (from humongous) NoSQL database program database program
+        params:
+            name: mongo
+            username: billy
+            password: bob
+            port: 8008
+
+    - plugin:
+        name: postgres
+        type: persistence
+        jarName: postgres.jar
+        description: PostgreSQL, often simply Postgres, is an object-relational database
+        params:
+            name: postgres
+            username: postgres
+            password: password
+            port: 5432
+
