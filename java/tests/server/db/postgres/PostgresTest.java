@@ -30,9 +30,6 @@ public class PostgresTest {
         assertTrue(pp.getUserDAO().insert(new User(2, "Bob", "password")));
         assertTrue(pp.getUserDAO().insert(new User(3, "Kevin", "password")));
         assertTrue(pp.getUserDAO().findAll().size() == 3);
-
-
-
     }
 
 }
