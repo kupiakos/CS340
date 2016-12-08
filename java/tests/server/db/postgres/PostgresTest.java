@@ -1,18 +1,8 @@
 package server.db.postgres;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import server.models.GameModel;
-import server.models.User;
-import shared.models.game.ClientModel;
-import shared.models.game.Player;
-import shared.models.games.GameInfo;
-import shared.models.games.PlayerInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,14 +14,14 @@ public class PostgresTest {
 
     @Before
     public void setup() {
-        Map configs = new HashMap();
-        configs.put("name", "postgres");
-        configs.put("username", "postgres");
-        configs.put("password", "password");
-        configs.put("port", "5432");
-
-        pp = new PostgresProvider(configs);
-        pp.createDB();
+//        Map configs = new HashMap();
+//        configs.put("name", "postgres");
+//        configs.put("username", "postgres");
+//        configs.put("password", "password");
+//        configs.put("port", "5432");
+//
+//        pp = new PostgresProvider(configs);
+//        pp.createDB();
     }
 
     @Test

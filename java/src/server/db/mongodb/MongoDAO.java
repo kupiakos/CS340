@@ -47,10 +47,7 @@ public abstract class MongoDAO<T extends IDAOObject> implements IDAO<T> {
         Document doc = Document.parse(model);
         doc.put("_id", obj.getId());
         collection.insertOne(doc);
-        if (currentTotal < collection.count()) {
-            return true;
-        }
-        return false;
+        return currentTotal < collection.count();
     }
 
     @Override
@@ -62,10 +59,7 @@ public abstract class MongoDAO<T extends IDAOObject> implements IDAO<T> {
         if (collection.find(eq("_id", obj.getId())).first().equals(doc)) {
             collection.deleteOne(eq("_id", obj.getId()));
             collection.insertOne(doc);
-            if (currentTotal == collection.count()) {
-                return true;
-            }
-            return false;
+            return currentTotal == collection.count();
         } else {
             return false;
         }
@@ -79,10 +73,7 @@ public abstract class MongoDAO<T extends IDAOObject> implements IDAO<T> {
         doc.put("_id", obj.getId());
         if (collection.find(eq("_id", obj.getId())).first().equals(doc)) {
             collection.deleteOne(eq("_id", obj.getId()));
-            if (currentTotal > collection.count()) {
-                return true;
-            }
-            return false;
+            return currentTotal > collection.count();
         } else {
             return false;
         }
