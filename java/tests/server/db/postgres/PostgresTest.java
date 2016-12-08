@@ -1,5 +1,6 @@
 package server.db.postgres;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,14 +25,14 @@ public class PostgresTest {
 
     @Before
     public void setup() {
-        Map configs = new HashMap();
-        configs.put("name", "postgres");
-        configs.put("username", "postgres");
-        configs.put("password", "password");
-        configs.put("port", "5432");
-
-        pp = new PostgresProvider(configs);
-        pp.createDB();
+//        Map configs = new HashMap();
+//        configs.put("name", "postgres");
+//        configs.put("username", "postgres");
+//        configs.put("password", "");
+//        configs.put("port", "5432");
+//
+//        pp = new PostgresProvider(configs);
+//        pp.createDB();
     }
 
     @Test
@@ -51,14 +52,14 @@ public class PostgresTest {
 
     @Test
     public void testGameDAO() {
-//        List<PlayerInfo> players = new ArrayList<PlayerInfo>();
-//        assertTrue(pp.getGameDAO().insert(new GameModel(1, new GameInfo(players, "title", 1), new ClientModel())));
-//        assertTrue(pp.getGameDAO().update(new GameModel());
-//        assertTrue(pp.getGameDAO().findById(1) != null);
-//        assertTrue(pp.getGameDAO().delete();
-//        assertTrue(pp.getGameDAO().insert();
-//        assertTrue(pp.getGameDAO().insert();
-//        assertTrue(pp.getGameDAO().insert();
+//        assertTrue(pp.getGameDAO().insert(new GameModel(1, new GameInfo(new ArrayList(), "title", 1), new ClientModel())));
+//        assertEquals("title", pp.getGameDAO().findById(1).getGameInfo().getTitle());
+//        assertTrue(pp.getGameDAO().update(new GameModel(1, new GameInfo(new ArrayList(), "newTitle", 1), new ClientModel())));
+//        assertEquals("newTitle", pp.getGameDAO().findById(1).getGameInfo().getTitle());
+//        assertTrue(pp.getGameDAO().delete(new GameModel(1, new GameInfo(), new ClientModel())));
+//        assertTrue(pp.getGameDAO().insert(new GameModel(2, new GameInfo(), new ClientModel())));
+//        assertTrue(pp.getGameDAO().insert(new GameModel(3, new GameInfo(), new ClientModel())));
+//        assertTrue(pp.getGameDAO().insert(new GameModel(4, new GameInfo(), new ClientModel())));
 //        assertTrue(pp.getGameDAO().findAll().size() == 3);
     }
 

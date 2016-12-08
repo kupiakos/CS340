@@ -5,6 +5,7 @@ import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
 import server.db.IGameDAO;
 import server.db.IUserDAO;
+import server.plugin.IPlugin;
 import server.plugin.PersistencePlugin;
 
 import java.util.Map;
@@ -24,6 +25,16 @@ public class MongoProvider extends PersistencePlugin {
         client = new MongoClient(new ServerAddress("localhost", 27017));
 //            , Arrays.asList(new MongoCredential(AuthenticationMechanism.MONGODB_X509, username, "catan", password)
         database = client.getDatabase("catan");
+    }
+
+    @Override
+    public IPlugin start() {
+        return this;
+    }
+
+    @Override
+    public String getName() {
+        return "mongo";
     }
 
     @Override
