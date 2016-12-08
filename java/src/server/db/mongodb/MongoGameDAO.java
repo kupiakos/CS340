@@ -19,14 +19,11 @@ import static com.mongodb.client.model.Filters.*;
  */
 public class MongoGameDAO extends MongoDAO<GameModel> implements IGameDAO {
 
-    private MongoDatabase db;
-    private MongoCollection<Document> games;
     private MongoCollection<Document> commands;
     private int counter;
 
     public MongoGameDAO(MongoDatabase db) {
         super(db.getCollection("games"));
-        games = db.getCollection("games");
         commands = db.getCollection("commands");
         counter = 1;
     }
