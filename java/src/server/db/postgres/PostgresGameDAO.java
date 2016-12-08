@@ -7,10 +7,7 @@ import shared.models.GameAction;
 import shared.models.ICommandAction;
 import shared.serialization.ModelSerializer;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -72,10 +69,10 @@ public class PostgresGameDAO extends PostgresDAO<GameModel> implements IGameDAO 
     @Override
     public boolean insertCommand(ICommandAction command, int gameId) {
         try {
-            Statement stmt = db.createStatement();
-            stmt.execute("PREPARE insertCommand (int, text) AS " +
-                    "INSERT INTO COMMANDS (ID, COMMAND) VALUES ($1, $2); " +
-                    "EXECUTE insertCommand(gameId, ModelSerializer.getInstance().toJson(command, command.getClass()));");
+            PreparedStatement stmt = db.prepareStatement("INSERT INTO COMMANDS (ID, COMMAND) VALUES (?, ?);");
+            stmt.setInt(1, gameId);
+            stmt.setString(2, ModelSerializer.getInstance().toJson(command, command.getClass()));
+            stmt.execute();
             stmt.close();
             return true;
         } catch (SQLException e) {

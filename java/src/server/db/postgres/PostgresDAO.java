@@ -2,11 +2,15 @@ package server.db.postgres;
 
 import server.db.IDAO;
 import server.db.IDAOObject;
-import server.db.IUserDAO;
-import server.models.User;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -60,21 +64,22 @@ public abstract class PostgresDAO<T extends IDAOObject> implements IDAO<T> {
     @Override
     public boolean insert(T obj) {
         try {
-            Map<String, Object> values = getColumns(obj);
-            String[] q = new String[values.size()];
+            Map<String, Object> entries = getColumns(obj);
+            List<String> columns = new ArrayList<>();
+            List<Object> values = new ArrayList<>();
+            for (Map.Entry<String, Object> v : entries.entrySet()) {
+                columns.add(v.getKey());
+                values.add(v.getValue());
+            }
+            String[] q = new String[entries.size()];
             Arrays.fill(q, "?");
             String sql = "INSERT INTO " + getTableName() +
+                    " (" + String.join(",", columns) + ") " +
                     " VALUES (" + String.join(",", (CharSequence[]) q) + ");";
-
             PreparedStatement stmt = db.prepareStatement(sql);
             int col = 1;
-            for (Map.Entry<String, Object> v : values.entrySet()) {
-                Object val = v.getValue();
-                if (val instanceof String)
-                    stmt.setString(col++, (String) val);
-                else if (val instanceof Integer)
-                    stmt.setInt(col++, (Integer) val);
-//                stmt.setObject(col++, v.getValue());
+            for (Object v : values) {
+                stmt.setObject(col++, v);
             }
             stmt.execute();
             stmt.close();
