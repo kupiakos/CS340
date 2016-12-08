@@ -1,9 +1,11 @@
 package server.plugin;
 
+import server.db.IPersistenceProvider;
+
 import java.net.URLClassLoader;
 import java.util.Map;
 
-public class PersistencePlugin implements IPlugin {
+public abstract class PersistencePlugin implements IPersistenceProvider {
     public PersistencePlugin(Map configs) {
     }
 

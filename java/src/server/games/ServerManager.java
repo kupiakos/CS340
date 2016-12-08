@@ -18,10 +18,7 @@ import shared.models.ICommandAction;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static server.plugin.PluginConfig.PluginType.PERSISTENCE;
 
@@ -47,8 +44,11 @@ public class ServerManager implements IServerManager {
 
         List<PluginConfig> pc = pluginLoader.parseConfig(pluginConfigFile);
         List<IPlugin> lc = pluginLoader.loadConfig(pc, pluginDir);
-        plugins = pluginLoader.startPlugins(lc);
-        persistenceProvider = getPersistenceProvider(plugins, persistence);
+        persistenceProvider = getPersistenceProvider(lc, persistence);
+        plugins = Collections.singletonList(persistenceProvider);
+        if (persistenceProvider == null || persistenceProvider.start() == null) {
+            throw new IOException("Error starting persistence provider " + persistence);
+        }
     }
 
     @Nullable
@@ -124,9 +124,11 @@ public class ServerManager implements IServerManager {
                 action.execute();
             } else {
                 GameAction action = (GameAction) command;
-                action.setFacades(((GameServer) runningServers.get(command.getGameId())).getFacades());
+                action.setFacades(((GameServer) getGameServer(command.getGameId())).getFacades());
                 action.execute();
             }
+            persistenceProvider.getGameDAO().clearCommands();
+            getServerModel().updateGamesInDatabase(persistenceProvider);
         }
     }
 }

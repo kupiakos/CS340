@@ -4,9 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
 import server.db.IGameDAO;
-import server.db.IPersistenceProvider;
 import server.db.IUserDAO;
-import server.plugin.IPlugin;
 import server.plugin.PersistencePlugin;
 
 import java.util.Map;
@@ -14,7 +12,7 @@ import java.util.Map;
 /**
  * Created by kevin on 12/7/16.
  */
-public class MongoProvider extends PersistencePlugin implements IPersistenceProvider {
+public class MongoProvider extends PersistencePlugin {
 
     private MongoUserDAO userDAO;
     private MongoGameDAO gameDAO;

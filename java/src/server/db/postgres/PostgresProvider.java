@@ -1,7 +1,6 @@
 package server.db.postgres;
 
 import server.db.IGameDAO;
-import server.db.IPersistenceProvider;
 import server.db.IUserDAO;
 import server.plugin.IPlugin;
 import server.plugin.PersistencePlugin;
@@ -17,17 +16,25 @@ import java.util.Map;
 /**
  * Created by elija on 12/2/2016.
  */
-public class PostgresProvider extends PersistencePlugin implements IPersistenceProvider {
+public class PostgresProvider extends PersistencePlugin {
 
     private PostgresUserDAO userDAO;
     private PostgresGameDAO gameDAO;
     private Connection db;
+    private String username;
+    private String password;
 
     public PostgresProvider(Map<String, String> config) {
         super(config);
+        username = config.get("username");
+        password = config.get("password");
+    }
+
+    @Override
+    public IPlugin start() {
         try {
             Class.forName("org.postgresql.Driver");
-            db = DriverManager.getConnection("jdbc:postgresql://localhost/template1", config.get("username"), config.get("password"));
+            db = DriverManager.getConnection("jdbc:postgresql://localhost/template1", username, password);
             Statement stmt = db.createStatement();
             //stmt.execute("DROP DATABASE catandb");
             ResultSet rs = stmt.executeQuery("SELECT 1 FROM pg_database WHERE datname = 'catandb';");
@@ -50,12 +57,6 @@ public class PostgresProvider extends PersistencePlugin implements IPersistenceP
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        userDAO = new PostgresUserDAO(db);
-        gameDAO = new PostgresGameDAO(db);
-    }
-
-    @Override
-    public IPlugin start() {
         createDB();
         return this;
     }
@@ -135,11 +136,17 @@ public class PostgresProvider extends PersistencePlugin implements IPersistenceP
 
     @Override
     public IUserDAO getUserDAO() {
+        if (userDAO == null) {
+            userDAO = new PostgresUserDAO(db);
+        }
         return userDAO;
     }
 
     @Override
     public IGameDAO getGameDAO() {
+        if (gameDAO == null) {
+            gameDAO = new PostgresGameDAO(db);
+        }
         return gameDAO;
     }
 
