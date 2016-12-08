@@ -42,12 +42,12 @@ public abstract class MongoDAO<T extends IDAOObject> implements IDAO<T> {
 
     @Override
     public boolean insert(T obj) {
-        long currnetTotal = collection.count();
+        long currentTotal = collection.count();
         String model = ModelSerializer.getInstance().toJson(obj, getTypeClass());
         Document doc = Document.parse(model);
         doc.put("_id", obj.getId());
         collection.insertOne(doc);
-        if (currnetTotal < collection.count()) {
+        if (currentTotal < collection.count()) {
             return true;
         }
         return false;
@@ -55,14 +55,14 @@ public abstract class MongoDAO<T extends IDAOObject> implements IDAO<T> {
 
     @Override
     public boolean update(T obj) {
-        long currnetTotal = collection.count();
+        long currentTotal = collection.count();
         String model = ModelSerializer.getInstance().toJson(obj, getTypeClass());
         Document doc = Document.parse(model);
         doc.put("_id", obj.getId());
         if (collection.find(eq("_id", obj.getId())).first().equals(doc)) {
             collection.deleteOne(eq("_id", obj.getId()));
             collection.insertOne(doc);
-            if (currnetTotal == collection.count()) {
+            if (currentTotal == collection.count()) {
                 return true;
             }
             return false;
@@ -73,13 +73,13 @@ public abstract class MongoDAO<T extends IDAOObject> implements IDAO<T> {
 
     @Override
     public boolean delete(T obj) {
-        long currnetTotal = collection.count();
+        long currentTotal = collection.count();
         String model = ModelSerializer.getInstance().toJson(obj, getTypeClass());
         Document doc = Document.parse(model);
         doc.put("_id", obj.getId());
         if (collection.find(eq("_id", obj.getId())).first().equals(doc)) {
             collection.deleteOne(eq("_id", obj.getId()));
-            if (currnetTotal > collection.count()) {
+            if (currentTotal > collection.count()) {
                 return true;
             }
             return false;

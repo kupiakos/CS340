@@ -40,12 +40,12 @@ public class MongoGameDAO extends MongoDAO<GameModel> implements IGameDAO {
 
     @Override
     public boolean insertCommand(ICommandAction command, int gameId) {
-        long currnetTotal = commands.count();
+        long currentTotal = commands.count();
         String data = ModelSerializer.getInstance().toJson(command, command.getClass());
         Document doc = Document.parse(data);
         doc.put("_id", counter);
         commands.insertOne(doc);
-        if (currnetTotal < commands.count()) {
+        if (currentTotal < commands.count()) {
             return true;
         }
         return false;
