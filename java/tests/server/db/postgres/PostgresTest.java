@@ -1,19 +1,8 @@
 package server.db.postgres;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import server.models.GameModel;
-import server.models.User;
-import shared.models.game.ClientModel;
-import shared.models.game.Player;
-import shared.models.games.GameInfo;
-import shared.models.games.PlayerInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

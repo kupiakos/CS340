@@ -16,7 +16,7 @@ public class CatanServer {
         try {
             String hostname = "localhost";
             int port = 8081;
-            String persistence = "mongo";
+            String persistence = "postgres";
             int N = 20;
 
             if (args.length == 2) {
