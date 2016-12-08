@@ -65,7 +65,7 @@ public class ServerManager implements IServerManager {
     public ServerModel getServerModel() {
         if (model == null) {
             model = new ServerModel();
-            model.updateFromDatabase(persistenceProvider);
+            updateFromDatabase();
         }
         return model;
     }
@@ -111,5 +111,9 @@ public class ServerManager implements IServerManager {
         } else {
             persistenceProvider.getGameDAO().insertCommand(command, GameID);
         }
+    }
+
+    public void updateFromDatabase() {
+        getServerModel().updateFromDatabase(persistenceProvider);
     }
 }
