@@ -60,4 +60,24 @@ public class MapFacadeTest {
         model.getMap().getRoads().put(new EdgeLocation(new HexLocation(1, 1), EdgeDirection.NorthEast).getNormalizedLocation(), PlayerIndex.THIRD);
         assertEquals(PlayerIndex.THIRD, facade.findLongestRoad());
     }
+
+    public void findLongestRoadAgain() {
+        model.getMap().getRoads().put(new EdgeLocation(new HexLocation(1, 0), EdgeDirection.NorthWest).getNormalizedLocation(), PlayerIndex.FIRST);
+        model.getMap().getRoads().put(new EdgeLocation(new HexLocation(0, 0), EdgeDirection.North).getNormalizedLocation(), PlayerIndex.FIRST);
+        model.getMap().getRoads().put(new EdgeLocation(new HexLocation(0, 0), EdgeDirection.NorthEast).getNormalizedLocation(), PlayerIndex.FIRST);
+        model.getMap().getRoads().put(new EdgeLocation(new HexLocation(1, -1), EdgeDirection.NorthWest).getNormalizedLocation(), PlayerIndex.FIRST);
+        model.getMap().getRoads().put(new EdgeLocation(new HexLocation(1, -1), EdgeDirection.North).getNormalizedLocation(), PlayerIndex.FIRST);
+        model.getMap().getRoads().put(new EdgeLocation(new HexLocation(1, -1), EdgeDirection.NorthEast).getNormalizedLocation(), PlayerIndex.FIRST);
+        model.getMap().getRoads().put(new EdgeLocation(new HexLocation(0, -1), EdgeDirection.North).getNormalizedLocation(), PlayerIndex.FIRST);
+        model.getMap().getRoads().put(new EdgeLocation(new HexLocation(0, -1), EdgeDirection.NorthEast).getNormalizedLocation(), PlayerIndex.FIRST);
+        model.getMap().getRoads().put(new EdgeLocation(new HexLocation(2, -1), EdgeDirection.NorthWest).getNormalizedLocation(), PlayerIndex.FIRST);
+        model.getMap().getRoads().put(new EdgeLocation(new HexLocation(-1, 1), EdgeDirection.NorthEast).getNormalizedLocation(), PlayerIndex.FIRST);
+
+        assertNotEquals(PlayerIndex.FIRST, facade.findLongestRoad());
+
+        model.getMap().getRoads().put(new EdgeLocation(new HexLocation(-1, 0), EdgeDirection.NorthEast).getNormalizedLocation(), PlayerIndex.FIRST);
+
+        assertEquals(PlayerIndex.FIRST, facade.findLongestRoad());
+
+    }
 }
