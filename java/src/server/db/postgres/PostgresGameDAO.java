@@ -7,100 +7,44 @@ import server.serialization.ActionDeserializer;
 import shared.models.ICommandAction;
 import shared.serialization.ModelSerializer;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by elija on 12/2/2016.
  */
-public class PostgresGameDAO implements IGameDAO {
+public class PostgresGameDAO extends PostgresDAO<GameModel> implements IGameDAO {
     private Connection db = null;
 
     public PostgresGameDAO(Connection db) {
+        super(db);
         this.db = db;
     }
 
     @Override
-    public GameModel findById(int id) {
-        try {
-            Statement stmt = db.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM GAMES WHERE ID=" + id + ";");
-            if (!rs.next()) {
-                return null;
-            }
-            GameModel result = ModelSerializer.getInstance().fromJson(rs.getString(2), GameModel.class);
-            stmt.close();
-            rs.close();
-            return result;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-
+    protected Class<GameModel> getTypeClass() {
+        return GameModel.class;
     }
 
     @Override
-    public List<GameModel> findAll() {
-        List<GameModel> result = new ArrayList<>();
-        try {
-            Statement stmt = db.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM GAMES");
-            while (rs.next()) {
-                result.add(ModelSerializer.getInstance().fromJson(rs.getString(2), GameModel.class));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    protected String getTableName() {
+        return "GAMES";
+    }
+
+    @Override
+    protected GameModel getValue(ResultSet rs) throws SQLException {
+        return ModelSerializer.getInstance().fromJson(rs.getString(2), GameModel.class);
+    }
+
+    @Override
+    protected Map<String, Object> getColumns(GameModel obj) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("ID", obj.getId());
+        result.put("MODEL", ModelSerializer.getInstance().toJson(obj, GameModel.class));
         return result;
-    }
-
-    @Override
-    public boolean insert(GameModel obj) {
-        try {
-            Statement stmt = db.createStatement();
-            stmt.execute("PREPARE insertGameModel (int, text) AS" +
-            "INSERT INTO GAMES VALUES ($1, $2);" +
-            "EXECUTE insertGameModel(obj.getId(), ModelSerializer.getInstance().toJson(obj, GameModel.class));");
-            stmt.close();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public boolean update(GameModel obj) {
-        try {
-            Statement stmt = db.createStatement();
-            stmt.execute("PREPARE updateGameModel (int, text) AS" +
-            "UPDATE GAMES SET MODEL = $1 WHERE ID = $2;" +
-            "EXECUTE updateGameModel(" + obj.getId() + ", " + ModelSerializer.getInstance().toJson(obj, GameModel.class) + ");");
-//            stmt.execute("UPDATE GAMES SET MODEL = '" + ModelSerializer.getInstance().toJson(obj, GameModel.class) + "' " +
-//                    "WHERE ID =" + obj.getId() + ";");
-            stmt.close();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public boolean delete(GameModel obj) {
-        try {
-            Statement stmt = db.createStatement();
-            stmt.execute("DELETE FROM GAMES WHERE ID=" + obj.getId() + ";");
-            stmt.close();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     @Override
@@ -122,8 +66,8 @@ public class PostgresGameDAO implements IGameDAO {
     public boolean insertCommand(ICommandAction command, int gameId) {
         try {
             Statement stmt = db.createStatement();
-            stmt.execute("PREPARE insertCommand (int, text) AS" +
-                    "INSERT INTO COMMANDS (ID, COMMAND) VALUES ($1, $2);" +
+            stmt.execute("PREPARE insertCommand (int, text) AS " +
+                    "INSERT INTO COMMANDS (ID, COMMAND) VALUES ($1, $2); " +
                     "EXECUTE insertCommand(gameId, ModelSerializer.getInstance().toJson(command, command.getClass()));");
             stmt.close();
             return true;
