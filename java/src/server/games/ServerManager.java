@@ -127,6 +127,8 @@ public class ServerManager implements IServerManager {
                 action.setFacades(((GameServer) runningServers.get(command.getGameId())).getFacades());
                 action.execute();
             }
+            persistenceProvider.getGameDAO().clearCommands();
+            getServerModel().updateGamesInDatabase(persistenceProvider);
         }
     }
 }
