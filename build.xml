@@ -157,6 +157,12 @@
                 <include name="**"/>
             </fileset>
         </copy>
+        <mkdir dir="${java.dist}/java/plugins"/>
+        <copy todir="${java.dist}/java/plugins">
+            <fileset dir="${java.dir}/plugins">
+                <include name="**"/>
+            </fileset>
+        </copy>
         <mkdir dir="${java.dist}/docs"/>
         <copy todir="${java.dist}/docs">
             <fileset dir="${java.swagger}">
@@ -176,6 +182,7 @@
                 <attribute name="Class-Path"
                            value="lib/gson-2.2.4.jar"/>
             </manifest>
+            <zipgroupfileset dir="${java.lib}" includes="**/*.jar"/>
         </jar>
         <jar jarfile="${java.dir}/plugins/mongodb.jar" basedir="${java.src}/server/db/mongodb">
             <manifest>
