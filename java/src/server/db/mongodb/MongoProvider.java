@@ -22,13 +22,12 @@ public class MongoProvider extends PersistencePlugin {
 
     public MongoProvider(Map params) {
         super(params);
-        client = new MongoClient(new ServerAddress("localhost", 27017));
-//            , Arrays.asList(new MongoCredential(AuthenticationMechanism.MONGODB_X509, username, "catan", password)
-        database = client.getDatabase("catan");
     }
 
     @Override
     public IPlugin start() {
+        client = new MongoClient(new ServerAddress("localhost", 27017));
+        database = client.getDatabase("catan");
         return this;
     }
 
