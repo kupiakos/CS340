@@ -47,6 +47,8 @@
     <!-- command line args -->
     <property name="host" value="localhost"/>
     <property name="port" value="8081"/>
+    <property name="persistence" value="postgres"/>
+    <property name="commandListSize" value="5"/>
 
 
     <!-- CLASSPATHS -->
@@ -215,6 +217,8 @@
         <java jar="${java.dist}/catan-server.jar" dir="${java.dist}" fork="yes">
             <arg value="${host}"/>
             <arg value="${port}"/>
+            <arg value="${persistence}"/>
+            <arg value="${commandListSize}"/>
 
             <sysproperty key="com.sun.management.jmxremote" value=""/>
             <assertions>
