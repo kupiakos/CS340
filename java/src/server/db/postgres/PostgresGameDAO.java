@@ -1,9 +1,7 @@
 package server.db.postgres;
 
-import com.sun.tools.internal.ws.processor.model.Model;
 import server.db.IGameDAO;
 import server.models.GameModel;
-import server.models.User;
 import server.serialization.ActionDeserializer;
 import shared.models.ICommandAction;
 import shared.serialization.ModelSerializer;
@@ -135,7 +133,7 @@ public class PostgresGameDAO implements IGameDAO {
     }
 
     @Override
-    public boolean flushCommands() {
+    public boolean clearCommands() {
         try {
             Statement stmt = db.createStatement();
             stmt.execute("DELETE FROM COMMANDS;");

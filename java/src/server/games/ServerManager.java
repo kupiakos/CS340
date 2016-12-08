@@ -104,7 +104,7 @@ public class ServerManager implements IServerManager {
     public void storeCommand(ICommandAction command, int GameID) {
         commandsAdded++;
         if (commandsAdded >= N) {
-            if (persistenceProvider.getGameDAO().flushCommands()) {
+            if (persistenceProvider.getGameDAO().clearCommands()) {
                 commandsAdded = 0;
                 getServerModel().updateGamesInDatabase(persistenceProvider);
             }

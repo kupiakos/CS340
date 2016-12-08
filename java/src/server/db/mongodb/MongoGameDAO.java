@@ -41,7 +41,7 @@ public class MongoGameDAO extends MongoDAO<GameModel> implements IGameDAO {
     }
 
     @Override
-    public boolean flushCommands() {
+    public boolean clearCommands() {
         return false;
     }
 

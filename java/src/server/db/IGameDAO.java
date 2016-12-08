@@ -14,5 +14,5 @@ public interface IGameDAO extends IDAO<GameModel> {
 
     boolean insertCommand(ICommandAction command, int gameId);
 
-    boolean flushCommands();
+    boolean clearCommands();
 }
