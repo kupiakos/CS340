@@ -9,6 +9,7 @@ import shared.models.game.ClientModel;
  */
 public abstract class GameAction implements ICommandAction {
     private transient FacadeManager facades;
+    private transient int gameId;
 
     public FacadeManager getFacades() {
         return facades;
@@ -20,5 +21,14 @@ public abstract class GameAction implements ICommandAction {
 
     protected ClientModel getModel() {
         return getFacades().getClientModel();
+    }
+
+    @Override
+    public int getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
     }
 }

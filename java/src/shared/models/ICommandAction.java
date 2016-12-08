@@ -8,4 +8,8 @@ public interface ICommandAction {
      * execute will be called on the server's side.  It will make the necessary method calls to complete the action.
      */
     void execute() throws IllegalArgumentException;
+
+    default int getGameId() {
+        return -1;
+    }
 }
