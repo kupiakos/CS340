@@ -7,90 +7,42 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by elija on 12/2/2016.
  */
-public class PostgresUserDAO implements IUserDAO {
+public class PostgresUserDAO extends PostgresDAO<User> implements IUserDAO {
     private Connection db = null;
 
     public PostgresUserDAO(Connection db) {
+        super(db);
         this.db = db;
     }
 
     @Override
-    public User findById(int id) {
-        try {
-            Statement stmt = db.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM USERINFO WHERE ID=" + id + ";");
-            if (!rs.next()) {
-                return null;
-            }
-            User result = new User(rs.getInt(1), rs.getString(2), rs.getString(3));
-            stmt.close();
-            rs.close();
-            return result;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    protected Class<User> getTypeClass() {
+        return User.class;
     }
 
     @Override
-    public List<User> findAll() {
-        List<User> result = new ArrayList<>();
-        try {
-            Statement stmt = db.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM USERINFO");
-            while (rs.next()) {
-                result.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3)));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    protected String getTableName() {
+        return "USERINFO";
+    }
+
+    @Override
+    protected User getValue(ResultSet rs) throws SQLException {
+        return new User(rs.getInt(1), rs.getString(2), rs.getString(3));
+    }
+
+    @Override
+    protected Map<String, Object> getColumns(User obj) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("ID", obj.getId());
+        result.put("USERNAME", obj.getUsername());
+        result.put("PASSWORD", obj.getPassword());
         return result;
     }
 
-    @Override
-    public boolean insert(User obj) {
-        try {
-            Statement stmt = db.createStatement();
-            stmt.execute("INSERT INTO USERINFO VALUES (" + obj.getId() + ", '" + obj.getUsername() + "', '" + obj.getPassword() + "');");
-            stmt.close();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
-    @Override
-    public boolean update(User obj) {
-        try {
-            Statement stmt = db.createStatement();
-            stmt.execute("UPDATE USERINFO " +
-                    "SET USERNAME = '" + obj.getUsername() + "', PASSWORD ='" + obj.getPassword() + "' " +
-                    "WHERE ID =" + obj.getId() + ";");
-            stmt.close();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public boolean delete(User obj) {
-        try {
-            Statement stmt = db.createStatement();
-            stmt.execute("DELETE FROM USERINFO WHERE ID=" + obj.getId() + ";");
-            stmt.close();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 }
