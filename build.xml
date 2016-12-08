@@ -177,6 +177,16 @@
                            value="lib/gson-2.2.4.jar"/>
             </manifest>
         </jar>
+        <jar jarfile="${java.dir}/plugins/mongodb.jar" basedir="${java.src}/server/db/mongodb">
+            <manifest>
+                <attribute name="Main-Class" value="server.db.mongodb.MongoProvider"/>
+            </manifest>
+        </jar>
+        <jar jarfile="${java.dir}/plugins/postgres.jar" basedir="${java.src}/server/db/postgres">
+            <manifest>
+                <attribute name="Main-Class" value="server.db.postgres.PostgresProvider"/>
+            </manifest>
+        </jar>
     </target>
 
     <!-- compiles our client -->
