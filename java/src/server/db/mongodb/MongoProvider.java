@@ -28,7 +28,7 @@ public class MongoProvider extends PersistencePlugin {
     }
 
     @Override
-    public IPlugin start(){
+    public IPlugin start() {
         return this;
     }
 
