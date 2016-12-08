@@ -6,6 +6,7 @@ import com.mongodb.client.MongoDatabase;
 import server.db.IGameDAO;
 import server.db.IPersistenceProvider;
 import server.db.IUserDAO;
+import server.plugin.IPlugin;
 import server.plugin.PersistencePlugin;
 
 import java.util.Map;

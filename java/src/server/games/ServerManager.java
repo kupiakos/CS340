@@ -6,12 +6,14 @@ import server.client.GameServer;
 import server.client.IServerCommunicator;
 import server.client.ServerCommunicator;
 import server.db.IPersistenceProvider;
+import server.models.ServerAction;
 import server.models.ServerModel;
 import server.plugin.IPlugin;
 import server.plugin.IPluginLoader;
 import server.plugin.PluginConfig;
 import server.plugin.PluginLoader;
 import shared.IServer;
+import shared.models.GameAction;
 import shared.models.ICommandAction;
 
 import java.io.File;
@@ -65,7 +67,7 @@ public class ServerManager implements IServerManager {
     public ServerModel getServerModel() {
         if (model == null) {
             model = new ServerModel();
-            model.updateFromDatabase(persistenceProvider);
+            updateFromDatabase();
         }
         return model;
     }
@@ -110,6 +112,21 @@ public class ServerManager implements IServerManager {
             }
         } else {
             persistenceProvider.getGameDAO().insertCommand(command, GameID);
+        }
+    }
+
+    public void updateFromDatabase() {
+        getServerModel().updateFromDatabase(persistenceProvider);
+        for (ICommandAction command : persistenceProvider.getGameDAO().findAllCommands()) {
+            if (command.getGameId() == -1) {
+                ServerAction action = (ServerAction) command;
+                ((ServerAction) command).setServerModel(getServerModel());
+                action.execute();
+            } else {
+                GameAction action = (GameAction) command;
+                action.setFacades(((GameServer) runningServers.get(command.getGameId())).getFacades());
+                action.execute();
+            }
         }
     }
 }
