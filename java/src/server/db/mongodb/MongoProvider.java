@@ -27,6 +27,11 @@ public class MongoProvider extends PersistencePlugin {
     }
 
     @Override
+    public IPlugin start(){
+        return this;
+    }
+
+    @Override
     public boolean createDB() {
         database.createCollection("users");
         database.createCollection("games");
