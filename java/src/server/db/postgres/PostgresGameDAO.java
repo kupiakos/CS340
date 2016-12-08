@@ -1,6 +1,5 @@
 package server.db.postgres;
 
-import com.sun.tools.internal.ws.processor.model.Model;
 import server.db.IGameDAO;
 import server.models.GameModel;
 import server.models.User;
