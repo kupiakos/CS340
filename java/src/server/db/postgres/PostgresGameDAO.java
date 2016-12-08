@@ -2,12 +2,15 @@ package server.db.postgres;
 
 import server.db.IGameDAO;
 import server.models.GameModel;
-import server.models.User;
 import server.serialization.ActionDeserializer;
+import shared.models.GameAction;
 import shared.models.ICommandAction;
 import shared.serialization.ModelSerializer;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,7 +57,11 @@ public class PostgresGameDAO extends PostgresDAO<GameModel> implements IGameDAO 
             Statement stmt = db.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM COMMANDS");
             while (rs.next()) {
-                result.add(ActionDeserializer.getInstance().deserializeAction(rs.getString(3)));
+                ICommandAction action = ActionDeserializer.getInstance().deserializeAction(rs.getString(3));
+                if (action instanceof GameAction) {
+                    ((GameAction) action).setGameId(rs.getInt(1));
+                }
+                result.add(action);
             }
         } catch (SQLException e) {
             e.printStackTrace();
