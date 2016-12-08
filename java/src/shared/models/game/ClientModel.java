@@ -94,6 +94,7 @@ public class ClientModel {
         this.log = log;
     }
 
+
     // CUSTOM CODE
 
     /**
