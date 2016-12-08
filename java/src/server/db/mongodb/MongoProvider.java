@@ -33,6 +33,11 @@ public class MongoProvider extends PersistencePlugin {
     }
 
     @Override
+    public String getName() {
+        return "mongo";
+    }
+
+    @Override
     public boolean createDB() {
         database.createCollection("users");
         database.createCollection("games");

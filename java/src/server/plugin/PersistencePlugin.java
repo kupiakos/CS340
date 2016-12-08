@@ -21,13 +21,11 @@ public abstract class PersistencePlugin implements IPersistenceProvider {
 
     @Override
     public PluginConfig.PluginType getType() {
-        return null;
+        return PluginConfig.PluginType.PERSISTENCE;
     }
 
     @Override
-    public String getName() {
-        return null;
-    }
+    public abstract String getName();
 
     @Override
     public URLClassLoader getURLClassLoader() {
