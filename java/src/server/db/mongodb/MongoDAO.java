@@ -42,16 +42,49 @@ public abstract class MongoDAO<T extends IDAOObject> implements IDAO<T> {
 
     @Override
     public boolean insert(T obj) {
+        long currnetTotal = collection.count();
+        String model = ModelSerializer.getInstance().toJson(obj, getTypeClass());
+        Document doc = Document.parse(model);
+        doc.put("_id", obj.getId());
+        collection.insertOne(doc);
+        if (currnetTotal < collection.count()) {
+            return true;
+        }
         return false;
     }
 
     @Override
     public boolean update(T obj) {
-        return false;
+        long currnetTotal = collection.count();
+        String model = ModelSerializer.getInstance().toJson(obj, getTypeClass());
+        Document doc = Document.parse(model);
+        doc.put("_id", obj.getId());
+        if (collection.find(eq("_id", obj.getId())).first().equals(doc)) {
+            collection.deleteOne(eq("_id", obj.getId()));
+            collection.insertOne(doc);
+            if (currnetTotal == collection.count()) {
+                return true;
+            }
+            return false;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public boolean delete(T obj) {
-        return false;
+        long currnetTotal = collection.count();
+        String model = ModelSerializer.getInstance().toJson(obj, getTypeClass());
+        Document doc = Document.parse(model);
+        doc.put("_id", obj.getId());
+        if (collection.find(eq("_id", obj.getId())).first().equals(doc)) {
+            collection.deleteOne(eq("_id", obj.getId()));
+            if (currnetTotal > collection.count()) {
+                return true;
+            }
+            return false;
+        } else {
+            return false;
+        }
     }
 }
