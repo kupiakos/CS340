@@ -1,9 +1,11 @@
 package server.db;
 
+import server.plugin.IPlugin;
+
 /**
  * Created by elija on 12/2/2016.
  */
-public interface IPersistenceProvider {
+public interface IPersistenceProvider extends IPlugin {
 
     boolean createDB();
 
